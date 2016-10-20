@@ -8,7 +8,7 @@ import cifar
 import scipy.ndimage
 import pylab as py
 import matplotlib.colors as col
-import amitgroup
+#import amitgroup
 
 
 
@@ -166,6 +166,7 @@ def  do_read_det(ss,num_train):
                 num_files=np.int32(np.ceil(num_train/1111))
             tot=0
             for j in range(num_files+1):
+
                 if (os.path.isfile('/Users/amit/Desktop/AMNEW/_CIFAR10/rot/cifar_10'+ss+'.rotate'+str(j)+'.h5')):
                     print(j, end=" ")
                     X=dd.io.load('/Users/amit/Desktop/AMNEW/_CIFAR10/rot/cifar_10'+ss+'.rotate'+str(j)+'.h5')
