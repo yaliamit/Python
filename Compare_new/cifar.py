@@ -3,8 +3,8 @@ import numpy as np
 import os
 from scipy import linalg
 def load_dataset(num_train=50000, num_test=10000, num_val=5000, marg=0, white=True):
-
-    os.environ['CIFAR10_DIR']='/Users/amit/Desktop/Dropbox/Python/_CIFAR10'
+    home=os.path.expanduser('~')
+    os.environ['CIFAR10_DIR']=home+'/Desktop/Dropbox/Python/_CIFAR10'
     Tr_x, Tr_y = dd.io.load_cifar_10('training', offset=0, count=50000, marg=marg)
     te_x, te_y = dd.io.load_cifar_10('testing', offset=0, count=10000, marg=marg)
 
