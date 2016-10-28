@@ -9,9 +9,9 @@ parms['net']='igor2_maxout'
 parms['output_net']=None
 parms['mod_net']=None
 parms['TRAIN']=True
-parms['mult']=25
+parms['mult']=1
 parms['USE_EXISTING']=False
-parms['start']=23
+parms['start']=0
 
 parms=manage_OUTPUT.process_args(sys.argv,parms)
 
@@ -53,9 +53,9 @@ for i,ne in enumerate(nets):
                         continue
                     gd=None
                     lp=parse_net_pars.process_network_line(line,gd)
-                    t+=1
                     if (t==i):
                         break
+                    t+=1
                 f.close()
                 NETPARS[lp['dict']]=lp
                 del NETPARS[lp['dict']]['dict']

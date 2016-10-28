@@ -1,9 +1,8 @@
 import numpy as np
 import commands
 import pylab as py
-import theano.tensor
 
-theano.tensor.nnet.conv2d()
+
 ssp=commands.getoutput('grep -n trans $(ls -t -r OUTPUT.txt) | cut -d" " -f2 | nl')
 print(ssp)
 ss=commands.getoutput('grep rotations $(ls -t -r OUTPUT.txt) | cut -d" " -f5')

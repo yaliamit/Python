@@ -5,15 +5,16 @@ mod_net:None
 adapt_eta:False
 update:adam
 batch_size:1000
-eta_init:.0001
+eta_init:.001
 train:False
-num_epochs:600
+num_epochs:300
 net:igor2
-seed:12345
+seed:452359
 Mnist:True
 #global_drop:0.5
 name:input1
 #name:conv1;num_filters:4;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:input1
 #name:pool1;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:conv1
-name:dense1;num_units:800;Rstd:.1;non_linearity:lasagne.nonlinearity.tanh;gain:1.;parent:input1
-name:newdens2;num_units:10;Rstd:.1;non_linearity:lasagne.nonlinearity.softmax;parent:dense1;final:final
+name:dense1;num_units:100;Rstd:.1;non_linearity:lasagne.nonlinearity.rectify;gain:1.;parent:input1
+#name:dense2;num_units:100;Rstd:1;non_linearity:lasagne.nonlinearity.rectify;gain:1.;parent:dense1
+name:newdens3;num_units:10;Rstd:0;gain:1.;non_linearity:lasagne.nonlinearity.softmax;parent:dense1;final:final

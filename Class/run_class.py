@@ -64,9 +64,9 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, seq=
             pred.append(tout[2])
         #loss.append(tout[3])
 
-    if len(tout)>3:
-        print('l1 loss',tout[-1],'fraction of zeros',tout[3:-1])
-    # Aggregating over angles.
+    # if len(tout)>3:
+    #     print('l1 loss',tout[-1],'fraction of zeros',tout[3:-1])
+    # # Aggregating over angles.
     if (fac):
         pred0=np.concatenate(pred)
         pred1=np.reshape(pred0,(fac,pred0.shape[0]/fac)+pred0.shape[1:])
@@ -139,8 +139,6 @@ def main_new(NETPARS):
     if (NETPARS['train']):
         if ('seq' in NETPARS):
             train_fn, eta=run_compare.setup_function_seq(network,NETPARS,input_var,target_var,step,Train=True)
-        elif ('rand' in NETPARS):
-            train_fn,eta=run_compare.setup_function_rand(network,NETPARS,input_var,target_var,Train=True)
         else:
             train_fn,eta=run_compare.setup_function(network,NETPARS,input_var,target_var,Train=True)
 
@@ -152,7 +150,7 @@ def main_new(NETPARS):
     if (NETPARS['train'] and NETPARS['num_epochs']>0):
         print("Starting training...","Training set size:",X_train.shape[0])
         mod_eta=False
-        if NETPARS['update']=='nestorov':
+        if NETPARS['update']!='adam':
             mod_eta=True
         for epoch in range(NETPARS['num_epochs']):
             # In each epoch, do a full pass over the training data:
