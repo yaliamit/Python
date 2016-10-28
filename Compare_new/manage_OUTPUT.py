@@ -27,15 +27,18 @@ def print_OUTPUT(NETPARS):
 
     dirs=os.listdir('AOUT')
     nn=str.split(NETPARS['output_net'],'/',)
+    nnn=nn[0]
+    if (len(nn)==2):
+        nnn=nn[1]
 
-    ss='OUTPUT_'+nn[1]
+    ss='OUTPUT_'+nnn
     t=0
     for dd in dirs:
         if ss in dd:
             t+=1
     sys.stdout.flush()
     time.sleep(10)
-    shutil.copyfile('OUTPUT.txt','AOUT/OUTPUT_'+nn[1]+'_'+str(t)+'.txt')
+    shutil.copyfile('OUTPUT.txt','AOUT/OUTPUT_'+nnn+'_'+str(t)+'.txt')
 
 def plot_OUTPUT():
     import commands

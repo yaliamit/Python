@@ -1,20 +1,11 @@
 
-
-
 from __future__ import print_function
 
 import sys
 import os
 import numpy as np
 
-
-
-
-
-
-
-
-def load_dataset(pad=0):
+def load_dataset(pad=0,nval=10000):
     # We first define a download function, supporting both Python 2 and 3.
     if sys.version_info[0] == 2:
         from urllib import urlretrieve
@@ -38,6 +29,7 @@ def load_dataset(pad=0):
         # The inputs are vectors now, we reshape them to monochrome 2D images,
         # following the shape convention: (examples, channels, rows, columns)
         data = data.reshape(-1, 1, 28, 28)
+
         if (pad>0):
             new_data=np.zeros((data.shape[0],data.shape[1],data.shape[2]+2*pad,data.shape[3]+2*pad))
             new_data[:,:,pad:pad+28,pad:pad+28]=data
@@ -45,6 +37,7 @@ def load_dataset(pad=0):
         # The inputs come as bytes, we convert them to float32 in range [0,1].
         # (Actually to range [0, 255/256], for compatibility to the version
         # provided at http://deeplearning.net/data/mnist/mnist.pkl.gz.)
+
         return data / np.float32(256)
 
     def load_mnist_labels(filename):
@@ -63,9 +56,12 @@ def load_dataset(pad=0):
     y_test = load_mnist_labels('t10k-labels-idx1-ubyte.gz')
 
     # We reserve the last 10000 training examples for validation.
-    X_train, X_val = X_train[:-10000], X_train[-10000:]
-    y_train, y_val = y_train[:-10000], y_train[-10000:]
-
+    if (nval>0):
+        X_train, X_val = X_train[:-nval], X_train[-nval:]
+        y_train, y_val = y_train[:-nval], y_train[-nval:]
+    else:
+        X_val=None
+        y_val=None
     # We just return all the arrays in order, as expected in main().
     # (It doesn't matter how we do this as long as we can read them again.)
     return X_train, y_train, X_val, y_val, X_test, y_test

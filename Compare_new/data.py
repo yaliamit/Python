@@ -31,7 +31,7 @@ def rotate_dataset_rand(X,angle=0,scale=0,shift=0,gr=0,flip=False,blur=False,sat
         BL=(np.random.rand(Xr.shape[0])>.5)
     if (saturation):
         HS=(np.power(2,np.random.rand(Xr.shape[0])*4-2))
-        HU=((np.random.rand(Xr.shape[0]))-.5)*.5
+        HU=((np.random.rand(Xr.shape[0]))-.5)*.2
     #SHR=np.random.rand(Xr.shape[0])*shear-shear/2.
     for i in range(Xr.shape[0]):
         if (np.mod(i,1000)==0):
@@ -69,7 +69,7 @@ def rotate_dataset_rand(X,angle=0,scale=0,shift=0,gr=0,flip=False,blur=False,sat
         fig2=py.figure(2)
         ii=range(X.shape[0])
         np.random.shuffle(ii)
-        nr=8
+        nr=12
         nr2=nr*nr
         for j in range(nr2):
             #print(angles[i],SX[i],SH[i],FL[i],BL[i])
@@ -249,7 +249,7 @@ def get_train(NETPARS):
         pad=0
         if ('data_pad' in NETPARS):
             pad=NETPARS['data_pad']
-        X_train, y_train, X_val, y_val, X_test, y_test = mnist.load_dataset(pad=pad)
+        X_train, y_train, X_val, y_val, X_test, y_test = mnist.load_dataset(pad=pad, nval=10000)
     else:
         num_val=5000
         if ('num_val' in NETPARS):

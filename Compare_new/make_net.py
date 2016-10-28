@@ -6,9 +6,37 @@ import theano.typed_list
 import theano.tensor as T
 import parse_net_pars
 import os
-
+import newdense
+import lasagne.init
+import lasagne.utils
 
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
+
+class Trunc_Normal(lasagne.init.Initializer):
+    """Sample initial weights from the Gaussian distribution.
+    Initial weight parameters are sampled from N(mean, std).
+    Parameters
+    ----------
+    std : float
+        Std of initial parameters.
+    mean : float
+        Mean of initial parameters.
+    """
+    def __init__(self, mean=0.0, std=0.1, low=None, high=None):
+        self.std = std
+        self.mean = mean
+        self.low=low
+        self.high=high
+
+    def sample(self, shape):
+        A=lasagne.random.get_rng().normal(self.mean, self.std, size=shape)
+        #return lasagne.utils(floatX(get_rng().normal(self.mean, self.std, size=shape)))
+        if (self.low is not None):
+             A=np.maximum(A,self.low)
+        if (self.high is not None):
+             A=np.minimum(A,self.high)
+        A=lasagne.utils.floatX(A)
+        return A
 
 
 class SclLayer(lasagne.layers.Layer):
@@ -88,7 +116,6 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
     input_la=None
     if (input_layer is not None):
         input_la=input_layer
-
     for l in PARS['layers']:
         upd=True
         if ('parent' in l):
@@ -192,14 +219,23 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                     name=l['name']
                 layer_list.append(lasagne.layers.NonlinearityLayer(lay,nonlinearity=l['non_linearity'],name=name))
         elif 'dense' in l['name']:
+                gain=1
+                if ('gain' in l):
+                    gain=l['gain']
                 for lay in input_la:
                     if (len(layer_list)==0):
-                        layer_list.append(lasagne.layers.DenseLayer(lay,name=l['name'],num_units=l['num_units'],
-                                                                    W=lasagne.init.GlorotUniform(),nonlinearity=l['non_linearity']))
+                        layer_list.append(lasagne.layers.DenseLayer(lay,name=l['name'],num_units=l['num_units'],W=lasagne.init.GlorotUniform(gain=gain), nonlinearity=l['non_linearity']))
                     else:
                         layer_list.append(lasagne.layers.DenseLayer(lay,num_units=l['num_units'],nonlinearity=l['non_linearity'],
                                           W=layer_list[0].W, b=layer_list[0].b))
-
+        elif 'newdens' in l['name']:
+                 for lay in input_la:
+                    if (len(layer_list)==0):
+                        layer_list.append(newdense.NewDenseLayer(lay,name=l['name'],num_units=l['num_units'],
+                                                                    W=lasagne.init.GlorotUniform(), Rstd=l['Rstd'], nonlinearity=l['non_linearity']))
+                    else:
+                        layer_list.append(lasagne.layers.DenseLayer(lay,num_units=l['num_units'],nonlinearity=l['non_linearity'],
+                                          W=layer_list[0].W, b=layer_list[0].b))
         elif 'global_average' in l['name']:
             for lay in input_la:
                 name=None
@@ -374,6 +410,9 @@ def make_file_from_params(network,NETPARS):
             elif ('dense' in l.name):
                 sfunc='lasagne.nonlinearity.'+l.nonlinearity.func_name
                 s='name:'+l.name+';num_units:'+str(l.num_units)+';non_linearity:'+sfunc
+            elif ('newdens' in l.name):
+                sfunc='lasagne.nonlinearity.'+l.nonlinearity.func_name
+                s='name:'+l.name+';num_units:'+str(l.num_units)+';Rstd:'+str(l.Rstd)+';non_linearity:'+sfunc
             elif ('global_average' in l.name):
                 s='name:'+l.name
             elif ('merge' in l.name):

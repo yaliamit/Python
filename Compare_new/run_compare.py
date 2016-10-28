@@ -67,7 +67,7 @@ class eta_params:
                 # Put in the best parameters on training data
                 lasagne.layers.set_all_param_values(network,self.best_params)
                 print('resetting to best params')
-                eta.set_value(eta.get_value()*.9)
+                eta.set_value(eta.get_value()*np.float32(.9))
                 self.bad_count=0
                 val_e=self.best_e
             self.val_e_old=val_e
@@ -133,7 +133,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             pred = lasagne.layers.get_output(network)
         else:
             pred = lasagne.layers.get_output(network, deterministic=True)
-
+        gloss=[]
         if (loss_type=='class'): # Output is a probability vector on classes.
             pred = T.flatten(pred,outdim=2)
             aloss = lasagne.objectives.categorical_crossentropy(pred, target_var)
@@ -141,6 +141,8 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             loss=loss+spe
             acc = T.mean(T.eq(T.argmax(pred, axis=1), target_var),
                           dtype=theano.config.floatX)
+            for p in params:
+                gloss.append(T.grad(loss,p))
             # Instead of randomly dropping inputs drop updates on some subsets of weights.
             # This is a more severe drop because it doesn't update this subset at all in that step.
         else: #Output is two tensors that need to be compared through correlation
@@ -148,16 +150,20 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             loss=T.mean(T.square(pred-target_var))
             acc = T.mean(T.eq(pred>NETPARS['thresh'], target_var),
                       dtype=theano.config.floatX)
+
         eta=None
         if (Train):
             eta = theano.shared(np.array(NETPARS['eta_init'], dtype=theano.config.floatX))
             if ('update' in NETPARS):
                 if (NETPARS['update']=='adam'):
                     print('Using adam to update timestep')
-                    updates=lasagne.updates.adam(loss, params, learning_rate=0.001, beta1=0.9,beta2=0.999,epsilon=1e-08)
+                    updates=lasagne.updates.adam(loss, params, learning_rate=eta, beta1=0.9,beta2=0.999,epsilon=1e-08)
                 elif (NETPARS['update']=='nestorov'):
                     print('Using Nestorov momentum')
                     updates = lasagne.updates.nesterov_momentum(loss, params, learning_rate=eta, momentum=0.9)
+                elif (NETPARS['update']=='sgd'):
+                    updates = lasagne.updates.sgd(loss, params, learning_rate=eta)
+
             else:
                 updates = lasagne.updates.nesterov_momentum(loss, params, learning_rate=eta, momentum=0.9)
         else:
@@ -167,80 +173,12 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
         if ('reg_param' in NETPARS and Train):
             train_fn = theano.function([input_var,target_var], [loss, acc, pred]+spen, updates=updates)
         else:
-            train_fn = theano.function([input_var,target_var], [loss, acc, pred,], updates=updates)
+            train_fn = theano.function([input_var,target_var], [loss, acc, pred]+ gloss, updates=updates)
             #train_fn = theano.function(inp, [loss, acc], updates=updates)
 
 
         return(train_fn,eta)
 
-def setup_function_rand(network,NETPARS,input_var,target_var,Train=True,loss_type='class'):
-
-        params = lasagne.layers.get_all_params(network, trainable=True)
-        _srng = RandomStreams(lasagne.random.get_rng().randint(1, 2147462579))
-
-        #spen=[]
-        spe=theano.shared(0.)
-        print('params',params)
-
-
-        if (Train):
-            pred = lasagne.layers.get_output(network)
-        else:
-            pred = lasagne.layers.get_output(network, deterministic=True)
-
-        if (loss_type=='class'): # Output is a probability vector on classes.
-            pred = T.flatten(pred,outdim=2)
-            aloss = lasagne.objectives.categorical_crossentropy(pred, target_var)
-            loss = aloss.mean()
-            loss=loss+spe
-            acc = T.mean(T.eq(T.argmax(pred, axis=1), target_var),
-                          dtype=theano.config.floatX)
-
-            gloss=[]
-            BS=[]
-            i=0
-            for p in params:
-                if (hasattr(p,'name')):
-                    if('conv' in p.name):
-                        s=T.shape(p)
-                        B=_srng.normal(s,dtype=p.dtype)
-                        BS.append(B)
-                        Dp=T.grad(loss,p)
-                        gloss.append(T.Elemwise(T.mul)(Dp,BS[i]))
-                        i+=1
-                    else:
-                        gloss.append(T.grad(loss,p))
-                else:
-                    gloss.append(T.grad(loss,p))
-            # Instead of randomly dropping inputs drop updates on some subsets of weights.
-            # This is a more severe drop because it doesn't update this subset at all in that step.
-        else: #Output is two tensors that need to be compared through correlation
-            pred=correlation(pred[0,],pred[1,])
-            gloss=T.mean(T.square(pred-target_var))
-            acc = T.mean(T.eq(pred>NETPARS['thresh'], target_var),
-                      dtype=theano.config.floatX)
-        eta=None
-        if (Train):
-            eta = theano.shared(np.array(NETPARS['eta_init'], dtype=theano.config.floatX))
-            if ('update' in NETPARS):
-                if (NETPARS['update']=='adam'):
-                    print('Using adam to update timestep')
-                    updates=lasagne.updates.adam(gloss, params, learning_rate=0.001, beta1=0.9,beta2=0.999,epsilon=1e-08)
-                elif (NETPARS['update']=='nestorov'):
-                    print('Using Nestorov momentum')
-                    updates = lasagne.updates.nesterov_momentum(gloss, params, learning_rate=eta, momentum=0.9)
-            else:
-                updates = lasagne.updates.nesterov_momentum(gloss, params, learning_rate=eta, momentum=0.9)
-        else:
-            updates=None
-        #XX=T.grad(loss,input_var)
-
-
-        train_fn = theano.function([input_var,target_var], [gloss, acc, pred,], updates=updates)
-            #train_fn = theano.function(inp, [loss, acc], updates=updates)
-
-
-        return(train_fn,eta)
 
 def setup_function_seq(network,NETPARS,input_var,target_var,step,Train=True,loss_type='class'):
 
