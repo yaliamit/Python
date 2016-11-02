@@ -6,23 +6,10 @@ import theano.tensor as T
 import theano
 import theano.tensor.basic
 import theano.gradient
-from theano.compat import izip
-from theano.configparser import config
-from theano import gof
-from theano.gof import Apply, Constant, Op, Variable
-
-from theano.tensor import elemwise
-from theano.tensor.var import (AsTensorError, TensorVariable,
-                               TensorConstant,
-                               _tensor_py_operators)
-from theano.tensor.type import TensorType, values_eq_approx_always_true
 from theano.tensor.type_other import NoneConst
 from theano import scalar as scal
-from functools import partial
-from theano import compile, printing
-from theano.printing import pprint, min_informative_str
-# For history
-from theano.compile import Rebroadcast, Shape, shape
+from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
+
 
 
 class NewDotOp(theano.Op):
@@ -46,6 +33,7 @@ class NewDotOp(theano.Op):
 
         # elif len(by) == 1:  # y is vector
         #bz = bx[:-1]
+        self.srng = RandomStreams(seed=234)
 
         i_dtypes = [input.type.dtype for input in inputs]
         outputs = [theano.tensor.basic.tensor(scal.upcast(*i_dtypes), bz)]
@@ -55,6 +43,12 @@ class NewDotOp(theano.Op):
         x, y, R = inp
         u, = out
 
+        # x=T.fscalar()
+        # hello_world_op=printing.Print("Hello World")
+        # printed_x=hello_world_op(x)
+        # f=theano.function([x],printed_x)
+        # #aa=R.eval()
+        # f(R[0,0])
         # the asarray is here because dot between two vectors
         # gives a numpy float object but we need to return a 0d
         # ndarray
@@ -90,9 +84,11 @@ class NewDotOp(theano.Op):
         elif xdim == ydim == 2:
             #xgrad = T.dot(gz, y.T)
             xgrad = T.dot(gz, R.T)
-            ygrad = T.dot(x.T,gz)
-
-        zgrad=T.zeros(T.shape(R))
+            yygrad = T.dot(x.T,gz)
+            u=(self.srng.uniform(yygrad.shape)<.5)
+            ygrad=yygrad*u
+        v=(self.srng.uniform(yygrad.shape)<.5)
+        zgrad=yygrad*v #T.zeros(T.shape(R))
         # If x or y contain broadcastable dimensions but only one of
         # them know that a matching dimensions is broadcastable, the
         # above code don't always return the right broadcast pattern.
@@ -101,7 +97,8 @@ class NewDotOp(theano.Op):
             xgrad = theano.tensor.basic.patternbroadcast(xgrad, x.broadcastable)
         if ygrad.broadcastable != y.broadcastable:
             ygrad = theano.tensor.basic.patternbroadcast(ygrad, y.broadcastable)
-
+        if zgrad.broadcastable != R.broadcastable:
+            zgrad = theano.tensor.basic.patternbroadcast(zgrad, z.broadcastable)
         rval = xgrad, ygrad, zgrad
 
         for elem in rval:

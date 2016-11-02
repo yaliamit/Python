@@ -8,7 +8,7 @@ import cifar
 import scipy.ndimage
 import pylab as py
 import matplotlib.colors as col
-#import amitgroup
+import amitgroup as ag
 
 
 
@@ -255,6 +255,7 @@ def get_train(NETPARS):
         if ('num_val' in NETPARS):
             num_val=NETPARS['num_val']
         X_train, y_train, X_val, y_val, X_test, y_test = cifar.load_dataset(white=False,num_val=num_val)
+
     num_train=NETPARS['num_train']
     if (num_train==0):
         num_train=np.shape(y_train)[0]
@@ -285,8 +286,26 @@ def get_train(NETPARS):
         NETPARS['simple_augmentation']=ll
         X_test=np.concatenate(X_test,axis=0)
         y_test=np.tile(y_test,ll)
+    if ('edges' not in NETPARS or not NETPARS['edges']):
+        pass
+    else:
+        X_train=get_edges(X_train)
+        X_val=get_edges(X_val)
+        X_test=get_edges(X_test)
+
+
     return(X_train, y_train, X_val, y_val, X_test, y_test)
 
+
+def get_edges(X):
+
+    Xe=np.zeros((X.shape[0],24,X.shape[2],X.shape[3]),dtype=np.float32)
+    for i in range(X.shape[1]):
+        XX=np.float64(X[:,i,:,:])
+        Xee=np.float32(ag.features.bedges(XX,minimum_contrast=.05))
+        Xee=Xee.transpose(0,3,1,2)
+        Xe[:,i*8:(i+1)*8,:,:]=Xee
+    return(Xe)
 
 def create_paired_data_set(NETPARS,X,y,num,cls=[],reps=1):
 

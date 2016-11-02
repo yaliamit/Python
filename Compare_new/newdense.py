@@ -7,8 +7,8 @@ from lasagne import nonlinearities
 import newdot
 from lasagne.layers.base import Layer
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
-
-
+from theano import printing
+import theano
 __all__ = [
     "NewDenseLayer",
 ]
@@ -57,7 +57,7 @@ class NewDenseLayer(Layer):
     convolutional layer, for example. It is not necessary to insert a
     :class:`FlattenLayer` in this case.
     """
-    def __init__(self, incoming, num_units, W=init.GlorotUniform(),
+    def __init__(self, incoming, num_units, W=init.GlorotUniform(), R=init.GlorotUniform(),
                  b=init.Constant(0.), Rstd=0, nonlinearity=nonlinearities.rectify,
                  **kwargs):
         super(NewDenseLayer, self).__init__(incoming, **kwargs)
@@ -69,9 +69,14 @@ class NewDenseLayer(Layer):
         num_inputs = int(np.prod(self.input_shape[1:]))
 
         self.W = self.add_param(W, (num_inputs, num_units), name="W")
+        self.R = self.add_param(R, (num_inputs, num_units), name="R")#, trainable=False)
         #self.R = T.zeros((num_inputs, num_units))
-        self.Rstd=Rstd
-        self.R = self._srng.normal((num_inputs, num_units),0.,self.Rstd)
+        #self.Rstd=Rstd
+        #self.R = self._srng.uniform((num_inputs, num_units),-self.Rstd,self.Rstd)
+        #print('Creating random matrix for delta computation')
+        #self.R = np.float32(np.random.uniform(-self.Rstd,self.Rstd, (num_inputs, num_units)))
+        #self.R = np.float32(self.Rstd*np.ones((num_inputs, num_units)))
+
         if b is None:
             self.b = None
         else:
@@ -86,7 +91,6 @@ class NewDenseLayer(Layer):
             # if the input has more than two dimensions, flatten it into a
             # batch of feature vectors.
             input = input.flatten(2)
-
         activation = newdot.newdot(input, self.W,self.R)
         if self.b is not None:
             activation = activation + self.b.dimshuffle('x', 0)

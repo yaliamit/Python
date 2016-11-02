@@ -9,6 +9,47 @@ import make_net
 import data
 from theano.tensor.shared_randomstreams import RandomStreams
 
+def multiclass_hinge_loss_alt(predictions, targets, delta=1):
+    """Computes the multi-class hinge loss between predictions and targets.
+
+    .. math:: L_i = max(1-o_t,0) + \sum_{j \ne t} max(1+o_j) / (num_class-1)
+
+    Depression is slower than potentiation.
+
+    Parameters
+    ----------
+    predictions : Theano 2D tensor
+        Predictions in (0, 1), such as softmax output of a neural network,
+        with data points in rows and class probabilities in columns.
+    targets : Theano 2D tensor or 1D tensor
+        Either a vector of int giving the correct class index per data point
+        or a 2D tensor of one-hot encoding of the correct class in the same
+        layout as predictions (non-binary targets in [0, 1] do not work!)
+    delta : scalar, default 1
+        The hinge loss margin
+
+    Returns
+    -------
+    Theano 1D tensor
+        An expression for the item-wise multi-class hinge loss
+
+    Notes
+    -----
+    This is an alternative to the categorical cross-entropy loss for
+    multi-class classification problems
+    """
+    num_cls = predictions.shape[1]
+    if targets.ndim == predictions.ndim - 1:
+        targets = theano.tensor.extra_ops.to_one_hot(targets, num_cls)
+    elif targets.ndim != predictions.ndim:
+        raise TypeError('rank mismatch between targets and predictions')
+    corrects = predictions[targets.nonzero()]
+    rest = theano.tensor.reshape(predictions[(1-targets).nonzero()],
+                                 (-1, num_cls-1))
+    relc=theano.tensor.nnet.relu(delta-corrects)
+    relr=theano.tensor.nnet.relu(delta+rest)/(num_cls-1)
+    loss=theano.tensor.sum(relr,axis=1)+relc
+    return loss
 
 
 
@@ -117,18 +158,25 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
         spen=[]
         spe=theano.shared(0.)
         print('params',params)
-        if ('reg_param' in NETPARS and NETPARS['reg_param']>0):
-            reg_p = NETPARS['reg_param'] #theano.shared(np.array(NETPARS['reg_param'], dtype=theano.config.floatX))
+        if ('reg_param_features' in NETPARS and NETPARS['reg_param_features']>0):
+            reg_p = NETPARS['reg_param_features'] #theano.shared(np.array(NETPARS['reg_param'], dtype=theano.config.floatX))
             layers=lasagne.layers.get_all_layers(network)
             for l in layers:
-                if ('pool' in l.name):
-                    if (l.name is not None and NETPARS['sparse_layer'] in l.name):
+                if (l.name is not None):
+                    if ('pool' in l.name):
+                      if (NETPARS['sparse_layer'] in l.name):
                         out=lasagne.layers.get_output(l)
                         spe+=T.mean(out)
                         nonz=T.mean(T.lt(out,.0001))
                         spen.append(nonz)
             spe=reg_p*spe
             spen.append(spe)
+        elif ('reg_param_weights' in NETPARS and NETPARS['reg_param_weights']>0):
+            reg_p = NETPARS['reg_param_weights']
+            for p in params:
+                if ('dens' in p.name):
+                    spe=T.sum(T.exp(p*reg_p))
+
         if (Train):
             pred = lasagne.layers.get_output(network)
         else:
@@ -136,7 +184,11 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
         gloss=[]
         if (loss_type=='class'): # Output is a probability vector on classes.
             pred = T.flatten(pred,outdim=2)
-            aloss = lasagne.objectives.categorical_crossentropy(pred, target_var)
+            if ('hinge' not in NETPARS or not NETPARS['hinge']):
+                aloss = lasagne.objectives.categorical_crossentropy(pred, target_var)
+            else:
+                aloss = multiclass_hinge_loss_alt(pred,target_var)
+
             loss = aloss.mean()
             loss=loss+spe
             acc = T.mean(T.eq(T.argmax(pred, axis=1), target_var),

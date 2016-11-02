@@ -52,6 +52,8 @@ def process_network_line(line,global_drop):
                             lp['non_linearity']=lasagne.nonlinearities.rectify
                         elif ('sigmoid' in s1):
                             lp['non_linearity']=lasagne.nonlinearities.sigmoid
+                        elif ('tanh' in s1):
+                            lp['non_linearity']=lasagne.nonlinearities.tanh
                         elif ('softmax' in s1):
                             lp['non_linearity']=lasagne.nonlinearities.softmax
                         else:
@@ -127,6 +129,12 @@ def parse_text_file(net_name,NETPARS,lname='layers', dump=False):
                     [s,p]=process_param_line(line)
                     NETPARS[s]=p
             f.close()
+        # Check if NETPARS is using hinge loss use sigmoid non-linearity on final dense layer
+        # Otherwise use softmax
+        if ('hinge' not in NETPARS or not NETPARS['hinge']):
+            LAYERS[-1]['non_linearity']=lasagne.nonlinearities.softmax
+        else:
+            LAYERS[-1]['non_linearity']=lasagne.nonlinearities.sigmoid
         if (len(LAYERS)):
             NETPARS[lname]=LAYERS
 

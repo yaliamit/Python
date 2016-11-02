@@ -224,7 +224,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                     gain=l['gain']
                 for lay in input_la:
                     if (len(layer_list)==0):
-                        layer_list.append(lasagne.layers.DenseLayer(lay,name=l['name'],num_units=l['num_units'],W=lasagne.init.GlorotUniform(gain=gain), nonlinearity=l['non_linearity']))
+                        layer_list.append(lasagne.layers.DenseLayer(lay,name=l['name'],num_units=l['num_units'],W=lasagne.init.GlorotUniform(gain=gain), b=None, nonlinearity=l['non_linearity']))
                     else:
                         layer_list.append(lasagne.layers.DenseLayer(lay,num_units=l['num_units'],nonlinearity=l['non_linearity'],
                                           W=layer_list[0].W, b=layer_list[0].b))
@@ -232,7 +232,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                  for lay in input_la:
                     if (len(layer_list)==0):
                         layer_list.append(newdense.NewDenseLayer(lay,name=l['name'],num_units=l['num_units'],
-                                                                    W=lasagne.init.GlorotUniform(), Rstd=l['Rstd'], nonlinearity=l['non_linearity']))
+                                                                    W=lasagne.init.GlorotUniform(), b=None,  Rstd=l['Rstd'], nonlinearity=l['non_linearity']))
                     else:
                         layer_list.append(lasagne.layers.DenseLayer(lay,num_units=l['num_units'],nonlinearity=l['non_linearity'],
                                           W=layer_list[0].W, b=layer_list[0].b))
@@ -292,7 +292,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
             for n in PARS['NOT_TRAINABLE']:
                     for l in layers:
                         if l.name==n:
-                            if ('conv' in n):
+                            if ('conv' in n or 'dens' in n):
                               l.params[l.W].remove('trainable')
                               l.params[l.b].remove('trainable')
                             elif ('batch' in n):
@@ -412,7 +412,7 @@ def make_file_from_params(network,NETPARS):
                 s='name:'+l.name+';num_units:'+str(l.num_units)+';non_linearity:'+sfunc
             elif ('newdens' in l.name):
                 sfunc='lasagne.nonlinearity.'+l.nonlinearity.func_name
-                s='name:'+l.name+';num_units:'+str(l.num_units)+';Rstd:'+str(l.Rstd)+';non_linearity:'+sfunc
+                s='name:'+l.name+';num_units:'+str(l.num_units)+';non_linearity:'+sfunc
             elif ('global_average' in l.name):
                 s='name:'+l.name
             elif ('merge' in l.name):
