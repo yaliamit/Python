@@ -2,13 +2,13 @@ from __future__ import print_function
 
 import numpy as np
 import lasagne
-import theano.typed_list
 import theano.tensor as T
 import parse_net_pars
 import os
 import newdense
 import lasagne.init
 import lasagne.utils
+import Conv2dLayerR
 
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
 
@@ -175,13 +175,22 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                     if 'non_linearity' in l:
                          nonlin=l['non_linearity']
                     if (len(layer_list)==0):
-                        convp=lasagne.layers.Conv2DLayer(lay, num_filters=l['num_filters'], filter_size=filter_size,
+                        if ('R' not in l['name']):
+                            convp=lasagne.layers.Conv2DLayer(lay, num_filters=l['num_filters'], filter_size=filter_size,
                                 nonlinearity=nonlin,
                                 W=lasagne.init.GlorotUniform(),name=l['name'])
+                        else:
+                            convp=Conv2dLayerR.Conv2DLayerR(lay, num_filters=l['num_filters'], filter_size=filter_size,
+                                nonlinearity=nonlin,name=l['name'], b=None)
                     else:
-                        convp=lasagne.layers.Conv2DLayer(
-                            lay,  num_filters=l['num_filters'], filter_size=filter_size,
-                            nonlinearity=nonlin,W=layer_list[0].W, b=layer_list[0].b)
+                        if ('R' not in l['name']):
+                             convp=lasagne.layers.Conv2DLayer(
+                                lay,  num_filters=l['num_filters'], filter_size=filter_size,
+                                nonlinearity=nonlin,W=layer_list[0].W, b=layer_list[0].b)
+                        else:
+                            convp=Conv2dLayerR(
+                                lay,  num_filters=l['num_filters'], filter_size=filter_size,
+                                nonlinearity=nonlin,W=layer_list[0].W, b=layer_list[0].b)
                     convp=extra_pars(convp,l)
                     layer_list.append(convp)
         elif 'batch' in l['name']:
