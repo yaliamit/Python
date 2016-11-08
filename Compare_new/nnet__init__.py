@@ -32,6 +32,8 @@ import warnings
 from .abstract_conv import conv2dR as abstract_conv2dR
 from .abstract_conv import conv2d as abstract_conv2d
 
+#from Compare_new.abstract_conv import conv2dR as abstract_conv2dR
+# from .abstract_conv import conv2d as abstract_conv2d
 
 def conv2dR(input,
            filters, Rfilters,
