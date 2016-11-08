@@ -149,9 +149,9 @@ def main_new(NETPARS):
     eta_p=run_compare.eta_params(network)
     if (NETPARS['train'] and NETPARS['num_epochs']>0):
         print("Starting training...","Training set size:",X_train.shape[0])
-        mod_eta=False
-        if NETPARS['update']!='adam':
-            mod_eta=True
+        mod_eta=True
+        #if NETPARS['update']!='adam':
+        #    mod_eta=True
         for epoch in range(NETPARS['num_epochs']):
             # In each epoch, do a full pass over the training data:
             start_time = time.time()

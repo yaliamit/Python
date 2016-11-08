@@ -9,35 +9,11 @@ import make_net
 import data
 from theano.tensor.shared_randomstreams import RandomStreams
 
+
+
+
 def multiclass_hinge_loss_alt(predictions, targets, delta=1):
-    """Computes the multi-class hinge loss between predictions and targets.
 
-    .. math:: L_i = max(1-o_t,0) + \sum_{j \ne t} max(1+o_j) / (num_class-1)
-
-    Depression is slower than potentiation.
-
-    Parameters
-    ----------
-    predictions : Theano 2D tensor
-        Predictions in (0, 1), such as softmax output of a neural network,
-        with data points in rows and class probabilities in columns.
-    targets : Theano 2D tensor or 1D tensor
-        Either a vector of int giving the correct class index per data point
-        or a 2D tensor of one-hot encoding of the correct class in the same
-        layout as predictions (non-binary targets in [0, 1] do not work!)
-    delta : scalar, default 1
-        The hinge loss margin
-
-    Returns
-    -------
-    Theano 1D tensor
-        An expression for the item-wise multi-class hinge loss
-
-    Notes
-    -----
-    This is an alternative to the categorical cross-entropy loss for
-    multi-class classification problems
-    """
     num_cls = predictions.shape[1]
     if targets.ndim == predictions.ndim - 1:
         targets = theano.tensor.extra_ops.to_one_hot(targets, num_cls)

@@ -13,18 +13,13 @@ try:
 except ImportError:
     imported_scipy_signal = False
 
-from ConvOpR import conv2dR
+
 
 
 
 __all__ = [
     "Conv2DLayerR",
 ]
-
-
-
-
-
 
 
 class BaseConvLayerR(Layer):
@@ -147,7 +142,7 @@ class Conv2DLayerR(BaseConvLayerR):
                  R=init.GlorotUniform(),
                  b=init.Constant(0.),
                  nonlinearity=nonlinearities.rectify, flip_filters=True,
-                 convolution=conv2dR, **kwargs):
+                 convolution=T.nnet.conv2dR, **kwargs):
         super(Conv2DLayerR, self).__init__(incoming, num_filters, filter_size,
                                           stride, pad, untie_biases, W,
                                            R,

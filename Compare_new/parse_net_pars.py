@@ -4,6 +4,7 @@ from __future__ import print_function
 import lasagne
 import pickle
 import os
+import make_net
 
 
 def process_param_line(line):
@@ -50,6 +51,8 @@ def process_network_line(line,global_drop):
                 if ('lasagne' in s1):
                         if ('rectify' in s1):
                             lp['non_linearity']=lasagne.nonlinearities.rectify
+                        if ('rect_sym' in s1):
+                            lp['non_linearity']=make_net.rect_sym
                         elif ('sigmoid' in s1):
                             lp['non_linearity']=lasagne.nonlinearities.sigmoid
                         elif ('tanh' in s1):
@@ -134,7 +137,10 @@ def parse_text_file(net_name,NETPARS,lname='layers', dump=False):
         if ('hinge' not in NETPARS or not NETPARS['hinge']):
             LAYERS[-1]['non_linearity']=lasagne.nonlinearities.softmax
         else:
-            LAYERS[-1]['non_linearity']=lasagne.nonlinearities.sigmoid
+            if NETPARS['hinge'] == 'rect':
+                LAYERS[-1]['non_linearity']=make_net.rect_sym
+            else:
+                LAYERS[-1]['non_linearity']=lasagne.nonlinearities.sigmoid
         if (len(LAYERS)):
             NETPARS[lname]=LAYERS
 

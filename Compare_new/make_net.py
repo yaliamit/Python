@@ -9,8 +9,25 @@ import newdense
 import lasagne.init
 import lasagne.utils
 import Conv2dLayerR
+import theano.tensor.nnet
 
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
+
+def rect_sym(x):
+    """Rectify activation function :math:`\\varphi(x) = \\max(0, x)`
+    Parameters
+    ----------
+    x : float32
+        The activation (the summed, weighted input of a neuron).
+    Returns
+    -------
+    float32
+        The output of the rectify function applied to the activation.
+    """
+    y=theano.tensor.nnet.relu(x+1)-1
+    z=-theano.tensor.nnet.relu(-y+1)+1
+    return z
+
 
 class Trunc_Normal(lasagne.init.Initializer):
     """Sample initial weights from the Gaussian distribution.
@@ -241,7 +258,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                  for lay in input_la:
                     if (len(layer_list)==0):
                         layer_list.append(newdense.NewDenseLayer(lay,name=l['name'],num_units=l['num_units'],
-                                                                    W=lasagne.init.GlorotUniform(), b=None,  Rstd=l['Rstd'], nonlinearity=l['non_linearity']))
+                                                                    W=lasagne.init.GlorotUniform(), b=None, nonlinearity=l['non_linearity']))
                     else:
                         layer_list.append(lasagne.layers.DenseLayer(lay,num_units=l['num_units'],nonlinearity=l['non_linearity'],
                                           W=layer_list[0].W, b=layer_list[0].b))

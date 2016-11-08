@@ -1,7 +1,6 @@
 __author__ = 'amit'
 
 import numpy
-import theano
 import theano.tensor as T
 import theano
 import theano.tensor.basic
@@ -88,7 +87,8 @@ class NewDotOp(theano.Op):
             u=(self.srng.uniform(yygrad.shape)<.5)
             ygrad=yygrad*u
         v=(self.srng.uniform(yygrad.shape)<.5)
-        zgrad=yygrad*v #T.zeros(T.shape(R))
+        zgrad=yygrad*v
+        #zgrad=T.zeros(T.shape(R))
         # If x or y contain broadcastable dimensions but only one of
         # them know that a matching dimensions is broadcastable, the
         # above code don't always return the right broadcast pattern.
@@ -98,7 +98,7 @@ class NewDotOp(theano.Op):
         if ygrad.broadcastable != y.broadcastable:
             ygrad = theano.tensor.basic.patternbroadcast(ygrad, y.broadcastable)
         if zgrad.broadcastable != R.broadcastable:
-            zgrad = theano.tensor.basic.patternbroadcast(zgrad, z.broadcastable)
+            zgrad = theano.tensor.basic.patternbroadcast(zgrad, R.broadcastable)
         rval = xgrad, ygrad, zgrad
 
         for elem in rval:
