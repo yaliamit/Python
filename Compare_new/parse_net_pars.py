@@ -108,7 +108,7 @@ def parse_text_file(net_name,NETPARS,lname='layers', dump=False):
             f=open(net_name+'.txt','r')
             for line in f:
                 if (dump):
-                    print(line,end="")
+                     print(line,end="")
                 line=str.strip(line,' ')
                 ll=str.split(line,'#')
                 if (len(ll)>1):
@@ -131,6 +131,7 @@ def parse_text_file(net_name,NETPARS,lname='layers', dump=False):
                 else:
                     [s,p]=process_param_line(line)
                     NETPARS[s]=p
+
             f.close()
         # Check if NETPARS is using hinge loss use sigmoid non-linearity on final dense layer
         # Otherwise use softmax
