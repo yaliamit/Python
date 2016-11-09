@@ -14,6 +14,15 @@ import data
 import sys
 import scipy.stats
 
+def get_confusion_matrix(pred,y):
+        num_class=np.max(y)+1
+        conf_mat=np.zeros((num_class,num_class))
+        for c in range(num_class):
+            predy=pred[y==c,:]
+            am_predy=np.argmax(predy, axis=1)
+            u, counts=np.unique(am_predy, return_counts=True)
+            conf_mat[c,u]=counts
+        return(conf_mat)
 def iterate_minibatches_new(inputs, targets, batchsize, shuffle=False):
     if (type(inputs) is not list):
         assert len(inputs) == len(targets)
@@ -187,6 +196,11 @@ def main_new(NETPARS):
     if (type(NETPARS['simple_augmentation']) is int):
          fac=NETPARS['simple_augmentation']
     out_test=iterate_on_batches(val_fn,X_test,y_test,batch_size,typ='Test',agg=True,fac=fac)
+
+
+
+    conf_mat=get_confusion_matrix(out_test[2],y_test)
+    print(conf_mat)
     if (fac==0):
         fac=1
     out_test=out_test+(y_test[0:len(y_test)/fac],)
