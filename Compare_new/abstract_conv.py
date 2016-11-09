@@ -853,6 +853,7 @@ class AbstractConv2d(BaseAbstractConv2d):
 
             bottom, top, weights.shape[-2:])
 
+
         if (R.type.ndim == 4):
             v=(self.srng.uniform(R.shape)<0.5)
             d_R=d_weights*v
