@@ -135,6 +135,16 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
         input_la=input_layer
     for l in PARS['layers']:
         upd=True
+        gain=1.
+        if ('gain' in l):
+            gain=l['gain']
+        prob=np.array((.5,.5))
+        if ('prob' in l):
+            prob=np.array(l['prob'])
+        if ('global_prob' in PARS):
+            prob=np.array(PARS['global_prob'])
+        prob=np.float32(prob)
+        #prob.shape=(1,2)
         if ('parent' in l):
             ip=l['parent']
             if (type(ip)==list):
@@ -185,9 +195,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                         filter_size=PARS['dense_filter_size']
                 else:
                     filter_size=l['filter_size']
-                gain=1.
-                if ('gain' in l):
-                    gain=l['gain']
+
                 for lay in input_la:
 
                     nonlin=lasagne.nonlinearities.identity
@@ -200,7 +208,8 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                                 W=lasagne.init.GlorotUniform(),name=l['name'])
                         else:
                             convp=Conv2dLayerR.Conv2DLayerR(lay, num_filters=l['num_filters'], filter_size=filter_size,
-                                nonlinearity=nonlin,W=lasagne.init.GlorotUniform(gain=gain),R=lasagne.init.GlorotUniform(gain=gain),name=l['name'], b=None)
+                                nonlinearity=nonlin,W=lasagne.init.GlorotUniform(gain=gain),
+                                R=lasagne.init.GlorotUniform(gain=gain),prob=prob,name=l['name'], b=None)
                     else:
                         if ('R' not in l['name']):
                              convp=lasagne.layers.Conv2DLayer(
@@ -265,7 +274,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                         layer_list.append(newdense.NewDenseLayer(lay,name=l['name'],num_units=l['num_units'],
                                                                     W=lasagne.init.GlorotUniform(gain=gain),
                                                                     R=lasagne.init.GlorotUniform(gain=gain),
-                                                                    b=None, nonlinearity=l['non_linearity']))
+                                                                    b=None, prob=prob,nonlinearity=l['non_linearity']))
                     else:
                         layer_list.append(lasagne.layers.DenseLayer(lay,num_units=l['num_units'],nonlinearity=l['non_linearity'],
                                           W=layer_list[0].W, b=layer_list[0].b))
@@ -421,6 +430,8 @@ def make_file_from_params(network,NETPARS):
                 sfunc='lasagne.nonlinearity.'+l.nonlinearity.func_name
                 s='name:'+l.name+';num_filters:'+str(l.num_filters)+';pad:'+str(l.pad)+';filter_size:'\
                   +str(l.filter_size)+';stride:'+str(l.stride)+';non_linearity:'+sfunc
+                if (hasattr(l,'prob')):
+                    s=s+';prob:'+str(l.prob)
             elif ('noise' in l.name):
                 p=l.p
                 s=None
@@ -440,12 +451,11 @@ def make_file_from_params(network,NETPARS):
                     s='name:'+l.name+';pool_size:'+str(l.pool_size)+';stride:'+str(l.stride)+';pad:'+str(l.pad)+';mode:'+str(l.mode)
                 else:
                     s='name:'+l.name+';pool_size:'+str(l.pool_size)+';stride:'+str(l.stride)+';pad:'+str(l.pad)
-            elif ('dense' in l.name):
+            elif ('dens' in l.name):
                 sfunc='lasagne.nonlinearity.'+l.nonlinearity.func_name
                 s='name:'+l.name+';num_units:'+str(l.num_units)+';non_linearity:'+sfunc
-            elif ('newdens' in l.name):
-                sfunc='lasagne.nonlinearity.'+l.nonlinearity.func_name
-                s='name:'+l.name+';num_units:'+str(l.num_units)+';non_linearity:'+sfunc
+                if (hasattr(l,'prob')):
+                    s=s+';prob:'+str(l.prob)
             elif ('global_average' in l.name):
                 s='name:'+l.name
             elif ('merge' in l.name):

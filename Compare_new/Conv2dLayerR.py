@@ -5,6 +5,7 @@ from lasagne.utils import as_tuple
 from lasagne.layers.conv import conv_output_length
 from lasagne.layers.base import Layer
 import theano.tensor as T
+import numpy as np
 
 try:
     from scipy.signal.signaltools import _valfrommode, _bvalfromboundary
@@ -31,7 +32,7 @@ class BaseConvLayerR(Layer):
                  W=init.GlorotUniform(),
                  R=init.GlorotUniform(),
                  b=init.Constant(0.),
-                 prob=init.Constant(.5),
+                 prob=np.array((.5,.5)),
                  nonlinearity=nonlinearities.rectify, flip_filters=True,
                  n=None, **kwargs):
         super(BaseConvLayerR, self).__init__(incoming, **kwargs)
@@ -68,7 +69,7 @@ class BaseConvLayerR(Layer):
 
         self.W = self.add_param(W, self.get_W_shape(), name="W")
         self.R = self.add_param(R, self.get_W_shape(), name="R")
-        self.prob=self.add_param(prob, (1,1), name="prob",trainable=False)
+        self.prob=prob
         if b is None:
             self.b = None
         else:
@@ -141,7 +142,7 @@ class Conv2DLayerR(BaseConvLayerR):
                  pad=0, untie_biases=False,
                  W=init.GlorotUniform(),
                  R=init.GlorotUniform(),
-                 b=init.Constant(0.), prob=init.Constant(.5),
+                 b=init.Constant(0.), prob=np.array((.5,.5)),
                  nonlinearity=nonlinearities.rectify, flip_filters=True,
                  convolution=T.nnet.conv2dR, **kwargs):
         super(Conv2DLayerR, self).__init__(incoming, num_filters, filter_size,

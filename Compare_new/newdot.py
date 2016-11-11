@@ -17,26 +17,23 @@ class NewDotOp(theano.Op):
 
     def make_node(self, *inputs):
         inputs = list(map(theano.tensor.basic.as_tensor_variable, inputs))
-        if len(inputs) != 3:
+        if len(inputs) != 4:
             raise TypeError(
-                'AffineOP: 3 arguments required, %d given ' %
+                'AffineOP: 4 arguments required, %d given ' %
                 len(inputs))
 
         i_broadcastables = [input.type.broadcastable for input in inputs]
-        bx, by, br = i_broadcastables
+        bx, by, br, bp = i_broadcastables
         if len(by) == 2:  # y is a matrix
             bz = bx[:-1] + by[-1:]
         elif len(by) == 1:  # y is vector
             bz = bx[:-1]
-        # if len(by) == 2:  # y is a matrix
 
-        # elif len(by) == 1:  # y is vector
-        #bz = bx[:-1]
         self.srng = RandomStreams(seed=234)
-
-        i_dtypes = [input.type.dtype for input in inputs]
+        self.prob=inputs[3]
+        i_dtypes = [input.type.dtype for input in inputs[0:3]]
         outputs = [theano.tensor.basic.tensor(scal.upcast(*i_dtypes), bz)]
-        return theano.Apply(self, inputs, outputs)
+        return theano.Apply(self, inputs[0:3], outputs)
 
     def perform(self, node, inp, out):
         x, y, R = inp
@@ -84,10 +81,13 @@ class NewDotOp(theano.Op):
             #xgrad = T.dot(gz, y.T)
             xgrad = T.dot(gz, R.T)
             yygrad = T.dot(x.T,gz)
-            u=(self.srng.uniform(yygrad.shape)<.5)
+            u=(self.srng.uniform(yygrad.shape)<self.prob.data[0])
             ygrad=yygrad*u
-        v=(self.srng.uniform(yygrad.shape)<.5)
+        v=(self.srng.uniform(yygrad.shape)<self.prob.data[1])
         zgrad=yygrad*v
+
+        #d_prob=theano.gradient.grad_undefined(self,3,prob)
+
         #zgrad=T.zeros(T.shape(R))
         # If x or y contain broadcastable dimensions but only one of
         # them know that a matching dimensions is broadcastable, the
@@ -99,12 +99,12 @@ class NewDotOp(theano.Op):
             ygrad = theano.tensor.basic.patternbroadcast(ygrad, y.broadcastable)
         if zgrad.broadcastable != R.broadcastable:
             zgrad = theano.tensor.basic.patternbroadcast(zgrad, R.broadcastable)
-        rval = xgrad, ygrad, zgrad
+        #rval = xgrad, ygrad, zgrad, d_prob
 
-        for elem in rval:
-            assert elem.dtype.find('float') != -1
-
-        return rval
+        #for elem in rval:
+         #   assert elem.dtype.find('float') != -1
+        #rval=rval+(zgrad,)
+        return xgrad, ygrad, zgrad
 
 
 newdot = NewDotOp()

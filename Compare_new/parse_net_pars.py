@@ -27,14 +27,22 @@ def process_param_line(line):
                 elif (s1=='False'):
                     a=False
                 else:
-                    s11=s1.split(',')
-                    if (len(s11)==1):
-                        a=s1
+                    if '(' in s1:
+                            aa=str.split(str.strip(s1,' ()\n'),',')
+                            a=[]
+                            for aaa in aa:
+                                a.append(float(aaa))
+                            a=tuple(a)
                     else:
-                        a=[]
-                        for ss in s11:
-                            if (ss != ''):
-                                a.append(ss)
+                        s11=s1.split(',')
+                        if (len(s11)==1):
+                            a=s1
+                        else:
+                            a=[]
+                            for ss in s11:
+                                if (ss != ''):
+                                    a.append(ss)
+
 
             return(s[0],a)
 

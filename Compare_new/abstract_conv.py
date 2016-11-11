@@ -130,7 +130,7 @@ def conv2d(input,
     filters = as_tensor_variable(filters)
     R=theano.tensor.zeros((2,2))
     R = as_tensor_variable(R)
-    prob=theano.tensor.zeros((2,2))
+    prob=theano.tensor.zeros((1,2))
     prob=as_tensor_variable(prob)
 
     conv_op = AbstractConv2d(imshp=input_shape,
@@ -779,6 +779,7 @@ class AbstractConv2d(BaseAbstractConv2d):
                                broadcastable=kern.broadcastable)
         kern = ktype.filter_variable(kern)
         self.srng=theano.tensor.shared_randomstreams.RandomStreams(None)
+        prob=as_tensor_variable(prob)
         # rtype = img.type.clone(dtype=R.type, broadcastable=R.broadcastable)
         # R = R.filter_variable(R)
         if img.type.ndim != 4:
@@ -858,13 +859,14 @@ class AbstractConv2d(BaseAbstractConv2d):
 
 
         if (R.type.ndim == 4):
-            v=(self.srng.uniform(R.shape)<prob)
+            v=(self.srng.uniform(R.shape)<prob.data[1])
             d_R=d_weights*v
-            u=(self.srng.uniform(R.shape)<prob)
+            u=(self.srng.uniform(R.shape)<prob.data[0])
             d_weights=d_weights*u
         else:
             d_R=theano.gradient.grad_undefined(self,2,R)
-        d_prob=theano.gradient.grad_undefined(self,3,prob)#theano.tensor.zeros(theano.tensor.shape(R)) #d_weights
+        d_prob=theano.gradient.grad_undefined(self,3,prob)
+        #theano.tensor.zeros(theano.tensor.shape(R)) #d_weights
         # Make sure that the broadcastable pattern of the inputs is used
         # for the gradients, even if the grad opts are not able to infer
         # that the dimensions are broadcastable.
