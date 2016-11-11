@@ -16,7 +16,7 @@ seed:45239
 #reg_param_weights:10.
 Mnist:True
 #global_drop:0.5
-name:input1
+name:input1 #bla
 #name:drop1;drop:.5;parent:input1
 #name:batch;parent:input1
 name:conv1R;num_filters:8;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:input1
