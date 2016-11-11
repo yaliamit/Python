@@ -185,9 +185,11 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                         filter_size=PARS['dense_filter_size']
                 else:
                     filter_size=l['filter_size']
-
+                gain=1.
+                if ('gain' in l):
+                    gain=l['gain']
                 for lay in input_la:
-                    glorot_fac=1.#/len(input_la)
+
                     nonlin=lasagne.nonlinearities.identity
                     if 'non_linearity' in l:
                          nonlin=l['non_linearity']
@@ -198,7 +200,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                                 W=lasagne.init.GlorotUniform(),name=l['name'])
                         else:
                             convp=Conv2dLayerR.Conv2DLayerR(lay, num_filters=l['num_filters'], filter_size=filter_size,
-                                nonlinearity=nonlin,name=l['name'], b=None)
+                                nonlinearity=nonlin,W=lasagne.init.GlorotUniform(gain=gain),R=lasagne.init.GlorotUniform(gain=gain),name=l['name'], b=None)
                     else:
                         if ('R' not in l['name']):
                              convp=lasagne.layers.Conv2DLayer(
@@ -255,10 +257,15 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                         layer_list.append(lasagne.layers.DenseLayer(lay,num_units=l['num_units'],nonlinearity=l['non_linearity'],
                                           W=layer_list[0].W, b=layer_list[0].b))
         elif 'newdens' in l['name']:
-                 for lay in input_la:
+                gain=1.
+                if ('gain' in l):
+                    gain=l['gain']
+                for lay in input_la:
                     if (len(layer_list)==0):
                         layer_list.append(newdense.NewDenseLayer(lay,name=l['name'],num_units=l['num_units'],
-                                                                    W=lasagne.init.GlorotUniform(), b=None, nonlinearity=l['non_linearity']))
+                                                                    W=lasagne.init.GlorotUniform(gain=gain),
+                                                                    R=lasagne.init.GlorotUniform(gain=gain),
+                                                                    b=None, nonlinearity=l['non_linearity']))
                     else:
                         layer_list.append(lasagne.layers.DenseLayer(lay,num_units=l['num_units'],nonlinearity=l['non_linearity'],
                                           W=layer_list[0].W, b=layer_list[0].b))
