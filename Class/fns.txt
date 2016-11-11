@@ -1,0 +1,21 @@
+num_train:50000
+simple_augmentation:True
+#NOT_TRAINABLE:dense1,
+agg:True
+edges:False
+hinge:True
+mod_net:None
+adapt_eta:False
+update:adam
+batch_size:100
+eta_init:.001
+train:False
+num_epochs:300
+net:igor2
+seed:45239
+Mnist:True
+name:input1
+name:convR1;filter_size:(3,3);num_filters:8;non_linearity:lasagne.rect_sym;parent:input1;pad:(1,1);stride:(1,1)
+#name:pool1;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:convR1
+name:newdens1;num_units:200;Rstd:.1;non_linearity:lasagne.rect_sym;gain:1.;parent:convR1
+name:newdens4;num_units:10;Rstd:.1;gain:1.;non_linearity:lasagne.rect_sym;parent:newdens1;final:final
