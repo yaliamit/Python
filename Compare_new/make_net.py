@@ -261,9 +261,6 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                     name=l['name']
                 layer_list.append(lasagne.layers.NonlinearityLayer(lay,nonlinearity=l['non_linearity'],name=name))
         elif 'dense' in l['name']:
-                gain=1
-                if ('gain' in l):
-                    gain=l['gain']
                 for lay in input_la:
                     if (len(layer_list)==0):
                         layer_list.append(lasagne.layers.DenseLayer(lay,name=l['name'],num_units=l['num_units'],W=lasagne.init.GlorotUniform(gain=gain), b=None, nonlinearity=l['non_linearity']))
@@ -271,9 +268,6 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                         layer_list.append(lasagne.layers.DenseLayer(lay,num_units=l['num_units'],nonlinearity=l['non_linearity'],
                                           W=layer_list[0].W, b=layer_list[0].b))
         elif 'newdens' in l['name']:
-                gain=1.
-                if ('gain' in l):
-                    gain=l['gain']
                 for lay in input_la:
                     if (len(layer_list)==0):
                         layer_list.append(newdense.NewDenseLayer(lay,name=l['name'],num_units=l['num_units'],

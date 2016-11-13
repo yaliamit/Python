@@ -17,22 +17,20 @@ class NewDotOp(theano.Op):
 
     def make_node(self, *inputs):
         inputs = list(map(theano.tensor.basic.as_tensor_variable, inputs))
-        # if len(inputs) != 3:
-        #     raise TypeError(
-        #         'AffineOP: 4 arguments required, %d given ' %
-        #         len(inputs))
+        if len(inputs) != 4:
+            raise TypeError(
+                'AffineOP: 4 arguments required, %d given ' %
+                len(inputs))
 
         i_broadcastables = [input.type.broadcastable for input in inputs]
-        #bx, by, br, bp = i_broadcastables
-        bx, by, br = i_broadcastables
-
+        bx, by, br, bp = i_broadcastables
         if len(by) == 2:  # y is a matrix
             bz = bx[:-1] + by[-1:]
         elif len(by) == 1:  # y is vector
             bz = bx[:-1]
 
         self.srng = RandomStreams(seed=234)
-        #self.prob=inputs[3]
+        self.prob=inputs[3]
         i_dtypes = [input.type.dtype for input in inputs[0:3]]
         outputs = [theano.tensor.basic.tensor(scal.upcast(*i_dtypes), bz)]
         return theano.Apply(self, inputs[0:3], outputs)
@@ -83,9 +81,9 @@ class NewDotOp(theano.Op):
             #xgrad = T.dot(gz, y.T)
             xgrad = T.dot(gz, R.T)
             yygrad = T.dot(x.T,gz)
-            u=(self.srng.uniform(yygrad.shape)<.5) #self.prob.data[0])
+            u=(self.srng.uniform(yygrad.shape)<self.prob.data[0])
             ygrad=yygrad*u
-        v=(self.srng.uniform(yygrad.shape)<.5) #self.prob.data[1])
+        v=(self.srng.uniform(yygrad.shape)<self.prob.data[1])
         zgrad=yygrad*v
 
         #d_prob=theano.gradient.grad_undefined(self,3,prob)
