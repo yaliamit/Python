@@ -12,5 +12,5 @@ while (commands.getoutput('grep Test OUTPUT.txt')==''):
     time.sleep(30)
     commands.getoutput('scp yaliamit@fasolt.cs.uchicago.edu:Desktop/Dropbox/Python/Class/OUTPUT.txt .')
 
-
+manage_OUTPUT.print_OUTPUT()
 

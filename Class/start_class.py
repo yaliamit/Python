@@ -17,6 +17,7 @@ parms=manage_OUTPUT.process_args(sys.argv,parms)
 
 if (parms['output_net'] is None):
     parms['output_net']=parms['net']
+print 'XXX:',parms['output_net']
 
 nets=[]
 output_nets=[]
@@ -87,6 +88,6 @@ for i,ne in enumerate(nets):
     agg=None
     print('aggegate accuracy',acc)
 if (NETPARS['train']):
-    manage_OUTPUT.print_OUTPUT(NETPARS)
+    manage_OUTPUT.print_OUTPUT()
 
 

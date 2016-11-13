@@ -1,6 +1,7 @@
 import time
 import os
 import shutil
+import commands
 import sys
 
 def process_args(args,parms):
@@ -23,15 +24,13 @@ def process_args(args,parms):
     print(parms)
     return(parms)
 
-def print_OUTPUT(NETPARS):
+def print_OUTPUT():
 
     dirs=os.listdir('AOUT')
-    nn=str.split(NETPARS['output_net'],'/',)
-    nnn=nn[0]
-    if (len(nn)==2):
-        nnn=nn[1]
+    cc=commands.getoutput('grep XXX OUTPUT.txt')
 
-    ss='OUTPUT_'+nnn
+    nn=str.split(cc,' ')
+    ss='OUTPUT_'+nn[1]
     t=0
     for dd in dirs:
         if ss in dd:
