@@ -1,6 +1,6 @@
 import commands
 import time
-
+import manage_OUTPUT
 
 commands.getoutput('./GIT.sh')
 #commands.getoutput('scp runthings.txt yaliamit@fasolt.cs.uchicago.edu:Desktop/Dropbox/Python/Class/.')
