@@ -778,7 +778,7 @@ class AbstractConv2d(BaseAbstractConv2d):
         ktype = img.type.clone(dtype=kern.dtype,
                                broadcastable=kern.broadcastable)
         kern = ktype.filter_variable(kern)
-        self.srng=theano.tensor.shared_randomstreams.RandomStreams(None)
+        self.srng=theano.tensor.shared_randomstreams.RandomStreams(np.random.randint(1,high=2147462579))
         prob=as_tensor_variable(prob)
         # rtype = img.type.clone(dtype=R.type, broadcastable=R.broadcastable)
         # R = R.filter_variable(R)

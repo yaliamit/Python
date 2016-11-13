@@ -30,7 +30,13 @@ def print_OUTPUT():
     cc=commands.getoutput('grep XXX OUTPUT.txt')
 
     nn=str.split(cc,' ')
-    ss='OUTPUT_'+nn[1]
+    nna=nn[1]
+    nnb=str.split(nna,'/')
+    if (len(nnb)==2):
+        nnn=nnb[1]
+    else:
+        nnn=nnb[0]
+    ss='OUTPUT_'+nnn
     t=0
     for dd in dirs:
         if ss in dd:

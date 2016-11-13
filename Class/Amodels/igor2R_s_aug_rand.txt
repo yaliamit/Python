@@ -8,7 +8,7 @@ update:adam
 batch_size:400
 eta_init:0.001
 num_epochs:300
-seed:8892345
+seed:2345873
 reg_param:0
 Mnist:False
 global_drop:0.5

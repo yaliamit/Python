@@ -87,6 +87,7 @@ for i,ne in enumerate(nets):
     acc=np.mean(np.argmax(agg,axis=1)==y)
     agg=None
     print('aggegate accuracy',acc)
+
 if (NETPARS['train']):
     manage_OUTPUT.print_OUTPUT()
 
