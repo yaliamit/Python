@@ -8,7 +8,6 @@ update:adam
 batch_size:400
 eta_init:0.001
 num_epochs:300
-net:igor2
 seed:745698
 reg_param:0
 Mnist:False
