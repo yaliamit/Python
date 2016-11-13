@@ -17,10 +17,10 @@ class NewDotOp(theano.Op):
 
     def make_node(self, *inputs):
         inputs = list(map(theano.tensor.basic.as_tensor_variable, inputs))
-        if len(inputs) != 4:
-            raise TypeError(
-                'AffineOP: 4 arguments required, %d given ' %
-                len(inputs))
+        # if len(inputs) != 3:
+        #     raise TypeError(
+        #         'AffineOP: 4 arguments required, %d given ' %
+        #         len(inputs))
 
         i_broadcastables = [input.type.broadcastable for input in inputs]
         #bx, by, br, bp = i_broadcastables
