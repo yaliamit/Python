@@ -9,6 +9,7 @@ commands.getoutput('ssh yaliamit@fasolt.cs.uchicago.edu \'cd Desktop/Dropbox/Pyt
 ss='start'
 while (ss is not ''):
     ss=commands.getoutput('scp yaliamit@fasolt.cs.uchicago.edu:Desktop/Dropbox/Python/Class/OUTPUT.txt .')
+    print(ss)
 while (commands.getoutput('grep Test OUTPUT.txt')==''):
     time.sleep(30)
     commands.getoutput('scp yaliamit@fasolt.cs.uchicago.edu:Desktop/Dropbox/Python/Class/OUTPUT.txt .')
