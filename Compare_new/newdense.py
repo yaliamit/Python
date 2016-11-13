@@ -94,7 +94,7 @@ class NewDenseLayer(Layer):
             # if the input has more than two dimensions, flatten it into a
             # batch of feature vectors.
             input = input.flatten(2)
-        activation = newdot.newdot(input, self.W,self.R, self.prob)
+        activation = newdot.newdot(input, self.W,self.R) #, self.prob)
         if self.b is not None:
             activation = activation + self.b.dimshuffle('x', 0)
         return self.nonlinearity(activation)
