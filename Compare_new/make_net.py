@@ -14,6 +14,7 @@ import theano.tensor.nnet
 # Experimenting with git
 # Experimenting again
 # And again
+# And again
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
 
 def rect_sym(x):
