@@ -1,9 +1,14 @@
-
 import commands
-import pylab as py
+import time
 
-# Creating script to run start_class remotely
 
-# And again
+commands.getoutput('./GIT.sh')
+commands.getoutput('scp runthings.txt yaliamit@fasolt.cs.uchicago.edu:/home/yaliamit/Desktop/Dropbox/Python/Class')
+commands.getoutput('ssh yaliamit@fasolt.cs.uchicago.edu \'cd /home/yaliamit/Desktop/Dropbox/Python/Class/; ./runthings.txt\'')
 
-commands.getoutput('GIT.sh')
+while (commands.getoutput('grep Test OUTPUT.txt')==''):
+    time.sleep(60)
+    commands.getoutput('scp yaliamit@fasolt.cs.uchicago.edu:/home/yaliamit/Desktop/Dropbox/Python/Class/OUTPUT.txt .')
+
+
+

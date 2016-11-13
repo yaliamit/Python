@@ -1,5 +1,3 @@
 #/bin/bash
 
-python start_class.py USE_EXISTING=False start=0 mult=25 net=Amodels/igor2R_s_aug_rand mod_net=Amodels/igor2e_s_aug_rand_mod > OUTPUT.txt
-#python start_class.py net=Amodels/igor2b_s_aug_rand USE_EXISTING=True mod_net=Amodels/igor2b_s_aug_rand_mod0 > OUTPUT.txt
-#python start_class.py net=Amodels/igor2b_s_aug_rand USE_EXISTING=True mod_net=Amodels/igor2b_s_aug_rand_mod2 > OUTPUT.txt
+python start_class.py fn1.txt > OUTPUT.txt
