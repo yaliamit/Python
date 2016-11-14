@@ -3,10 +3,10 @@ hinge:sigmoid
 simple_augmentation:True
 agg:True
 mod_net:None
-adapt_eta:False
+adapt_eta:True
 update:adam
 batch_size:400
-eta_init:0.0001
+eta_init:0.001
 num_epochs:300
 seed:2345873
 reg_param:0
