@@ -2,6 +2,7 @@ import commands
 import time
 import manage_OUTPUT
 import os
+
 commands.getoutput('rm OUTPUT.txt')
 commands.getoutput('./GIT.sh')
 commands.getoutput('ssh yaliamit@fasolt.cs.uchicago.edu \'cd Desktop/Dropbox/Python; git pull\'')

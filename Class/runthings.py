@@ -19,12 +19,13 @@ def one(name="OUTPUT.txt",name1=None):
     sst=commands.getoutput('grep "Train acc" '+ name + ' | cut -d":" -f2 ')
     ssl=commands.getoutput('grep "Train loss" '+ name + ' | cut -d":" -f2 ')
     sste=commands.getoutput('grep "Test acc" ' + name + ' | cut -d":" -f2 ')
+    print 'sste',sste
     bv=np.fromstring(ssv,sep='\n')
     bt=np.fromstring(sst,sep='\n')
     bl=np.fromstring(ssl,sep='\n')
     bte=None
     bte1=None
-    if sste is not '':
+    if sste != '':
         bte=np.fromstring(sste,sep='\n')
     if (name1 is not None):
         ssv1=commands.getoutput('grep "Val acc" '+ name1 + ' | cut -d":" -f2 ')
@@ -62,4 +63,5 @@ def one(name="OUTPUT.txt",name1=None):
     #py.grid(True)
     py.show()
    # print(bt)
+
 
