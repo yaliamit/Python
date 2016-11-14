@@ -3,30 +3,34 @@ simple_augmentation:True
 #NOT_TRAINABLE:dense1,
 agg:True
 edges:False
-hinge:True
+hinge:False
 mod_net:None
 adapt_eta:False
 update:adam
 batch_size:1000
 eta_init:.001
 train:False
-num_epochs:10
+num_epochs:100
 net:igor2
+output:OUTPUTloc
 seed:45239
 #reg_param_weights:10.
-Mnist:True
+Mnist:cifar_100
 #global_drop:0.5
 name:input1 #bla
 #name:drop1;drop:.5;parent:input1
-#name:batch;parent:input1
-name:conv1R;num_filters:8;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:input1
-name:pool1;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:conv1R
-#name:batch1;parent:pool1
-#name:convR2;num_filters:64;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:batch1
-#name:pool2;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:convR2
-#name:batch2;parent:pool2
-#name:convR3;num_filters:128;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:batch2
-#name:pool3;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:convR3
-#name:batch3;parent:pool3
-name:newdens1;num_units:200;Rstd:1.;non_linearity:lasagne.nonlinearity.sigmoid;parent:pool1
-name:newdens2;num_units:10;Rstd:1.;non_linearity:lasagne.nonlinearity.sigmoid;parent:newdens1;final:final
+name:batch0;parent:input1
+name:conv1;num_filters:8;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:batch0
+name:pool1;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:conv1
+name:batch1;parent:pool1
+name:drop1;drop:.5;parent:batch1
+name:conv2;num_filters:64;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:drop1
+name:pool2;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:conv2
+name:batch2;parent:pool2
+name:drop2;drop:.5;parent:batch2
+name:conv3;num_filters:128;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:drop2
+name:pool3;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:conv3
+name:batch3;parent:pool3
+name:drop3;drop:.5;parent:batch3
+name:dense1;num_units:200;Rstd:1.;non_linearity:lasagne.nonlinearity.rectify;parent:drop3
+name:dense2;num_units:100;Rstd:1.;non_linearity:lasagne.nonlinearity.softmax;parent:dense1;final:final

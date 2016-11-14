@@ -12,6 +12,7 @@ parms['TRAIN']=True
 parms['mult']=1
 parms['USE_EXISTING']=False
 parms['start']=0
+parms['output']='OUTPUT'
 
 parms=manage_OUTPUT.process_args(sys.argv,parms)
 
@@ -89,6 +90,6 @@ for i,ne in enumerate(nets):
     print('aggegate accuracy',acc)
 
 if (NETPARS['train']):
-    manage_OUTPUT.print_OUTPUT()
+    manage_OUTPUT.print_OUTPUT(name=NETPARS['output'])
 
 

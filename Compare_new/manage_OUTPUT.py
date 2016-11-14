@@ -27,7 +27,7 @@ def process_args(args,parms):
 def print_OUTPUT(name='OUTPUT'):
 
     dirs=os.listdir('AOUT')
-    cc=commands.getoutput('grep XXX' + name + '.txt')
+    cc=commands.getoutput('grep XXX ' + name + '.txt')
 
     nn=str.split(cc,' ')
     nna=nn[1]

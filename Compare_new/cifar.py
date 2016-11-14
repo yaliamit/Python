@@ -2,11 +2,16 @@ import deepdish as dd
 import numpy as np
 import os
 from scipy import linalg
-def load_dataset(num_train=50000, num_test=10000, num_val=5000, marg=0, white=True):
+def load_dataset(data_set,num_train=50000, num_test=10000, num_val=5000, marg=0, white=True):
     home=os.path.expanduser('~')
     os.environ['CIFAR10_DIR']=home+'/Desktop/Dropbox/Python/_CIFAR10'
-    Tr_x, Tr_y = dd.io.load_cifar_10('training', offset=0, count=50000, marg=marg)
-    te_x, te_y = dd.io.load_cifar_10('testing', offset=0, count=10000, marg=marg)
+    os.environ['CIFAR100_DIR']=home+'/Desktop/Dropbox/Python/_CIFAR100'
+    if (data_set=='cifar_100'):
+        Tr_x, Tr_y = dd.io.load_cifar_100('training', offset=0, count=50000, marg=marg)
+        te_x, te_y = dd.io.load_cifar_100('testing', offset=0, count=10000, marg=marg)
+    else:
+        Tr_x, Tr_y = dd.io.load_cifar_10('training', offset=0, count=50000, marg=marg)
+        te_x, te_y = dd.io.load_cifar_10('testing', offset=0, count=10000, marg=marg)
 
     Tr_x=np.transpose(Tr_x,(0,3,1,2))
     te_x=np.transpose(te_x,(0,3,1,2))

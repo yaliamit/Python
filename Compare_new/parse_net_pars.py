@@ -59,7 +59,7 @@ def process_network_line(line,global_drop):
                 if ('lasagne' in s1):
                         if ('rectify' in s1):
                             lp['non_linearity']=lasagne.nonlinearities.rectify
-                        if ('rect_sym' in s1):
+                        elif ('rect_sym' in s1):
                             lp['non_linearity']=make_net.rect_sym
                         elif ('sigmoid' in s1):
                             lp['non_linearity']=lasagne.nonlinearities.sigmoid

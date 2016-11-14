@@ -245,7 +245,7 @@ def load_rotated_dataset(NETPARS,x_train,x_val,x_test, num_train=0):
 
 def get_train(NETPARS):
 
-    if (NETPARS['Mnist']):
+    if (NETPARS['Mnist']=='mnist'):
         pad=0
         if ('data_pad' in NETPARS):
             pad=NETPARS['data_pad']
@@ -254,7 +254,7 @@ def get_train(NETPARS):
         num_val=5000
         if ('num_val' in NETPARS):
             num_val=NETPARS['num_val']
-        X_train, y_train, X_val, y_val, X_test, y_test = cifar.load_dataset(white=False,num_val=num_val)
+        X_train, y_train, X_val, y_val, X_test, y_test = cifar.load_dataset(NETPARS['Mnist'],white=False,num_val=num_val)
 
     num_train=NETPARS['num_train']
     if (num_train==0):

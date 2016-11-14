@@ -3,6 +3,7 @@ from .mnist import load_mnist
 from .norb import load_small_norb
 from .casia import load_casia
 from .cifar import load_cifar_10
+from .cifar import load_cifar_100
 
 try:
     import tables
