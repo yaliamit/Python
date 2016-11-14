@@ -24,10 +24,10 @@ def process_args(args,parms):
     print(parms)
     return(parms)
 
-def print_OUTPUT():
+def print_OUTPUT(name='OUTPUT'):
 
     dirs=os.listdir('AOUT')
-    cc=commands.getoutput('grep XXX OUTPUT.txt')
+    cc=commands.getoutput('grep XXX' + name + '.txt')
 
     nn=str.split(cc,' ')
     nna=nn[1]
@@ -36,14 +36,14 @@ def print_OUTPUT():
         nnn=nnb[1]
     else:
         nnn=nnb[0]
-    ss='OUTPUT_'+nnn
+    ss=name+'_'+nnn
     t=0
     for dd in dirs:
         if ss in dd:
             t+=1
     sys.stdout.flush()
     time.sleep(10)
-    shutil.copyfile('OUTPUT.txt','AOUT/OUTPUT_'+nnn+'_'+str(t)+'.txt')
+    shutil.copyfile('OUTPUT.txt','AOUT/'+name+'_'+nnn+'_'+str(t)+'.txt')
 
 def plot_OUTPUT():
     import commands
