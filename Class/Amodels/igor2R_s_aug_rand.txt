@@ -3,7 +3,7 @@ hinge:sigmoid
 simple_augmentation:True
 agg:True
 mod_net:None
-adapt_eta:True
+adapt_eta:False
 update:adam
 batch_size:400
 eta_init:0.0001
