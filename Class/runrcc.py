@@ -6,7 +6,7 @@ import os
 commands.getoutput('rm OUTPUTrcc.txt')
 commands.getoutput('./GIT.sh')
 commands.getoutput('ssh yaliamit@midway2.rcc.uchicago.edu \'cd Desktop/Dropbox/Python; git pull\'')
-os.system('ssh yaliamit@midway2.uchicago.edu \'cd Desktop/Dropbox/Python/Class/; sbatch theano.sbatch \' & ')
+os.system('ssh yaliamit@midway2.rcc.uchicago.edu \'cd Desktop/Dropbox/Python/Class/; sbatch theano.sbatch \' & ')
 #
 ss='start'
 while (ss != ''):
