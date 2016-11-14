@@ -1,0 +1,4 @@
+#/bin/bash
+# Running start_class and this is in GIT
+rm OUTPUT.txt
+python start_class.py  net=Amodels/igor2RR_s_aug_rand > OUTPUT.txt
