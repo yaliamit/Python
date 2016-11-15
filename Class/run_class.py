@@ -199,7 +199,7 @@ def main_new(NETPARS):
 
 
 
-    conf_mat=get_confusion_matrix(out_test[2],y_test)
+    conf_mat=get_confusion_matrix(out_test[2],y_test[0:(out_test[2]).shape[0]])
     print(conf_mat)
     if (fac==0):
         fac=1
