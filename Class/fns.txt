@@ -15,7 +15,7 @@ net:igor2
 seed:45239
 Mnist:True
 name:input1
-name:convR1;filter_size:(3,3);num_filters:8;non_linearity:lasagne.rect_sym;parent:input1;pad:(1,1);stride:(1,1)
+name:conv1;filter_size:(3,3);num_filters:8;non_linearity:lasagne.rect_sym;parent:input1;pad:(1,1);stride:(1,1)
 #name:pool1;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:convR1
-name:newdens1;num_units:200;Rstd:.1;non_linearity:lasagne.rect_sym;gain:1.;parent:convR1
-name:newdens4;num_units:10;Rstd:.1;gain:1.;non_linearity:lasagne.rect_sym;parent:newdens1;final:final
+name:dense1;num_units:200;Rstd:.1;non_linearity:lasagne.rect_sym;gain:1.;parent:conv1
+name:dense4;num_units:10;Rstd:.1;gain:1.;non_linearity:lasagne.rect_sym;parent:dense1;final:final
