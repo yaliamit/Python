@@ -92,4 +92,4 @@ for i,ne in enumerate(nets):
 if (NETPARS['train']):
     manage_OUTPUT.print_OUTPUT(name=NETPARS['output'])
 
-
+print('DONE')

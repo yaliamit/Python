@@ -12,7 +12,7 @@ ss='start'
 while (ss != ''):
     ss=commands.getoutput('scp yaliamit@midway2.rcc.uchicago.edu:Desktop/Dropbox/Python/Class/OUTPUT.txt OUTPUTrcc.txt')
     print(ss)
-while (commands.getoutput('grep Test OUTPUTrcc.txt')==''):
+while (commands.getoutput('grep DONE OUTPUTrcc.txt')==''):
     time.sleep(30)
     commands.getoutput('scp yaliamit@midway2.rcc.uchicago.edu:Desktop/Dropbox/Python/Class/OUTPUT.txt OUTPUTrcc.txt')
 
