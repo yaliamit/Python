@@ -76,8 +76,8 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, seq=
             pred.append(tout[2])
         #loss.append(tout[3])
 
-    if len(tout)==3:
-       pr=np.sum(np.abs(np.array(network.W.eval())))
+    # if len(tout)==4:
+    #    pr=np.sum(np.abs(np.array(network.W.eval())))
     # # Aggregating over angles.
 
     if (fac):
