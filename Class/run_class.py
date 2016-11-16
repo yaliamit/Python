@@ -23,6 +23,9 @@ def get_confusion_matrix(pred,y):
             u, counts=np.unique(am_predy, return_counts=True)
             conf_mat[c,u]=counts
         return(conf_mat)
+
+
+
 def iterate_minibatches_new(inputs, targets, batchsize, shuffle=False):
     if (type(inputs) is not list):
         assert len(inputs) == len(targets)
@@ -73,9 +76,10 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, seq=
             pred.append(tout[2])
         #loss.append(tout[3])
 
-    # if len(tout)>3:
-    #     print('l1 loss',tout[-1],'fraction of zeros',tout[3:-1])
+    if len(tout)==3:
+       pr=np.sum(np.abs(np.array(network.W.eval())))
     # # Aggregating over angles.
+
     if (fac):
         pred0=np.concatenate(pred)
         pred1=np.reshape(pred0,(fac,pred0.shape[0]/fac)+pred0.shape[1:])

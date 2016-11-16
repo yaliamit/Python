@@ -150,9 +150,9 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
         elif ('reg_param_weights' in NETPARS and NETPARS['reg_param_weights']>0):
             reg_p = NETPARS['reg_param_weights']
             for p in params:
-                if ('dens' in p.name):
-                    spe=T.sum(T.exp(p*reg_p))
-
+                if ('dense' in p.name):
+                    spe+=T.mean(T.abs_(p))*reg_p
+            spen.append(spe)
         if (Train):
             pred = lasagne.layers.get_output(network)
         else:
@@ -198,7 +198,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             updates=None
         #XX=T.grad(loss,input_var)
 
-        if ('reg_param' in NETPARS and Train):
+        if ('reg_param_weights' in NETPARS and Train):
             train_fn = theano.function([input_var,target_var], [loss, acc, pred]+spen, updates=updates)
         else:
             train_fn = theano.function([input_var,target_var], [loss, acc, pred]+ gloss, updates=updates)
