@@ -49,7 +49,7 @@ for i,ne in enumerate(nets):
              else:
                  # A sequence of modifications to the basic parameters
                 f=open(parms['mod_net']+'.txt','r')
-                t=0
+                t=1
                 for line in f:
                     if (line[0]=='#'):
                         continue
@@ -79,6 +79,7 @@ for i,ne in enumerate(nets):
     NETPARS['train']=parms['TRAIN']
     NETPARS['seed']=np.int32(np.random.rand()*1000000)
     NETPARS['output_net']=output_nets[i]
+    NETPARS['output']=parms['output']
     [NETPARS,out]=run_class.main_new(NETPARS)
     if agg is None:
         agg=out[2]
@@ -89,7 +90,8 @@ for i,ne in enumerate(nets):
     agg=None
     print('aggegate accuracy',acc)
 
+print('DONE')
 if (NETPARS['train']):
     manage_OUTPUT.print_OUTPUT(name=NETPARS['output'])
 
-print('DONE')
+

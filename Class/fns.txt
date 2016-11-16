@@ -3,19 +3,21 @@ simple_augmentation:True
 #NOT_TRAINABLE:dense1,
 agg:True
 edges:False
-hinge:True
+hinge:False
 mod_net:None
 adapt_eta:False
 update:adam
-batch_size:100
+batch_size:1000
 eta_init:.001
 train:False
-num_epochs:300
+num_epochs:1
 net:igor2
 seed:45239
-Mnist:True
+Mnist:mnist
 name:input1
-name:conv1;filter_size:(3,3);num_filters:8;non_linearity:lasagne.rect_sym;parent:input1;pad:(1,1);stride:(1,1)
+#name:conv1;filter_size:(3,3);num_filters:8;non_linearity:lasagne.rectify;parent:input1;pad:(1,1);stride:(1,1)
 #name:pool1;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:convR1
-name:dense1;num_units:200;Rstd:.1;non_linearity:lasagne.rect_sym;gain:1.;parent:conv1
-name:dense4;num_units:10;Rstd:.1;gain:1.;non_linearity:lasagne.rect_sym;parent:dense1;final:final
+name:dense1;num_units:200;non_linearity:lasagne.tanh;gain:1.;parent:input1
+name:dense4;num_units:10;gain:1.;non_linearity:lasagne.tanh;parent:dense1
+name:scale;fac:.1;parent:dense4
+name:non_linearity;non_linearity:softmax; parent:scale;final:final
