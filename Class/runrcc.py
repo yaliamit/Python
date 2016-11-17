@@ -11,6 +11,7 @@ os.system('ssh yaliamit@midway2.rcc.uchicago.edu \'cd Desktop/Dropbox/Python/Cla
 
 ss='start'
 while (ss != ''):
+    time.sleep(30)
     ss=commands.getoutput('scp yaliamit@midway2.rcc.uchicago.edu:Desktop/Dropbox/Python/Class/OUTPUT.txt OUTPUTrcc.txt')
     print(ss)
 while (commands.getoutput('grep DONE OUTPUTrcc.txt')==''):
