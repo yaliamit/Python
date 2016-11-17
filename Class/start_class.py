@@ -90,6 +90,7 @@ for i,ne in enumerate(nets):
     agg=None
     print('aggegate accuracy',acc)
 
+print('NNN:',ne)
 print('DONE')
 if (NETPARS['train']):
     manage_OUTPUT.print_OUTPUT(name=NETPARS['output'])

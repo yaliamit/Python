@@ -1,4 +1,4 @@
-num_train:10000
+num_train:20000
 simple_augmentation:True
 agg:True
 mod_net:None

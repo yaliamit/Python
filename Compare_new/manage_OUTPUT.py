@@ -26,7 +26,11 @@ def process_args(args,parms):
 
 def print_OUTPUT(name='OUTPUT'):
 
-    dirs=os.listdir('AOUT')
+    ss=str.split(name,'T')
+    OO='AOUT'
+    if (len(ss)==3):
+        OO='_'+ss[2]+'/AOUT'
+    dirs=os.listdir(OO)
     cc=commands.getoutput('grep XXX ' + name + '.txt')
 
     nn=str.split(cc,' ')
@@ -43,7 +47,7 @@ def print_OUTPUT(name='OUTPUT'):
             t+=1
     sys.stdout.flush()
     time.sleep(10)
-    shutil.copyfile('OUTPUT.txt','AOUT/'+name+'_'+nnn+'_'+str(t)+'.txt')
+    shutil.copyfile('OUTPUT.txt',OO+'/'+name+'_'+nnn+'_'+str(t)+'.txt')
 
 def plot_OUTPUT():
     import commands
