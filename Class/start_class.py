@@ -80,6 +80,9 @@ for i,ne in enumerate(nets):
     NETPARS['seed']=np.int32(np.random.rand()*1000000)
     NETPARS['output_net']=output_nets[i]
     NETPARS['output']=parms['output']
+    # Command line overrides.
+    if ('num_train' in parms):
+        NETPARS['num_train']=parms['num_train']
     [NETPARS,out]=run_class.main_new(NETPARS)
     if agg is None:
         agg=out[2]
