@@ -1,4 +1,4 @@
 #/bin/bash
 # Running start_class and this is in GIT
 rm OUTPUT.txt
-python start_class.py  net=Amodels/igor2e_s_aug_rand mod_net=Amodels/igor2e_s_aug_rand_mod start=25 mult=30 > OUTPUT.txt
+python start_class.py  net=Amodels/igor2e_s_aug_rand mod_net=Amodels/igor2e_s_aug_rand_mod USE_EXISTING=True start=25 mult=30 > OUTPUT.txt
