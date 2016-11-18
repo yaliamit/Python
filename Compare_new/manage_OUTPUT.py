@@ -28,7 +28,7 @@ def print_OUTPUT(name='OUTPUT'):
 
     ss=str.split(name,'T')
     OO='AOUT'
-    if (len(ss)==3):
+    if (ss[2] != ''):
         OO='_'+ss[2]+'/AOUT'
     dirs=os.listdir(OO)
     cc=commands.getoutput('grep XXX ' + name + '.txt')
