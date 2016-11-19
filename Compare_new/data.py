@@ -277,18 +277,17 @@ def get_train(NETPARS):
     else:
         if (y_val is not None):
             y_val=np.int32(y_val)
-    NETPARS['simple_augmentation']=0
 
     if (X_train is not None):
         if (type(X_train) is list):
-            if (NETPARS['simple_augmentation']):
-                ll=len(X_train)
-                NETPARS['simple_augmentation']=ll
-                X_train=np.concatenate(X_train,axis=0)
-                y_train=np.tile(y_train,ll)
-            else:
-                for i, X_t in enumerate(X_train):
-                    X_train[i]=X_t[0:num_train]
+            #if (NETPARS['simple_augmentation']):
+            ll=len(X_train)
+            NETPARS['simple_augmentation']=ll
+            X_train=np.concatenate(X_train,axis=0)
+            y_train=np.tile(y_train,ll)
+            # else:
+            #     for i, X_t in enumerate(X_train):
+            #         X_train[i]=X_t[0:num_train]
         else:
             X_train=X_train[0:num_train]
     if (type(X_test) is list):
