@@ -277,6 +277,8 @@ def get_train(NETPARS):
     else:
         if (y_val is not None):
             y_val=np.int32(y_val)
+    NETPARS['simple_augmentation']=0
+
     if (X_train is not None):
         if (type(X_train) is list):
             if (NETPARS['simple_augmentation']):

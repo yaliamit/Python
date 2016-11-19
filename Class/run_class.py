@@ -83,8 +83,8 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, seq=
     if (fac):
         pred0=np.concatenate(pred)
         pred1=np.reshape(pred0,(fac,pred0.shape[0]/fac)+pred0.shape[1:])
-        #pred2=np.mean(pred1,axis=0)
-        pred2=np.max(pred1,axis=0)
+        pred2=np.mean(pred1,axis=0)
+        #pred2=np.max(pred1,axis=0)
         ypred=np.argmax(pred2,axis=1)
         newacc=np.mean(ypred==y[:len(y)/fac])
         pred=pred1[np.int32(np.floor((len(pred1)-1)/2))]
