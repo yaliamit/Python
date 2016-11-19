@@ -89,11 +89,8 @@ for i,ne in enumerate(nets):
                 NETPARS[key][skey]=parms[key][skey]
         else:
             NETPARS[key]=parms[key]
-    # NETPARS['mod_net']=parms['mod_net']
+
     NETPARS['net']=ne
-    # NETPARS['use_existing']=parms['USE_EXISTING']
-    # NETPARS['train']=parms['TRAIN']
-    # NETPARS['seed']=np.int32(np.random.rand()*1000000)
     NETPARS['output_net']=output_nets[i]
     # NETPARS['output']=parms['output']
     # # Command line overrides.
