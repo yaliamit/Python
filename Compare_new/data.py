@@ -215,6 +215,8 @@ def do_det(x,NETPARS,ss):
 
 def load_rotated_dataset(NETPARS,x_train,x_val,x_test, num_train=0):
 
+    X_train=None
+    X_val=None
     if (NETPARS['trans']['angle']==-1):
         X_train=do_read_det('train',NETPARS, num_train)
         X_val=do_read_det('val',NETPARS, num_train)
@@ -228,8 +230,9 @@ def load_rotated_dataset(NETPARS,x_train,x_val,x_test, num_train=0):
             angle_step=NETPARS['trans']['angle_step']
         # This is a deterministic range of perturbations write it to a file.
         if (angle_step is not None):
-            X_train=do_det(x_train[0:num_train],NETPARS,'train')
-            X_val=x_val[0:np.minimum(num_train,x_val.shape[0])]
+            if (x_train is not None):
+                X_train=do_det(x_train[0:num_train],NETPARS,'train')
+                X_val=x_val[0:np.minimum(num_train,x_val.shape[0])]
             X_test=do_det(x_test,NETPARS,'test')
             return(X_train,X_val,X_test)
         # Random perturbations
@@ -237,8 +240,9 @@ def load_rotated_dataset(NETPARS,x_train,x_val,x_test, num_train=0):
             insert=False
             if ('insert' in NETPARS['trans']):
                 insert=True
-            X_train=do_rands(x_train[0:num_train],NETPARS,insert=insert)
-            X_val=x_val[0:np.minimum(num_train,x_val.shape[0])] #do_rands(x_val[0:np.minimum(num_train,x_val.shape[0])],NETPARS)
+            if (x_train is not None):
+                X_train=do_rands(x_train[0:num_train],NETPARS,insert=insert)
+                X_val=x_val[0:np.minimum(num_train,x_val.shape[0])] #do_rands(x_val[0:np.minimum(num_train,x_val.shape[0])],NETPARS)
             X_test=do_rands(x_test,NETPARS,insert=True)
 
             return(X_train,X_val,X_test)
@@ -254,12 +258,13 @@ def get_train(NETPARS):
         num_val=5000
         if ('num_val' in NETPARS):
             num_val=NETPARS['num_val']
-        X_train, y_train, X_val, y_val, X_test, y_test = cifar.load_dataset(NETPARS['Mnist'],white=False,num_val=num_val)
+        X_train, y_train, X_val, y_val, X_test, y_test = cifar.load_dataset(NETPARS['Mnist'],Train=NETPARS['train'],white=False,num_val=num_val)
 
     num_train=NETPARS['num_train']
     if (num_train==0):
         num_train=np.shape(y_train)[0]
-    y_train=np.int32(y_train[0:num_train])
+    if (y_train is not None):
+        y_train=np.int32(y_train[0:num_train])
     y_test=np.int32(y_test)
     if ('trans' in NETPARS):
         if (NETPARS['trans']['angle']>0 or NETPARS['trans']['scale']>0 or
@@ -267,20 +272,23 @@ def get_train(NETPARS):
                     NETPARS['trans']['saturation']):
             X_train, X_val, X_test = load_rotated_dataset(NETPARS,X_train,X_val,X_test,num_train)
             # To save time num_train data were processed also from val and test in case num_train is less than original length
-            y_val=np.int32(y_val[0:np.minimum(num_train,len(y_val))])
+            if (y_val is not None):
+                y_val=np.int32(y_val[0:np.minimum(num_train,len(y_val))])
     else:
-        y_val=np.int32(y_val)
-    if (type(X_train) is list):
-        if (NETPARS['simple_augmentation']):
-            ll=len(X_train)
-            NETPARS['simple_augmentation']=ll
-            X_train=np.concatenate(X_train,axis=0)
-            y_train=np.tile(y_train,ll)
+        if (y_val is not None):
+            y_val=np.int32(y_val)
+    if (X_train is not None):
+        if (type(X_train) is list):
+            if (NETPARS['simple_augmentation']):
+                ll=len(X_train)
+                NETPARS['simple_augmentation']=ll
+                X_train=np.concatenate(X_train,axis=0)
+                y_train=np.tile(y_train,ll)
+            else:
+                for i, X_t in enumerate(X_train):
+                    X_train[i]=X_t[0:num_train]
         else:
-            for i, X_t in enumerate(X_train):
-                X_train[i]=X_t[0:num_train]
-    else:
-        X_train=X_train[0:num_train]
+            X_train=X_train[0:num_train]
     if (type(X_test) is list):
         ll=len(X_test)
         NETPARS['simple_augmentation']=ll
@@ -289,8 +297,9 @@ def get_train(NETPARS):
     if ('edges' not in NETPARS or not NETPARS['edges']):
         pass
     else:
-        X_train=get_edges(X_train)
-        X_val=get_edges(X_val)
+        if (X_train is not None):
+            X_train=get_edges(X_train)
+            X_val=get_edges(X_val)
         X_test=get_edges(X_test)
 
 

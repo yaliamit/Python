@@ -1,0 +1,3 @@
+name:non_linearity4;non_linearity:lasagne.sigmoid;parent:drop4
+name:scale4;fac:.2;parent:non_linearity4;final:final
+RECONNECT:dense

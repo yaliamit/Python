@@ -120,9 +120,15 @@ def main_new(NETPARS):
     # Prepare Theano variables for inputs and targets
     if (type(X_train) is not list):
         input_var =  T.tensor4('inputs')
-        dims=X_train.shape[1:]
+        if (X_train is not None):
+            dims=X_train.shape[1:]
+        else:
+            dims=X_test.shape[1:]
     else:
-        dims=X_train[0].shape[1:]
+        if (X_train is not None):
+            dims=X_train[0].shape[1:]
+        else:
+            dims=X_test[0].shape[1:]
         if (theano.config.device=='cpu'):
             input_var=theano.typed_list.TypedListType(theano.tensor.dtensor4)()
             for j in range(len(X_train)):

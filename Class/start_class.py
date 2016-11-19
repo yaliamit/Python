@@ -8,9 +8,9 @@ parms={}
 parms['net']='igor2_maxout'
 parms['output_net']=None
 parms['mod_net']=None
-parms['TRAIN']=True
+parms['train']=True
 parms['mult']=1
-parms['USE_EXISTING']=False
+parms['use_existing']=False
 parms['start']=0
 parms['output']='OUTPUT'
 
@@ -22,18 +22,25 @@ print 'XXX:',parms['output_net']
 
 nets=[]
 output_nets=[]
-for m in np.arange(parms['start'],parms['mult'],1):
-    nets.append(parms['net']+'_'+str(m))
-    output_nets.append(parms['output_net']+'_'+str(m+1))
-if (not parms['TRAIN']):
-    parms['USE_EXISTING']=True
+if (parms['mult']>parms['start']):
+    for m in np.arange(parms['start'],parms['mult'],1):
+        nets.append(parms['net']+'_'+str(m))
+        output_nets.append(parms['output_net']+'_'+str(m+1))
+elif (parms['mult'] == 1):
+    nets.append(parms['net'])
+    output_nets.append(parms['output_net']+'_0')
+else:
+    print 'Don\'t know which net to use'
+    exit(0)
+if (not parms['train']):
+    parms['use_existing']=True
 
 agg=None
 for i,ne in enumerate(nets):
 
     if (parms['mult']>1 and i>parms['start']):
-        parms['USE_EXISTING']=True
-    if (parms['USE_EXISTING']):
+        parms['use_existing']=True
+    if (parms['use_existing']):
          # if (os.path.isfile(ne+'.pars')):
          #    fo=open(ne+'.pars','r')
          #    NETPARS=pickle.load(fo)
@@ -43,7 +50,7 @@ for i,ne in enumerate(nets):
             NETPARS={}
             parse_net_pars.parse_text_file(ne,NETPARS,lname='layers',dump=True)
             # Modifications of parameters come from mod_net_name
-            if (parms['mod_net'] is not None and parms['TRAIN']):
+            if (parms['mod_net'] is not None and parms['train']):
              if (parms['mult']==1):
                 parse_net_pars.parse_text_file(parms['mod_net'],NETPARS,lname='INSERT_LAYERS', dump=True)
              else:
@@ -73,16 +80,25 @@ for i,ne in enumerate(nets):
         if (i==0):
             np.random.seed(NETPARS['seed'])
 
-    NETPARS['mod_net']=parms['mod_net']
+
+    for key, value in parms.iteritems():
+        if (type(parms[key]) is dict):
+            if (key not in NETPARS):
+                NETPARS[key]={}
+            for skey in parms[key]:
+                NETPARS[key][skey]=parms[key][skey]
+        else:
+            NETPARS[key]=parms[key]
+    # NETPARS['mod_net']=parms['mod_net']
     NETPARS['net']=ne
-    NETPARS['use_existing']=parms['USE_EXISTING']
-    NETPARS['train']=parms['TRAIN']
-    NETPARS['seed']=np.int32(np.random.rand()*1000000)
+    # NETPARS['use_existing']=parms['USE_EXISTING']
+    # NETPARS['train']=parms['TRAIN']
+    # NETPARS['seed']=np.int32(np.random.rand()*1000000)
     NETPARS['output_net']=output_nets[i]
-    NETPARS['output']=parms['output']
-    # Command line overrides.
-    if ('num_train' in parms):
-        NETPARS['num_train']=parms['num_train']
+    # NETPARS['output']=parms['output']
+    # # Command line overrides.
+    # if ('num_train' in parms):
+    #     NETPARS['num_train']=parms['num_train']
     [NETPARS,out]=run_class.main_new(NETPARS)
     if agg is None:
         agg=out[2]

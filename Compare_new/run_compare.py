@@ -130,6 +130,7 @@ def iterate_on_batches(func,X_list,y,batch_size,typ='Test',y_lab=None):
 # Setup the theano function that computes the loss from the network output
 def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='class'):
 
+
         params = lasagne.layers.get_all_params(network, trainable=True)
         spen=[]
         spe=theano.shared(0.)

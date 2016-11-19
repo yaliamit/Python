@@ -6,7 +6,21 @@ import sys
 
 def process_args(args,parms):
     print(args)
-    for s in args:
+
+    for ss in args:
+        addname=None
+        if (':' in ss):
+            bb=str.split(ss,':')
+            addname=str.strip(bb[0],' ')
+            s=bb[1]
+            if (addname in parms):
+                pp=parms[addname]
+                addname=None
+            else:
+                pp={}
+        else:
+            s=ss
+            pp=parms
         if ('=' in s):
             aa=str.split(s,'=')
             name=str.strip(aa[0],' ')
@@ -16,11 +30,13 @@ def process_args(args,parms):
             except ValueError:
                 v=value
             if (v=='True'):
-                parms[name]=True
+                pp[name]=True
             elif (v=='False'):
-                parms[name]=False
+                pp[name]=False
             else:
-                parms[name]=v
+                pp[name]=v
+        if (addname is not None):
+            parms[addname]=pp
     print(parms)
     return(parms)
 
