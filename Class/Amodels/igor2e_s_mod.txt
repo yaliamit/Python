@@ -1,4 +1,4 @@
-name:dense;num_units:10;non_linearity:lasagne.nonlinearity.sigmoid;parent:drop4
-name:scale4;fac:.2;parent:dense
-name:dense1;non_linearity:lasagne.softmax;parent:scale4;final:final
-REMOVE:dense
+name:dense1;num_units:10;non_linearity:lasagne.nonlinearity.sigmoid;parent:drop4
+name:scale5;fac:.2;parent:dense
+name:dense2;non_linearity:lasagne.softmax;parent:scale4;final:final
+REMOVE:dense,scale4,non_linearity4
