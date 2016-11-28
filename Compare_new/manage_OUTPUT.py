@@ -63,7 +63,7 @@ def print_OUTPUT(name='OUTPUT'):
             t+=1
     sys.stdout.flush()
     time.sleep(10)
-    shutil.copyfile('OUTPUT.txt',OO+'/'+name+'_'+nnn+'_'+str(t)+'.txt')
+    shutil.copyfile(name+'.txt',OO+'/'+name+'_'+nnn+'_'+str(t)+'.txt')
 
 def plot_OUTPUT():
     import commands
