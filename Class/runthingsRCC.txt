@@ -2,4 +2,4 @@
 # Running start_class and this is in GIT
 rm OUTPUT.txt
 #python start_class.py  net=Amodels/igor2e_s_aug_rand mod_net=Amodels/igor2e_s_aug_rand_mod num_train=20000 USE_EXISTING=True start=29 mult=35 > OUTPUT.txt
-python start_class.py net=Amodels/igor2e USE_EXISTING=True mod_net=Amodels/igor2e_s_aug_rand_mod start=1 mult=3 > OUTPUT.txt
+python start_class.py net=Amodels/igor2e use_existing=True num_epochs=1 mod_net=Amodels/igor2e_s_aug_rand_mod start=1 mult=3 > OUTPUT.txt
