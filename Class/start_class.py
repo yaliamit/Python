@@ -56,7 +56,7 @@ for i,ne in enumerate(nets):
              else:
                  # A sequence of modifications to the basic parameters
                 f=open(parms['mod_net']+'.txt','r')
-                t=1
+                t=0
                 for line in f:
                     if (line[0]=='#'):
                         continue
@@ -106,7 +106,7 @@ for i,ne in enumerate(nets):
     agg=None
     print('aggegate accuracy',acc)
 
-print('NNN:',ne)
+print('NNN:',NETPARS['output_net'])
 print('DONE')
 if (NETPARS['train']):
     manage_OUTPUT.print_OUTPUT(name=NETPARS['output'])

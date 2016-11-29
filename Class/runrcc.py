@@ -17,6 +17,7 @@ while (ss != ''):
 while (commands.getoutput('grep DONE OUTPUTrcc.txt')==''):
     time.sleep(30)
     commands.getoutput('scp yaliamit@midway2.rcc.uchicago.edu:Desktop/Dropbox/Python/Class/OUTPUT.txt OUTPUTrcc.txt')
+
 time.sleep(30)
 pnn=commands.getoutput('grep NNN OUTPUTrcc.txt')
 pnnn=str.split(pnn,':')
