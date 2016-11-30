@@ -1,4 +1,5 @@
-num_train:50000
+num_train:5200
+hinge:True
 num_val:0
 simple_augmentation:True
 agg:True
