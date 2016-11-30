@@ -114,7 +114,7 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, seq=
     print(typ+" acc:\t\t\t{:.6f}".format(acc / (batches+1)))
 
 
-    sys.stdout.flush()
+    #sys.stdout.flush()
     return(acc,batches, pred, grad)
 
 
