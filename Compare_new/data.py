@@ -25,6 +25,7 @@ def rotate_dataset_rand(X,angle=0,scale=0,shift=0,gr=0,flip=False,blur=False,sat
     SH=np.int32(np.round(np.random.rand(Xr.shape[0],2)*shift)-shift/2)
     FL=np.zeros(Xr.shape[0])
     BL=np.zeros(Xr.shape[0])
+    HS=np.zeros(Xr.shape[0])
     if (flip):
         FL=(np.random.rand(Xr.shape[0])>.5)
     if (blur):
@@ -57,7 +58,6 @@ def rotate_dataset_rand(X,angle=0,scale=0,shift=0,gr=0,flip=False,blur=False,sat
                 Xt=scipy.ndimage.gaussian_filter(Xt,sigma=.5)
             Xr[i,d,]=Xt
         if (HS[i]):
-
             y=col.rgb_to_hsv(Xr[i].transpose(1,2,0))
             y[:,:,1]=np.minimum(y[:,:,1]*HS[i],1)
             y[:,:,0]=np.mod(y[:,:,0]+HU[i],1.)
@@ -185,7 +185,7 @@ def do_rands(x,NETPARS,insert=False):
         Xtr=[]
         num_rand=1
         if 'num_rand' in NETPARS['trans']:
-            num_rand=NETPARS['trans']['num_rand']
+            num_rand=np.int(NETPARS['trans']['num_rand'])
         for i in range(num_rand):
             Xtr.append(rotate_dataset_rand(x,angle=NETPARS['trans']['angle'],
                            scale=NETPARS['trans']['scale'],
@@ -217,7 +217,7 @@ def load_rotated_dataset(NETPARS,x_train,x_val,x_test, num_train=0):
 
     X_train=None
     X_val=None
-    if (NETPARS['trans']['angle']==-1):
+    if ('angle' in NETPARS['trans'] and NETPARS['trans']['angle']==-1):
         X_train=do_read_det('train',NETPARS, num_train)
         X_val=do_read_det('val',NETPARS, num_train)
         X_test=do_read_det('test',NETPARS, num_train)
@@ -254,6 +254,11 @@ def get_train(NETPARS):
         if ('data_pad' in NETPARS):
             pad=NETPARS['data_pad']
         X_train, y_train, X_val, y_val, X_test, y_test = mnist.load_dataset(pad=pad, nval=10000)
+        if (not NETPARS['train']):
+            X_train=None
+            X_val=None
+            y_train=None
+            y_val=None
     else:
         num_val=5000
         if ('num_val' in NETPARS):
@@ -267,13 +272,31 @@ def get_train(NETPARS):
         y_train=np.int32(y_train[0:num_train])
     y_test=np.int32(y_test)
     if ('trans' in NETPARS):
-        if (NETPARS['trans']['angle']>0 or NETPARS['trans']['scale']>0 or
-                    NETPARS['trans']['shift']>0 or NETPARS['trans']['flip'] or
-                    NETPARS['trans']['saturation']):
-            X_train, X_val, X_test = load_rotated_dataset(NETPARS,X_train,X_val,X_test,num_train)
+        if ('angle' not in NETPARS['trans']):
+            NETPARS['trans']['angle']=0
+        if ('scale' not in NETPARS['trans']):
+            NETPARS['trans']['scale']=0
+        if ('shift' not in NETPARS['trans']):
+            NETPARS['trans']['shift']=0
+        if ('flip' not in NETPARS['trans']):
+            NETPARS['trans']['flip']=False
+        if ('saturation' not in NETPARS['trans']):
+            NETPARS['trans']['saturation']=False
+        if ('gr' not in NETPARS['trans']):
+            NETPARS['trans']['gr']=False
+        if ('flip' not in NETPARS['trans']):
+            NETPARS['trans']['flip']=False
+        if ('spl' not in NETPARS['trans']):
+            NETPARS['trans']['spl']=False
+        if ((NETPARS['trans']['angle']>0) or
+            (NETPARS['trans']['scale']>0) or
+            (NETPARS['trans']['shift']>0) or
+            (NETPARS['trans']['flip']) or
+            (NETPARS['trans']['saturation'])):
+                X_train, X_val, X_test = load_rotated_dataset(NETPARS,X_train,X_val,X_test,num_train)
             # To save time num_train data were processed also from val and test in case num_train is less than original length
-            if (y_val is not None):
-                y_val=np.int32(y_val[0:np.minimum(num_train,len(y_val))])
+                if (y_val is not None):
+                    y_val=np.int32(y_val[0:np.minimum(num_train,len(y_val))])
     else:
         if (y_val is not None):
             y_val=np.int32(y_val)

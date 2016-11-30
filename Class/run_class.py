@@ -83,12 +83,19 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, seq=
     if (fac):
         pred0=np.concatenate(pred)
         pred1=np.reshape(pred0,(fac,pred0.shape[0]/fac)+pred0.shape[1:])
+        pred_m=np.max(pred1,axis=2)
+        pred_am=np.argmax(pred1,axis=2)
+        pred_amm=np.argmax(pred_m,axis=0)
         pred2=np.mean(pred1,axis=0)
         #pred2=np.max(pred1,axis=0)
         ypred=np.argmax(pred2,axis=1)
+        ypreda=pred_am[tuple(pred_amm),range(pred_am.shape[1])]
         newacc=np.mean(ypred==y[:len(y)/fac])
+        newacca=np.mean(ypreda==y[:len(y)/fac])
+
         pred=pred1[np.int32(np.floor((len(pred1)-1)/2))]
         print("Mean over different rotations",newacc)
+        print("Maxmax over different rotations",newacca)
         # preed=np.zeros(pred2.shape)
         # for j in range(pred1.shape[1]):
         #     ee=np.zeros(pred1.shape[0])

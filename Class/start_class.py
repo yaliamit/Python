@@ -15,7 +15,8 @@ parms['start']=0
 parms['output']='OUTPUT'
 
 parms=manage_OUTPUT.process_args(sys.argv,parms)
-
+parms['start']=np.int(parms['start'])
+parms['mult']=np.int(parms['mult'])
 if (parms['output_net'] is None):
     parms['output_net']=parms['net']
 print 'XXX:',parms['output_net']
@@ -66,6 +67,7 @@ for i,ne in enumerate(nets):
                         break
                     t+=1
                 f.close()
+                print('LP',lp)
                 NETPARS[lp['dict']]=lp
                 del NETPARS[lp['dict']]['dict']
             # Continue with last time step of previous run

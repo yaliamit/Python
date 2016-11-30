@@ -28,7 +28,10 @@ def process_args(args,parms):
             try:
                 v=int(value)
             except ValueError:
-                v=value
+                try:
+                    v=float(value)
+                except:
+                    v=value
             if (v=='True'):
                 pp[name]=True
             elif (v=='False'):
