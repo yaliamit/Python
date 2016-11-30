@@ -34,4 +34,4 @@ name:batch3;parent:pool3
 name:drop3;drop:0.5;parent:batch3
 name:dense4;num_units:256;non_linearity:lasagne.nonlinearity.rectify;parent:drop3
 name:drop4;drop:0.5;parent:dense4
-name:dense;num_units:10;non_linearity:lasagne.nonlinearity.softmax;parent:drop4;final:final
+name:dense;num_units:10;non_linearity:lasagne.nonlinearity.sigmoid;parent:drop4;final:final
