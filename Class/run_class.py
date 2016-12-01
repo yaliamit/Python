@@ -53,12 +53,15 @@ def iterate_minibatches_new(inputs, targets, batchsize, shuffle=False):
             yield out, targets[excerpt]
 
 
-def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, seq=0, network=None):
+def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, seq=0, network=None, pars=None):
     if (len(X)==0):
         return(0,0)
     shuffle=False
     if (typ=='Train'):
         shuffle=True
+    if (pars is not None):
+        shuffle=True
+        X=data.do_rands(X,pars,insert=True)
     err=acc=0
     pred=[]
     grad=None
@@ -183,7 +186,7 @@ def main_new(NETPARS):
             # In each epoch, do a full pass over the training data:
             start_time = time.time()
             print("eta",eta.get_value())
-            out_tr=iterate_on_batches(train_fn,X_train,y_train,batch_size,typ='Train',network=network)
+            out_tr=iterate_on_batches(train_fn,X_train,y_train,batch_size,typ='Train',network=network,pars=NETPARS)
             out_te=iterate_on_batches(val_fn,X_val,y_val,batch_size,typ='Val')
             if (NETPARS['adapt_eta']):
                 eta_p.update(out_te[0],out_te[1],network,eta,mod_eta=mod_eta)

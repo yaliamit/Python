@@ -205,12 +205,6 @@ def do_det(x,NETPARS,ss):
         X=np.transpose(X,(1,0,2,3,4))
         X=np.float32(X)
         X=list(X)
-        # num=np.int32(np.ceil(X.shape[0]*X.shape[1]/10000))
-        # inc=np.int32(np.floor(10000/X.shape[1]))
-        # for j in range(num+1):
-        #     beg=j*inc
-        #     end=np.minimum((j+1)*inc,X.shape[0])
-        #     dd.io.save('cifar_10_'+ss+'.rotate'+str(j)+'.h5',X[beg:end])
         return(X)
 
 def load_rotated_dataset(NETPARS,x_train,x_val,x_test, num_train=0):
