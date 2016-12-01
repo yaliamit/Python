@@ -265,7 +265,7 @@ def get_train(NETPARS):
     if (y_train is not None):
         y_train=np.int32(y_train[0:num_train])
     y_test=np.int32(y_test)
-    if ('trans' in NETPARS):
+    if ('trans' in NETPARS and 'repeat' not in NETPARS['trans']):
         if ('angle' not in NETPARS['trans']):
             NETPARS['trans']['angle']=0
         if ('scale' not in NETPARS['trans']):

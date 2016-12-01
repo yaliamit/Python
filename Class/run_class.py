@@ -59,9 +59,13 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, seq=
     shuffle=False
     if (typ=='Train'):
         shuffle=True
-    if (pars is not None):
+    if (pars is not None and 'trans' in pars):
         shuffle=True
         X=data.do_rands(X,pars,insert=True)
+        ll=len(X)
+        pars['simple_augmentation']=ll
+        X=np.concatenate(X,axis=0)
+        y=np.tile(y,ll)
     err=acc=0
     pred=[]
     grad=None
