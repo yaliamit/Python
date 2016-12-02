@@ -164,7 +164,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             if ('hinge' not in NETPARS or not NETPARS['hinge']):
                 aloss = lasagne.objectives.categorical_crossentropy(pred, target_var)
             else:
-                aloss = multiclass_hinge_loss_alt(pred,target_var)
+                aloss = multiclass_hinge_loss_alt(pred,target_var,2)
 
             loss = aloss.mean()
             loss=loss+spe
