@@ -60,12 +60,12 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, seq=
     if (typ=='Train'):
         shuffle=True
     if (pars is not None and 'trans' in pars):
-        shuffle=True
         X=data.do_rands(X,pars,insert=True)
         ll=len(X)
-        pars['simple_augmentation']=ll
         X=np.concatenate(X,axis=0)
         y=np.tile(y,ll)
+        if (typ=='Test'):
+            fac=ll
     err=acc=0
     pred=[]
     grad=None
@@ -122,7 +122,7 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, seq=
 
 
     sys.stdout.flush()
-    return(acc,batches, pred, grad)
+    return(acc,batches, pred, grad, fac)
 
 
 def main_new(NETPARS):
@@ -223,11 +223,10 @@ def main_new(NETPARS):
     out_test=iterate_on_batches(val_fn,X_test,y_test,batch_size,typ='Test',agg=True,fac=fac,pars=NETPARS)
 
 
-
     conf_mat=get_confusion_matrix(out_test[2],y_test[0:(out_test[2]).shape[0]])
     print(conf_mat)
-    if (fac==0):
-        fac=1
+    #if (fac==0):
+    fac=1
     out_test=out_test+(y_test[0:len(y_test)/fac],)
     if (NETPARS['train']):
         iterate_on_batches(val_fn,X_train,y_train,batch_size,typ='Post-train',fac=False, agg=True) #NETPARS['simple_augmentation'])

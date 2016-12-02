@@ -237,7 +237,7 @@ def load_rotated_dataset(NETPARS,x_train,x_val,x_test, num_train=0):
             if (x_train is not None):
                 X_train=do_rands(x_train[0:num_train],NETPARS,insert=insert)
                 X_val=x_val[0:np.minimum(num_train,x_val.shape[0])] #do_rands(x_val[0:np.minimum(num_train,x_val.shape[0])],NETPARS)
-            X_test=do_rands(x_test,NETPARS,insert=True)
+            X_test=x_test #do_rands(x_test,NETPARS,insert=True)
 
             return(X_train,X_val,X_test)
 
