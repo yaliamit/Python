@@ -68,12 +68,12 @@ def print_OUTPUT(name='OUTPUT'):
     time.sleep(10)
     shutil.copyfile(name+'.txt',OO+'/'+name+'_'+nnn+'_'+str(t)+'.txt')
 
-def plot_OUTPUT():
+def plot_OUTPUT(name='OUTPUT'):
     import commands
     import numpy as np
     import pylab as py
-    bt=np.fromstring(commands.getoutput('grep Train OUTPUT.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
-    bv=np.fromstring(commands.getoutput('grep Val OUTPUT.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
+    bt=np.fromstring(commands.getoutput('grep Train ' + name + '.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
+    bv=np.fromstring(commands.getoutput('grep Val ' + name + '.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
     print(len(bt))
     py.plot(bt,label='train')
 
