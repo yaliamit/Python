@@ -220,7 +220,7 @@ def main_new(NETPARS):
     fac=0
     if (type(NETPARS['simple_augmentation']) is int):
          fac=NETPARS['simple_augmentation']
-    out_test=iterate_on_batches(val_fn,X_test,y_test,batch_size,typ='Test',agg=True,fac=fac)
+    out_test=iterate_on_batches(val_fn,X_test,y_test,batch_size,typ='Test',agg=True,fac=fac,pars=NETPARS)
 
 
 
