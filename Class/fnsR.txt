@@ -1,4 +1,4 @@
-num_train:1000
+num_train:50000
 simple_augmentation:True
 #NOT_TRAINABLE:dense1,
 agg:True
