@@ -5,7 +5,7 @@ import lasagne
 import theano.tensor as T
 import parse_net_pars
 import os
-import newdense_new
+import newdense
 import lasagne.init
 import lasagne.utils
 import Conv2dLayerR
@@ -270,7 +270,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
         elif 'newdens' in l['name']:
                 for lay in input_la:
                     if (len(layer_list)==0):
-                        layer_list.append(newdense_new.NewDenseLayer(lay,name=l['name'],num_units=l['num_units'],
+                        layer_list.append(newdense.NewDenseLayer(lay,name=l['name'],num_units=l['num_units'],
                                                                     W=lasagne.init.GlorotUniform(gain=gain),
                                                                     R=lasagne.init.GlorotUniform(gain=gain),
                                                                     b=None, prob=prob,nonlinearity=l['non_linearity']))

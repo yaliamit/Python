@@ -7,7 +7,7 @@ hinge:True
 mod_net:None
 adapt_eta:False
 update:adam
-batch_size:100
+batch_size:1000
 eta_init:.001
 train:False
 #reg_param_weights:.1
