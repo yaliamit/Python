@@ -14,7 +14,7 @@ train:False
 num_epochs:100
 net:igor2
 seed:45239
-Mnist:mnist
+Mnist:cifar_10
 name:input1
 name:dense1;num_units:800;non_linearity:lasagne.sigmoid;gain:1.;parent:input1
 name:dense2;num_units:600;non_linearity:lasagne.sigmoid;gain:1.;parent:dense1
