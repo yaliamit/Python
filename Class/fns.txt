@@ -17,6 +17,8 @@ seed:45239
 Mnist:cifar_10
 name:input1
 name:dense1;num_units:800;non_linearity:lasagne.rectify;gain:1.;parent:input1
-name:dense2;num_units:600;non_linearity:lasagne.rectify;gain:1.;parent:dense1
+name:batch1;parent:input1
+name:drop1;parent:batch1
+name:dense2;num_units:600;non_linearity:lasagne.rectify;gain:1.;parent:drop1
 name:dense3;num_units:200;non_linearity:lasagne.rectify;gain:1.;parent:dense2
 name:dense4;num_units:10;non_linearity:lasagne.softmax;parent:dense3;final:final

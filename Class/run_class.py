@@ -60,10 +60,12 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, seq=
     if (typ=='Train'):
         shuffle=True
     if (pars is not None and 'trans' in pars):
-        X=data.do_rands(X,pars,insert=True)
-        ll=len(X)
-        X=np.concatenate(X,axis=0)
-        y=np.tile(y,ll)
+        X=data.do_rands(X,pars,pars['trans']['insert'])
+        ll=1
+        if (type(X) is list):
+            ll=len(X)
+            X=np.concatenate(X,axis=0)
+            y=np.tile(y,ll)
         if (typ=='Test'):
             fac=ll
     err=acc=0

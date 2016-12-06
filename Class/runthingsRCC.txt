@@ -2,6 +2,6 @@
 # Running start_class and this is in GIT
 rm OUTPUT.txt
 #python start_class.py  net=Amodels/igor2e_s_aug_rand mod_net=Amodels/igor2e_s_aug_rand_mod start=0 mult=20 > OUTPUT.txt
-#python start_class.py net=Amodels/igor2e_hinge > OUTPUT.txt
+python start_class.py net=Amodels/igor2e_s > OUTPUT.txt
 #python start_class.py net=Amodels/igor2e_s_aug_rand use_existing=1 start=2 mult=3 num_epochs=200  > OUTPUT.txt
-python start_class.py net=fns > OUTPUT.txt
+#python start_class.py net=fns > OUTPUT.txt
