@@ -1,0 +1,26 @@
+num_train:50000
+simple_augmentation:True
+#NOT_TRAINABLE:dense1,
+agg:True
+edges:False
+hinge:1
+mod_net:None
+adapt_eta:False
+update:sgd
+batch_size:500
+eta_init:3
+train:False
+#reg_param_weights:.1
+num_epochs:50
+seed:45239
+global_prob:(.5,.5)
+Mnist:mnist
+output:OUTPUTloc
+write_sparse:True
+name:input1
+name:conv1R;num_filters:8;pad:(1, 1);filter_size:(3,3);non_linearity:lasagne.sigmoid;parent:input1
+name:pool1;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:conv1R
+name:conv2R;num_filters:32;pad:(1,1);filter_size:(3,3);non_linearity:lasagne.sigmoid;parent:pool1
+name:pool2;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:conv2R
+name:newdens1;num_units:200;non_linearity:lasagne.sigmoid;gain:1.;parent:pool2
+name:newdens4;num_units:10;gain:1.;non_linearity:lasagne.linear;parent:newdens1;final:final

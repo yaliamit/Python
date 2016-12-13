@@ -20,10 +20,10 @@ def rotate_dataset_rand(X,angle=0,scale=0,shift=0,gr=0,flip=False,blur=False,sat
     s=np.shape(X)
     Xr=np.zeros(s)
     cent=np.array(s[2:4])/2
-    angles=np.random.rand(Xr.shape[0])*angle-angle/2.
-    #aa=np.random.rand(Xr.shape[0])*.25
-    #aa[(len(aa)/2):]=aa[(len(aa)/2):]+.75
-    #angles=aa*angle-angle/2
+    #angles=np.random.rand(Xr.shape[0])*angle-angle/2.
+    aa=np.random.rand(Xr.shape[0])*.25
+    aa[(len(aa)/2):]=aa[(len(aa)/2):]+.75
+    angles=aa*angle-angle/2
     SX=np.exp(np.random.rand(Xr.shape[0],2)*scale-scale/2.)
     SH=np.int32(np.round(np.random.rand(Xr.shape[0],2)*shift)-shift/2)
     FL=np.zeros(Xr.shape[0])

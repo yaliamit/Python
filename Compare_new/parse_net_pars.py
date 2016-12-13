@@ -150,8 +150,8 @@ def parse_text_file(net_name,NETPARS,lname='layers', dump=False):
                 LAYERS[-1]['non_linearity']=make_net.rect_sym
             elif NETPARS['hinge'] == 'rect':
                 LAYERS[-1]['non_linearity']=lasagne.nonlinearities.rectify
-            else:
-                LAYERS[-1]['non_linearity']=lasagne.nonlinearities.sigmoid
+            # else:
+            #     LAYERS[-1]['non_linearity']=lasagne.nonlinearities.sigmoid
         if (len(LAYERS)):
             NETPARS[lname]=LAYERS
 

@@ -164,14 +164,14 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             if ('hinge' not in NETPARS or not NETPARS['hinge']):
                 aloss = lasagne.objectives.categorical_crossentropy(pred, target_var)
             else:
-                aloss = multiclass_hinge_loss_alt(pred,target_var,2)
+                aloss = multiclass_hinge_loss_alt(pred,target_var,delta=NETPARS['hinge'])
 
             loss = aloss.mean()
             loss=loss+spe
             acc = T.mean(T.eq(T.argmax(pred, axis=1), target_var),
                           dtype=theano.config.floatX)
             # for p in params:
-            #     gloss.append(T.grad(loss,p))
+            #      gloss.append(T.grad(loss,p))
             # Instead of randomly dropping inputs drop updates on some subsets of weights.
             # This is a more severe drop because it doesn't update this subset at all in that step.
         else: #Output is two tensors that need to be compared through correlation

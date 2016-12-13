@@ -12,7 +12,7 @@ parms['train']=True
 parms['mult']=1
 parms['use_existing']=False
 parms['start']=0
-parms['output']='OUTPUT'
+
 
 parms=manage_OUTPUT.process_args(sys.argv,parms)
 parms['start']=np.int(parms['start'])

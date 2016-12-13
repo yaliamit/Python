@@ -4,16 +4,18 @@ import theano.tensor as T
 import lasagne
 from lasagne import init
 from lasagne import nonlinearities
-import newdot
 from lasagne.layers.base import Layer
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
-from theano import printing
 import theano
+from theano import printing
+import theano.sparse as sparse
+import sparse_new
+import scipy.sparse as sp
 __all__ = [
     "NewDenseLayer",
 ]
 
-class NewDenseLayer(Layer):
+class SparseDenseLayer(Layer):
     """
     lasagne.layers.DenseLayer(incoming, num_units,
     W=lasagne.init.GlorotUniform(), b=lasagne.init.Constant(0.),
@@ -57,28 +59,24 @@ class NewDenseLayer(Layer):
     convolutional layer, for example. It is not necessary to insert a
     :class:`FlattenLayer` in this case.
     """
-    def __init__(self, incoming, num_units, W=init.GlorotUniform(), R=init.GlorotUniform(),
-                 Wzero=init.Uniform(range=(0.,1.)),Rzero=init.Uniform(range=(0.,1.)),
-                 b=init.Constant(0.), prob=np.array((.5,.5)),
+    def __init__(self, incoming, num_units, W=None, R=None,
+                 b=init.Constant(0.),
                  nonlinearity=nonlinearities.rectify,
                  **kwargs):
-        super(NewDenseLayer, self).__init__(incoming, **kwargs)
+        super(SparseDenseLayer, self).__init__(incoming, **kwargs)
         self.nonlinearity = (nonlinearities.identity if nonlinearity is None
                              else nonlinearity)
         self._srng = RandomStreams(lasagne.random.get_rng().randint(1, 2147462579))
         self.num_units = num_units
 
         num_inputs = int(np.prod(self.input_shape[1:]))
-
+        if (W is None):
+            W=theano.shared(sp.csc_matrix(np.float32(np.eye(num_inputs, num_units))))
         self.W = self.add_param(W, (num_inputs, num_units), name="W")
+        if (R is None):
+            R=theano.shared(sp.csc_matrix(np.float32(np.eye(num_inputs, num_units))))
         self.R = self.add_param(R, (num_inputs, num_units), name="R")#, trainable=False)
-        self.prob = prob
-        self.Wzero=self.add_param(Wzero,(num_inputs,num_units),name="Wzero", trainable=False)
-        self.Rzero=self.add_param(Rzero,(num_inputs,num_units),name="Rzero", trainable=False)
-        self.Wzero=self.Wzero<self.prob[0]
-        self.Rzero=self.Rzero<self.prob[1]
-        self.W=self.W*self.Wzero
-        self.R=self.R*self.Rzero
+
 
         if b is None:
             self.b = None
@@ -94,7 +92,7 @@ class NewDenseLayer(Layer):
             # if the input has more than two dimensions, flatten it into a
             # batch of feature vectors.
             input = input.flatten(2)
-        activation = newdot.newdot(input, self.W,self.R, self.prob, self.Wzero, self.Rzero)
+        activation = sparse_new.new_structured_dot(input, self.W, self.R)
         if self.b is not None:
             activation = activation + self.b.dimshuffle('x', 0)
         return self.nonlinearity(activation)

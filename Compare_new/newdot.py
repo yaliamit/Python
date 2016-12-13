@@ -17,34 +17,29 @@ class NewDotOp(theano.Op):
 
     def make_node(self, *inputs):
         inputs = list(map(theano.tensor.basic.as_tensor_variable, inputs))
-        if len(inputs) != 4:
-            raise TypeError(
-                'AffineOP: 4 arguments required, %d given ' %
-                len(inputs))
+        # if len(inputs) != 4:
+        #     raise TypeError(
+        #         'AffineOP: 4 arguments required, %d given ' %
+        #         len(inputs))
 
         i_broadcastables = [input.type.broadcastable for input in inputs]
-        bx, by, br, bp = i_broadcastables
+        bx, by, br, bp, byz, brz = i_broadcastables
         if len(by) == 2:  # y is a matrix
             bz = bx[:-1] + by[-1:]
         elif len(by) == 1:  # y is vector
             bz = bx[:-1]
 
-        self.srng = RandomStreams(seed=234)
+        self.srng = RandomStreams(numpy.random.randint(1,high=2147462579))
         self.prob=inputs[3]
+
         i_dtypes = [input.type.dtype for input in inputs[0:3]]
         outputs = [theano.tensor.basic.tensor(scal.upcast(*i_dtypes), bz)]
-        return theano.Apply(self, inputs[0:3], outputs)
+        return theano.Apply(self, inputs[0:3]+inputs[4:6], outputs)
 
     def perform(self, node, inp, out):
-        x, y, R = inp
+        x, y, R, Wzer, Rzer = inp
         u, = out
 
-        # x=T.fscalar()
-        # hello_world_op=printing.Print("Hello World")
-        # printed_x=hello_world_op(x)
-        # f=theano.function([x],printed_x)
-        # #aa=R.eval()
-        # f(R[0,0])
         # the asarray is here because dot between two vectors
         # gives a numpy float object but we need to return a 0d
         # ndarray
@@ -52,7 +47,7 @@ class NewDotOp(theano.Op):
 
     def grad(self, inp, grads):
 
-        x, y, R = inp
+        x, y, R, Wzer, Rzer = inp
         gz, = grads
         xdim, ydim, gdim = x.type.ndim, y.type.ndim, gz.type.ndim
 
@@ -80,11 +75,13 @@ class NewDotOp(theano.Op):
         elif xdim == ydim == 2:
             #xgrad = T.dot(gz, y.T)
             xgrad = T.dot(gz, R.T)
+            # Gradient of weights - input*deltas^t - zero'd out for those that don't exist.
             yygrad = T.dot(x.T,gz)
-            u=(self.srng.uniform(yygrad.shape)<self.prob.data[0])
-            ygrad=yygrad*u
-        v=(self.srng.uniform(yygrad.shape)<self.prob.data[1])
-        zgrad=yygrad*v
+            #u=(self.srng.uniform(yygrad.shape)<self.prob.data[0])
+            ygrad=yygrad*Wzer
+
+        #v=(self.srng.uniform(yygrad.shape)<self.prob.data[1])
+        zgrad=yygrad*Rzer
 
         #d_prob=theano.gradient.grad_undefined(self,3,prob)
 
@@ -99,12 +96,10 @@ class NewDotOp(theano.Op):
             ygrad = theano.tensor.basic.patternbroadcast(ygrad, y.broadcastable)
         if zgrad.broadcastable != R.broadcastable:
             zgrad = theano.tensor.basic.patternbroadcast(zgrad, R.broadcastable)
-        #rval = xgrad, ygrad, zgrad, d_prob
+        Wz=theano.gradient.grad_undefined(self,3,Wzer)
+        Rz=theano.gradient.grad_undefined(self,4,Rzer)
 
-        #for elem in rval:
-         #   assert elem.dtype.find('float') != -1
-        #rval=rval+(zgrad,)
-        return xgrad, ygrad, zgrad
+        return xgrad, ygrad, zgrad, Wz, Rz
 
 
 newdot = NewDotOp()

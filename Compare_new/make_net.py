@@ -5,12 +5,14 @@ import lasagne
 import theano.tensor as T
 import parse_net_pars
 import os
-import newdense_new
+import newdense
+import newdensesparse
 import lasagne.init
 import lasagne.utils
 import Conv2dLayerR
 import theano.tensor.nnet
-
+import densesparse
+import scipy.sparse as sp
 # Experimenting with git
 # Experimenting again
 # And again
@@ -270,13 +272,34 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
         elif 'newdens' in l['name']:
                 for lay in input_la:
                     if (len(layer_list)==0):
-                        layer_list.append(newdense_new.NewDenseLayer(lay,name=l['name'],num_units=l['num_units'],
+                        layer_list.append(newdense.NewDenseLayer(lay,name=l['name'],num_units=l['num_units'],
                                                                     W=lasagne.init.GlorotUniform(gain=gain),
                                                                     R=lasagne.init.GlorotUniform(gain=gain),
                                                                     b=None, prob=prob,nonlinearity=l['non_linearity']))
                     else:
                         layer_list.append(lasagne.layers.DenseLayer(lay,num_units=l['num_units'],nonlinearity=l['non_linearity'],
                                           W=layer_list[0].W, b=layer_list[0].b))
+        elif 'sparse' in l['name']:
+            for lay in input_la:
+
+                if (len(layer_list)==0):
+                    if ('R' in l['name']):
+                        layer_list.append(newdensesparse.SparseDenseLayer(lay,num_units=l['num_units'],
+                                                          b=None,nonlinearity=l['non_linearity'],name=l['name']))
+                    else:
+                        layer_list.append(densesparse.SparseDenseLayer(lay,num_units=l['num_units'],
+                                                          b=None,nonlinearity=l['non_linearity'],name=l['name']))
+                else:
+                    if ('R' in l['name']):
+                        layer_list.append(newdensesparse.SparseDenseLayer(lay,num_units=l['num_units'],
+                                                          b=None,nonlinearity=l['non_linearity'],name=l['name']))
+                    else:
+                        layer_list.append(densesparse.SparseDenseLayer(lay,num_units=l['num_units'],
+                                        nonlinearity=l['non_linearity'],
+                                          W=layer_list[0].W, b=layer_list[0].b))
+        elif 'reshape' in l['name']:
+            for lay in input_la:
+                layer_list.append(lasagne.layers.ReshapeLayer(lay,([0],)+l['shape'],name=l['name']))
         elif 'global_average' in l['name']:
             for lay in input_la:
                 name=None
@@ -303,6 +326,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
             cc=0
             if (hasattr(la,'input_layer') and la.name is not None):
                     cc=lasagne.layers.count_params(la,trainable=True)-lasagne.layers.count_params(la.input_layer,trainable=True)
+
             print(l['name'],'length',len(network[l['name']]),'input',sin,'output',sout,'num params',cc)
 
         if ('final' in l):
@@ -322,8 +346,11 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
             spars=np.load(PARS['net']+'.npy')
             spars32=[]
             for p in spars:
-                pp=np.float32(p)
-                spars32.append(pp)
+                 if (p.dtype == np.float32):
+                        pp=p
+                 else:
+                        pp=np.float32(p)
+                 spars32.append(pp)
             lasagne.layers.set_all_param_values(fnet,spars32)
 
     if ('NOT_TRAINABLE' in PARS or 'REMOVE' in PARS or 'INSERT_LAYERS' in PARS):
@@ -431,6 +458,11 @@ def make_file_from_params(network,NETPARS):
                   +str(l.filter_size)+';stride:'+str(l.stride)+';non_linearity:'+sfunc
                 if (hasattr(l,'prob')):
                     s=s+';prob:'+str(l.prob)
+            elif ('reshape' in l.name):
+                s='name:'+l.name+';shape:'+str(l.shape[1:])
+            elif ('sparse' in l.name):
+                sfunc='lasagne.nonlinearity.'+l.nonlinearity.func_name
+                s='name:'+l.name+';num_units:'+str(l.num_units)+';non_linearity:'+sfunc
             elif ('noise' in l.name):
                 p=l.p
                 s=None
@@ -460,7 +492,6 @@ def make_file_from_params(network,NETPARS):
             elif ('merge' in l.name):
                 s=None
                 continue
-
             if (not 'input' in l.name and not 'noise' in l.name):
                 if (hasattr(l,'input_layer') and 'merge' not in l.input_layer.name):
                     if (l.input_layer.name is not None):
