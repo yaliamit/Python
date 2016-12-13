@@ -2,7 +2,7 @@
 # Running start_class and this is in GIT
 rm OUTPUT.txt
 #python start_class.py  net=Amodels/igor2e_s_aug_rand mod_net=Amodels/igor2e_s_aug_rand_mod start=0 mult=20 > OUTPUT.txt
-python start_class.py net=Amodels/fnsR > OUTPUT.txt
-#python start_class.py net=Amodels/spfnsR start=1 mult=2 use_existing=True write_sparse=False
+#python start_class.py net=Amodels/fnsR > OUTPUT.txt
+python start_class.py net=Amodels/spfnsR start=1 mult=2 use_existing=True write_sparse=False
 #python start_class.py net=Amodels/igor2e_s_aug_rand use_existing=1 start=2 mult=3 num_epochs=200  > OUTPUT.txt
 #python start_class.py net=fns > OUTPUT.txt
