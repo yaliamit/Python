@@ -366,6 +366,11 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                             elif ('batch' in n):
                                 l.params[l.beta].remove('trainable')
                                 l.params[l.gamma].remove('trainable')
+                            elif ('sparse' in n):
+                                l.params[l.W].remove('trainable')
+                                #l.params[l.b].remove('trainable')
+                                if('R' in n):
+                                    l.params[l.R].remove('trainable')
                             break
         #These layers will be removed
         if ('REMOVE' in PARS and PARS['REMOVE'] is not None):
