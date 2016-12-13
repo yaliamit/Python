@@ -249,9 +249,11 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
     print('Done making sparse network')
     spparams=lasagne.layers.get_all_param_values(new_net)
     params=lasagne.layers.get_all_param_values(network)
-    np.save('sp'+NETPARS['output_net'],spparams)
     PARS=NETPARS.copy()
-    PARS['output_net']='sp'+PARS['output_net']
+    ss=str.split(PARS['output_net'],'/')
+    ss[-1]='sp'+ss[-1]
+    PARS['output_net']='/'.join(ss)
+    np.save(PARS['output_net'],spparams)
     make_net.make_file_from_params(new_net,PARS)
     print("done writing it")
 
