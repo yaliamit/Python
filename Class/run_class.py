@@ -234,6 +234,8 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
             layer_list.append(lasagne.layers.Pool2DLayer(layer_list[-1],pool_size=l.pool_size, name=l.name))
         elif 'dense' in l.name:
             layer_list.append(lasagne.layers.DenseLayer(layer_list[-1],num_units=l.num_units,nonlinearity=l.nonlinearity,W=l.W, b=None, name=l.name))
+        elif 'batch' in l.name:
+            layer_list.append(lasagne.layers.BatchNormLayer(layer_list[-1],name=l.name,beta=l.beta,gamma=l.gamma,mean=l.mean,inv_std=l.inv_std))
         elif 'newdens' in l.name:
             lpars=lasagne.layers.get_all_param_values(l)
             # W=l.W.eval()
@@ -243,11 +245,12 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
             layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=l.num_units,
                                             nonlinearity=l.nonlinearity,W=lpars[-4],R=lpars[-3], Wzero=lpars[-2], Rzero=lpars[-1], b=None, name=l.name))
         elif 'conv' in l.name:
-            num_units=SP[t].shape[1]
-            W = theano.shared(SP[t])
-            t+=1
-            # Sparse and separate R
+            # Sparse
             if 'S' in l.name:
+                num_units=SP[t].shape[1]
+                W = theano.shared(SP[t])
+                t+=1
+                # Also separate R
                 if 'R' in l.name:
                     R=theano.shared(SP[t])
                     t=t+1
@@ -264,11 +267,11 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
             else:
                 # Separate R
                 if 'R' in l.name:
-                    layer_list.append(Conv2dLayerR.Conv2DLayerR(layer_list[-1], num_filters=l.num_filters, filter_size=l.filter_size,
-                                nonlinearity=l.nonlin,W=W,R=R,prob=l.prob,name=l['name'], b=None))
+                    layer_list.append(Conv2dLayerR.Conv2DLayerR(layer_list[-1], pad=l.pad, num_filters=l.num_filters, filter_size=l.filter_size,
+                                nonlinearity=l.nonlinearity,W=l.W,R=l.R,prob=l.prob,name=l.name, b=None))
                 else:
-                    layer_list.append(lasagne.layers.Conv2DLayer(layer_list[-1],num_filters=l.num_filters,
-                                                             filter_size=l.filter_size,pad=l.pad,W=W,nonlinearity=l.nonlinearity))
+                    layer_list.append(lasagne.layers.Conv2DLayer(layer_list[-1],num_filters=l.num_filters,name=l.name,
+                                                             filter_size=l.filter_size,pad=l.pad,W=l.W,nonlinearity=l.nonlinearity))
 
 
     new_net=layer_list[-1]
