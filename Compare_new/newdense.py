@@ -59,7 +59,7 @@ class NewDenseLayer(Layer):
     """
     def __init__(self, incoming, num_units, W=init.GlorotUniform(), R=init.GlorotUniform(),
                  Wzero=init.Uniform(range=(0.,1.)),Rzero=init.Uniform(range=(0.,1.)),
-                 b=init.Constant(0.), prob=np.array((.5,.5)),
+                 b=init.Constant(0.), prob=(.5,.5),
                  nonlinearity=nonlinearities.rectify,
                  **kwargs):
         super(NewDenseLayer, self).__init__(incoming, **kwargs)

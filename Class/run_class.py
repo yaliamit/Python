@@ -1,11 +1,8 @@
 from __future__ import print_function
 
-
-import mnist
 import make_net
 import numpy as np
 import theano
-import theano.sparse as sparse
 import theano.typed_list
 import theano.tensor as T
 import time
@@ -17,6 +14,7 @@ import scipy.sparse as sp
 import densesparse
 import newdensesparse
 import newdense
+import Conv2dLayerR
 
 def get_confusion_matrix(pred,y):
         num_class=np.max(y)+1
@@ -150,7 +148,7 @@ def get_matrix_func(network,input_var):
     GET_CONV=[]
     for l in layers:
         if (l.name is not None):
-            if ('conv' in l.name):
+            if ('conv' in l.name and 'S' in l.name):
                     dims=l.input_shape[1:]
                     input_v=T.tensor4()
                     new_layer=lasagne.layers.InputLayer(shape=(None,dims[0],dims[1],dims[2]),input_var=input_v)
@@ -177,21 +175,35 @@ def get_matrix_func(network,input_var):
 # Apply the functions to get the matrices and turn them into sparse matrices
 def get_matrix(l,gl):
                     dims=l.input_shape[1:]
-                    nd=np.prod(dims)
-                    XX=np.zeros((nd,)+dims)
+                    nda=np.prod(dims[1:])
+
                     t=0
                     # Create the identity matrix that will extract the sparse matrix corresponding
                     # to the linear map defined by conv.
-                    for i in range(dims[0]):
-                        for j in range(dims[1]):
-                            for k in range(dims[2]):
-                                XX[t,i,j,k]=1.
-                                t+=1
-                    XX=np.float32(XX)
-                    YY=gl(XX)
-                    YY=np.reshape(YY,(YY.shape[0],np.prod(YY.shape[1:])))
-                    csc=sp.csc_matrix(YY)
-                    print('Sparsity:',YY.shape,len(csc.data),np.float32(len(csc.data))/np.prod(YY.shape))
+                    rr=tuple(np.arange(0,dims[0],4))+(dims[0],)
+                    yy=0
+                    for r in range(len(rr)-1): #range(dims[0]):
+                        print('r',r)
+                        nd=(rr[r+1]-rr[r])*nda
+                        XX=np.zeros((nd,)+dims)
+                        t=0
+                        for i in np.arange(rr[r],rr[r+1],1):
+                            for j in range(dims[1]):
+                                for k in range(dims[2]):
+                                    XX[t,i,j,k]=1.
+                                    t+=1
+                        XX=np.float32(XX)
+                        YY=gl(XX)
+                        YY=np.reshape(YY,(YY.shape[0],np.prod(YY.shape[1:])))
+                        yy+=np.prod(YY.shape)
+                        print(yy)
+                        if (r==0):
+                            csc=sp.csc_matrix(YY)
+                        else:
+                            cscr=sp.csc_matrix(YY)
+                            csc=sp.vstack([csc,cscr],format='csc')
+
+                    print('Sparsity:',yy,len(csc.data),np.float32(len(csc.data))/yy)
                     return(csc)
 
 # Put the sparse matrices in a new network and write it out.
@@ -202,7 +214,7 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
     SP=[]
     for l in layers:
         if (l.name is not None):
-            if ('conv' in l.name):
+            if ('conv' in l.name and 'S' in l.name):
                 SP.append(get_matrix(l,GET_CONV[il]))
                 il+=1
                 if ('R' in l.name):
@@ -217,7 +229,7 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
         if 'input' in l.name:
             layer_list.append(lasagne.layers.InputLayer(l.shape,input_var=l.input_var,name=l.name))
         elif 'drop' in l.name:
-            layer_list.append(lasagne.layers.dropout(layer_list[-1],p=l.p, name=l.name))
+            layer_list.append(lasagne.layers.DropoutLayer(layer_list[-1],p=l.input_layers[1].p, name=l.name))
         elif 'pool' in l.name:
             layer_list.append(lasagne.layers.Pool2DLayer(layer_list[-1],pool_size=l.pool_size, name=l.name))
         elif 'dense' in l.name:
@@ -234,16 +246,30 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
             num_units=SP[t].shape[1]
             W = theano.shared(SP[t])
             t+=1
-            if 'R' in l.name:
-                R=theano.shared(SP[t])
-                t=t+1
-                layer_list.append(newdensesparse.SparseDenseLayer(layer_list[-1],num_units=num_units,
+            # Sparse and separate R
+            if 'S' in l.name:
+                if 'R' in l.name:
+                    R=theano.shared(SP[t])
+                    t=t+1
+                    layer_list.append(newdensesparse.SparseDenseLayer(layer_list[-1],num_units=num_units,
                                             W=W,R=R, b=None,nonlinearity=l.nonlinearity,name='sparseR'+str(t)))
-            else:
-                layer_list.append(newdense.SparseDenseLayer(layer_list[-1],num_units=num_units,
+            # JUst sparse
+                else:
+                    layer_list.append(newdense.SparseDenseLayer(layer_list[-1],num_units=num_units,
                                             W=W, b=None,nonlinearity=l.nonlinearity,name='sparse'+str(t)))
-            shp=l.output_shape[1:]
-            layer_list.append(lasagne.layers.reshape(layer_list[-1],([0],)+shp,name='reshape'+str(t)))
+                # Reshape for subsequent pooling
+                shp=l.output_shape[1:]
+                layer_list.append(lasagne.layers.reshape(layer_list[-1],([0],)+shp,name='reshape'+str(t)))
+            # Stays conv
+            else:
+                # Separate R
+                if 'R' in l.name:
+                    layer_list.append(Conv2dLayerR.Conv2DLayerR(layer_list[-1], num_filters=l.num_filters, filter_size=l.filter_size,
+                                nonlinearity=l.nonlin,W=W,R=R,prob=l.prob,name=l['name'], b=None))
+                else:
+                    layer_list.append(lasagne.layers.Conv2DLayer(layer_list[-1],num_filters=l.num_filters,
+                                                             filter_size=l.filter_size,pad=l.pad,W=W,nonlinearity=l.nonlinearity))
+
 
     new_net=layer_list[-1]
     print('Done making sparse network')

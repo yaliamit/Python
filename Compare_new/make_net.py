@@ -145,12 +145,12 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
         gain=1.
         if ('gain' in l):
             gain=l['gain']
-        prob=np.array((.5,.5))
+        prob=(.5,.5)
         if ('prob' in l):
-            prob=np.array(l['prob'])
+            prob=l['prob']
         if ('global_prob' in PARS):
-            prob=np.array(PARS['global_prob'])
-        prob=np.float32(prob)
+            prob=PARS['global_prob']
+        prob=tuple([np.float32(i) for i in prob])
         #prob.shape=(1,2)
         if ('parent' in l):
             ip=l['parent']
@@ -452,7 +452,7 @@ def make_file_from_params(network,NETPARS):
                         s=s+';'+skey+':'+str(svalue)
                 ss.append(s)
     layers=lasagne.layers.get_all_layers(network)
-
+    p=None
     for l in layers:
         if (l.name is not None):
             if ('input' in l.name):
@@ -481,6 +481,9 @@ def make_file_from_params(network,NETPARS):
             elif ('feat' in l.name):
                 s='name:'+l.name+';pool_size:'+str(l.pool_size)
             elif ('drop' in l.name):
+                # Regular drop layer.
+                if (p is None):
+                    p=l.p
                 s='name:'+l.name+';drop:'+str(p)
             elif ('pool' in l.name):
                 if (hasattr(l,'mode')):

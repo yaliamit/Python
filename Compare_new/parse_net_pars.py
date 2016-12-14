@@ -82,9 +82,15 @@ def process_network_line(line,global_drop):
                         if '(' in s[1]:
                             aa=str.split(str.strip(s1,' ()\n'),',')
                             a=[]
-                            for aaa in aa:
-                                a.append(int(aaa))
-                            a=tuple(a)
+                            try:
+                                int(aa[0])
+                                for aaa in aa:
+                                    a.append(int(aaa))
+                                a=tuple(a)
+                            except ValueError:
+                                for aaa in aa:
+                                    a.append(float(aaa))
+                                a=tuple(a)
                         elif '[' in s[1]:
                             aa=str.split(str.strip(s1,' []\n'),',')
                             a=[]
