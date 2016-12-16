@@ -250,7 +250,10 @@ def get_train(NETPARS):
         pad=0
         if ('data_pad' in NETPARS):
             pad=NETPARS['data_pad']
-        X_train, y_train, X_val, y_val, X_test, y_test = mnist.load_dataset(pad=pad, nval=10000)
+        nval=5000
+        if ('num_val' in NETPARS):
+            nval=NETPARS['num_val']
+        X_train, y_train, X_val, y_val, X_test, y_test = mnist.load_dataset(pad=pad, nval=nval)
         if (not NETPARS['train']):
             X_train=None
             X_val=None
