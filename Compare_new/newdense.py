@@ -78,7 +78,8 @@ class NewDenseLayer(Layer):
         self.Wzero=self.Wzero<self.prob[0]
         self.Rzero=self.Rzero<self.prob[1]
         self.W=self.W*self.Wzero
-        self.R=self.R*self.Rzero
+        if (self.prob[1]>0.):
+            self.R=self.R*self.Rzero
 
         if b is None:
             self.b = None
