@@ -2,11 +2,18 @@ import commands
 import time
 import manage_OUTPUT
 import os
+import sys
 
-commands.getoutput('rm OUTPUTrcc.txt')
+print 'Number of arguments:', len(sys.argv), 'arguments.'
+print 'Argument List:', str(sys.argv)
+
+outname=sys.argv[1]
+
+commands.getoutput('rm' + outname +'rcc')
 commands.getoutput('./GIT.sh')
 commands.getoutput('ssh yaliamit@midway2.rcc.uchicago.edu \'cd Desktop/Dropbox/Python; git pull\'')
-os.system('ssh yaliamit@midway2.rcc.uchicago.edu \'rm Desktop/Dropbox/Python/Class/OUTPUT.txt\'')
+remcom='rm Desktop/Dropbox/Python/Class/'+outname
+os.system('ssh yaliamit@midway2.rcc.uchicago.edu+' ' + remcom ')
 os.system('ssh yaliamit@midway2.rcc.uchicago.edu \'cd Desktop/Dropbox/Python/Class/; sbatch theano.sbatch \' & ')
 
 ss='start'
