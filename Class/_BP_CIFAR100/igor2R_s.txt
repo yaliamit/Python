@@ -10,7 +10,7 @@ use_existing:False
 eta_init:0.001
 train:True
 Mnist:False
-num_train:5200
+num_train:50000
 agg:True
 adapt_eta:False
 hinge:2

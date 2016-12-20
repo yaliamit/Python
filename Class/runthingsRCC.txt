@@ -6,6 +6,6 @@ rm OUTPUT.txt
 #python start_class.py net=Amodels/spigor2R_s start=1 mult=2 use_existing=True write_sparse=False
 #python start_class.py net=Amodels/igor2e_s_aug_rand use_existing=1 start=2 mult=3 num_epochs=200  > OUTPUT.txt
 #python start_class.py net=fns > OUTPUT.txt
-python start_class.py net=_BP_CIFAR100/igor2e_s > OUTPUT.txt
+python start_class.py net=_BP_CIFAR10/igor2e_s > OUTPUTR.txt
 #sleep 2m
 #python start_class.py net=_BP_CIFAR10/spigor2R_s start=3 mult=4 use_existing=True write_sparse=False train=True > OUTPUT.txt
