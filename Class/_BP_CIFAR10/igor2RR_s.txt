@@ -1,6 +1,6 @@
 eta_current:0.0010000000475
 seed:481522
-num_epochs:300
+num_epochs:600
 simple_augmentation:True
 mod_net:None
 global_drop:0.5
