@@ -11,9 +11,9 @@ outname=sys.argv[1]
 OUTNAME=outname+'.txt'
 lOUTNAME=outname+'rcc.txt'
 remcom='rm Desktop/Dropbox/Python/Class/'+outname+'.txt'
-#os.system('ssh yaliamit@midway2.rcc.uchicago.edu' + ' ' + remcom)
+os.system('ssh yaliamit@midway2.rcc.uchicago.edu' + ' ' + remcom)
 
-#commands.getoutput('rm' + outname +'rcc.txt')
+commands.getoutput('rm' + outname +'rcc.txt')
 commands.getoutput('./GIT.sh')
 commands.getoutput('ssh yaliamit@midway2.rcc.uchicago.edu \'cd Desktop/Dropbox/Python; git pull\'')
 
@@ -33,7 +33,7 @@ pnn=commands.getoutput('grep NNN ' + lOUTNAME)
 pnnn=str.split(pnn,':')
 netname=str.strip(pnnn[1],' ,\')')
 
-com='scp yaliamit@midway2.rcc.uchicago.edu:Desktop/Dropbox/Python/Class/'+netname+'.* _rcc/Amodels/.'
+com='scp yaliamit@midway2.rcc.uchicago.edu:Desktop/Dropbox/Python/Class/'+netname+'.*  _rcc/Amodels/.'
 os.system(com)
 manage_OUTPUT.print_OUTPUT(outname+'rcc')
 
