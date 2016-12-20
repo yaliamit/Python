@@ -6,10 +6,15 @@ import sys
 
 print 'Number of arguments:', len(sys.argv), 'arguments.'
 print 'Argument List:', str(sys.argv)
-
-outname=sys.argv[1]
+l=len(sys.argv)
+outname=sys.argv[-1]
 OUTNAME=outname+'.txt'
 lOUTNAME=outname+'rcc.txt'
+ss='python start_class.py '+' '.join(sys.argv[1:l-1]) + '>'+OUTNAME
+f=open('runthingsRCC.txt','w')
+f.write(ss+'\n')
+f.close()
+
 remcom='rm Desktop/Dropbox/Python/Class/'+outname+'.txt'
 os.system('ssh yaliamit@midway2.rcc.uchicago.edu' + ' ' + remcom)
 
