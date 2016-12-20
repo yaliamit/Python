@@ -1,5 +1,4 @@
 num_train:5200
-num_val:0
 simple_augmentation:True
 agg:True
 mod_net:None
