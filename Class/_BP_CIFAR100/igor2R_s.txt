@@ -1,4 +1,4 @@
-seed:481522
+seed:1522456
 num_epochs:300
 simple_augmentation:True
 mod_net:None
@@ -7,7 +7,7 @@ update:adam
 batch_size:400
 update:sgd
 use_existing:False
-eta_init:0.1
+eta_init:0.01
 train:True
 Mnist:False
 num_train:50000
