@@ -12,6 +12,7 @@ net:igor2
 seed:12345
 reg_param:0
 Mnist:cifar_100
+hinge:1
 global_drop:0.5
 #dict:trans;num_rand:1;angle:0;scale:0;scale_step:None;shear:0;insert:True;shift:0;flip:True;blur:True;saturation:True;spl:None;gr:False # Parameters for transforming images.
 name:input1
@@ -32,4 +33,4 @@ name:batch3;parent:pool3
 name:drop3;drop:0.5;parent:batch3
 name:dense4;num_units:256;non_linearity:lasagne.nonlinearity.rectify;parent:drop3
 name:drop4;drop:0.5;parent:dense4
-name:dense;num_units:100;non_linearity:lasagne.nonlinearity.softmax;parent:drop4;final:final
+name:dense;num_units:100;non_linearity:lasagne.nonlinearity.linear;parent:drop4;final:final
