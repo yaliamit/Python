@@ -12,7 +12,7 @@ Mnist:cifar_100
 num_train:50000
 agg:True
 adapt_eta:False
-hinge:1
+hinge:False
 dep_scale:2.
 output:OUTPUTloc
 reg_param:0
@@ -32,4 +32,4 @@ name:batch3;parent:pool3
 name:drop3;drop:0.5;parent:batch3
 name:newdens1;num_units:256;non_linearity:lasagne.nonlinearity.sigmoid;parent:drop3
 name:drop4;drop:0.5;parent:newdens1
-name:newdens2;num_units:100;non_linearity:lasagne.nonlinearity.linear;parent:drop4;final:final
+name:newdens2;prob:(1.,1.);num_units:100;non_linearity:lasagne.nonlinearity.softmax;parent:drop4;final:final
