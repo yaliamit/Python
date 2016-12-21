@@ -7,7 +7,7 @@ update:adam
 batch_size:400
 update:adam
 use_existing:False
-eta_init:0.1
+eta_init:0.001
 train:True
 Mnist:cifar_100
 num_train:50000
