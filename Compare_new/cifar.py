@@ -11,10 +11,12 @@ def load_dataset(data_set,num_train=50000, num_test=10000, num_val=5000, marg=0,
     val_x=None
     val_y=None
     if (data_set=='cifar_100'):
+        print('loading cifar_100')
         if (Train):
             Tr_x, Tr_y = dd.io.load_cifar_100('training', offset=0, count=50000, marg=marg)
         te_x, te_y = dd.io.load_cifar_100('testing', offset=0, count=10000, marg=marg)
     else:
+        print('loading cifar_10')
         if (Train):
             Tr_x, Tr_y = dd.io.load_cifar_10('training', offset=0, count=50000, marg=marg)
         te_x, te_y = dd.io.load_cifar_10('testing', offset=0, count=10000, marg=marg)

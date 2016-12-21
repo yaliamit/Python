@@ -5,11 +5,11 @@ mod_net:None
 global_drop:0.5
 update:adam
 batch_size:400
-update:sgd
+update:adam
 use_existing:False
-eta_init:0.01
+eta_init:0.1
 train:True
-Mnist:False
+Mnist:cifar_100
 num_train:50000
 agg:True
 adapt_eta:False
