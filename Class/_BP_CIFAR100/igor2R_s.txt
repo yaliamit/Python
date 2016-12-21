@@ -13,6 +13,7 @@ num_train:50000
 agg:True
 adapt_eta:False
 hinge:1
+dep_scale:2.
 output:OUTPUTloc
 reg_param:0
 name:input1
