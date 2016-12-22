@@ -72,6 +72,7 @@ def plot_OUTPUT(name='OUTPUT'):
     import commands
     import numpy as np
     import pylab as py
+    py.ion()
     bt=np.fromstring(commands.getoutput('grep Train ' + name + '.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
     bv=np.fromstring(commands.getoutput('grep Val ' + name + '.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
     print(len(bt))
@@ -79,4 +80,4 @@ def plot_OUTPUT(name='OUTPUT'):
 
     py.plot(bv,label='val')
     py.legend(loc=4)
-    py.show()
+    #py.show()
