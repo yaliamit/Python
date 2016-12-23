@@ -12,7 +12,7 @@ from theano.tensor.shared_randomstreams import RandomStreams
 
 
 
-def multiclass_hinge_loss_alt(predictions, targets, delta_up=1., delta_down=1.):
+def multiclass_hinge_loss_alt(predictions, targets, delta_up=1., delta_down=1., dep_fac=10.):
 
     num_cls = predictions.shape[1]
     if targets.ndim == predictions.ndim - 1:
@@ -23,7 +23,7 @@ def multiclass_hinge_loss_alt(predictions, targets, delta_up=1., delta_down=1.):
     rest = theano.tensor.reshape(predictions[(1-targets).nonzero()],
                                  (-1, num_cls-1))
     relc=theano.tensor.nnet.relu(delta_up-corrects)
-    relr=theano.tensor.nnet.relu(delta_down+rest)/(num_cls-1)
+    relr=dep_fac*theano.tensor.nnet.relu(delta_down+rest)/(num_cls-1)
     loss=theano.tensor.sum(relr,axis=1)+relc
     return loss
 
