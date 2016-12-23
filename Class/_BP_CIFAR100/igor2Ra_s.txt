@@ -12,8 +12,8 @@ Mnist:cifar_100
 num_train:50000
 agg:True
 adapt_eta:False
-hinge:2
-dep_scale:1.
+hinge:2.
+hinge_down:4.
 output:OUTPUTloc
 reg_param:0
 name:input1
