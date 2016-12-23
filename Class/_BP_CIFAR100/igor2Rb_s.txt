@@ -14,6 +14,7 @@ agg:True
 adapt_eta:False
 hinge:2.
 hinge_down:.2
+dep_fac:1.
 output:OUTPUTloc
 reg_param:0
 name:input1

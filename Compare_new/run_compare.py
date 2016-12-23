@@ -12,7 +12,7 @@ from theano.tensor.shared_randomstreams import RandomStreams
 
 
 
-def multiclass_hinge_loss_alt(predictions, targets, delta_up=1., delta_down=1., dep_fac=10.):
+def multiclass_hinge_loss_alt(predictions, targets, delta_up=1., delta_down=1., dep_fac=1.):
 
     num_cls = predictions.shape[1]
     if targets.ndim == predictions.ndim - 1:
@@ -165,9 +165,12 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
                 aloss = lasagne.objectives.categorical_crossentropy(pred, target_var)
             else:
                 delta_down=1.
+                dep_fac=1.
                 if ('hinge_down' in NETPARS):
                     delta_down=NETPARS['hinge_down']
-                aloss = multiclass_hinge_loss_alt(pred,target_var,delta_up=NETPARS['hinge'],delta_down=delta_down)
+                if ('dep_fac' in NETPARS):
+                    dep_fac=NETPARS['dep_fac']
+                aloss = multiclass_hinge_loss_alt(pred,target_var,delta_up=NETPARS['hinge'],delta_down=delta_down,dep_fac=dep_fac)
 
             loss = aloss.mean()
             loss=loss+spe
