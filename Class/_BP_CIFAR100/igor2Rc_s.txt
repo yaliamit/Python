@@ -12,7 +12,7 @@ Mnist:cifar_100
 num_train:50000
 agg:True
 adapt_eta:False
-hinge:1
+hinge:1.
 dep_scale:1.
 output:OUTPUTloc
 reg_param:0
