@@ -274,9 +274,13 @@ def get_train(NETPARS):
         iite=np.where(np.in1d(y_test,iin))
         iival=np.where(np.in1d(y_val,iin))
         X_train=X_train[iitr]; y_train=y_train[iitr];
+
         X_test=X_test[iite]; y_test=y_test[iite];
         X_val=X_val[iival]; y_val=y_val[iival]
-
+        for i,j in enumerate(list(iin)):
+            y_train[y_train==j]=i
+            y_test[y_test==j]=i
+            y_val[y_val==j]=i
 
     num_train=NETPARS['num_train']
     if (num_train==0):
