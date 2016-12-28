@@ -294,7 +294,7 @@ def main_new(NETPARS):
     batch_size=NETPARS['batch_size']
     print("Loading data...")
     X_train, y_train, X_val, y_val, X_test, y_test=data.get_train(NETPARS)
-    num_class=np.max(np.unique(y_test))+1
+    num_class=len(np.unique(y_test))
     # Prepare Theano variables for inputs and targets
     if (type(X_train) is not list):
         input_var =  T.tensor4('inputs')
