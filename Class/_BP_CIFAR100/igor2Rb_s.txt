@@ -1,4 +1,4 @@
-seed:1522456
+seed:245688
 num_class:30
 num_epochs:300
 simple_augmentation:True
