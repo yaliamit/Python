@@ -1,5 +1,5 @@
 seed:1522456
-num_class:10
+num_class:30
 num_epochs:300
 simple_augmentation:True
 mod_net:None
