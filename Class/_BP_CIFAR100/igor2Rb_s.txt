@@ -1,6 +1,6 @@
-seed:245688
+seed:2345688
 num_class:30
-num_epochs:300
+num_epochs:1000
 simple_augmentation:True
 mod_net:None
 global_drop:0.5
@@ -13,8 +13,8 @@ Mnist:cifar_100
 num_train:50000
 agg:True
 adapt_eta:False
-hinge:10.
-hinge_down:10.
+hinge:5.
+hinge_down:5.
 dep_fac:1.
 output:OUTPUTloc
 reg_param:0

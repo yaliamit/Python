@@ -270,6 +270,7 @@ def get_train(NETPARS):
         ii=range(ncl)
         np.random.shuffle(ii)
         iin=ii[0:NETPARS['num_class']]
+        print('Classes',iin)
         iitr=np.where(np.in1d(y_train,iin))
         iite=np.where(np.in1d(y_test,iin))
         iival=np.where(np.in1d(y_val,iin))
