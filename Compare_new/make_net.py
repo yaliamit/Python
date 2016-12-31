@@ -202,7 +202,9 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                         filter_size=PARS['dense_filter_size']
                 else:
                     filter_size=l['filter_size']
-
+                B=None
+                if ('b' in l):
+                    B=B=lasagne.init.Constant(l['b'])
                 for lay in input_la:
 
                     nonlin=lasagne.nonlinearities.identity
@@ -211,12 +213,12 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                     if (len(layer_list)==0):
                         if ('R' not in l['name']):
                             convp=lasagne.layers.Conv2DLayer(lay, num_filters=l['num_filters'], filter_size=filter_size,
-                                nonlinearity=nonlin,
+                                nonlinearity=nonlin,b=B,
                                 W=lasagne.init.GlorotUniform(),name=l['name'])
                         else:
                             convp=Conv2dLayerR.Conv2DLayerR(lay, num_filters=l['num_filters'], filter_size=filter_size,
-                                nonlinearity=nonlin,W=lasagne.init.GlorotUniform(gain=gain),
-                                R=lasagne.init.GlorotUniform(gain=gain),prob=prob,name=l['name'], b=None)
+                                nonlinearity=nonlin,W=lasagne.init.GlorotUniform(gain=gain),b=B,
+                                R=lasagne.init.GlorotUniform(gain=gain),prob=prob,name=l['name'])
                     else:
                         if ('R' not in l['name']):
                              convp=lasagne.layers.Conv2DLayer(
@@ -227,7 +229,10 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                                 lay,  num_filters=l['num_filters'], filter_size=filter_size,
                                 nonlinearity=nonlin,W=layer_list[0].W, b=layer_list[0].b)
                     convp=extra_pars(convp,l)
+                    if (B is not None):
+                        convp.params[convp.b].remove('trainable')
                     layer_list.append(convp)
+                    #layer_list[-1].params[layer_list[-1].b].remove('trainable')
         elif 'batch' in l['name']:
             for lay in input_la:
                 name=None
@@ -276,15 +281,20 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                 num_units=l['num_units']
                 if ('final' in l and 'num_class' in PARS):
                     num_units=PARS['num_class']
+                B=None
+                if ('b' in l):
+                    B=lasagne.init.Constant(l['b'])
                 for lay in input_la:
                     if (len(layer_list)==0):
                         layer_list.append(newdense.NewDenseLayer(lay,name=l['name'],num_units=num_units,
                                                                     W=lasagne.init.GlorotUniform(gain=gain),
                                                                     R=lasagne.init.GlorotUniform(gain=gain),
-                                                                    b=None, prob=prob,nonlinearity=l['non_linearity']))
+                                                                    b=B, prob=prob,nonlinearity=l['non_linearity']))
                     else:
                         layer_list.append(lasagne.layers.DenseLayer(lay,num_units=num_units,nonlinearity=l['non_linearity'],
                                           W=layer_list[0].W, b=layer_list[0].b))
+                    if (B is not None):
+                        layer_list[-1].params[layer_list[-1].b].remove('trainable')
         elif 'sparse' in l['name']:
             for lay in input_la:
                 if (len(layer_list)==0):
