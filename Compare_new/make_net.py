@@ -64,12 +64,13 @@ class Trunc_Normal(lasagne.init.Initializer):
 
 
 class SclLayer(lasagne.layers.Layer):
-    def __init__(self, incoming, scale=1., **kwargs):
+    def __init__(self, incoming, shift=0., scale=1., **kwargs):
         super(SclLayer, self).__init__(incoming, **kwargs)
         self.fac=scale
+        self.shift=shift
 
     def get_output_for(self,input,deterministic=False,**kwargs):
-        return(input*T.constant(self.fac))
+        return((input-T.constant(self.shift))*T.constant(self.fac))
 
 
 class BnoiseLayer(lasagne.layers.Layer):
@@ -203,9 +204,11 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                 else:
                     filter_size=l['filter_size']
                 B=None
-                if ('global_shift' in 'PARS'):
-                    B=PARS['global_shift']
-
+                if ('global_shift' in PARS):
+                    B=np.float32(PARS['global_shift'])
+                    S=np.float32(1.)
+                if ('global_scale' in PARS):
+                    S=np.float32(PARS['global_scale'])
                 for lay in input_la:
 
                     nonlin=lasagne.nonlinearities.identity
@@ -218,7 +221,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                                 W=lasagne.init.GlorotUniform(),name=l['name'])
                         else:
                             convp=Conv2dLayerR.Conv2DLayerR(lay, num_filters=l['num_filters'], filter_size=filter_size,
-                                nonlinearity=nonlin,W=lasagne.init.GlorotUniform(gain=gain),b=B,
+                                nonlinearity=nonlin,W=lasagne.init.GlorotUniform(gain=gain),
                                 R=lasagne.init.GlorotUniform(gain=gain),prob=prob,name=l['name'])
                     else:
                         if ('R' not in l['name']):
@@ -231,7 +234,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                                 nonlinearity=nonlin,W=layer_list[0].W, b=layer_list[0].b)
                     convp=extra_pars(convp,l)
                     if (B is not None):
-                        convp=lasagne.layers.standardize(convp,B,1.)
+                        convp=SclLayer(convp,B,S,name=convp.name)
                     layer_list.append(convp)
                     #layer_list[-1].params[layer_list[-1].b].remove('trainable')
         elif 'batch' in l['name']:
@@ -283,19 +286,24 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                 if ('final' in l and 'num_class' in PARS):
                     num_units=PARS['num_class']
                 B=None
-                if ('global_shift' in 'PARS'):
+                if ('global_shift' in PARS and 'final' not in l):
                     B=PARS['global_shift']
+                    S=1.
+                if ('global_scale' in PARS):
+                    S=PARS['global_scale']
                 for lay in input_la:
                     if (len(layer_list)==0):
-                        layer_list.append(newdense.NewDenseLayer(lay,name=l['name'],num_units=num_units,
+                        nd=newdense.NewDenseLayer(lay,name=l['name'],num_units=num_units,
                                                                     W=lasagne.init.GlorotUniform(gain=gain),
                                                                     R=lasagne.init.GlorotUniform(gain=gain),
-                                                                    b=B, prob=prob,nonlinearity=l['non_linearity']))
+                                                                    prob=prob,nonlinearity=l['non_linearity'])
                     else:
-                        layer_list.append(lasagne.layers.DenseLayer(lay,num_units=num_units,nonlinearity=l['non_linearity'],
-                                          W=layer_list[0].W, b=layer_list[0].b))
+                        nd=lasagne.layers.DenseLayer(lay,num_units=num_units,nonlinearity=l['non_linearity'],
+                                          W=layer_list[0].W, b=layer_list[0].b)
                     if (B is not None):
-                        layer_list.append(lasagne.layers.standardize(layer_list[-1],B,1.))
+                        layer_list.append(SclLayer(nd,B,S,name=nd.name))
+                    else:
+                        layer_list.append(nd)
         elif 'sparse' in l['name']:
             for lay in input_la:
                 if (len(layer_list)==0):
@@ -470,7 +478,7 @@ def make_file_from_params(network,NETPARS):
     layers=lasagne.layers.get_all_layers(network)
     p=None
     for l in layers:
-        if (l.name is not None):
+        if (l.name is not None and type(l) is not SclLayer):
             if ('input' in l.name):
                 s='name:'+l.name
             elif ('conv' in l.name):

@@ -35,4 +35,4 @@ name:pool3;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:convR3
 name:drop3;drop:0.5;parent:pool3
 name:newdens1;num_units:256;non_linearity:lasagne.nonlinearity.sigmoid;parent:drop3
 name:drop4;drop:0.5;parent:newdens1
-name:newdens2;prob:(1.,1.);num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:newdens1;final:final
+name:newdens2;prob:(1.,1.);num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:drop4;final:final
