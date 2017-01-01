@@ -231,8 +231,8 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                                 nonlinearity=nonlin,W=layer_list[0].W, b=layer_list[0].b)
                     convp=extra_pars(convp,l)
                     if (B is not None):
-                        convps=lasagne.layers.standardize(convp,B,1.)
-                    layer_list.append(convps)
+                        convp=lasagne.layers.standardize(convp,B,1.)
+                    layer_list.append(convp)
                     #layer_list[-1].params[layer_list[-1].b].remove('trainable')
         elif 'batch' in l['name']:
             for lay in input_la:
