@@ -203,8 +203,9 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                 else:
                     filter_size=l['filter_size']
                 B=None
-                if ('b' in l):
-                    B=B=lasagne.init.Constant(l['b'])
+                if ('global_shift' in 'PARS'):
+                    B=PARS['global_shift']
+
                 for lay in input_la:
 
                     nonlin=lasagne.nonlinearities.identity
@@ -230,8 +231,8 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                                 nonlinearity=nonlin,W=layer_list[0].W, b=layer_list[0].b)
                     convp=extra_pars(convp,l)
                     if (B is not None):
-                        convp.params[convp.b].remove('trainable')
-                    layer_list.append(convp)
+                        convps=lasagne.layers.standardize(convp,B,1.)
+                    layer_list.append(convps)
                     #layer_list[-1].params[layer_list[-1].b].remove('trainable')
         elif 'batch' in l['name']:
             for lay in input_la:
@@ -282,8 +283,8 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                 if ('final' in l and 'num_class' in PARS):
                     num_units=PARS['num_class']
                 B=None
-                if ('b' in l):
-                    B=lasagne.init.Constant(l['b'])
+                if ('global_shift' in 'PARS'):
+                    B=PARS['global_shift']
                 for lay in input_la:
                     if (len(layer_list)==0):
                         layer_list.append(newdense.NewDenseLayer(lay,name=l['name'],num_units=num_units,
@@ -294,7 +295,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                         layer_list.append(lasagne.layers.DenseLayer(lay,num_units=num_units,nonlinearity=l['non_linearity'],
                                           W=layer_list[0].W, b=layer_list[0].b))
                     if (B is not None):
-                        layer_list[-1].params[layer_list[-1].b].remove('trainable')
+                        layer_list.append(lasagne.layers.standardize(layer_list[-1],B,1.))
         elif 'sparse' in l['name']:
             for lay in input_la:
                 if (len(layer_list)==0):
