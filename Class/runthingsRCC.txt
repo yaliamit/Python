@@ -1,1 +1,1 @@
-python start_class.py net=_BP_CIFAR100/igor2R_s>igor2R_s_OUT.txt
+python start_class.py net=igor2Ra>igor2Ra_OUT.txt
