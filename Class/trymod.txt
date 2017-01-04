@@ -1,0 +1,8 @@
+#hinge:5
+#hinge_down:5
+REMOVE:dense,drop4,dense4
+NOT_TRAINABLE:batch0,conv1,conv1a,batch1,conv2,conv2a,batch2,conv3,batch3
+name:dense4;num_units:256;non_linearity:lasagne.nonlinearity.sigmoid;parent:drop3
+name:drop4;drop:0.5;parent:dense4
+#name:dense;prob:(1.,1.);num_units:100;non_linearity:lasagne.nonlinearity.linear;parent:drop4;final:final
+name:dense;num_units:100;non_linearity:lasagne.nonlinearity.softmax;parent:drop4;final:final

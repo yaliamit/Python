@@ -19,15 +19,7 @@ dep_fac:1.
 output:OUTPUTloc
 reg_param:0
 name:input1
-name:batch0;parent:input1
-name:convR1;num_filters:64;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:batch0
-name:convR1a;num_filters:64;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;b:.5;parent:convR1
-name:pool1;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:convR1a
-name:convR2;num_filters:128;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:pool1
-name:convR2a;num_filters:128;pad:(0, 0);filter_size:(1, 1);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;b:.5;parent:convR2
-name:pool2;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:convR2a
-name:batch2;parent:pool2
-name:drop2;drop:0.5;parent:batch2
+
 name:convR3;num_filters:256;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;b:.5;parent:drop2
 name:pool3;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:convR3
 name:batch3;parent:pool3

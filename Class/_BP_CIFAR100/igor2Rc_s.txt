@@ -4,7 +4,7 @@ num_epochs:1000
 simple_augmentation:True
 mod_net:None
 global_drop:0.5
-batch_size:400
+batch_size:40
 update:sgd
 use_existing:False
 eta_init:0.1
