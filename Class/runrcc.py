@@ -29,7 +29,7 @@ while (ss != ''):
     time.sleep(30)
     ss=commands.getoutput('scp yaliamit@midway2.rcc.uchicago.edu:Desktop/Dropbox/Python/Class/'+OUTNAME+' '+ lOUTNAME)
     print(ss)
-while (commands.getoutput('grep DONE ' + outname+'rcc.txt')==''):
+while (commands.getoutput('grep DONE ' + lOUTNAME)==''):
     time.sleep(30)
     commands.getoutput('scp yaliamit@midway2.rcc.uchicago.edu:Desktop/Dropbox/Python/Class/'+OUTNAME+' ' + lOUTNAME)
 
