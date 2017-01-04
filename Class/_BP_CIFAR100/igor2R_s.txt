@@ -33,4 +33,4 @@ name:batch3;parent:pool3
 name:drop3;drop:0.5;parent:batch3
 name:newdens1;num_units:256;non_linearity:lasagne.nonlinearity.sigmoid;parent:drop3
 name:drop4;drop:0.5;parent:newdens1
-name:newdens2;num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:drop4;final:final
+name:newdens2;num_units:100;non_linearity:lasagne.nonlinearity.linear;parent:drop4;final:final
