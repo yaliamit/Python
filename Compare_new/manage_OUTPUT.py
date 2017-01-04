@@ -45,7 +45,7 @@ def process_args(args,parms):
 
 def print_OUTPUT(name='OUTPUT'):
 
-    ss=str.split(name,'T')
+    ss=str.split(name,'-')
     OO='AOUT'
     if (ss[2] != ''):
         OO='_'+ss[2]+'/AOUT'
