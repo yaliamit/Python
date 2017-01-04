@@ -47,8 +47,8 @@ def print_OUTPUT(name='OUTPUT'):
 
     ss=str.split(name,'-')
     OO='AOUT'
-    if (ss[2] != ''):
-        OO='_'+ss[2]+'/AOUT'
+    if (ss[1] != ''):
+        OO='_'+ss[1]+'/AOUT'
     dirs=os.listdir(OO)
     cc=commands.getoutput('grep XXX ' + name + '.txt')
 
@@ -59,14 +59,14 @@ def print_OUTPUT(name='OUTPUT'):
         nnn=nnb[1]
     else:
         nnn=nnb[0]
-    ss=name+'_'+nnn
+    ss=nnn
     t=0
     for dd in dirs:
         if ss in dd:
             t+=1
-    sys.stdout.flush()
-    time.sleep(10)
-    shutil.copyfile(name+'.txt',OO+'/'+name+'_'+nnn+'_'+str(t)+'.txt')
+    #sys.stdout.flush()
+    #time.sleep(10)
+    shutil.copyfile(name+'.txt',OO+'/'+name+'_'+str(t)+'.txt')
 
 def plot_OUTPUT(name='OUTPUT'):
     import commands
