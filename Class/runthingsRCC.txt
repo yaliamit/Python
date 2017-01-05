@@ -1,1 +1,1 @@
-python start_class.py net=_BP_CIFAR100/igor2f_s start=2 mult=3 use_existing=True eta_init=.0005 eta_current=.0005>igor2f_s_2_OUT.txt
+python start_class.py net=_BP_CIFAR100/igor2f_s_3 mult=1 start=1 use_existing=1 train=False>testOUT.txt
