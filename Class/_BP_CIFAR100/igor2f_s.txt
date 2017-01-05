@@ -34,5 +34,5 @@ name:conv4;num_filters:256;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linea
 name:batch4;parent:conv4
 name:drop4;drop:0.5;parent:batch4
 name:dense4;num_units:256;non_linearity:lasagne.nonlinearity.rectify;parent:drop4
-name:drop4;drop:0.5;parent:dense4
-name:dense;num_units:100;non_linearity:lasagne.nonlinearity.softmax;parent:drop4;final:final
+name:drop5;drop:0.5;parent:dense4
+name:dense;num_units:100;non_linearity:lasagne.nonlinearity.softmax;parent:drop5;final:final
