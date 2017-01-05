@@ -258,7 +258,7 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
                                             W=W,R=R, b=None,nonlinearity=l.nonlinearity,name='sparseR'+str(t)))
             # JUst sparse
                 else:
-                    layer_list.append(newdense.SparseDenseLayer(layer_list[-1],num_units=num_units,
+                    layer_list.append(densesparse.SparseDenseLayer(layer_list[-1],num_units=num_units,
                                             W=W, b=None,nonlinearity=l.nonlinearity,name='sparse'+str(t)))
                 # Reshape for subsequent pooling
                 shp=l.output_shape[1:]
