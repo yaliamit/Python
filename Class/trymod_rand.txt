@@ -1,11 +1,14 @@
 hinge:5
 hinge_down:5
-REMOVE:dense,drop4,dense4,drop3,batch3,conv3
+update:sgd
+eta_init:0.1
+eta_current:0.1
+REMOVE:dense,drop4,dense4
 NOT_TRAINABLE:batch0,conv1,conv1a,batch1,conv2,conv2a,batch2
-name:conv3R;prob:(.5,.5);num_filters:256;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:drop2
-name:pool3;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:conv3R
-name:batch3;parent:pool3
-name:drop3;drop:0.5;parent:batch3
+#name:conv3R;prob:(.5,.5);num_filters:256;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:drop2
+#name:pool3;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:conv3R
+#name:batch3;parent:pool3
+#name:drop3;drop:0.5;parent:batch3
 name:newdens4;prob:(.5,.5);num_units:256;non_linearity:lasagne.nonlinearity.sigmoid;parent:drop3
 name:drop4;drop:0.5;parent:newdens4
 name:newdens;prob:(1.,1.);num_units:100;non_linearity:lasagne.nonlinearity.linear;parent:drop4;final:final
