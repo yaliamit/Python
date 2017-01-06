@@ -13,7 +13,6 @@ seed:12345
 reg_param:0
 Mnist:cifar_100
 global_drop:0.5
-#dict:trans;num_rand:1;angle:0;scale:0;scale_step:None;shear:0;insert:True;shift:0;flip:True;blur:True;saturation:True;spl:None;gr:False # Parameters for transforming images.
 name:input1
 name:batch0;parent:input1
 name:conv1;num_filters:64;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:batch0
