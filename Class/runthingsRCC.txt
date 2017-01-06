@@ -1,1 +1,1 @@
-python start_class.py net=_BP_CIFAR100/spigor2f_s start=3 mult=4 use_existing=True write_sparse=False eta_current=.1 eta_init=.1 num_epochs=10>spigor2f_s_3_OUT.txt
+python start_class.py net=_BP_CIFAR100/igor2f_s use_existing=1 start=1 mult=2 eta_init=.0001 eta_current=.0001>igor2f_s_1_OUT.txt
