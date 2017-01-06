@@ -1,1 +1,1 @@
-python start_class.py net=_BP_CIFAR100/igor2f_s mult=3 start=2 use_existing=1 mod_net=trymod_randf>igor2f_s_2_OUT.txt
+python start_class.py net=_BP_CIFAR100/igor2f_s start=3 mult=4 use_existing=True write_sparse=True train=False>igor2f_s_3_OUT.txt
