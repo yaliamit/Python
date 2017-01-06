@@ -27,6 +27,7 @@ if (parms['mult']>parms['start']):
     for m in np.arange(parms['start'],parms['mult'],1):
         nets.append(parms['net']+'_'+str(m))
         output_nets.append(parms['output_net']+'_'+str(m+1))
+# start=1 and mult=1 output is net_0
 elif (parms['mult'] == 1):
     nets.append(parms['net'])
     output_nets.append(parms['output_net']+'_0')

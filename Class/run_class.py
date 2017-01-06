@@ -138,7 +138,7 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
 
 
     sys.stdout.flush()
-    return(acc,batches, pred, grad, fac)
+    return(err,batches, pred, grad, fac)
 
 # Prepare the functions that will make the full matrix corresponding to a convolutional layer given its input
 def get_matrix_func(network,input_var):
@@ -330,10 +330,6 @@ def main_new(NETPARS):
     network = make_net.build_cnn_on_pars(input_var,NETPARS)
     step=T.iscalar()
     params=lasagne.layers.get_all_params(network)
-    num_steps=len(params)
-    #step=0
-    pp=T.tensor4()
-
 
     if (NETPARS['train']):
         if ('seq' in NETPARS):

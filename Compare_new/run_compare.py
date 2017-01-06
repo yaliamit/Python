@@ -58,12 +58,14 @@ class eta_params:
         self.best_params=lasagne.layers.get_all_param_values(network)
         self.bad_count=0
         self.good_count=0
-        self.best_e=0
-        self.val_e_old=0
+        self.best_e=100
+        self.val_e_old=100
+
+    # train_err is the loss - it should be decreasing.
     def update(self,train_err,train_batches,network,eta,mod_eta=False):
         val_e=train_err/(train_batches+1)
         #val_e=val_err/val_batches
-        if (val_e > self.best_e):
+        if (val_e < self.best_e):
             print('updating best')
             self.best_params=lasagne.layers.get_all_param_values(network)
             self.best_e=val_e
