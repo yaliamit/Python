@@ -82,9 +82,9 @@ class eta_params:
             # Twice increase in loss or Drastic increase in bloss exit
             if (self.bad_count>7 or self.val_e_old < .7*val_e):
                 # Put in the best parameters on training data
-                lasagne.layers.set_all_param_values(network,self.best_params)
-                print('resetting to best params')
-                eta.set_value(eta.get_value()*np.float32(.9))
+                #lasagne.layers.set_all_param_values(network,self.best_params)
+                #print('resetting to best params')
+                eta.set_value(eta.get_value()*np.float32(.7))
                 self.bad_count=0
                 val_e=self.best_e
             self.val_e_old=val_e

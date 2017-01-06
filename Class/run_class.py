@@ -261,8 +261,8 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
                     layer_list.append(densesparse.SparseDenseLayer(layer_list[-1],num_units=num_units,
                                             W=W, b=None,nonlinearity=l.nonlinearity,name='sparse'+str(t)))
                 # Reshape for subsequent pooling
-                shp=l.output_shape[1:]
-                layer_list.append(lasagne.layers.reshape(layer_list[-1],([0],)+shp,name='reshape'+str(t)))
+                #shp=l.output_shape[1:]
+                #layer_list.append(lasagne.layers.reshape(layer_list[-1],([0],)+shp,name='reshape'+str(t)))
             # Stays conv
             else:
                 # Separate R
@@ -384,12 +384,12 @@ def main_new(NETPARS):
         NETPARS['prev_epochs']=prev_epochs+epoch+1
         NETPARS=make_net.make_file_from_params(network,NETPARS)
         if (NETPARS['num_epochs']>0):
-            if (NETPARS['adapt_eta']):
-                print('Updating best params to network')
-                np.save(NETPARS['output_net'],eta_p.best_params)
-                lasagne.layers.set_all_param_values(network,eta_p.best_params)
-            else:
-                np.save(NETPARS['output_net'],params)
+            # if (NETPARS['adapt_eta']):
+            #     print('Updating best params to network')
+            #     np.save(NETPARS['output_net'],eta_p.best_params)
+            #     lasagne.layers.set_all_param_values(network,eta_p.best_params)
+            # else:
+            np.save(NETPARS['output_net'],params)
 
     if ('write_sparse' in NETPARS and NETPARS['write_sparse']):
             GET_CONV=get_matrix_func(network,input_var)

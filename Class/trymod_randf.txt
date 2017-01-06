@@ -1,5 +1,6 @@
 hinge:5
 hinge_down:5
+adapt_eta=False
 update:sgd
 eta_init:0.1
 eta_current:0.1
