@@ -47,8 +47,10 @@ def print_OUTPUT(name='OUTPUT'):
 
     ss=str.split(name,'-')
     OO='AOUT'
-    if (ss[1] != ''):
-        OO='_'+ss[1]+'/AOUT'
+    if (len(ss)>1):
+        if (ss[1] != ''):
+            OO='_'+ss[1]+'/AOUT'
+
     dirs=os.listdir(OO)
     cc=commands.getoutput('grep XXX ' + name + '.txt')
 
