@@ -261,8 +261,8 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
                     layer_list.append(densesparse.SparseDenseLayer(layer_list[-1],num_units=num_units,
                                             W=W, b=None,nonlinearity=l.nonlinearity,name='sparse'+str(t)))
                 # Reshape for subsequent pooling
-                #shp=l.output_shape[1:]
-                #layer_list.append(lasagne.layers.reshape(layer_list[-1],([0],)+shp,name='reshape'+str(t)))
+                shp=l.output_shape[1:]
+                layer_list.append(lasagne.layers.reshape(layer_list[-1],([0],)+shp,name='reshape'+str(t)))
             # Stays conv
             else:
                 # Separate R
