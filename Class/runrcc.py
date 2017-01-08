@@ -12,7 +12,7 @@ OUTNAME=outname+'.txt'
 lOUTNAME=outname+'-rcc.txt'
 ss='python start_class.py '+' '.join(sys.argv[1:l-1]) + ' output='+outname+'>'+OUTNAME
 if 'loc' in outname:
-    os/system(ss)
+    os.system(ss)
 else:
     f=open('runthingsRCC.txt','w')
     f.write(ss+'\n')
