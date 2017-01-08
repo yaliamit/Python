@@ -10,7 +10,7 @@ l=len(sys.argv)
 outname=sys.argv[-1]
 OUTNAME=outname+'.txt'
 lOUTNAME=outname+'-rcc.txt'
-ss='python start_class.py '+' '.join(sys.argv[1:l-1]) + '>'+OUTNAME
+ss='python start_class.py '+' '.join(sys.argv[1:l-1]) + ' output='+outname+'>'+OUTNAME
 f=open('runthingsRCC.txt','w')
 f.write(ss+'\n')
 f.close()

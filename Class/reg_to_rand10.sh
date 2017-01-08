@@ -1,7 +1,7 @@
-#python runrcc.py net=_BP_CIFAR10/igor2f_s eta_init=.001 eta_current=.001 igor2f_s_OUT
-#python runrcc.py net=_BP_CIFAR10/igor2f_s use_existing=1 start=1 mult=2 eta_init=.0001 eta_current=.0001 igor2f_s_1_OUT
-#python runrcc.py net=_BP_CIFAR10/igor2f_s mult=3 start=2 use_existing=1 train=False testOUT
-#python runrcc.py net=_BP_CIFAR10/igor2f_s_2 mult=1 start=1 use_existing=1 mod_net=trymod_randf igor2f_s_2_OUT
+python runrcc.py net=_BP_CIFAR10/igor2f_s eta_init=.001 eta_current=.001 igor2f_s_OUT
+python runrcc.py net=_BP_CIFAR10/igor2f_s use_existing=1 start=1 mult=2 eta_init=.0001 eta_current=.0001 num_epochs=5 igor2f_s_1_OUT
+python runrcc.py net=_BP_CIFAR10/igor2f_s mult=3 start=2 use_existing=1 train=False testOUT
+python runrcc.py net=_BP_CIFAR10/igor2f_s_2 mult=1 start=1 use_existing=1 mod_net=trymod_randf igor2f_s_2_OUT
 #python runrcc.py net=_BP_CIFAR10/igor2f_s_2 mult=1 start=0 use_existing=1 igor2f_s_2_1_OUT
 #python runrcc.py net=_BP_CIFAR10/igor2f_s_2 mult=2 start=1 use_existing=1 igor2f_s_2_2_OUT
 ssh yaliamit@midway2.rcc.uchicago.edu "sed 's/conv4/conv4S/g' Desktop/Dropbox/Python/Class/_BP_CIFAR10/igor2f_s_2_0.txt > Desktop/Dropbox/Python/Class/_BP_CIFAR10/junk"
