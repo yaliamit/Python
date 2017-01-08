@@ -11,7 +11,7 @@ num_epochs:100
 net:igor2
 seed:12345
 reg_param:0
-Mnist:cifar_100
+Mnist:cifar_10
 global_drop:0.5
 name:input1
 name:batch0;parent:input1
