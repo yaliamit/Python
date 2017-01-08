@@ -11,34 +11,37 @@ outname=sys.argv[-1]
 OUTNAME=outname+'.txt'
 lOUTNAME=outname+'-rcc.txt'
 ss='python start_class.py '+' '.join(sys.argv[1:l-1]) + ' output='+outname+'>'+OUTNAME
-f=open('runthingsRCC.txt','w')
-f.write(ss+'\n')
-f.close()
+if 'loc' in outname:
+    os/system(ss)
+else:
+    f=open('runthingsRCC.txt','w')
+    f.write(ss+'\n')
+    f.close()
 
-remcom='rm Desktop/Dropbox/Python/Class/'+outname+'.txt'
-os.system('ssh yaliamit@midway2.rcc.uchicago.edu' + ' ' + remcom)
+    remcom='rm Desktop/Dropbox/Python/Class/'+outname+'.txt'
+    os.system('ssh yaliamit@midway2.rcc.uchicago.edu' + ' ' + remcom)
 
-commands.getoutput('rm' + outname +'-rcc.txt')
-commands.getoutput('./GIT.sh')
-commands.getoutput('ssh yaliamit@midway2.rcc.uchicago.edu \'cd Desktop/Dropbox/Python; git pull\'')
+    commands.getoutput('rm' + outname +'-rcc.txt')
+    commands.getoutput('./GIT.sh')
+    commands.getoutput('ssh yaliamit@midway2.rcc.uchicago.edu \'cd Desktop/Dropbox/Python; git pull\'')
 
-os.system('ssh yaliamit@midway2.rcc.uchicago.edu \'cd Desktop/Dropbox/Python/Class/; sbatch theano.sbatch \' & ')
+    os.system('ssh yaliamit@midway2.rcc.uchicago.edu \'cd Desktop/Dropbox/Python/Class/; sbatch theano.sbatch \' & ')
 
-ss='start'
-while (ss != ''):
+    ss='start'
+    while (ss != ''):
+        time.sleep(30)
+        ss=commands.getoutput('scp yaliamit@midway2.rcc.uchicago.edu:Desktop/Dropbox/Python/Class/'+OUTNAME+' '+ lOUTNAME)
+        print(ss)
+    while (commands.getoutput('grep DONE ' + lOUTNAME)==''):
+        time.sleep(30)
+        commands.getoutput('scp yaliamit@midway2.rcc.uchicago.edu:Desktop/Dropbox/Python/Class/'+OUTNAME+' ' + lOUTNAME)
+
     time.sleep(30)
-    ss=commands.getoutput('scp yaliamit@midway2.rcc.uchicago.edu:Desktop/Dropbox/Python/Class/'+OUTNAME+' '+ lOUTNAME)
-    print(ss)
-while (commands.getoutput('grep DONE ' + lOUTNAME)==''):
-    time.sleep(30)
-    commands.getoutput('scp yaliamit@midway2.rcc.uchicago.edu:Desktop/Dropbox/Python/Class/'+OUTNAME+' ' + lOUTNAME)
+    pnn=commands.getoutput('grep NNN ' + lOUTNAME)
+    pnnn=str.split(pnn,':')
+    netname=str.strip(pnnn[1],' ,\')')
 
-time.sleep(30)
-pnn=commands.getoutput('grep NNN ' + lOUTNAME)
-pnnn=str.split(pnn,':')
-netname=str.strip(pnnn[1],' ,\')')
-
-com='scp yaliamit@midway2.rcc.uchicago.edu:Desktop/Dropbox/Python/Class/'+netname+'.*  _rcc/Amodels/.'
-os.system(com)
-manage_OUTPUT.print_OUTPUT(outname+'-rcc')
+    com='scp yaliamit@midway2.rcc.uchicago.edu:Desktop/Dropbox/Python/Class/'+netname+'.*  _rcc/Amodels/.'
+    os.system(com)
+    manage_OUTPUT.print_OUTPUT(outname+'-rcc')
 
