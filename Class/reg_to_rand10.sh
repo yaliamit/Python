@@ -9,4 +9,4 @@
 #python runrcc.py net=_BP_CIFAR10/igor2f_s_2 mult=1 start=0 use_existing=True write_sparse=True train=False igor2f_s_2_0_1_OUT
 #python runrcc.py net=_BP_CIFAR10/spigor2f_s_2 start=1 mult=2 use_existing=True write_sparse=False train=False sptestOUT
 #python runrcc.py net=_BP_CIFAR10/spigor2f_s_2 start=1 mult=2 use_existing=True write_sparse=False eta_current=.1 eta_init=.1 num_epochs=50 spigor2f_s_2_1_OUT
-python runrcc.py net=_BP_CIFAR100/spigor2f_s_2 start=2 mult=3 num_epochs=100 use_existing=True write_sparse=False eta_current=.01 eta_init=.01 spigor2f_s_3_1_OUT
+python runrcc.py net=_BP_CIFAR10/spigor2f_s_2 start=2 mult=3 num_epochs=100 use_existing=True write_sparse=False eta_current=.01 eta_init=.01 spigor2f_s_3_1_OUT
