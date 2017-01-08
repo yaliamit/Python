@@ -1,1 +1,1 @@
-python start_class.py net=_BP_CIFAR100/igor2f_s mult=3 start=2 use_existing=1 train=False output=testOUT>testOUT.txt
+python start_class.py net=_BP_CIFAR100/igor2f_s_2 mult=1 start=1 use_existing=1 mod_net=trymod_randf output=igor2f_s_2_0_OUT>igor2f_s_2_0_OUT.txt
