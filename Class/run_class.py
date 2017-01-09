@@ -242,7 +242,7 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
             # R=l.R.eval()
             # Wzero=l.Wzero.eval()
             # Rzero=l.Rzero.eval()
-            layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=l.num_units,
+            layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=l.num_units,prob=l.prob,
                                             nonlinearity=l.nonlinearity,W=lpars[-4],R=lpars[-3], Wzero=lpars[-2], Rzero=lpars[-1], b=None, name=l.name))
         elif 'conv' in l.name:
             # Sparse
