@@ -1,1 +1,1 @@
-python start_class.py net=_BP_CIFAR10/spigor2Ra_s start=2 mult=3 use_existing=True write_sparse=False train=False output=sp_testOUT>sp_testOUT.txt
+python start_class.py net=_BP_CIFAR10/spigor2Ra_s_2 mult=1 start=1 use_existing=1 mod_net=trymod_randRa10 output=spigor2Ra_s_2_OUT>spigor2Ra_s_2_OUT.txt
