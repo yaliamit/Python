@@ -362,7 +362,10 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                         if l.name==n:
                             if ('conv' in n or 'dens' in n):
                               l.params[l.W].remove('trainable')
-                              l.params[l.b].remove('trainable')
+                              if (l.b is not None):
+                                l.params[l.b].remove('trainable')
+                              if ('R' in n):
+                                  l.params[l.R].remove('trainable')
                             elif ('batch' in n):
                                 l.params[l.beta].remove('trainable')
                                 l.params[l.gamma].remove('trainable')
