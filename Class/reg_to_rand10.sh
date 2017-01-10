@@ -1,4 +1,4 @@
-#python runrcc.py net=_BP_CIFAR10/igor2g_s eta_init=.001 eta_current=.001 igor2g_s_OUT
+python runrcc.py net=_BP_CIFAR10/igor2g_s eta_init=.001 eta_current=.001 igor2g_s_OUT
 #python runrcc.py net=_BP_CIFAR10/igor2g_s use_existing=1 start=1 mult=2 eta_init=.0001 eta_current=.0001 igor2g_s_1_OUT
 #python runrcc.py net=_BP_CIFAR10/igor2g_s mult=2 start=1 use_existing=1 train=False testOUT
 #python runrcc.py net=_BP_CIFAR10/igor2g_s_1 mult=1 start=1 use_existing=1 mod_net=trymod_randf10 igor2g_s_1_0_OUT
