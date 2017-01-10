@@ -1,1 +1,1 @@
-python start_class.py net=_BP_CIFAR10/igor2Ra_s eta_init=.001 eta_current=.001 output=igor2Ra_s_OUT>igor2Ra_s_OUT.txt
+python start_class.py net=_BP_CIFAR10/igor2Ra_s mult=2 start=1 use_existing=True write_sparse=True train=False output=igor2Ra_s_1_OUT>igor2Ra_s_1_OUT.txt
