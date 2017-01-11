@@ -1,7 +1,0 @@
-hinge:5
-hinge_down:5
-adapt_eta:False
-update:sgd
-eta_init:0.1
-eta_current:0.1
-NOT_TRAINABLE:batch0,conv1,conv1a,batch1,conv2,conv2a,batch2
