@@ -40,8 +40,10 @@ if (not parms['train']):
 agg=None
 for i,ne in enumerate(nets):
 
-    if (parms['mult']>1 and i>parms['start']):
-        parms['use_existing']=True
+    if (parms['mult']>1 and parms['mult']-parms['start']>1):
+        if (not parms['use_existing']):
+            parms['seed']=np.random.randint(0,200000)
+            agg=[]
     if (parms['use_existing']):
          # if (os.path.isfile(ne+'.pars')):
          #    fo=open(ne+'.pars','r')
@@ -104,7 +106,11 @@ for i,ne in enumerate(nets):
         agg=out[2]
         y=out[-1]
     else:
-        agg=agg+out[2]
+        if (len(agg)==0):
+            agg=out[2]
+        else:
+            agg=agg+out[2]
+        y=out[-1]
     acc=np.mean(np.argmax(agg,axis=1)==y)
     agg=None
     print('aggegate accuracy',acc)
