@@ -22,5 +22,5 @@ TRAIN:True
 output:OUTPUTloc
 name:input1
 name:convR1;num_filters:8;filter_size:3;pad:(1,1);non_linearity:lasagne.nonlinearity.sigmoid;parent:input1
-name:dense1;num_units:200;non_linearity:lasagne.nonlinearity.sigmoid;parent:conv1
+name:dense1;num_units:200;non_linearity:lasagne.nonlinearity.sigmoid;parent:convR1
 name:dense2;num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:newdens1;final:final
