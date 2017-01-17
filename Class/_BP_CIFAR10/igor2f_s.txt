@@ -29,7 +29,7 @@ name:conv3;num_filters:256;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linea
 name:pool3;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:conv3
 name:batch3;parent:pool3
 name:drop3;drop:0.5;parent:batch3
-name:convR4;num_filters:256;pad:(0, 0);filter_size:(2, 2);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:drop3
+name:convR4;num_filters:256;pad:(0, 0);filter_size:(2, 2);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:drop3
 #name:batch4;parent:conv4
 name:drop4;drop:0.5;parent:convR4
 name:dense4;num_units:256;non_linearity:lasagne.nonlinearity.rectify;parent:drop4
