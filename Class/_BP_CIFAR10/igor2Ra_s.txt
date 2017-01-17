@@ -34,5 +34,5 @@ name:drop3;drop:0.5;parent:batch3
 name:convR4;num_filters:256;pad:(0, 0);filter_size:(2, 2);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:drop3
 name:drop4;drop:0.5;parent:convR4
 name:newdens1;num_units:256;non_linearity:lasagne.nonlinearity.sigmoid;parent:drop4
-name:drop4;drop:0.5;parent:newdens1
-name:newdens2;num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:drop4;final:final
+name:drop5;drop:0.5;parent:newdens1
+name:newdens2;num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:drop5;final:final

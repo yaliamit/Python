@@ -351,7 +351,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                  else:
                         pp=np.float32(p)
                  spars32.append(pp)
-            target_var = T.ivector('target')
+            lasagne.layers.set_all_param_values(fnet,spars32)
 
     if ('NOT_TRAINABLE' in PARS or 'REMOVE' in PARS or 'INSERT_LAYERS' in PARS):
         layers=lasagne.layers.get_all_layers(fnet)
