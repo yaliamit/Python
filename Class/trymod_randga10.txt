@@ -9,4 +9,4 @@ NOT_TRAINABLE:batch0,conv1,conv1a,batch1,conv2,conv2a,batch2,conv3,batch3,conv4
 #name:drop4;drop:0.5;parent:convR4
 name:newdens4;num_units:256;non_linearity:lasagne.nonlinearity.signoid;parent:drop4
 name:drop5;drop:0.5;parent:newdens4
-name:newdens1;num_units:10;prob:(1.,1.);non_linearity:lasagne.nonlinearity.linear;parent:drop5;final:final
+name:newdens1;num_units:10;prob:(.5,.5);non_linearity:lasagne.nonlinearity.linear;parent:drop5;final:final
