@@ -284,6 +284,7 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
     PARS['output_net']='/'.join(ss)
     np.save(PARS['output_net'],spparams)
     make_net.make_file_from_params(new_net,PARS)
+    NETPARS['output_net']=PARS['output_net']
     print("done writing it")
 
 
