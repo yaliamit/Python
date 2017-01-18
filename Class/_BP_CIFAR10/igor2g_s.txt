@@ -7,7 +7,7 @@ update:adam
 batch_size:400
 eta_init:0.001
 train:False
-num_epochs:50
+num_epochs:100
 net:igor2
 seed:12345
 reg_param:0
