@@ -328,7 +328,7 @@ def main_new(NETPARS):
 
     print("Building model and compiling functions...")
     # Create neural network model (depending on first command line parameter)
-    network = make_net.build_cnn_on_pars(input_var,NETPARS)
+    network = make_net.build_cnn_on_pars(input_var,NETPARS,num_class=num_class)
     step=T.iscalar()
     params=lasagne.layers.get_all_params(network)
 
