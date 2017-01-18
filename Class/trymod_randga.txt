@@ -1,0 +1,12 @@
+hinge:5
+hinge_down:5
+update:sgd
+eta_init:0.1
+eta_current:0.1
+REMOVE:dense1,dense4,drop5,drop4,conv4
+NOT_TRAINABLE:batch0,conv1,conv1a,batch1,conv2,conv2a,batch2,conv3,batch3,convR4
+#name:convR4;num_filters:256;pad:(0, 0);filter_size:(2, 2);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:drop3
+#name:drop4;drop:0.5;parent:convR4
+#name:newdens4;num_units:256;non_linearity:lasagne.nonlinearity.signoid;parent:drop4
+#name:drop5;drop:0.5;parent:newdens4
+#name:newdens1;num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:drop5;final:final
