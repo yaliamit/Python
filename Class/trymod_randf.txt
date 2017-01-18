@@ -4,7 +4,7 @@ update:sgd
 eta_init:0.1
 eta_current:0.1
 #REMOVE:dense,dense4,drop5
-NOT_TRAINABLE:batch0,conv1,conv1a,batch1,conv2,conv2a,batch2,conv3,batch3,conv4
+NOT_TRAINABLE:batch0,conv1,conv1a,batch1,conv2,conv2a,batch2,conv3,batch3
 #name:conv3R;prob:(.5,.5);num_filters:256;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:drop2
 #name:pool3;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:conv3R
 #name:batch3;parent:pool3
