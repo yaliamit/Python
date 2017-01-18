@@ -1,5 +1,5 @@
 # Run full network with softmax
-python runrcc.py net=_BP_CIFAR10/igor2g_s eta_init=.001 eta_current=.001 num_epochs=50 igor2g_s_OUT
+#python runrcc.py net=_BP_CIFAR10/igor2g_s eta_init=.001 eta_current=.001 num_epochs=50 igor2g_s_OUT
 #python runrcc.py net=_BP_CIFAR10/igor2g_s eta_init=.001 eta_current=.001 num_epochs=50 igor2g_s_OUT
 #ssh yaliamit@midway2.rcc.uchicago.edu "sed 's/conv4/conv4S/g' Desktop/Dropbox/Python/Class/_BP_CIFAR10/igor2g_s_1.txt > Desktop/Dropbox/Python/Class/_BP_CIFAR10/junk"
 #ssh yaliamit@midway2.rcc.uchicago.edu "cp Desktop/Dropbox/Python/Class/_BP_CIFAR10/junk Desktop/Dropbox/Python/Class/_BP_CIFAR10/igor2g_s_1.txt"
