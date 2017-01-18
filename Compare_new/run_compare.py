@@ -179,10 +179,10 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             acc = T.mean(T.eq(T.argmax(pred, axis=1), target_var),
                           dtype=theano.config.floatX)
             # for p in params:
-            # layers=lasagne.layers.get_all_layers(network)
-            # for l in layers:
-            #     if (type(l) is make_net.SclLayer and 'dens' in l.name):
-            #         gloss.append(lasagne.layers.get_output(l))
+            layers=lasagne.layers.get_all_layers(network)
+            for l in layers:
+                 if ('drop3' in l.name):
+                     gloss.append(lasagne.layers.get_output(l))
             # Instead of randomly dropping inputs drop updates on some subsets of weights.
             # This is a more severe drop because it doesn't update this subset at all in that step.
         else: #Output is two tensors that need to be compared through correlation

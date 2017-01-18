@@ -211,7 +211,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, const=None):
                     if (len(layer_list)==0):
                         if ('R' not in l['name']):
                             convp=lasagne.layers.Conv2DLayer(lay, num_filters=l['num_filters'], filter_size=filter_size,
-                                nonlinearity=nonlin,
+                                nonlinearity=nonlin,b=None,
                                 W=lasagne.init.GlorotUniform(),name=l['name'])
                         else:
                             convp=Conv2dLayerR.Conv2DLayerR(lay, num_filters=l['num_filters'], filter_size=filter_size,
