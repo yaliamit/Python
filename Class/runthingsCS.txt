@@ -1,1 +1,1 @@
-python start_class.py net=_BP_CIFAR10/spigor2f_s start=2 mult=3 use_existing=True write_sparse=False mod_net=trymod_randf eta_current=.1 eta_init=.1 num_epochs=200 output=spigor2f_s_2a_OUT>spigor2f_s_2a_OUT.txt
+python start_class.py  output=/Users/amit/Desktop/Dropbox/Python/Class/runfas.py>/Users/amit/Desktop/Dropbox/Python/Class/runfas.py.txt
