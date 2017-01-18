@@ -8,5 +8,5 @@
 # Remove top 2 layers and replace with R layers update top 3 layers, sparse + 2 Rdense.
 #python runfas.py net=_BP_CIFAR100/spigor2g_s_2 mult=1 start=1 use_existing=1 mod_net=trymod_randg write_sparse=False num_epochs=100 spigor2g_s_2_0_OUT
 # Run original network replacing top 2 dense layers with R layers.
-python runrcc.py net=_BP_CIFAR100/igor2g_s_1 mult=1 start=1 use_existing=1 mod_net=trymod_randga write_sparse=False num_epochs=100 igor2g_s_1_0_OUT
+python runrcc.py net=_BP_CIFAR10/igor2g_s_1 mult=1 start=1 use_existing=1 mod_net=trymod_randga write_sparse=False num_epochs=100 igor2g_s_1_0_OUT
 
