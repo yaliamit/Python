@@ -6,6 +6,6 @@
 #ssh yaliamit@linux2.cs.uchicago.edu "sed 's/convR4/conv4RS/g' Desktop/Dropbox/Python/Class/_BP_CIFAR10/igor2f_s_1.txt > Desktop/Dropbox/Python/Class/_BP_CIFAR10/junk"
 #ssh yaliamit@linux2.cs.uchicago.edu "cp Desktop/Dropbox/Python/Class/_BP_CIFAR10/junk Desktop/Dropbox/Python/Class/_BP_CIFAR10/igor2f_s_1.txt"
 #python runfas.py net=_BP_CIFAR10/igor2f_s mult=2 start=1 use_existing=True write_sparse=True train=False igor2f_s_2_OUT
-#python runfas.py net=_BP_CIFAR10/spigor2f_s start=2 mult=3 use_existing=True write_sparse=False train=False spigor2f_s_2_OUT
-python runfas.py net=_BP_CIFAR10/spigor2f_s start=2 mult=3 use_existing=True write_sparse=False mod_net=trymod_randf eta_current=.1 eta_init=.1 num_epochs=200 spigor2f_s_2a_OUT
+#python runfas.py net=_BP_CIFAR10/spigor2f_s start=2 mult=3 use_existing=True write_sparse=False train=False spigor2f_s_2_testOUT
+python runfas.py net=_BP_CIFAR10/spigor2f_s_2 start=1 mult=1 use_existing=True write_sparse=False mod_net=trymod_randf eta_current=.1 eta_init=.1 num_epochs=200 spigor2f_s_2_0_OUT
 #python runrcc.py net=_BP_CIFAR10/spigor2f_s_2 start=2 mult=3 num_epochs=100 use_existing=True write_sparse=False eta_current=.1 eta_init=.1 spigor2f_s_3_1_OUT
