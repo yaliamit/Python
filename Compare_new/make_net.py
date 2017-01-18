@@ -404,7 +404,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
             inlayer=new_layers_pars[0]['parent']
             for l in layers:
                  if l.name==inlayer:
-                    fnet_new=build_cnn_on_pars(input_var,prs,l,const=0)
+                    fnet_new=build_cnn_on_pars(input_var,prs,l,num_class=num_class)
                     break
             if ('RECONNECT_MULT' in PARS):
                 for l in layers:
