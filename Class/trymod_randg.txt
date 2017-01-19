@@ -1,10 +1,10 @@
 #hinge:5
 #hinge_down:5
-3update:sgd
+#update:sgd
 #eta_init:0.01
 #eta_current:0.01
 REMOVE:dense1,dense4,drop5
 NOT_TRAINABLE:batch0,conv1,conv1a,batch1,conv2,conv2a,batch2,conv3,batch3,conv4
-name:dense4;num_units:256;non_linearity:lasagne.nonlinearity.signoid;parent:drop4
+name:dense4;num_units:256;non_linearity:lasagne.nonlinearity.rectify;parent:drop4
 name:drop5;drop:0.5;parent:dense4
 name:dense1;num_units:100;prob:(1.,1.);non_linearity:lasagne.nonlinearity.softmax;parent:drop5;final:final
