@@ -12,5 +12,5 @@
 #python runfas.py net=_BP_CIFAR100/spigor2g_s_2 mult=1 start=1 use_existing=1 mod_net=trymod_randg write_sparse=False num_epochs=100 spigor2g_s_2_0_OUT
 # Run original network replacing top 2 dense layers with R layers.
 #python runfas.py net=_BP_CIFAR100/igor2g_s_1 mult=1 start=1 use_existing=1 mod_net=trymod_randga write_sparse=False num_epochs=300 igor2g_s_1_0_OUT
-python runfas.py net=_BP_CIFAR100/igor2g_s_1 mult=1 start=0 use_existing=1 write_sparse=False num_epochs=300 igor2g_s_1_1_OUT
-
+#python runfas.py net=_BP_CIFAR100/igor2g_s_1 mult=1 start=0 use_existing=1 write_sparse=False num_epochs=300 igor2g_s_1_1_OUT
+python runfas.py net=_BP_CIFAR100/igor2g_s_1 mult=2 start=1 eta_current=.1 eta_init=.1 use_existing=1 write_sparse=False num_epochs=300 igor2g_s_1_2_OUT
