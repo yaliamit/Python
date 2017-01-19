@@ -1,8 +1,8 @@
 hinge:2
 hinge_down:2
 update:sgd
-eta_init:0.01
-eta_current:0.01
+eta_init:0.1
+eta_current:0.1
 REMOVE:dense1,dense4,drop5
 NOT_TRAINABLE:batch0,conv1,conv1a,batch1,conv2,conv2a,batch2,conv3,batch3,conv4
 name:newdens4;num_units:256;non_linearity:lasagne.nonlinearity.sigmoid;parent:drop4
