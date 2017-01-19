@@ -1,1 +1,1 @@
-python start_class.py net=_BP_CIFAR100/spigor2g_s_1 mult=3 start=2 use_existing=1 write_sparse=False num_epochs=100 output=spigor2g_s_1_3_OUT>spigor2g_s_1_3_OUT.txt
+python start_class.py net=_BP_CIFAR100/spigor2g_s_1 start=3 mult=4 use_existing=True write_sparse=False train=False output=spigor2g_s_1_3_testOUT>spigor2g_s_1_3_testOUT.txt
