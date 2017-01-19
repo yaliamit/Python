@@ -1,5 +1,8 @@
 # Run full network with softmax
-#python runfas.py net=_BP_CIFAR100/igor2g_s eta_init=.001 eta_current=.001 num_epochs=50 igor2g_s_OUT
+python runfas.py net=_BP_CIFAR100/igor2g_s eta_init=.001 eta_current=.001 num_epochs=100 igor2g_s_OUT
+python runfas.py net=_BP_CIFAR100/igor2g_s_1 use_existing=1 start=1 mult=1 mod_net=trymod_randg num_epochs=100 igor2g_s_1_0a_OUT
+mv _cs/Amodels/igor2g_s_1_0.npy _rcc/Amodels/igor2g_s_1_0a.npy
+mv _cs/Amodels/igor2g_s_1_0.txt _rcc/Amodels/igor2g_s_1_0a.txt
 # Convert the last conv layer to sparse layer.
 #ssh yaliamit@linux2.cs.uchicago.edu "sed 's/conv4/conv4S/g' Desktop/Dropbox/Python/Class/_BP_CIFAR100/igor2g_s_1.txt > Desktop/Dropbox/Python/Class/_BP_CIFAR100/junk"
 #ssh yaliamit@linux2.cs.uchicago.edu "cp Desktop/Dropbox/Python/Class/_BP_CIFAR100/junk Desktop/Dropbox/Python/Class/_BP_CIFAR100/igor2g_s_1.txt"
