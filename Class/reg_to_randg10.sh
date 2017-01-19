@@ -10,5 +10,5 @@
 #python runrcc.py net=_BP_CIFAR10/spigor2g_s_1 start=1 mult=2 use_existing=True write_sparse=False train=False spigor2g_s_1_2_testOUT
 # Remove top 2 layers and replace with R layers for a few steps.
 #python runrcc.py net=_BP_CIFAR10/spigor2g_s_1 mult=2 start=1 use_existing=1 write_sparse=False num_epochs=100 spigor2g_s_1_2_OUT
-python runrcc.py net=_BP_CIFAR10/spigor2g_s_1 mult=3 start=2 use_existing=1 eta_init=.005 eta_current=.005 write_sparse=False num_epochs=40 spigor2g_s_1_3_OUT
+python runrcc.py net=_BP_CIFAR10/spigor2g_s_1 mult=3 start=2 use_existing=1 eta_init=.001 eta_current=.001 write_sparse=False num_epochs=40 spigor2g_s_1_3_OUT
 
