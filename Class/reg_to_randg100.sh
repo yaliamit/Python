@@ -12,4 +12,5 @@
 #python runfas.py net=_BP_CIFAR100/spigor2g_s_1 start=1 mult=2 use_existing=True write_sparse=False train=False spigor2g_s_1_2_testOUT
 # Remove top 2 layers and replace with R layers update top 3 layers, sparse + 2 Rdense.
 #python runfas.py net=_BP_CIFAR100/spigor2g_s_1 mult=2 start=1 use_existing=1 write_sparse=False num_epochs=100 spigor2g_s_1_3_OUT
-python runfas.py net=_BP_CIFAR100/spigor2g_s_1 mult=3 start=2 use_existing=1 write_sparse=False num_epochs=100 spigor2g_s_1_4_OUT
+#python runfas.py net=_BP_CIFAR100/spigor2g_s_1 mult=3 start=2 use_existing=1 write_sparse=False num_epochs=100 spigor2g_s_1_4_OUT
+python runfas.py net=_BP_CIFAR100/spigor2g_s_1 mult=4 start=3 use_existing=1 write_sparse=False num_epochs=100 spigor2g_s_1_5_OUT
