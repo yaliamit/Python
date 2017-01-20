@@ -31,6 +31,9 @@ if (parms['mult']>parms['start']):
 elif (parms['mult'] == 1):
     nets.append(parms['net'])
     output_nets.append(parms['output_net']+'_0')
+elif (parms['mult'] > 1):
+    nets.append(parms['net'])
+    output_nets.append(parms['output_net']+'_0_'+str(parms['mult']-1))
 else:
     print 'Don\'t know which net to use'
     exit(0)
