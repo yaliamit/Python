@@ -1,1 +1,1 @@
-python start_class.py net=fncr output=fncr_OUT>fncr_OUT.txt
+python start_class.py net=fncra output=fncra_CIFAR_OUT>fncra_CIFAR_OUT.txt
