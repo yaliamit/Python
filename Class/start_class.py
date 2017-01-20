@@ -58,7 +58,7 @@ for i,ne in enumerate(nets):
             parse_net_pars.parse_text_file(ne,NETPARS,lname='layers',dump=True)
             # Modifications of parameters come from mod_net_name
             if (parms['mod_net'] is not None): # and parms['train']):
-             if (parms['mult']==1):
+             if (parms['mult']==parms['start']):
                 parse_net_pars.parse_text_file(parms['mod_net'],NETPARS,lname='INSERT_LAYERS', dump=True)
              else:
                  # A sequence of modifications to the basic parameters
