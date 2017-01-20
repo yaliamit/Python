@@ -19,6 +19,7 @@ hinge:1
 hing_down:1
 global_shift:.5
 TRAIN:True
+global_prob:(.5,0.)
 output:OUTPUTloc
 name:input1
 name:newdens0;num_units:200;non_linearity:lasagne.nonlinearity.sigmoid;parent:input1
