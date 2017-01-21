@@ -1,1 +1,1 @@
-python start_class.py net=fncra output=fncra_CIFAR_OUT>fncra_CIFAR_OUT.txt
+python start_class.py net=_BP_CIFAR100/igor2g_s_1 mult=2 start=2 use_existing=1 mod_net=trymod_randgb write_sparse=False num_epochs=300 output=igor2g_s_1_0_OUT>igor2g_s_1_0_OUT.txt
