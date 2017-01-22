@@ -1,1 +1,1 @@
-python start_class.py net=_BP_CIFAR10/spigor2e_s start=2 mult=3 use_existing=True write_sparse=False train=False output=spigor2e_s_2_testOUT>spigor2e_s_2_testOUT.txt
+python start_class.py net=_BP_CIFAR10/igor2e_s output=igor2e_s_OUT>igor2e_s_OUT.txt
