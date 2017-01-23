@@ -3,11 +3,8 @@ hinge_down:2
 update:sgd
 eta_init:0.1
 eta_current:0.1
-REMOVE:dense1,dense4,drop4,drop3,pool3,conv3
+REMOVE:dense1,dense4,drop4
 NOT_TRAINABLE:batch0,conv1,conv1a,batch1,conv2,conv2a,batch2
-name:conv3;num_filters:256;filter_size:(3,3);stride:(1,1);non_linearity:lasagne.nonlinearity.sigmoid;parent:drop2
-name:pool3;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:conv3
-name:drop3;drop:0.5;parent:pool3
-name:newdens4;num_units:256;non_linearity:lasagne.nonlinearity.sigmoid;parent:drop3
+name:newdens4;num_units:256;prob:(.5,.5);non_linearity:lasagne.nonlinearity.sigmoid;parent:drop3
 name:drop4;drop:0.5;parent:newdens4
-name:newdens1;num_units:100;non_linearity:lasagne.nonlinearity.linear;parent:drop4;final:final
+name:newdens1;num_units:100;prob:(.5,.5);non_linearity:lasagne.nonlinearity.linear;parent:drop4;final:final
