@@ -5,7 +5,7 @@ simple_augmentation:True
 mod_net:None
 edges:False
 start:0
-Mnist:cifar_10
+Mnist:mnist
 net:fnc
 update:sgd
 batch_size:50
@@ -19,9 +19,9 @@ hinge:1
 hing_down:1
 global_shift:.5
 TRAIN:True
-global_prob:(.5,0.)
+global_prob:(.5,.5)
 output:OUTPUTloc
 name:input1
-name:newdens0;num_units:200;non_linearity:lasagne.nonlinearity.sigmoid;parent:input1
-name:newdens1;num_units:200;non_linearity:lasagne.nonlinearity.sigmoid;parent:newdens0
+#name:convR1;num_filters:8;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:input1
+name:newdens1;num_units:200;non_linearity:lasagne.nonlinearity.sigmoid;parent:input1
 name:newdens2;num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:newdens1;final:final

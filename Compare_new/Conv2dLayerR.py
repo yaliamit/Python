@@ -31,6 +31,7 @@ class BaseConvLayerR(Layer):
                  untie_biases=False,
                  W=init.GlorotUniform(),
                  R=init.GlorotUniform(),
+                 Wzer=init.Uniform(range=(0.,1.)),Rzer=init.Uniform(range=(0.,1.)),
                  b=init.Constant(0.),
                  prob=np.array((.5,.5)),
                  nonlinearity=nonlinearities.rectify, flip_filters=True,
@@ -70,6 +71,19 @@ class BaseConvLayerR(Layer):
         self.W = self.add_param(W, self.get_W_shape(), name="W")
         self.R = self.add_param(R, self.get_W_shape(), name="R")
         self.prob=prob
+
+        self.Wzer=self.add_param(Wzer,self.get_W_shape(),name="Wzero", trainable=False)
+        self.Rzer=self.add_param(Rzer,self.get_W_shape(),name="Rzero", trainable=False)
+        self.Wzer=self.Wzer<self.prob[0]
+        self.Rzer=self.Rzer<self.prob[0]
+        self.W=self.W*self.Wzer
+        self.R=self.R*self.Rzer
+        #self.prob[1]=0 no gradient on R
+
+        if (self.prob[1]==0.):
+            self.Rzer=self.Rzer<0
+
+
         if b is None:
             self.b = None
         else:
@@ -142,12 +156,13 @@ class Conv2DLayerR(BaseConvLayerR):
                  pad=0, untie_biases=False,
                  W=init.GlorotUniform(),
                  R=init.GlorotUniform(),
+                 Wzer=init.Uniform(range=(0.,1.)),Rzer=init.Uniform(range=(0.,1.)),
                  b=init.Constant(0.), prob=np.array((.5,.5)),
                  nonlinearity=nonlinearities.rectify, flip_filters=True,
                  convolution=T.nnet.conv2dR, **kwargs):
         super(Conv2DLayerR, self).__init__(incoming, num_filters, filter_size,
                                           stride, pad, untie_biases, W,
-                                           R,
+                                           R, Wzer, Rzer,
                                            b, prob,
                                           nonlinearity, flip_filters, n=2,
                                           **kwargs)
@@ -156,7 +171,7 @@ class Conv2DLayerR(BaseConvLayerR):
     def convolve(self, input, **kwargs):
         border_mode = 'half' if self.pad == 'same' else self.pad
         conved = self.convolution(input, self.W,
-                                  self.R, self.prob,
+                                  self.R, self.Wzer, self.Rzer, self.prob,
                                   self.input_shape, self.get_W_shape(),
                                   subsample=self.stride,
                                   border_mode=border_mode,

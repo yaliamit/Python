@@ -76,10 +76,12 @@ class NewDenseLayer(Layer):
         self.Wzero=self.add_param(Wzero,(num_inputs,num_units),name="Wzero", trainable=False)
         self.Rzero=self.add_param(Rzero,(num_inputs,num_units),name="Rzero", trainable=False)
         self.Wzero=self.Wzero<self.prob[0]
-        self.Rzero=self.Rzero<self.prob[1]
+        self.Rzero=self.Rzero<self.prob[0]
         self.W=self.W*self.Wzero
-        if (self.prob[1]>0.):
-            self.R=self.R*self.Rzero
+        self.R=self.R*self.Rzero
+        # self.prob[1]=0 no gradient on R
+        if (self.prob[1]==0.):
+            self.Rzero=self.Rzero<0
 
         if b is None:
             self.b = None
