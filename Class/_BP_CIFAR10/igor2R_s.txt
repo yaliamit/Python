@@ -16,7 +16,6 @@ adapt_eta:False
 hinge:2
 hinge_down:2
 output:OUTPUTloc
-reg_param:0
 name:input1
 name:batch0;parent:input1
 name:convR1;num_filters:64;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:batch0
