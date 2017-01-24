@@ -132,20 +132,20 @@ def conv2d(input,
     R = as_tensor_variable(R)
     Wzer=theano.tensor.zeros((2,2))
     Wzer=as_tensor_variable(Wzer)
-    #Rzer=theano.tensor.zeros((2,2))
-    #Rzer=as_tensor_variable(Rzer)
-
+    Rzer=theano.tensor.zeros((2,2))
+    Rzer=as_tensor_variable(Rzer)
+    prob=theano.tensor.zeros((1,2))
+    prob=as_tensor_variable(prob)
 
     conv_op = AbstractConv2d(imshp=input_shape,
                              kshp=filter_shape,
                              border_mode=border_mode,
                              subsample=subsample,
                              filter_flip=filter_flip)
-    return conv_op(input, filters, R, Wzer) #, Rzer)
+    return conv_op(input, filters, R, Wzer, Rzer, prob)
 
 def conv2dR(input,
-           filters, R, Wzer,
-            #Rzer,
+           filters, R, Wzer, Rzer, prob,
            input_shape=None,
            filter_shape=None,
            border_mode='valid',
@@ -165,7 +165,7 @@ def conv2dR(input,
                              border_mode=border_mode,
                              subsample=subsample,
                              filter_flip=filter_flip)
-    return conv_op(input, filters, R, Wzer) #, Rzer)
+    return conv_op(input, filters, R, Wzer, Rzer, prob)
 
 
 def conv2d_grad_wrt_inputs(output_grad,
@@ -770,8 +770,7 @@ class AbstractConv2d(BaseAbstractConv2d):
                                              border_mode, subsample,
                                              filter_flip)
 
-    def make_node(self, img, kern, R, Wzer):
-        #, Rzer):
+    def make_node(self, img, kern, R, Wzer, Rzer, prob):
 
         # Make sure both inputs are Variables with the same Type
         if not isinstance(img, theano.Variable):
@@ -782,14 +781,14 @@ class AbstractConv2d(BaseAbstractConv2d):
             R = as_tensor_variable(R)
         if not isinstance(Wzer, theano.Variable):
             Wzer = as_tensor_variable(Wzer)
-        #if not isinstance(Rzer, theano.Variable):
-        #    Rzer = as_tensor_variable(Rzer)
+        if not isinstance(Rzer, theano.Variable):
+            Rzer = as_tensor_variable(Rzer)
 
         ktype = img.type.clone(dtype=kern.dtype,
                                broadcastable=kern.broadcastable)
         kern = ktype.filter_variable(kern)
-        #self.srng=theano.tensor.shared_randomstreams.RandomStreams(np.random.randint(1,high=2147462579))
-
+        self.srng=theano.tensor.shared_randomstreams.RandomStreams(np.random.randint(1,high=2147462579))
+        prob=as_tensor_variable(prob)
         # rtype = img.type.clone(dtype=R.type, broadcastable=R.broadcastable)
         # R = R.filter_variable(R)
         if img.type.ndim != 4:
@@ -802,10 +801,10 @@ class AbstractConv2d(BaseAbstractConv2d):
                          False, False]
         output = img.type.clone(broadcastable=broadcastable)()
 
-        return Apply(self, [img, kern, R, Wzer], [output])
+        return Apply(self, [img, kern, R, Wzer, Rzer, prob], [output])
 
     def perform(self, node, inp, out_):
-        img, kern, R, Wzer = inp
+        img, kern, R, Wzer, Rzer, prob = inp
         img = numpy.asarray(img)
         kern = numpy.asarray(kern)
         o, = out_
@@ -849,7 +848,7 @@ class AbstractConv2d(BaseAbstractConv2d):
         return [rval]
 
     def grad(self, inp, grads):
-        bottom, weights, R, Wzer = inp
+        bottom, weights, R, Wzer, Rzer, prob = inp
         top, = grads
         WW=weights
         if (R.type.ndim==4):
@@ -870,14 +869,14 @@ class AbstractConv2d(BaseAbstractConv2d):
 
         if (R.type.ndim == 4):
             #v=(self.srng.uniform(R.shape)<prob.data[1])
-            d_R=d_weights*Wzer[1]
+            d_R=d_weights*Rzer
             #u=(self.srng.uniform(R.shape)<prob.data[0])
-            d_weights=d_weights*Wzer[0]
+            d_weights=d_weights*Wzer
         else:
             d_R=theano.gradient.grad_undefined(self,2,R)
         d_Wzer=theano.gradient.grad_undefined(self,3,Wzer)
-        #d_Rzer=theano.gradient.grad_undefined(self,4,Rzer)
-
+        d_Rzer=theano.gradient.grad_undefined(self,4,Rzer)
+        d_prob=theano.gradient.grad_undefined(self,5,prob)
         #theano.tensor.zeros(theano.tensor.shape(R)) #d_weights
         # Make sure that the broadcastable pattern of the inputs is used
         # for the gradients, even if the grad opts are not able to infer
@@ -891,7 +890,7 @@ class AbstractConv2d(BaseAbstractConv2d):
         if (R.type.ndim==4):
             d_R = patternbroadcast(d_R, R.broadcastable)
             d_R = R.type.filter_variable(d_R)
-        return d_bottom, d_weights, d_R, d_Wzer #, d_Rzer
+        return d_bottom, d_weights, d_R, d_Wzer, d_Rzer, d_prob
 
     def infer_shape(self, node, input_shapes):
         imshp = input_shapes[0]
