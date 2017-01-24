@@ -36,7 +36,8 @@ from .abstract_conv import conv2d as abstract_conv2d
 # from .abstract_conv import conv2d as abstract_conv2d
 
 def conv2dR(input,
-           filters, Rfilters, Wzer, Rzer, prob,
+           filters, Rfilters, Wzer,
+            #Rzer,
            input_shape=None,
            filter_shape=None,
            border_mode='valid',
@@ -50,7 +51,9 @@ def conv2dR(input,
     """
 
 
-    return abstract_conv2dR(input, filters, Rfilters, Wzer, Rzer, prob, input_shape, filter_shape,
+    return abstract_conv2dR(input, filters, Rfilters, Wzer,
+                            #Rzer,
+                            input_shape, filter_shape,
                            border_mode, subsample, filter_flip)
 
 
