@@ -9,7 +9,7 @@ Mnist:cifar_10
 net:fnc
 update:sgd
 batch_size:50
-eta_init:.1
+eta_init:.01
 train:True
 mult:1
 num_train:50000
@@ -17,15 +17,13 @@ agg:True
 adapt_eta:False
 hinge:1
 hing_down:1
-global_shift:.5
 TRAIN:True
 global_prob:(.5,.5)
-output:OUTPUTloc
 name:input1
 #name:convR1;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:input1
 #name:convR1a;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:convR1
 #name:pool2;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:convR1a
 name:dense0;num_units:4000;non_linearity:lasagne.nonlinearity.sigmoid;parent:input1
 name:newdens1;num_units:500;non_linearity:lasagne.nonlinearity.sigmoid;parent:dense0
-name:drop2;drop:.2;paranet:newdens1
-name:newdens2;num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:drop2;final:final
+name:drop1;drop:.2;parent:newdens1
+name:newdens2;num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:newdense1;final:final
