@@ -26,7 +26,6 @@ name:input1
 #name:convR1a;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:convR1
 #name:pool2;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:convR1a
 name:dense0;num_units:4000;non_linearity:lasagne.nonlinearity.sigmoid;parent:input1
-name:drop1;drop:.5;parent:dense0
-name:newdens1;num_units:500;non_linearity:lasagne.nonlinearity.sigmoid;parent:drop1
+name:newdens1;num_units:500;non_linearity:lasagne.nonlinearity.sigmoid;parent:dense0
 name:drop2;drop:.5;paranet:newdens1
 name:newdens2;num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:drop2;final:final
