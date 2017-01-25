@@ -12,7 +12,7 @@ batch_size:50
 eta_init:.1
 train:True
 mult:1
-num_train:5200
+num_train:50000
 agg:True
 adapt_eta:False
 hinge:1
