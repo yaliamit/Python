@@ -19,7 +19,7 @@ hinge:1
 hing_down:1
 global_shift:.5
 TRAIN:True
-global_prob:(.5,0)
+global_prob:(.5,.5)
 output:OUTPUTloc
 name:input1
 #name:convR1;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:input1
