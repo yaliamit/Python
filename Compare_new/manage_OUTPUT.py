@@ -85,8 +85,8 @@ def plot_OUTPUT(name='OUTPUT'):
 
     print(len(bt))
     py.plot(bt,label='train')
-    py.plot(len(bt)-2, atrain, 'go', markersize=4)
     py.plot(bv,label='val')
     py.plot(len(bt)-2, atest, 'bo', markersize=4)
+    py.plot(len(bt)-2, atrain, 'go', markersize=4)
     py.legend(loc=4)
     #py.show()
