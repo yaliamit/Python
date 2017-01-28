@@ -1,1 +1,1 @@
-python start_class.py net=fncrcR output=fncrcR32_OUT>fncrcR32_OUT.txt
+python start_class.py net=fncrc output=fncrc32_100_OUT>fncrc32_100_OUT.txt
