@@ -79,14 +79,18 @@ def plot_OUTPUT(name='OUTPUT'):
     bv=np.fromstring(commands.getoutput('grep Val ' + name + '.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
     ss='grep aggegate ' + name + '.txt | cut -d"," -f2 | cut -d")" -f1'
     atest=np.fromstring(commands.getoutput(ss),sep='\n\t\t\t')
+    if (type(atest) is np.ndarray):
+        atest=atest[-1]
     ss='grep Post-train ' + name + '.txt | grep acc | cut -d":" -f2'
     atrain=np.fromstring(commands.getoutput(ss),sep='\n\t\t\t')
+    if (type(atrain) is np.ndarray):
+        atrain=atrain[-1]
     print(atest,atrain)
 
     print(len(bt))
     py.plot(bt,label='train')
     py.plot(bv,label='val')
-    py.plot(len(bt)-2, atest, 'bo', markersize=4)
-    py.plot(len(bt)-2, atrain, 'go', markersize=4)
+    py.plot(len(bt)-2, atest, 'go', markersize=4)
+    py.plot(len(bt)-2, atrain, 'bo', markersize=4)
     py.legend(loc=4)
     #py.show()

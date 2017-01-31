@@ -1,6 +1,6 @@
 eta_current:0.0010000000475
 seed:481522
-num_epochs:3
+num_epochs:100
 simple_augmentation:True
 mod_net:None
 global_drop:0.5
@@ -18,8 +18,8 @@ hinge_down:2
 output:OUTPUTloc
 name:input1
 name:batch0;parent:input1
-name:convR1;num_filters:64;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:batch0
-name:convR1a;num_filters:64;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:convR1
+name:conv1;num_filters:64;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:batch0
+name:convR1a;num_filters:64;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:conv1
 name:pool1;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:convR1a
 name:convR2;num_filters:128;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:pool1
 name:convR2a;num_filters:128;pad:(0, 0);filter_size:(1, 1);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:convR2

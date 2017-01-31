@@ -31,9 +31,10 @@ class BaseConvLayerR(Layer):
                  untie_biases=False,
                  W=init.GlorotUniform(),
                  R=init.GlorotUniform(),
-                 Wzer=init.Uniform(range=(0.,1.)),Rzer=init.Uniform(range=(0.,1.)),
-                 b=init.Constant(0.),
+                 Wzer=init.Uniform(range=(0.,1.)),
+                 Rzer=init.Uniform(range=(0.,1.)),
                  prob=np.array((.5,.5)),
+                 b=init.Constant(0.),
                  nonlinearity=nonlinearities.rectify, flip_filters=True,
                  n=None, **kwargs):
         super(BaseConvLayerR, self).__init__(incoming, **kwargs)
@@ -162,8 +163,8 @@ class Conv2DLayerR(BaseConvLayerR):
                  convolution=T.nnet.conv2dR, **kwargs):
         super(Conv2DLayerR, self).__init__(incoming, num_filters, filter_size,
                                           stride, pad, untie_biases, W,
-                                           R, Wzer, Rzer,
-                                           b, prob,
+                                           R, Wzer, Rzer, prob,
+                                           b,
                                           nonlinearity, flip_filters, n=2,
                                           **kwargs)
         self.convolution = convolution
@@ -171,7 +172,7 @@ class Conv2DLayerR(BaseConvLayerR):
     def convolve(self, input, **kwargs):
         border_mode = 'half' if self.pad == 'same' else self.pad
         conved = self.convolution(input, self.W,
-                                  self.R, self.Wzer, self.Rzer, self.prob,
+                                  self.R, self.Wzer, self.Rzer,
                                   self.input_shape, self.get_W_shape(),
                                   subsample=self.stride,
                                   border_mode=border_mode,
