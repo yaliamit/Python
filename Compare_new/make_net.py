@@ -146,10 +146,10 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
         if ('gain' in l):
             gain=l['gain']
         prob=(.5,.5)
-        if ('prob' in l):
-            prob=l['prob']
         if ('global_prob' in PARS):
             prob=PARS['global_prob']
+        if ('prob' in l):
+            prob=l['prob']
         prob=tuple([np.float32(i) for i in prob])
         #prob.shape=(1,2)
         if ('parent' in l):
