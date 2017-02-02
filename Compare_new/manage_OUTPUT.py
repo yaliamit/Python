@@ -79,11 +79,11 @@ def plot_OUTPUT(name='OUTPUT'):
     bv=np.fromstring(commands.getoutput('grep Val ' + name + '.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
     ss='grep aggegate ' + name + '.txt | cut -d"," -f2 | cut -d")" -f1'
     atest=np.fromstring(commands.getoutput(ss),sep='\n\t\t\t')
-    if (type(atest) is np.ndarray):
+    if (type(atest) is np.ndarray and atest !=[] ):
         atest=atest[-1]
     ss='grep Post-train ' + name + '.txt | grep acc | cut -d":" -f2'
     atrain=np.fromstring(commands.getoutput(ss),sep='\n\t\t\t')
-    if (type(atrain) is np.ndarray):
+    if (type(atrain) is np.ndarray and atrain != []):
         atrain=atrain[-1]
     print(atest,atrain)
 
