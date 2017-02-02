@@ -46,7 +46,8 @@ for i,ne in enumerate(nets):
     if (parms['mult']>1 and parms['mult']-parms['start']>1):
         if (not parms['use_existing']):
             parms['seed']=np.random.randint(0,200000)
-            agg=[]
+            if (i==0):
+                agg=[]
     if (parms['use_existing']):
          # if (os.path.isfile(ne+'.pars')):
          #    fo=open(ne+'.pars','r')
@@ -105,17 +106,25 @@ for i,ne in enumerate(nets):
     # if ('num_train' in parms):
     #     NETPARS['num_train']=parms['num_train']
     [NETPARS,out]=run_class.main_new(NETPARS)
+    many=False
     if agg is None:
         agg=out[2]
         y=out[-1]
+        acc=np.mean(np.argmax(agg,axis=1)==y)
     else:
+        many=True
         if (len(agg)==0):
-            agg=out[2]
+            ag=np.argmax(out[2],axis=1) #out[2]
+            agg=np.zeros(out[2].shape)
+            agg[np.array(range(out[2].shape[0])),ag]=1
         else:
-            agg=agg+out[2]
+            ag=np.argmax(out[2],axis=1)
+            aggt=np.zeros(out[2].shape)
+            aggt[np.array(range(out[2].shape[0])),ag]=1
+            agg=agg+aggt
         y=out[-1]
     acc=np.mean(np.argmax(agg,axis=1)==y)
-    agg=None
+    #agg=None
     print('aggegate accuracy',acc)
 
 print('NNN:',NETPARS['output_net'])
