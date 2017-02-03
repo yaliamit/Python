@@ -125,7 +125,7 @@ for i,ne in enumerate(nets):
         y=out[-1]
     acc=np.mean(np.argmax(agg,axis=1)==y)
     #agg=None
-    print('step',i,'aggegate accuracy,',acc)
+    print('step',i,'aggegate accuracy',acc)
 
 print('NNN:',NETPARS['output_net'])
 print('DONE')
