@@ -291,8 +291,10 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
 
 def main_new(NETPARS):
     # Load the dataset
+    
     np.random.seed(NETPARS['seed'])
     batch_size=NETPARS['batch_size']
+    print("seed",NETPARS['seed'])
     print("Loading data...")
     X_train, y_train, X_val, y_val, X_test, y_test=data.get_train(NETPARS)
     num_class=len(np.unique(y_test))
