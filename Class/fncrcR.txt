@@ -9,7 +9,7 @@ Mnist:cifar_100
 net:fnc
 update:sgd
 batch_size:50
-eta_init:.1
+eta_init:.01
 train:True
 mult:1
 num_train:50000

@@ -75,23 +75,25 @@ def plot_OUTPUT(name='OUTPUT'):
     import numpy as np
     import pylab as py
     py.ion()
+    havetrain=False
     bt=np.fromstring(commands.getoutput('grep Train ' + name + '.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
     bv=np.fromstring(commands.getoutput('grep Val ' + name + '.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
-    ss='grep aggegate ' + name + '.txt | cut -d"," -f4 | cut -d")" -f1'
+    ss='grep aggegate ' + name + '.txt | cut -d"," -f2 | cut -d")" -f1'
     atest=np.fromstring(commands.getoutput(ss),sep='\n\t\t\t')
-    if (type(atest) is np.ndarray and atest is not [] ):
+    if (type(atest) is np.ndarray and len(atest)>0 ):
         atest=atest[-1]
     ss='grep Post-train ' + name + '.txt | grep acc | cut -d":" -f2'
     atrain=np.fromstring(commands.getoutput(ss),sep='\n\t\t\t')
-    if (type(atrain) is np.ndarray and atrain is not []):
+    if (type(atrain) is np.ndarray and len(atrain)>0):
+        havetrain=True
         atrain=atrain[-1]
-    if (atrain is not []):
+    if (havetrain):
         print(atest,atrain)
 
     print(len(bt))
     py.plot(bt,label='train')
     py.plot(bv,label='val')
-    if (atrain is not []):
+    if (havetrain>0):
         py.plot(len(bt)-2, atest, 'go', markersize=4)
         py.plot(len(bt)-2, atrain, 'bo', markersize=4)
     py.legend(loc=4)

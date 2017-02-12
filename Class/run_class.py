@@ -291,7 +291,7 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
 
 def main_new(NETPARS):
     # Load the dataset
-    
+
     np.random.seed(NETPARS['seed'])
     batch_size=NETPARS['batch_size']
     print("seed",NETPARS['seed'])
