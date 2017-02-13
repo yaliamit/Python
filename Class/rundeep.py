@@ -25,7 +25,7 @@ else:
     commands.getoutput('./GIT.sh')
     commands.getoutput('ssh amit@aitken.uchicago.edu \'cd Desktop/Dropbox/Python; git pull\'')
 
-    os.system('ssh amit@aitken.uchicago.edu \' ssh deeplearner; cd /ga/amit/Desktop/Dropbox/Python/Class/; ./runthingsDP.txt \' & ')
+    os.system('ssh amit@aitken.uchicago.edu \' ssh deeplearner \"cd /ga/amit/Desktop/Dropbox/Python/Class/; ./runthingsDP.txt \" \' & ')
 
     ss='start'
     while (ss != ''):
