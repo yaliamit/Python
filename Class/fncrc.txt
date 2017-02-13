@@ -6,7 +6,7 @@ mod_net:None
 edges:False
 start:0
 Mnist:cifar_10
-net:fnc
+net:fn
 update:sgd
 batch_size:50
 eta_init:.01
