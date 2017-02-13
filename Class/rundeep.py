@@ -17,7 +17,7 @@ else:
     f=open('runthingsDP.txt','w')
     f.write(ss+'\n')
     f.close()
-
+    os.system('chmod +x runthingsDP.txt')
     remcom='rm Desktop/Dropbox/Python/Class/'+outname+'.txt'
     os.system('ssh amit@aitken.uchicago.edu' + ' ' + remcom)
 
@@ -25,7 +25,7 @@ else:
     commands.getoutput('./GIT.sh')
     commands.getoutput('ssh amit@aitken.uchicago.edu \'cd Desktop/Dropbox/Python; git pull\'')
 
-    os.system('ssh amit@aitken.uchicago.edu \'cd Desktop/Dropbox/Python/Class/; sbatch theano.sbatch \' & ')
+    os.system('ssh amit@aitken.uchicago.edu \'cd Desktop/Dropbox/Python/Class/; ./runthingsDP.txt \' & ')
 
     ss='start'
     while (ss != ''):
