@@ -346,6 +346,7 @@ def main_new(NETPARS):
     NETPARS=make_net.make_file_from_params(network,NETPARS)
     # Iterate over epochs:
     eta_p=run_compare.eta_params(network)
+    curr_sched=0
     if (NETPARS['train'] and NETPARS['num_epochs']>0):
         print("Starting training...","Training set size:",X_train.shape[0])
         mod_eta=True
@@ -363,6 +364,13 @@ def main_new(NETPARS):
 
             if (epoch>0 and 'one' in NETPARS and np.mod(epoch,NETPARS['num_epochs']/num_class)==0):
                 NETPARS['one']+=1
+            if ('eta_schedule' in NETPARS):
+                sc=NETPARS['eta_schedule']
+                if (curr_sched<len(sc)):
+                    for i in np.arange(curr_sched,len(sc),2):
+                        if (sc[i]<epoch):
+                            curr_sched+=2
+                            eta.set_value(np.float32(sc[i+1]))
             if (NETPARS['adapt_eta']):
                 eta_p.update(out_te[0],out_te[1],network,eta,mod_eta=mod_eta)
             print("Epoch {} of {} took {:.3f}s".format(
