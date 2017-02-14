@@ -1,6 +1,6 @@
 output_net:fnc
 seed:45239
-num_epochs:200
+num_epochs:300
 simple_augmentation:True
 mod_net:None
 edges:False
@@ -10,7 +10,7 @@ net:fn
 #eta_schedule:(20,.01,100,.001)
 update:sgd
 batch_size:50
-eta_init:.1
+eta_init:.01
 train:True
 mult:1
 num_train:50000
