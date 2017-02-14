@@ -7,10 +7,10 @@ edges:False
 start:0
 Mnist:cifar_10
 net:fn
-eta_schedule:(20,.01,100,.001)
+#eta_schedule:(20,.01,100,.001)
 update:sgd
 batch_size:50
-eta_init:.1
+eta_init:.001
 train:True
 mult:1
 num_train:50000
