@@ -4,8 +4,8 @@ import os
 from scipy import linalg
 def load_dataset(data_set,num_train=50000, num_test=10000, num_val=5000, marg=0, Train=True, white=True):
     home='../'#os.path.expanduser('~')
-    os.environ['CIFAR10_DIR']=home+'/Desktop/Dropbox/Python/_CIFAR10'
-    os.environ['CIFAR100_DIR']=home+'/Desktop/Dropbox/Python/_CIFAR100'
+    os.environ['CIFAR10_DIR']=home+'_CIFAR10'
+    os.environ['CIFAR100_DIR']=home+'_CIFAR100'
     train_x=None
     train_y=None
     val_x=None
