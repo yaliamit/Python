@@ -14,7 +14,7 @@ ss='python start_class.py '+' '.join(sys.argv[1:l-1]) + ' output='+outname+'>'+O
 if 'loc' in outname:
     os.system(ss)
 else:
-    f=open('runthingsCS.txt','w')
+    f=open('runthingsBR.txt','w')
     f.write(ss+'\n')
     f.close()
 
