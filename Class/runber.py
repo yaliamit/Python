@@ -19,29 +19,29 @@ else:
     f.close()
 
     remcom='rm /ga/amit/Desktop/Dropbox/Python/Class/'+outname+'.txt'
-    os.system('ssh amit@fmlab13.uchicago.edu' + ' ' + remcom)
+    os.system('ssh amit@bernie.uchicago.edu' + ' ' + remcom)
 
     commands.getoutput('rm' + outname +'-br.txt')
     commands.getoutput('./GIT.sh')
-    commands.getoutput('ssh amit@fmlab13.uchicago.edu \'cd /ga/amit/Desktop/Dropbox/Python; git pull\'')
+    commands.getoutput('ssh amit@bernie.uchicago.edu \'cd /ga/amit/Desktop/Dropbox/Python; git pull\'')
 
-    os.system('ssh amit@fmlab13.uchicago.edu \'cd /ga/amit/Desktop/Dropbox/Python/Class/; ./runthingsBR.txt \' & ')
+    os.system('ssh amit@bernie.uchicago.edu \'cd /ga/amit/Desktop/Dropbox/Python/Class/; ./runthingsBR.txt \' & ')
 
     ss='start'
     while (ss != ''):
         time.sleep(30)
-        ss=commands.getoutput('scp amit@fmlab13.uchicago.edu:/ga/amit/Desktop/Dropbox/Python/Class/'+OUTNAME+' '+ lOUTNAME)
+        ss=commands.getoutput('scp amit@bernie.uchicago.edu:/ga/amit/Desktop/Dropbox/Python/Class/'+OUTNAME+' '+ lOUTNAME)
         print(ss)
     while (commands.getoutput('grep DONE ' + lOUTNAME)==''):
         time.sleep(30)
-        commands.getoutput('scp amit@fmlab13.uchicago.edu:/ga/amit/Desktop/Dropbox/Python/Class/'+OUTNAME+' ' + lOUTNAME)
+        commands.getoutput('scp amit@bernie.uchicago.edu:/ga/amit/Desktop/Dropbox/Python/Class/'+OUTNAME+' ' + lOUTNAME)
 
     time.sleep(30)
     pnn=commands.getoutput('grep NNN ' + lOUTNAME)
     pnnn=str.split(pnn,':')
     netname=str.strip(pnnn[1],' ,\')')
 
-    com='scp amit@fmlab13.uchicago.edu:/ga/amit/Desktop/Dropbox/Python/Class/'+netname+'.*  _br/Amodels/.'
+    com='scp amit@bernie.uchicago.edu:/ga/amit/Desktop/Dropbox/Python/Class/'+netname+'.*  _br/Amodels/.'
     os.system(com)
     manage_OUTPUT.print_OUTPUT(outname+'-br')
 
