@@ -1,6 +1,6 @@
 output_net:fnc
 seed:45239
-num_epochs:50
+num_epochs:30
 simple_augmentation:True
 mod_net:None
 edges:False
