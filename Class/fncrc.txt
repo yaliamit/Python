@@ -17,7 +17,7 @@ num_train:50000
 agg:True
 adapt_eta:False
 hinge:2
-hing_down:2
+hinge_down:2
 TRAIN:True
 global_prob:(.5,.5)
 name:input1
