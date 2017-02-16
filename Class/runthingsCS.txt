@@ -1,1 +1,1 @@
-python start_class.py net=fncrcR output=fncrcR_OUT>fncrcR_OUT.txt
+python start_class.py net=_BP_CIFAR100/igor2RR output=igor2RR100_OUT>igor2RR100_OUT.txt
