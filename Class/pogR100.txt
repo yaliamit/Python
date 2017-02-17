@@ -10,7 +10,7 @@ net:fn
 eta_schedule:(100,.0001)
 update:nestorov
 batch_size:100
-eta_init:.001
+eta_init:.0005
 train:True
 mult:1
 num_train:50000
