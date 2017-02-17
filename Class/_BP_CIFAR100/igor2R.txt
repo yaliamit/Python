@@ -7,7 +7,7 @@ global_drop:0.5
 update:sgd
 batch_size:500
 use_existing:False
-eta_schedule:(20,.01,50,.005)
+eta_schedule:(100,.01,50,.005)
 eta_init:0.1
 train:True
 Mnist:cifar_100

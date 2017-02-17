@@ -1,1 +1,1 @@
-python start_class.py net=_BP_CIFAR10/igor2RR use_existing=True start=2 mult=3 output=igor2RR_2_2_OUT>igor2RR_2_2_OUT.txt
+python start_class.py net=_BP_CIFAR10/igor2RR_OUT use_existing=True start=3 mult=4 output=igor2RR_2_3_OUT>igor2RR_2_3_OUT.txt
