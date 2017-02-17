@@ -78,7 +78,7 @@ def plot_OUTPUT(name='OUTPUT'):
     havetrain=False
     bt=np.fromstring(commands.getoutput('grep Train ' + name + '.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
     bv=np.fromstring(commands.getoutput('grep Val ' + name + '.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
-    ss='grep aggegate ' + name + '.txt | cut -d"," -f2 | cut -d")" -f1'
+    ss='grep aggegate ' + name + '.txt | cut -d"," -f4 | cut -d")" -f1'
     atest=np.fromstring(commands.getoutput(ss),sep='\n\t\t\t')
     if (type(atest) is np.ndarray and len(atest)>0 ):
         atest=atest[-1]
