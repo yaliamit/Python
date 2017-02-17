@@ -31,4 +31,4 @@ name:convR3;num_filters:64;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_lineari
 name:pool3;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:convR3
 name:batch2;parent:pool3
 name:newdens0;num_units:128;non_linearity:lasagne.nonlinearity.sigmoid;parent:batch2
-name:newdens2;num_units:100;non_linearity:lasagne.nonlinearity.linear;parent:newdens0;final:final
+name:newdens2;num_units:100;prop:(1.,0.);non_linearity:lasagne.nonlinearity.linear;parent:newdens0;final:final
