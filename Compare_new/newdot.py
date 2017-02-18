@@ -77,6 +77,8 @@ class NewDotOp(theano.Op):
             xgrad = T.dot(gz, R.T)
             # Gradient of weights - input*deltas^t - zero'd out for those that don't exist.
             yygrad = T.dot(x.T,gz)
+            #yygrad = T.dot(T.maximum(x,0),gz)
+            #zzgrad=T.dot(x,T.maximum(gz,0))
             #u=(self.srng.uniform(yygrad.shape)<self.prob.data[0])
             ygrad=yygrad*Wzer
 
