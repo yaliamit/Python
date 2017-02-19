@@ -1,16 +1,16 @@
 output_net:fnc
 seed:45239
-num_epochs:65
+num_epochs:600
 simple_augmentation:True
 mod_net:None
 edges:False
 start:0
 Mnist:cifar_100
 net:fn
-eta_schedule:(50,.0001)
+eta_schedule:(600,.0001)
 update:nestorov
 batch_size:100
-eta_init:.001
+eta_init:.0001
 train:True
 mult:1
 num_train:50000
@@ -18,8 +18,8 @@ agg:True
 adapt_eta:False
 hinge:2
 hinge_down:2
-TRAIN:True
 global_prob:(.5,0)
+TRAIN:True
 name:input1
 name:conv1;num_filters:32;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:input1
 name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:conv1
