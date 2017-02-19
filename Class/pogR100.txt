@@ -7,7 +7,7 @@ edges:False
 start:0
 Mnist:cifar_100
 net:fn
-eta_schedule:(20,.005)
+eta_schedule:(50,.005)
 update:nestorov
 batch_size:100
 eta_init:.01
