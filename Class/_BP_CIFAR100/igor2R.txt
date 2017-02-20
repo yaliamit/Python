@@ -7,8 +7,8 @@ global_drop:0.5
 update:nestorov
 batch_size:50
 use_existing:False
-#eta_schedule:(100,.005,500,.001)
-eta_init:0.001
+#eta_schedule:(50,.005,500,.001)
+eta_init:0.01
 train:True
 Mnist:cifar_100
 num_train:50000
