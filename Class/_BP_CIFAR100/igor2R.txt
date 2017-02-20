@@ -1,13 +1,13 @@
 eta_current:0.0010000000475
 seed:481522
-num_epochs:100
+num_epochs:180
 simple_augmentation:True
 mod_net:None
 global_drop:0.5
 update:nestorov
 batch_size:50
 use_existing:False
-#eta_schedule:(50,.005,500,.001)
+eta_schedule:(30,.005,150,.001)
 eta_init:0.01
 train:True
 Mnist:cifar_100
