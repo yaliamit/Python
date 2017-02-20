@@ -1,0 +1,2609 @@
+['start_class.py', 'net=fncr', 'output=fncra_OUT']
+{'output_net': None, 'mod_net': None, 'use_existing': False, 'start': 0, 'train': True, 'output': 'fncra_OUT', 'net': 'fncr', 'mult': 1}
+XXX: fncr
+output_net:fnc
+seed:45239
+num_epochs:100
+simple_augmentation:True
+mod_net:None
+edges:False
+start:0
+Mnist:cifar_10
+net:fnc
+update:sgd
+batch_size:50
+eta_init:.1
+train:True
+mult:1
+num_train:50000
+agg:True
+adapt_eta:False
+hinge:2
+hing_down:2
+TRAIN:True
+global_prob:(.5,.5)
+name:input1
+#name:convR1;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:input1
+#name:convR1a;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:convR1
+#name:pool2;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:convR1a
+name:dense0;num_units:2000;non_linearity:lasagne.nonlinearity.sigmoid;parent:input1
+name:newdens1;num_units:500;non_linearity:lasagne.nonlinearity.sigmoid;parent:dense0
+name:drop1;drop:.2;parent:newdens1
+name:newdens2;num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:drop1;final:final
+Loading data...
+loading cifar_10
+cifar_1.h5
+cifar_2.h5
+cifar_3.h5
+cifar_4.h5
+cifar_5.h5
+Building model and compiling functions...
+input1 length 1 input None output (3, 32, 32) num params 0
+dense0 length 1 input (3, 32, 32) output (2000,) num params 6144000
+newdens1 length 1 input (2000,) output (500,) num params 2000000
+drop1 length 1 input None output (500,) num params 0
+newdens2 length 1 input (500,) output (10,) num params 10000
+('params', [dense0.W, newdens1.W, newdens1.R, newdens2.W, newdens2.R])
+('params', [dense0.W, newdens1.W, newdens1.R, newdens2.W, newdens2.R])
+Starting training... Training set size: 45000
+eta 0.10000000149
+Final results:
+Train loss:			2.610029
+Train acc:			0.152889
+Final results:
+Val loss:			2.232331
+Val acc:			0.209600
+Epoch 1 of 100 took 10.326s
+eta 0.10000000149
+Final results:
+Train loss:			2.152940
+Train acc:			0.255378
+Final results:
+Val loss:			2.079241
+Val acc:			0.276400
+Epoch 2 of 100 took 10.244s
+eta 0.10000000149
+Final results:
+Train loss:			2.050311
+Train acc:			0.285089
+Final results:
+Val loss:			2.071369
+Val acc:			0.276400
+Epoch 3 of 100 took 10.220s
+eta 0.10000000149
+Final results:
+Train loss:			1.987002
+Train acc:			0.307556
+Final results:
+Val loss:			1.932333
+Val acc:			0.327200
+Epoch 4 of 100 took 10.224s
+eta 0.10000000149
+Final results:
+Train loss:			1.920295
+Train acc:			0.324667
+Final results:
+Val loss:			1.881048
+Val acc:			0.329400
+Epoch 5 of 100 took 10.212s
+eta 0.10000000149
+Final results:
+Train loss:			1.867847
+Train acc:			0.339022
+Final results:
+Val loss:			1.848791
+Val acc:			0.347200
+Epoch 6 of 100 took 10.209s
+eta 0.10000000149
+Final results:
+Train loss:			1.822657
+Train acc:			0.350467
+Final results:
+Val loss:			1.829392
+Val acc:			0.369600
+Epoch 7 of 100 took 10.387s
+eta 0.10000000149
+Final results:
+Train loss:			1.779362
+Train acc:			0.362022
+Final results:
+Val loss:			1.730986
+Val acc:			0.381600
+Epoch 8 of 100 took 10.258s
+eta 0.10000000149
+Final results:
+Train loss:			1.745990
+Train acc:			0.373889
+Final results:
+Val loss:			1.724258
+Val acc:			0.390200
+Epoch 9 of 100 took 10.230s
+eta 0.10000000149
+Final results:
+Train loss:			1.723508
+Train acc:			0.379889
+Final results:
+Val loss:			1.667445
+Val acc:			0.406400
+Epoch 10 of 100 took 10.236s
+eta 0.10000000149
+Final results:
+Train loss:			1.704687
+Train acc:			0.385333
+Final results:
+Val loss:			1.661833
+Val acc:			0.397200
+Epoch 11 of 100 took 10.244s
+eta 0.10000000149
+Final results:
+Train loss:			1.682326
+Train acc:			0.391222
+Final results:
+Val loss:			1.663935
+Val acc:			0.403600
+Epoch 12 of 100 took 10.065s
+eta 0.10000000149
+Final results:
+Train loss:			1.659749
+Train acc:			0.400889
+Final results:
+Val loss:			1.680194
+Val acc:			0.407800
+Epoch 13 of 100 took 10.015s
+eta 0.10000000149
+Final results:
+Train loss:			1.641983
+Train acc:			0.404444
+Final results:
+Val loss:			1.599924
+Val acc:			0.426400
+Epoch 14 of 100 took 10.000s
+eta 0.10000000149
+Final results:
+Train loss:			1.628115
+Train acc:			0.411444
+Final results:
+Val loss:			1.622355
+Val acc:			0.422200
+Epoch 15 of 100 took 10.000s
+eta 0.10000000149
+Final results:
+Train loss:			1.611943
+Train acc:			0.413022
+Final results:
+Val loss:			1.785554
+Val acc:			0.389000
+Epoch 16 of 100 took 10.015s
+eta 0.10000000149
+Final results:
+Train loss:			1.601777
+Train acc:			0.417644
+Final results:
+Val loss:			1.589627
+Val acc:			0.430400
+Epoch 17 of 100 took 10.009s
+eta 0.10000000149
+Final results:
+Train loss:			1.592785
+Train acc:			0.422467
+Final results:
+Val loss:			1.531415
+Val acc:			0.454200
+Epoch 18 of 100 took 9.987s
+eta 0.10000000149
+Final results:
+Train loss:			1.598346
+Train acc:			0.420600
+Final results:
+Val loss:			1.623869
+Val acc:			0.406400
+Epoch 19 of 100 took 10.063s
+eta 0.10000000149
+Final results:
+Train loss:			1.598624
+Train acc:			0.423111
+Final results:
+Val loss:			1.609645
+Val acc:			0.421400
+Epoch 20 of 100 took 9.998s
+eta 0.10000000149
+Final results:
+Train loss:			1.608229
+Train acc:			0.416244
+Final results:
+Val loss:			1.574022
+Val acc:			0.428000
+Epoch 21 of 100 took 10.002s
+eta 0.10000000149
+Final results:
+Train loss:			1.619532
+Train acc:			0.412089
+Final results:
+Val loss:			1.645016
+Val acc:			0.416000
+Epoch 22 of 100 took 10.099s
+eta 0.10000000149
+Final results:
+Train loss:			1.636098
+Train acc:			0.411267
+Final results:
+Val loss:			1.604583
+Val acc:			0.418000
+Epoch 23 of 100 took 10.033s
+eta 0.10000000149
+Final results:
+Train loss:			1.656398
+Train acc:			0.407867
+Final results:
+Val loss:			1.667617
+Val acc:			0.399000
+Epoch 24 of 100 took 10.048s
+eta 0.10000000149
+Final results:
+Train loss:			1.648818
+Train acc:			0.405622
+Final results:
+Val loss:			1.767803
+Val acc:			0.361800
+Epoch 25 of 100 took 10.048s
+eta 0.10000000149
+Final results:
+Train loss:			1.645239
+Train acc:			0.408556
+Final results:
+Val loss:			1.660249
+Val acc:			0.387600
+Epoch 26 of 100 took 10.026s
+eta 0.10000000149
+Final results:
+Train loss:			1.629997
+Train acc:			0.411244
+Final results:
+Val loss:			1.726215
+Val acc:			0.387600
+Epoch 27 of 100 took 10.005s
+eta 0.10000000149
+Final results:
+Train loss:			1.597202
+Train acc:			0.421289
+Final results:
+Val loss:			1.688778
+Val acc:			0.399600
+Epoch 28 of 100 took 10.018s
+eta 0.10000000149
+Final results:
+Train loss:			1.580952
+Train acc:			0.425533
+Final results:
+Val loss:			1.590821
+Val acc:			0.436000
+Epoch 29 of 100 took 10.007s
+eta 0.10000000149
+Final results:
+Train loss:			1.577817
+Train acc:			0.426867
+Final results:
+Val loss:			1.549223
+Val acc:			0.448400
+Epoch 30 of 100 took 10.129s
+eta 0.10000000149
+Final results:
+Train loss:			1.568593
+Train acc:			0.431333
+Final results:
+Val loss:			1.579536
+Val acc:			0.437000
+Epoch 31 of 100 took 10.000s
+eta 0.10000000149
+Final results:
+Train loss:			1.550929
+Train acc:			0.434756
+Final results:
+Val loss:			1.577593
+Val acc:			0.430400
+Epoch 32 of 100 took 9.980s
+eta 0.10000000149
+Final results:
+Train loss:			1.551478
+Train acc:			0.436600
+Final results:
+Val loss:			1.518855
+Val acc:			0.455400
+Epoch 33 of 100 took 9.968s
+eta 0.10000000149
+Final results:
+Train loss:			1.534985
+Train acc:			0.439489
+Final results:
+Val loss:			1.579513
+Val acc:			0.433000
+Epoch 34 of 100 took 9.926s
+eta 0.10000000149
+Final results:
+Train loss:			1.531147
+Train acc:			0.443978
+Final results:
+Val loss:			1.600470
+Val acc:			0.419400
+Epoch 35 of 100 took 9.926s
+eta 0.10000000149
+Final results:
+Train loss:			1.518506
+Train acc:			0.445089
+Final results:
+Val loss:			1.552982
+Val acc:			0.452200
+Epoch 36 of 100 took 9.924s
+eta 0.10000000149
+Final results:
+Train loss:			1.506103
+Train acc:			0.451489
+Final results:
+Val loss:			1.544916
+Val acc:			0.440600
+Epoch 37 of 100 took 9.949s
+eta 0.10000000149
+Final results:
+Train loss:			1.494098
+Train acc:			0.453889
+Final results:
+Val loss:			1.566267
+Val acc:			0.436200
+Epoch 38 of 100 took 9.922s
+eta 0.10000000149
+Final results:
+Train loss:			1.483715
+Train acc:			0.456800
+Final results:
+Val loss:			1.602103
+Val acc:			0.422800
+Epoch 39 of 100 took 9.943s
+eta 0.10000000149
+Final results:
+Train loss:			1.484124
+Train acc:			0.458467
+Final results:
+Val loss:			1.485082
+Val acc:			0.466000
+Epoch 40 of 100 took 9.905s
+eta 0.10000000149
+Final results:
+Train loss:			1.476838
+Train acc:			0.459333
+Final results:
+Val loss:			1.514766
+Val acc:			0.450400
+Epoch 41 of 100 took 9.921s
+eta 0.10000000149
+Final results:
+Train loss:			1.465671
+Train acc:			0.462044
+Final results:
+Val loss:			1.580244
+Val acc:			0.446400
+Epoch 42 of 100 took 10.250s
+eta 0.10000000149
+Final results:
+Train loss:			1.459696
+Train acc:			0.465467
+Final results:
+Val loss:			1.465650
+Val acc:			0.467200
+Epoch 43 of 100 took 10.014s
+eta 0.10000000149
+Final results:
+Train loss:			1.454633
+Train acc:			0.465511
+Final results:
+Val loss:			1.577659
+Val acc:			0.446600
+Epoch 44 of 100 took 10.000s
+eta 0.10000000149
+Final results:
+Train loss:			1.447177
+Train acc:			0.467467
+Final results:
+Val loss:			1.533172
+Val acc:			0.453000
+Epoch 45 of 100 took 9.990s
+eta 0.10000000149
+Final results:
+Train loss:			1.441693
+Train acc:			0.471333
+Final results:
+Val loss:			1.515967
+Val acc:			0.465400
+Epoch 46 of 100 took 9.998s
+eta 0.10000000149
+Final results:
+Train loss:			1.436656
+Train acc:			0.469222
+Final results:
+Val loss:			1.487593
+Val acc:			0.466000
+Epoch 47 of 100 took 10.003s
+eta 0.10000000149
+Final results:
+Train loss:			1.429169
+Train acc:			0.474111
+Final results:
+Val loss:			1.476410
+Val acc:			0.468600
+Epoch 48 of 100 took 10.009s
+eta 0.10000000149
+Final results:
+Train loss:			1.424707
+Train acc:			0.474911
+Final results:
+Val loss:			1.490453
+Val acc:			0.484400
+Epoch 49 of 100 took 10.014s
+eta 0.10000000149
+Final results:
+Train loss:			1.417805
+Train acc:			0.477200
+Final results:
+Val loss:			1.447777
+Val acc:			0.477600
+Epoch 50 of 100 took 10.010s
+eta 0.10000000149
+Final results:
+Train loss:			1.412612
+Train acc:			0.481511
+Final results:
+Val loss:			1.520538
+Val acc:			0.466600
+Epoch 51 of 100 took 10.000s
+eta 0.10000000149
+Final results:
+Train loss:			1.404828
+Train acc:			0.482333
+Final results:
+Val loss:			1.650793
+Val acc:			0.404400
+Epoch 52 of 100 took 9.961s
+eta 0.10000000149
+Final results:
+Train loss:			1.401937
+Train acc:			0.483844
+Final results:
+Val loss:			1.445672
+Val acc:			0.487800
+Epoch 53 of 100 took 9.920s
+eta 0.10000000149
+Final results:
+Train loss:			1.395986
+Train acc:			0.486489
+Final results:
+Val loss:			1.457110
+Val acc:			0.475200
+Epoch 54 of 100 took 10.136s
+eta 0.10000000149
+Final results:
+Train loss:			1.386694
+Train acc:			0.485911
+Final results:
+Val loss:			1.473097
+Val acc:			0.469200
+Epoch 55 of 100 took 9.927s
+eta 0.10000000149
+Final results:
+Train loss:			1.378379
+Train acc:			0.490556
+Final results:
+Val loss:			1.508919
+Val acc:			0.450400
+Epoch 56 of 100 took 9.922s
+eta 0.10000000149
+Final results:
+Train loss:			1.365877
+Train acc:			0.492200
+Final results:
+Val loss:			1.480435
+Val acc:			0.471200
+Epoch 57 of 100 took 9.902s
+eta 0.10000000149
+Final results:
+Train loss:			1.374886
+Train acc:			0.492711
+Final results:
+Val loss:			1.492579
+Val acc:			0.470800
+Epoch 58 of 100 took 9.889s
+eta 0.10000000149
+Final results:
+Train loss:			1.366491
+Train acc:			0.491644
+Final results:
+Val loss:			1.450906
+Val acc:			0.479800
+Epoch 59 of 100 took 9.897s
+eta 0.10000000149
+Final results:
+Train loss:			1.365629
+Train acc:			0.493311
+Final results:
+Val loss:			1.518734
+Val acc:			0.434000
+Epoch 60 of 100 took 9.896s
+eta 0.10000000149
+Final results:
+Train loss:			1.369898
+Train acc:			0.495378
+Final results:
+Val loss:			1.407469
+Val acc:			0.489600
+Epoch 61 of 100 took 9.916s
+eta 0.10000000149
+Final results:
+Train loss:			1.367055
+Train acc:			0.492822
+Final results:
+Val loss:			1.529087
+Val acc:			0.446600
+Epoch 62 of 100 took 10.061s
+eta 0.10000000149
+Final results:
+Train loss:			1.365298
+Train acc:			0.493756
+Final results:
+Val loss:			1.478904
+Val acc:			0.477400
+Epoch 63 of 100 took 9.988s
+eta 0.10000000149
+Final results:
+Train loss:			1.362927
+Train acc:			0.491422
+Final results:
+Val loss:			1.474613
+Val acc:			0.474600
+Epoch 64 of 100 took 9.991s
+eta 0.10000000149
+Final results:
+Train loss:			1.357365
+Train acc:			0.497044
+Final results:
+Val loss:			1.556759
+Val acc:			0.447800
+Epoch 65 of 100 took 9.992s
+eta 0.10000000149
+Final results:
+Train loss:			1.356082
+Train acc:			0.498711
+Final results:
+Val loss:			1.486554
+Val acc:			0.478000
+Epoch 66 of 100 took 10.058s
+eta 0.10000000149
+Final results:
+Train loss:			1.350834
+Train acc:			0.496800
+Final results:
+Val loss:			1.468873
+Val acc:			0.477600
+Epoch 67 of 100 took 9.993s
+eta 0.10000000149
+Final results:
+Train loss:			1.350488
+Train acc:			0.495378
+Final results:
+Val loss:			1.542633
+Val acc:			0.435600
+Epoch 68 of 100 took 9.997s
+eta 0.10000000149
+Final results:
+Train loss:			1.353345
+Train acc:			0.493956
+Final results:
+Val loss:			1.484726
+Val acc:			0.470200
+Epoch 69 of 100 took 9.991s
+eta 0.10000000149
+Final results:
+Train loss:			1.362352
+Train acc:			0.496133
+Final results:
+Val loss:			1.472595
+Val acc:			0.485800
+Epoch 70 of 100 took 9.992s
+eta 0.10000000149
+Final results:
+Train loss:			1.368398
+Train acc:			0.496467
+Final results:
+Val loss:			1.460488
+Val acc:			0.468000
+Epoch 71 of 100 took 9.998s
+eta 0.10000000149
+Final results:
+Train loss:			1.360741
+Train acc:			0.495556
+Final results:
+Val loss:			1.421619
+Val acc:			0.497200
+Epoch 72 of 100 took 10.004s
+eta 0.10000000149
+Final results:
+Train loss:			1.359640
+Train acc:			0.494378
+Final results:
+Val loss:			1.461268
+Val acc:			0.492600
+Epoch 73 of 100 took 9.936s
+eta 0.10000000149
+Final results:
+Train loss:			1.358099
+Train acc:			0.494867
+Final results:
+Val loss:			1.559385
+Val acc:			0.464200
+Epoch 74 of 100 took 9.905s
+eta 0.10000000149
+Final results:
+Train loss:			1.375310
+Train acc:			0.490578
+Final results:
+Val loss:			1.641089
+Val acc:			0.410200
+Epoch 75 of 100 took 9.914s
+eta 0.10000000149
+Final results:
+Train loss:			1.370196
+Train acc:			0.493689
+Final results:
+Val loss:			1.447642
+Val acc:			0.486400
+Epoch 76 of 100 took 9.906s
+eta 0.10000000149
+Final results:
+Train loss:			1.370388
+Train acc:			0.493956
+Final results:
+Val loss:			1.479102
+Val acc:			0.470200
+Epoch 77 of 100 took 9.897s
+eta 0.10000000149
+Final results:
+Train loss:			1.342225
+Train acc:			0.495711
+Final results:
+Val loss:			1.463577
+Val acc:			0.478000
+Epoch 78 of 100 took 10.021s
+eta 0.10000000149
+Final results:
+Train loss:			1.349482
+Train acc:			0.500978
+Final results:
+Val loss:			1.424828
+Val acc:			0.491400
+Epoch 79 of 100 took 9.899s
+eta 0.10000000149
+Final results:
+Train loss:			1.359692
+Train acc:			0.493222
+Final results:
+Val loss:			1.553547
+Val acc:			0.437800
+Epoch 80 of 100 took 9.892s
+eta 0.10000000149
+Final results:
+Train loss:			1.351119
+Train acc:			0.497978
+Final results:
+Val loss:			1.477520
+Val acc:			0.486800
+Epoch 81 of 100 took 9.922s
+eta 0.10000000149
+Final results:
+Train loss:			1.347769
+Train acc:			0.501000
+Final results:
+Val loss:			1.496060
+Val acc:			0.471800
+Epoch 82 of 100 took 10.133s
+eta 0.10000000149
+Final results:
+Train loss:			1.350801
+Train acc:			0.497244
+Final results:
+Val loss:			1.448498
+Val acc:			0.484400
+Epoch 83 of 100 took 9.999s
+eta 0.10000000149
+Final results:
+Train loss:			1.360484
+Train acc:			0.495089
+Final results:
+Val loss:			1.637273
+Val acc:			0.399000
+Epoch 84 of 100 took 9.992s
+eta 0.10000000149
+Final results:
+Train loss:			1.351365
+Train acc:			0.496667
+Final results:
+Val loss:			1.511294
+Val acc:			0.471600
+Epoch 85 of 100 took 9.991s
+eta 0.10000000149
+Final results:
+Train loss:			1.348323
+Train acc:			0.498867
+Final results:
+Val loss:			1.451553
+Val acc:			0.489600
+Epoch 86 of 100 took 9.985s
+eta 0.10000000149
+Final results:
+Train loss:			1.354500
+Train acc:			0.500067
+Final results:
+Val loss:			1.460816
+Val acc:			0.494000
+Epoch 87 of 100 took 9.995s
+eta 0.10000000149
+Final results:
+Train loss:			1.355691
+Train acc:			0.496133
+Final results:
+Val loss:			1.453125
+Val acc:			0.483400
+Epoch 88 of 100 took 9.987s
+eta 0.10000000149
+Final results:
+Train loss:			1.343439
+Train acc:			0.497489
+Final results:
+Val loss:			1.515012
+Val acc:			0.472600
+Epoch 89 of 100 took 9.985s
+eta 0.10000000149
+Final results:
+Train loss:			1.349783
+Train acc:			0.498467
+Final results:
+Val loss:			1.471959
+Val acc:			0.481400
+Epoch 90 of 100 took 10.047s
+eta 0.10000000149
+Final results:
+Train loss:			1.367796
+Train acc:			0.492356
+Final results:
+Val loss:			1.454295
+Val acc:			0.481600
+Epoch 91 of 100 took 9.987s
+eta 0.10000000149
+Final results:
+Train loss:			1.373257
+Train acc:			0.492133
+Final results:
+Val loss:			1.531117
+Val acc:			0.467000
+Epoch 92 of 100 took 9.974s
+eta 0.10000000149
+Final results:
+Train loss:			1.380589
+Train acc:			0.490644
+Final results:
+Val loss:			1.505144
+Val acc:			0.457200
+Epoch 93 of 100 took 9.898s
+eta 0.10000000149
+Final results:
+Train loss:			1.379637
+Train acc:			0.491156
+Final results:
+Val loss:			1.617977
+Val acc:			0.419400
+Epoch 94 of 100 took 9.889s
+eta 0.10000000149
+Final results:
+Train loss:			1.382107
+Train acc:			0.484222
+Final results:
+Val loss:			1.535821
+Val acc:			0.472600
+Epoch 95 of 100 took 9.890s
+eta 0.10000000149
+Final results:
+Train loss:			1.385582
+Train acc:			0.488111
+Final results:
+Val loss:			1.484664
+Val acc:			0.488400
+Epoch 96 of 100 took 9.897s
+eta 0.10000000149
+Final results:
+Train loss:			1.385916
+Train acc:			0.486556
+Final results:
+Val loss:			1.658398
+Val acc:			0.403400
+Epoch 97 of 100 took 9.896s
+eta 0.10000000149
+Final results:
+Train loss:			1.395947
+Train acc:			0.484089
+Final results:
+Val loss:			1.484647
+Val acc:			0.476800
+Epoch 98 of 100 took 9.892s
+eta 0.10000000149
+Final results:
+Train loss:			1.381619
+Train acc:			0.486356
+Final results:
+Val loss:			1.515885
+Val acc:			0.469600
+Epoch 99 of 100 took 9.911s
+eta 0.10000000149
+Final results:
+Train loss:			1.384248
+Train acc:			0.486733
+Final results:
+Val loss:			1.499154
+Val acc:			0.472400
+Epoch 100 of 100 took 9.907s
+Final results:
+Test loss:			1.502216
+Test acc:			0.471600
+[[ 707.   12.   19.    1.   38.   27.   29.   20.   73.   74.]
+ [  89.  404.    9.    5.   20.   23.   42.   22.   59.  327.]
+ [ 147.   10.  207.   10.  194.  126.  171.   71.   20.   44.]
+ [  62.    4.   62.   50.   74.  353.  217.   46.   28.  104.]
+ [  97.    3.   71.    8.  413.   87.  153.  112.   21.   35.]
+ [  41.    3.   55.   20.   89.  483.  154.   73.   29.   53.]
+ [  25.    2.   26.    7.  121.   58.  672.   21.   16.   52.]
+ [  67.    3.   33.   10.   59.  102.   52.  555.   14.  105.]
+ [ 217.   27.    9.    2.   19.   34.   21.   12.  537.  122.]
+ [  82.   72.    7.    3.   10.   28.   36.   34.   40.  688.]]
+Final results:
+Post-train loss:			1.222801
+Post-train acc:			0.528600
+('aggegate accuracy', 0.47160000000000002)
+('NNN:', 'fncr_1')
+DONE
+['start_class.py', 'net=fncr', 'use_existing=True', 'start=1', 'mult=2', 'eta_current=.01', 'eta_init=.01', 'output=fncra_1_OUT']
+{'eta_init': 0.01, 'output_net': None, 'mod_net': None, 'eta_current': 0.01, 'use_existing': True, 'start': 1, 'train': True, 'output': 'fncra_1_OUT', 'net': 'fncr', 'mult': 2}
+XXX: fncr
+('network', 'fncr_1.txt')
+('read parameter file', 'fncr_1.txt')
+output_net:fncr_1
+prev_epochs:100
+eta_current:0.10000000149
+seed:45239
+num_epochs:100
+simple_augmentation:True
+global_prob:(0.5, 0.5)
+mod_net:None
+edges:False
+start:0
+Mnist:cifar_10
+net:fncr_0
+update:sgd
+batch_size:50
+use_existing:False
+eta_init:0.1
+train:True
+mult:1
+num_train:50000
+hing_down:2
+agg:True
+adapt_eta:False
+hinge:2
+TRAIN:True
+output:fncra_OUT
+name:input1
+name:dense0;num_units:2000;non_linearity:lasagne.nonlinearity.sigmoid;parent:input1
+name:newdens1;num_units:500;non_linearity:lasagne.nonlinearity.sigmoid;prob:(0.5, 0.5);parent:dense0
+name:drop1;drop:0.2;parent:newdens1
+name:newdens2;num_units:10;non_linearity:lasagne.nonlinearity.linear;prob:(0.5, 0.5);parent:drop1;final:final
+Loading data...
+loading cifar_10
+cifar_1.h5
+cifar_2.h5
+cifar_3.h5
+cifar_4.h5
+cifar_5.h5
+Building model and compiling functions...
+input1 length 1 input None output (3, 32, 32) num params 0
+dense0 length 1 input (3, 32, 32) output (2000,) num params 6144000
+newdens1 length 1 input (2000,) output (500,) num params 2000000
+drop1 length 1 input None output (500,) num params 0
+newdens2 length 1 input (500,) output (10,) num params 10000
+net name fncr_1.npy
+('params', [dense0.W, newdens1.W, newdens1.R, newdens2.W, newdens2.R])
+('params', [dense0.W, newdens1.W, newdens1.R, newdens2.W, newdens2.R])
+Starting training... Training set size: 45000
+eta 0.00999999977648
+Final results:
+Train loss:			1.201771
+Train acc:			0.541622
+Final results:
+Val loss:			1.401834
+Val acc:			0.508400
+Epoch 1 of 100 took 10.289s
+eta 0.00999999977648
+Final results:
+Train loss:			1.174125
+Train acc:			0.550000
+Final results:
+Val loss:			1.402942
+Val acc:			0.509200
+Epoch 2 of 100 took 10.199s
+eta 0.00999999977648
+Final results:
+Train loss:			1.174753
+Train acc:			0.553489
+Final results:
+Val loss:			1.403306
+Val acc:			0.507400
+Epoch 3 of 100 took 10.243s
+eta 0.00999999977648
+Final results:
+Train loss:			1.168616
+Train acc:			0.553200
+Final results:
+Val loss:			1.423023
+Val acc:			0.509400
+Epoch 4 of 100 took 10.196s
+eta 0.00999999977648
+Final results:
+Train loss:			1.165342
+Train acc:			0.552489
+Final results:
+Val loss:			1.402068
+Val acc:			0.512400
+Epoch 5 of 100 took 10.232s
+eta 0.00999999977648
+Final results:
+Train loss:			1.159176
+Train acc:			0.558800
+Final results:
+Val loss:			1.391310
+Val acc:			0.510200
+Epoch 6 of 100 took 10.250s
+eta 0.00999999977648
+Final results:
+Train loss:			1.158606
+Train acc:			0.556600
+Final results:
+Val loss:			1.397384
+Val acc:			0.508200
+Epoch 7 of 100 took 10.219s
+eta 0.00999999977648
+Final results:
+Train loss:			1.156937
+Train acc:			0.560244
+Final results:
+Val loss:			1.395302
+Val acc:			0.507800
+Epoch 8 of 100 took 10.233s
+eta 0.00999999977648
+Final results:
+Train loss:			1.151849
+Train acc:			0.559889
+Final results:
+Val loss:			1.393047
+Val acc:			0.508600
+Epoch 9 of 100 took 10.218s
+eta 0.00999999977648
+Final results:
+Train loss:			1.151468
+Train acc:			0.559467
+Final results:
+Val loss:			1.390982
+Val acc:			0.506200
+Epoch 10 of 100 took 10.208s
+eta 0.00999999977648
+Final results:
+Train loss:			1.152448
+Train acc:			0.557578
+Final results:
+Val loss:			1.407096
+Val acc:			0.506200
+Epoch 11 of 100 took 10.234s
+eta 0.00999999977648
+Final results:
+Train loss:			1.147964
+Train acc:			0.562133
+Final results:
+Val loss:			1.387867
+Val acc:			0.509000
+Epoch 12 of 100 took 10.034s
+eta 0.00999999977648
+Final results:
+Train loss:			1.142324
+Train acc:			0.561978
+Final results:
+Val loss:			1.398322
+Val acc:			0.509600
+Epoch 13 of 100 took 9.991s
+eta 0.00999999977648
+Final results:
+Train loss:			1.142535
+Train acc:			0.563067
+Final results:
+Val loss:			1.395900
+Val acc:			0.513000
+Epoch 14 of 100 took 9.992s
+eta 0.00999999977648
+Final results:
+Train loss:			1.141498
+Train acc:			0.566200
+Final results:
+Val loss:			1.395243
+Val acc:			0.511200
+Epoch 15 of 100 took 9.990s
+eta 0.00999999977648
+Final results:
+Train loss:			1.139960
+Train acc:			0.564556
+Final results:
+Val loss:			1.390652
+Val acc:			0.509400
+Epoch 16 of 100 took 9.979s
+eta 0.00999999977648
+Final results:
+Train loss:			1.135886
+Train acc:			0.565756
+Final results:
+Val loss:			1.398973
+Val acc:			0.510600
+Epoch 17 of 100 took 9.985s
+eta 0.00999999977648
+Final results:
+Train loss:			1.136874
+Train acc:			0.565111
+Final results:
+Val loss:			1.388493
+Val acc:			0.509600
+Epoch 18 of 100 took 10.063s
+eta 0.00999999977648
+Final results:
+Train loss:			1.133831
+Train acc:			0.567067
+Final results:
+Val loss:			1.394765
+Val acc:			0.511800
+Epoch 19 of 100 took 9.977s
+eta 0.00999999977648
+Final results:
+Train loss:			1.135944
+Train acc:			0.567044
+Final results:
+Val loss:			1.395292
+Val acc:			0.514200
+Epoch 20 of 100 took 9.970s
+eta 0.00999999977648
+Final results:
+Train loss:			1.130913
+Train acc:			0.568733
+Final results:
+Val loss:			1.395145
+Val acc:			0.511400
+Epoch 21 of 100 took 9.965s
+eta 0.00999999977648
+Final results:
+Train loss:			1.131700
+Train acc:			0.565244
+Final results:
+Val loss:			1.395195
+Val acc:			0.512000
+Epoch 22 of 100 took 10.121s
+eta 0.00999999977648
+Final results:
+Train loss:			1.126093
+Train acc:			0.570267
+Final results:
+Val loss:			1.392559
+Val acc:			0.516000
+Epoch 23 of 100 took 10.060s
+eta 0.00999999977648
+Final results:
+Train loss:			1.124211
+Train acc:			0.568733
+Final results:
+Val loss:			1.390116
+Val acc:			0.511400
+Epoch 24 of 100 took 10.057s
+eta 0.00999999977648
+Final results:
+Train loss:			1.128241
+Train acc:			0.569467
+Final results:
+Val loss:			1.399977
+Val acc:			0.511000
+Epoch 25 of 100 took 10.064s
+eta 0.00999999977648
+Final results:
+Train loss:			1.119780
+Train acc:			0.568911
+Final results:
+Val loss:			1.396113
+Val acc:			0.518200
+Epoch 26 of 100 took 10.063s
+eta 0.00999999977648
+Final results:
+Train loss:			1.118962
+Train acc:			0.570800
+Final results:
+Val loss:			1.401285
+Val acc:			0.513600
+Epoch 27 of 100 took 10.081s
+eta 0.00999999977648
+Final results:
+Train loss:			1.119027
+Train acc:			0.572511
+Final results:
+Val loss:			1.407032
+Val acc:			0.511000
+Epoch 28 of 100 took 10.067s
+eta 0.00999999977648
+Final results:
+Train loss:			1.118125
+Train acc:			0.573956
+Final results:
+Val loss:			1.388637
+Val acc:			0.514200
+Epoch 29 of 100 took 10.058s
+eta 0.00999999977648
+Final results:
+Train loss:			1.114555
+Train acc:			0.567844
+Final results:
+Val loss:			1.392524
+Val acc:			0.517600
+Epoch 30 of 100 took 10.089s
+eta 0.00999999977648
+Final results:
+Train loss:			1.117990
+Train acc:			0.574511
+Final results:
+Val loss:			1.391151
+Val acc:			0.515600
+Epoch 31 of 100 took 10.058s
+eta 0.00999999977648
+Final results:
+Train loss:			1.117040
+Train acc:			0.571844
+Final results:
+Val loss:			1.401119
+Val acc:			0.516600
+Epoch 32 of 100 took 10.013s
+eta 0.00999999977648
+Final results:
+Train loss:			1.112671
+Train acc:			0.572978
+Final results:
+Val loss:			1.391059
+Val acc:			0.515400
+Epoch 33 of 100 took 9.977s
+eta 0.00999999977648
+Final results:
+Train loss:			1.114914
+Train acc:			0.570956
+Final results:
+Val loss:			1.390257
+Val acc:			0.517600
+Epoch 34 of 100 took 9.989s
+eta 0.00999999977648
+Final results:
+Train loss:			1.110683
+Train acc:			0.574511
+Final results:
+Val loss:			1.399523
+Val acc:			0.509200
+Epoch 35 of 100 took 9.979s
+eta 0.00999999977648
+Final results:
+Train loss:			1.111398
+Train acc:			0.575667
+Final results:
+Val loss:			1.390713
+Val acc:			0.514200
+Epoch 36 of 100 took 9.990s
+eta 0.00999999977648
+Final results:
+Train loss:			1.105387
+Train acc:			0.575667
+Final results:
+Val loss:			1.399324
+Val acc:			0.514200
+Epoch 37 of 100 took 9.989s
+eta 0.00999999977648
+Final results:
+Train loss:			1.103054
+Train acc:			0.573733
+Final results:
+Val loss:			1.399315
+Val acc:			0.512600
+Epoch 38 of 100 took 9.986s
+eta 0.00999999977648
+Final results:
+Train loss:			1.104723
+Train acc:			0.580778
+Final results:
+Val loss:			1.408852
+Val acc:			0.512000
+Epoch 39 of 100 took 9.972s
+eta 0.00999999977648
+Final results:
+Train loss:			1.102341
+Train acc:			0.576533
+Final results:
+Val loss:			1.391365
+Val acc:			0.512200
+Epoch 40 of 100 took 9.984s
+eta 0.00999999977648
+Final results:
+Train loss:			1.101227
+Train acc:			0.577222
+Final results:
+Val loss:			1.397580
+Val acc:			0.518000
+Epoch 41 of 100 took 9.976s
+eta 0.00999999977648
+Final results:
+Train loss:			1.099697
+Train acc:			0.577267
+Final results:
+Val loss:			1.407034
+Val acc:			0.509000
+Epoch 42 of 100 took 10.195s
+eta 0.00999999977648
+Final results:
+Train loss:			1.099250
+Train acc:			0.578689
+Final results:
+Val loss:			1.393519
+Val acc:			0.513600
+Epoch 43 of 100 took 10.023s
+eta 0.00999999977648
+Final results:
+Train loss:			1.095362
+Train acc:			0.580511
+Final results:
+Val loss:			1.406579
+Val acc:			0.513000
+Epoch 44 of 100 took 9.993s
+eta 0.00999999977648
+Final results:
+Train loss:			1.093288
+Train acc:			0.581444
+Final results:
+Val loss:			1.400571
+Val acc:			0.511600
+Epoch 45 of 100 took 9.993s
+eta 0.00999999977648
+Final results:
+Train loss:			1.099480
+Train acc:			0.578156
+Final results:
+Val loss:			1.399675
+Val acc:			0.512000
+Epoch 46 of 100 took 10.041s
+eta 0.00999999977648
+Final results:
+Train loss:			1.091194
+Train acc:			0.582422
+Final results:
+Val loss:			1.394926
+Val acc:			0.517600
+Epoch 47 of 100 took 10.009s
+eta 0.00999999977648
+Final results:
+Train loss:			1.087865
+Train acc:			0.580333
+Final results:
+Val loss:			1.400146
+Val acc:			0.514800
+Epoch 48 of 100 took 10.007s
+eta 0.00999999977648
+Final results:
+Train loss:			1.088660
+Train acc:			0.580067
+Final results:
+Val loss:			1.416214
+Val acc:			0.511200
+Epoch 49 of 100 took 9.990s
+eta 0.00999999977648
+Final results:
+Train loss:			1.089756
+Train acc:			0.579222
+Final results:
+Val loss:			1.402903
+Val acc:			0.514800
+Epoch 50 of 100 took 10.026s
+eta 0.00999999977648
+Final results:
+Train loss:			1.087915
+Train acc:			0.580644
+Final results:
+Val loss:			1.407115
+Val acc:			0.515600
+Epoch 51 of 100 took 10.032s
+eta 0.00999999977648
+Final results:
+Train loss:			1.084888
+Train acc:			0.582533
+Final results:
+Val loss:			1.406474
+Val acc:			0.515000
+Epoch 52 of 100 took 10.047s
+eta 0.00999999977648
+Final results:
+Train loss:			1.086387
+Train acc:			0.581889
+Final results:
+Val loss:			1.410444
+Val acc:			0.514000
+Epoch 53 of 100 took 9.991s
+eta 0.00999999977648
+Final results:
+Train loss:			1.087628
+Train acc:			0.584711
+Final results:
+Val loss:			1.394781
+Val acc:			0.513600
+Epoch 54 of 100 took 10.138s
+eta 0.00999999977648
+Final results:
+Train loss:			1.080313
+Train acc:			0.584511
+Final results:
+Val loss:			1.414288
+Val acc:			0.513200
+Epoch 55 of 100 took 9.998s
+eta 0.00999999977648
+Final results:
+Train loss:			1.079208
+Train acc:			0.585600
+Final results:
+Val loss:			1.411468
+Val acc:			0.515000
+Epoch 56 of 100 took 10.037s
+eta 0.00999999977648
+Final results:
+Train loss:			1.079656
+Train acc:			0.581822
+Final results:
+Val loss:			1.406403
+Val acc:			0.514800
+Epoch 57 of 100 took 9.978s
+eta 0.00999999977648
+Final results:
+Train loss:			1.079654
+Train acc:			0.583444
+Final results:
+Val loss:			1.401779
+Val acc:			0.516800
+Epoch 58 of 100 took 9.975s
+eta 0.00999999977648
+Final results:
+Train loss:			1.076332
+Train acc:			0.586044
+Final results:
+Val loss:			1.407375
+Val acc:			0.509600
+Epoch 59 of 100 took 9.994s
+eta 0.00999999977648
+Final results:
+Train loss:			1.075416
+Train acc:			0.586600
+Final results:
+Val loss:			1.410355
+Val acc:			0.515400
+Epoch 60 of 100 took 9.981s
+eta 0.00999999977648
+Final results:
+Train loss:			1.073753
+Train acc:			0.585867
+Final results:
+Val loss:			1.396302
+Val acc:			0.515600
+Epoch 61 of 100 took 9.986s
+eta 0.00999999977648
+Final results:
+Train loss:			1.074693
+Train acc:			0.587400
+Final results:
+Val loss:			1.396511
+Val acc:			0.518200
+Epoch 62 of 100 took 10.099s
+eta 0.00999999977648
+Final results:
+Train loss:			1.078173
+Train acc:			0.584778
+Final results:
+Val loss:			1.416575
+Val acc:			0.512600
+Epoch 63 of 100 took 10.022s
+eta 0.00999999977648
+Final results:
+Train loss:			1.074208
+Train acc:			0.586378
+Final results:
+Val loss:			1.407058
+Val acc:			0.519000
+Epoch 64 of 100 took 10.028s
+eta 0.00999999977648
+Final results:
+Train loss:			1.069039
+Train acc:			0.587822
+Final results:
+Val loss:			1.401959
+Val acc:			0.515200
+Epoch 65 of 100 took 10.011s
+eta 0.00999999977648
+Final results:
+Train loss:			1.067993
+Train acc:			0.588644
+Final results:
+Val loss:			1.409069
+Val acc:			0.513200
+Epoch 66 of 100 took 10.122s
+eta 0.00999999977648
+Final results:
+Train loss:			1.068081
+Train acc:			0.589133
+Final results:
+Val loss:			1.408219
+Val acc:			0.516600
+Epoch 67 of 100 took 10.012s
+eta 0.00999999977648
+Final results:
+Train loss:			1.068871
+Train acc:			0.586200
+Final results:
+Val loss:			1.403342
+Val acc:			0.521000
+Epoch 68 of 100 took 10.081s
+eta 0.00999999977648
+Final results:
+Train loss:			1.065060
+Train acc:			0.590356
+Final results:
+Val loss:			1.408248
+Val acc:			0.516400
+Epoch 69 of 100 took 10.014s
+eta 0.00999999977648
+Final results:
+Train loss:			1.064630
+Train acc:			0.590222
+Final results:
+Val loss:			1.410328
+Val acc:			0.523400
+Epoch 70 of 100 took 10.032s
+eta 0.00999999977648
+Final results:
+Train loss:			1.062025
+Train acc:			0.592489
+Final results:
+Val loss:			1.419630
+Val acc:			0.513800
+Epoch 71 of 100 took 10.040s
+eta 0.00999999977648
+Final results:
+Train loss:			1.064723
+Train acc:			0.591800
+Final results:
+Val loss:			1.411768
+Val acc:			0.517000
+Epoch 72 of 100 took 10.031s
+eta 0.00999999977648
+Final results:
+Train loss:			1.058123
+Train acc:			0.592889
+Final results:
+Val loss:			1.417627
+Val acc:			0.512400
+Epoch 73 of 100 took 9.996s
+eta 0.00999999977648
+Final results:
+Train loss:			1.058988
+Train acc:			0.593578
+Final results:
+Val loss:			1.404003
+Val acc:			0.516200
+Epoch 74 of 100 took 10.021s
+eta 0.00999999977648
+Final results:
+Train loss:			1.057912
+Train acc:			0.591667
+Final results:
+Val loss:			1.410623
+Val acc:			0.521400
+Epoch 75 of 100 took 9.995s
+eta 0.00999999977648
+Final results:
+Train loss:			1.056946
+Train acc:			0.593333
+Final results:
+Val loss:			1.425187
+Val acc:			0.510800
+Epoch 76 of 100 took 9.999s
+eta 0.00999999977648
+Final results:
+Train loss:			1.056877
+Train acc:			0.594311
+Final results:
+Val loss:			1.402376
+Val acc:			0.517200
+Epoch 77 of 100 took 10.013s
+eta 0.00999999977648
+Final results:
+Train loss:			1.052818
+Train acc:			0.592444
+Final results:
+Val loss:			1.410733
+Val acc:			0.518000
+Epoch 78 of 100 took 10.126s
+eta 0.00999999977648
+Final results:
+Train loss:			1.051690
+Train acc:			0.594956
+Final results:
+Val loss:			1.414741
+Val acc:			0.512200
+Epoch 79 of 100 took 9.994s
+eta 0.00999999977648
+Final results:
+Train loss:			1.051517
+Train acc:			0.593800
+Final results:
+Val loss:			1.454066
+Val acc:			0.508000
+Epoch 80 of 100 took 9.993s
+eta 0.00999999977648
+Final results:
+Train loss:			1.050377
+Train acc:			0.597822
+Final results:
+Val loss:			1.423523
+Val acc:			0.511400
+Epoch 81 of 100 took 9.976s
+eta 0.00999999977648
+Final results:
+Train loss:			1.049595
+Train acc:			0.596733
+Final results:
+Val loss:			1.420002
+Val acc:			0.512200
+Epoch 82 of 100 took 10.132s
+eta 0.00999999977648
+Final results:
+Train loss:			1.041487
+Train acc:			0.599889
+Final results:
+Val loss:			1.417376
+Val acc:			0.513000
+Epoch 83 of 100 took 10.014s
+eta 0.00999999977648
+Final results:
+Train loss:			1.047959
+Train acc:			0.595000
+Final results:
+Val loss:			1.439061
+Val acc:			0.509200
+Epoch 84 of 100 took 10.024s
+eta 0.00999999977648
+Final results:
+Train loss:			1.043256
+Train acc:			0.598556
+Final results:
+Val loss:			1.420183
+Val acc:			0.509200
+Epoch 85 of 100 took 10.043s
+eta 0.00999999977648
+Final results:
+Train loss:			1.043381
+Train acc:			0.599689
+Final results:
+Val loss:			1.421241
+Val acc:			0.517200
+Epoch 86 of 100 took 10.042s
+eta 0.00999999977648
+Final results:
+Train loss:			1.041865
+Train acc:			0.598889
+Final results:
+Val loss:			1.415943
+Val acc:			0.517000
+Epoch 87 of 100 took 10.032s
+eta 0.00999999977648
+Final results:
+Train loss:			1.037990
+Train acc:			0.600533
+Final results:
+Val loss:			1.419908
+Val acc:			0.515800
+Epoch 88 of 100 took 10.041s
+eta 0.00999999977648
+Final results:
+Train loss:			1.038491
+Train acc:			0.599778
+Final results:
+Val loss:			1.430427
+Val acc:			0.515400
+Epoch 89 of 100 took 10.026s
+eta 0.00999999977648
+Final results:
+Train loss:			1.036918
+Train acc:			0.601622
+Final results:
+Val loss:			1.421355
+Val acc:			0.513800
+Epoch 90 of 100 took 10.163s
+eta 0.00999999977648
+Final results:
+Train loss:			1.041107
+Train acc:			0.598667
+Final results:
+Val loss:			1.422843
+Val acc:			0.517400
+Epoch 91 of 100 took 10.023s
+eta 0.00999999977648
+Final results:
+Train loss:			1.040064
+Train acc:			0.601133
+Final results:
+Val loss:			1.439295
+Val acc:			0.517600
+Epoch 92 of 100 took 10.083s
+eta 0.00999999977648
+Final results:
+Train loss:			1.037343
+Train acc:			0.600778
+Final results:
+Val loss:			1.426133
+Val acc:			0.510400
+Epoch 93 of 100 took 9.995s
+eta 0.00999999977648
+Final results:
+Train loss:			1.036314
+Train acc:			0.601689
+Final results:
+Val loss:			1.440278
+Val acc:			0.512400
+Epoch 94 of 100 took 9.976s
+eta 0.00999999977648
+Final results:
+Train loss:			1.032533
+Train acc:			0.602822
+Final results:
+Val loss:			1.428936
+Val acc:			0.512800
+Epoch 95 of 100 took 9.984s
+eta 0.00999999977648
+Final results:
+Train loss:			1.032271
+Train acc:			0.601822
+Final results:
+Val loss:			1.444134
+Val acc:			0.516400
+Epoch 96 of 100 took 9.983s
+eta 0.00999999977648
+Final results:
+Train loss:			1.030842
+Train acc:			0.601400
+Final results:
+Val loss:			1.435552
+Val acc:			0.517000
+Epoch 97 of 100 took 9.976s
+eta 0.00999999977648
+Final results:
+Train loss:			1.032031
+Train acc:			0.603200
+Final results:
+Val loss:			1.437590
+Val acc:			0.509600
+Epoch 98 of 100 took 9.981s
+eta 0.00999999977648
+Final results:
+Train loss:			1.031379
+Train acc:			0.603000
+Final results:
+Val loss:			1.428715
+Val acc:			0.512000
+Epoch 99 of 100 took 9.989s
+eta 0.00999999977648
+Final results:
+Train loss:			1.025083
+Train acc:			0.603733
+Final results:
+Val loss:			1.436404
+Val acc:			0.515600
+Epoch 100 of 100 took 9.986s
+Final results:
+Test loss:			1.449497
+Test acc:			0.507700
+[[ 633.   18.   42.   26.   30.   14.   40.   33.  120.   44.]
+ [  50.  580.   22.   34.   15.   14.   32.   19.   70.  164.]
+ [  97.   23.  317.   74.  154.   77.  140.   65.   26.   27.]
+ [  39.   20.   71.  346.   65.  186.  151.   53.   28.   41.]
+ [  72.   12.  102.   60.  385.   58.  167.  107.   27.   10.]
+ [  22.    8.   71.  231.   68.  360.  121.   64.   34.   21.]
+ [  16.   10.   47.   76.   71.   40.  682.   20.   21.   17.]
+ [  49.   17.   48.   67.   76.   86.   47.  548.   11.   51.]
+ [ 124.   52.   18.   20.   14.   16.   16.   14.  662.   64.]
+ [  58.  146.    7.   40.    6.   19.   48.   52.   60.  564.]]
+Final results:
+Post-train loss:			0.890736
+Post-train acc:			0.648400
+('aggegate accuracy', 0.50770000000000004)
+('NNN:', 'fncr_2')
+DONE
+['start_class.py', 'net=fncr', 'use_existing=True', 'start=2', 'mult=3', 'eta_current=.01', 'eta_init=.01', 'output=fncra_2_OUT']
+{'eta_init': 0.01, 'output_net': None, 'mod_net': None, 'eta_current': 0.01, 'use_existing': True, 'start': 2, 'train': True, 'output': 'fncra_2_OUT', 'net': 'fncr', 'mult': 3}
+XXX: fncr
+('network', 'fncr_2.txt')
+('read parameter file', 'fncr_2.txt')
+output_net:fncr_2
+train:True
+prev_epochs:200
+eta_current:0.00999999977648
+seed:45239
+num_epochs:100
+simple_augmentation:True
+global_prob:(0.5, 0.5)
+mod_net:None
+start:1
+Mnist:cifar_10
+net:fncr_1
+update:sgd
+batch_size:50
+use_existing:True
+eta_init:0.01
+edges:False
+mult:2
+num_train:50000
+hing_down:2
+agg:True
+adapt_eta:False
+hinge:2
+TRAIN:True
+output:fncra_1_OUT
+name:input1
+name:dense0;num_units:2000;non_linearity:lasagne.nonlinearity.sigmoid;parent:input1
+name:newdens1;num_units:500;non_linearity:lasagne.nonlinearity.sigmoid;prob:(0.5, 0.5);parent:dense0
+name:drop1;drop:0.2;parent:newdens1
+name:newdens2;num_units:10;non_linearity:lasagne.nonlinearity.linear;prob:(0.5, 0.5);parent:drop1;final:final
+Loading data...
+loading cifar_10
+cifar_1.h5
+cifar_2.h5
+cifar_3.h5
+cifar_4.h5
+cifar_5.h5
+Building model and compiling functions...
+input1 length 1 input None output (3, 32, 32) num params 0
+dense0 length 1 input (3, 32, 32) output (2000,) num params 6144000
+newdens1 length 1 input (2000,) output (500,) num params 2000000
+drop1 length 1 input None output (500,) num params 0
+newdens2 length 1 input (500,) output (10,) num params 10000
+net name fncr_2.npy
+('params', [dense0.W, newdens1.W, newdens1.R, newdens2.W, newdens2.R])
+('params', [dense0.W, newdens1.W, newdens1.R, newdens2.W, newdens2.R])
+Starting training... Training set size: 45000
+eta 0.00999999977648
+Final results:
+Train loss:			1.027267
+Train acc:			0.605311
+Final results:
+Val loss:			1.421876
+Val acc:			0.515400
+Epoch 1 of 100 took 10.254s
+eta 0.00999999977648
+Final results:
+Train loss:			1.020533
+Train acc:			0.607578
+Final results:
+Val loss:			1.448626
+Val acc:			0.509000
+Epoch 2 of 100 took 10.158s
+eta 0.00999999977648
+Final results:
+Train loss:			1.024877
+Train acc:			0.604911
+Final results:
+Val loss:			1.435710
+Val acc:			0.509200
+Epoch 3 of 100 took 10.176s
+eta 0.00999999977648
+Final results:
+Train loss:			1.019413
+Train acc:			0.606289
+Final results:
+Val loss:			1.472792
+Val acc:			0.515000
+Epoch 4 of 100 took 10.171s
+eta 0.00999999977648
+Final results:
+Train loss:			1.022933
+Train acc:			0.603978
+Final results:
+Val loss:			1.450944
+Val acc:			0.511000
+Epoch 5 of 100 took 10.173s
+eta 0.00999999977648
+Final results:
+Train loss:			1.021124
+Train acc:			0.608911
+Final results:
+Val loss:			1.430875
+Val acc:			0.515800
+Epoch 6 of 100 took 10.159s
+eta 0.00999999977648
+Final results:
+Train loss:			1.018911
+Train acc:			0.604778
+Final results:
+Val loss:			1.452351
+Val acc:			0.512400
+Epoch 7 of 100 took 10.177s
+eta 0.00999999977648
+Final results:
+Train loss:			1.020729
+Train acc:			0.608422
+Final results:
+Val loss:			1.428685
+Val acc:			0.515600
+Epoch 8 of 100 took 10.156s
+eta 0.00999999977648
+Final results:
+Train loss:			1.016886
+Train acc:			0.610778
+Final results:
+Val loss:			1.429389
+Val acc:			0.512000
+Epoch 9 of 100 took 10.202s
+eta 0.00999999977648
+Final results:
+Train loss:			1.016095
+Train acc:			0.607867
+Final results:
+Val loss:			1.434434
+Val acc:			0.518000
+Epoch 10 of 100 took 10.147s
+eta 0.00999999977648
+Final results:
+Train loss:			1.015527
+Train acc:			0.608111
+Final results:
+Val loss:			1.459485
+Val acc:			0.514200
+Epoch 11 of 100 took 10.146s
+eta 0.00999999977648
+Final results:
+Train loss:			1.013738
+Train acc:			0.610822
+Final results:
+Val loss:			1.424860
+Val acc:			0.518200
+Epoch 12 of 100 took 10.310s
+eta 0.00999999977648
+Final results:
+Train loss:			1.011060
+Train acc:			0.610333
+Final results:
+Val loss:			1.433295
+Val acc:			0.518400
+Epoch 13 of 100 took 10.094s
+eta 0.00999999977648
+Final results:
+Train loss:			1.011695
+Train acc:			0.610578
+Final results:
+Val loss:			1.462636
+Val acc:			0.514800
+Epoch 14 of 100 took 10.087s
+eta 0.00999999977648
+Final results:
+Train loss:			1.012029
+Train acc:			0.613133
+Final results:
+Val loss:			1.443022
+Val acc:			0.504600
+Epoch 15 of 100 took 10.080s
+eta 0.00999999977648
+Final results:
+Train loss:			1.010614
+Train acc:			0.613356
+Final results:
+Val loss:			1.443504
+Val acc:			0.514600
+Epoch 16 of 100 took 10.097s
+eta 0.00999999977648
+Final results:
+Train loss:			1.005164
+Train acc:			0.614311
+Final results:
+Val loss:			1.443556
+Val acc:			0.516200
+Epoch 17 of 100 took 10.075s
+eta 0.00999999977648
+Final results:
+Train loss:			1.009774
+Train acc:			0.613267
+Final results:
+Val loss:			1.450896
+Val acc:			0.505000
+Epoch 18 of 100 took 10.071s
+eta 0.00999999977648
+Final results:
+Train loss:			1.003528
+Train acc:			0.613400
+Final results:
+Val loss:			1.448224
+Val acc:			0.511800
+Epoch 19 of 100 took 10.083s
+eta 0.00999999977648
+Final results:
+Train loss:			1.006402
+Train acc:			0.612489
+Final results:
+Val loss:			1.464297
+Val acc:			0.513000
+Epoch 20 of 100 took 10.073s
+eta 0.00999999977648
+Final results:
+Train loss:			1.002466
+Train acc:			0.615267
+Final results:
+Val loss:			1.445691
+Val acc:			0.518800
+Epoch 21 of 100 took 10.088s
+eta 0.00999999977648
+Final results:
+Train loss:			1.005252
+Train acc:			0.615022
+Final results:
+Val loss:			1.448111
+Val acc:			0.518800
+Epoch 22 of 100 took 10.062s
+eta 0.00999999977648
+Final results:
+Train loss:			1.001538
+Train acc:			0.617089
+Final results:
+Val loss:			1.471893
+Val acc:			0.504600
+Epoch 23 of 100 took 10.010s
+eta 0.00999999977648
+Final results:
+Train loss:			0.998394
+Train acc:			0.615333
+Final results:
+Val loss:			1.438809
+Val acc:			0.510800
+Epoch 24 of 100 took 10.058s
+eta 0.00999999977648
+Final results:
+Train loss:			1.007992
+Train acc:			0.616867
+Final results:
+Val loss:			1.476134
+Val acc:			0.514800
+Epoch 25 of 100 took 9.960s
+eta 0.00999999977648
+Final results:
+Train loss:			0.992871
+Train acc:			0.619578
+Final results:
+Val loss:			1.448680
+Val acc:			0.515200
+Epoch 26 of 100 took 9.949s
+eta 0.00999999977648
+Final results:
+Train loss:			0.995642
+Train acc:			0.617444
+Final results:
+Val loss:			1.480477
+Val acc:			0.513400
+Epoch 27 of 100 took 9.936s
+eta 0.00999999977648
+Final results:
+Train loss:			0.995886
+Train acc:			0.616200
+Final results:
+Val loss:			1.491020
+Val acc:			0.512800
+Epoch 28 of 100 took 9.941s
+eta 0.00999999977648
+Final results:
+Train loss:			0.995795
+Train acc:			0.617222
+Final results:
+Val loss:			1.451974
+Val acc:			0.519000
+Epoch 29 of 100 took 9.946s
+eta 0.00999999977648
+Final results:
+Train loss:			0.991737
+Train acc:			0.617867
+Final results:
+Val loss:			1.446745
+Val acc:			0.514400
+Epoch 30 of 100 took 9.937s
+eta 0.00999999977648
+Final results:
+Train loss:			0.994348
+Train acc:			0.619822
+Final results:
+Val loss:			1.457016
+Val acc:			0.510600
+Epoch 31 of 100 took 9.961s
+eta 0.00999999977648
+Final results:
+Train loss:			0.997363
+Train acc:			0.615622
+Final results:
+Val loss:			1.482178
+Val acc:			0.512000
+Epoch 32 of 100 took 10.127s
+eta 0.00999999977648
+Final results:
+Train loss:			0.992594
+Train acc:			0.619533
+Final results:
+Val loss:			1.456182
+Val acc:			0.514600
+Epoch 33 of 100 took 9.991s
+eta 0.00999999977648
+Final results:
+Train loss:			0.996195
+Train acc:			0.619689
+Final results:
+Val loss:			1.459139
+Val acc:			0.511200
+Epoch 34 of 100 took 10.001s
+eta 0.00999999977648
+Final results:
+Train loss:			0.994134
+Train acc:			0.621467
+Final results:
+Val loss:			1.483240
+Val acc:			0.512600
+Epoch 35 of 100 took 10.009s
+eta 0.00999999977648
+Final results:
+Train loss:			0.994827
+Train acc:			0.617978
+Final results:
+Val loss:			1.475463
+Val acc:			0.510200
+Epoch 36 of 100 took 10.121s
+eta 0.00999999977648
+Final results:
+Train loss:			0.993412
+Train acc:			0.619467
+Final results:
+Val loss:			1.471686
+Val acc:			0.509400
+Epoch 37 of 100 took 10.027s
+eta 0.00999999977648
+Final results:
+Train loss:			0.992226
+Train acc:			0.619178
+Final results:
+Val loss:			1.475749
+Val acc:			0.511400
+Epoch 38 of 100 took 10.015s
+eta 0.00999999977648
+Final results:
+Train loss:			0.998963
+Train acc:			0.618889
+Final results:
+Val loss:			1.466661
+Val acc:			0.507000
+Epoch 39 of 100 took 10.007s
+eta 0.00999999977648
+Final results:
+Train loss:			0.994730
+Train acc:			0.618844
+Final results:
+Val loss:			1.476659
+Val acc:			0.513800
+Epoch 40 of 100 took 10.045s
+eta 0.00999999977648
+Final results:
+Train loss:			0.991285
+Train acc:			0.618867
+Final results:
+Val loss:			1.476706
+Val acc:			0.512800
+Epoch 41 of 100 took 10.028s
+eta 0.00999999977648
+Final results:
+Train loss:			0.990895
+Train acc:			0.621889
+Final results:
+Val loss:			1.470719
+Val acc:			0.512800
+Epoch 42 of 100 took 10.013s
+eta 0.00999999977648
+Final results:
+Train loss:			0.990418
+Train acc:			0.621933
+Final results:
+Val loss:			1.464316
+Val acc:			0.511200
+Epoch 43 of 100 took 9.981s
+eta 0.00999999977648
+Final results:
+Train loss:			0.986639
+Train acc:			0.623978
+Final results:
+Val loss:			1.476554
+Val acc:			0.519000
+Epoch 44 of 100 took 9.976s
+eta 0.00999999977648
+Final results:
+Train loss:			0.983703
+Train acc:			0.624089
+Final results:
+Val loss:			1.477583
+Val acc:			0.504000
+Epoch 45 of 100 took 9.949s
+eta 0.00999999977648
+Final results:
+Train loss:			0.989372
+Train acc:			0.623733
+Final results:
+Val loss:			1.457100
+Val acc:			0.512600
+Epoch 46 of 100 took 9.959s
+eta 0.00999999977648
+Final results:
+Train loss:			0.983257
+Train acc:			0.621267
+Final results:
+Val loss:			1.499126
+Val acc:			0.516400
+Epoch 47 of 100 took 10.020s
+eta 0.00999999977648
+Final results:
+Train loss:			0.979471
+Train acc:			0.623933
+Final results:
+Val loss:			1.477328
+Val acc:			0.510200
+Epoch 48 of 100 took 9.958s
+eta 0.00999999977648
+Final results:
+Train loss:			0.980758
+Train acc:			0.622378
+Final results:
+Val loss:			1.491191
+Val acc:			0.508400
+Epoch 49 of 100 took 9.944s
+eta 0.00999999977648
+Final results:
+Train loss:			0.982751
+Train acc:			0.625022
+Final results:
+Val loss:			1.489834
+Val acc:			0.511600
+Epoch 50 of 100 took 9.936s
+eta 0.00999999977648
+Final results:
+Train loss:			0.983329
+Train acc:			0.625000
+Final results:
+Val loss:			1.510665
+Val acc:			0.506800
+Epoch 51 of 100 took 9.962s
+eta 0.00999999977648
+Final results:
+Train loss:			0.981253
+Train acc:			0.626733
+Final results:
+Val loss:			1.512898
+Val acc:			0.509800
+Epoch 52 of 100 took 10.113s
+eta 0.00999999977648
+Final results:
+Train loss:			0.984719
+Train acc:			0.625089
+Final results:
+Val loss:			1.522933
+Val acc:			0.504200
+Epoch 53 of 100 took 10.017s
+eta 0.00999999977648
+Final results:
+Train loss:			0.987896
+Train acc:			0.625067
+Final results:
+Val loss:			1.478893
+Val acc:			0.506800
+Epoch 54 of 100 took 10.003s
+eta 0.00999999977648
+Final results:
+Train loss:			0.975800
+Train acc:			0.627911
+Final results:
+Val loss:			1.487502
+Val acc:			0.513000
+Epoch 55 of 100 took 10.018s
+eta 0.00999999977648
+Final results:
+Train loss:			0.976312
+Train acc:			0.626667
+Final results:
+Val loss:			1.499622
+Val acc:			0.511400
+Epoch 56 of 100 took 10.018s
+eta 0.00999999977648
+Final results:
+Train loss:			0.979338
+Train acc:			0.624756
+Final results:
+Val loss:			1.504531
+Val acc:			0.504000
+Epoch 57 of 100 took 10.021s
+eta 0.00999999977648
+Final results:
+Train loss:			0.984254
+Train acc:			0.625533
+Final results:
+Val loss:			1.498202
+Val acc:			0.503800
+Epoch 58 of 100 took 10.001s
+eta 0.00999999977648
+Final results:
+Train loss:			0.978073
+Train acc:			0.626467
+Final results:
+Val loss:			1.481857
+Val acc:			0.507400
+Epoch 59 of 100 took 10.120s
+eta 0.00999999977648
+Final results:
+Train loss:			0.980532
+Train acc:			0.627089
+Final results:
+Val loss:			1.493812
+Val acc:			0.512200
+Epoch 60 of 100 took 10.033s
+eta 0.00999999977648
+Final results:
+Train loss:			0.977276
+Train acc:			0.627956
+Final results:
+Val loss:			1.486765
+Val acc:			0.515800
+Epoch 61 of 100 took 10.017s
+eta 0.00999999977648
+Final results:
+Train loss:			0.980139
+Train acc:			0.625756
+Final results:
+Val loss:			1.491124
+Val acc:			0.515200
+Epoch 62 of 100 took 10.076s
+eta 0.00999999977648
+Final results:
+Train loss:			0.981353
+Train acc:			0.625778
+Final results:
+Val loss:			1.530021
+Val acc:			0.509600
+Epoch 63 of 100 took 9.968s
+eta 0.00999999977648
+Final results:
+Train loss:			0.975804
+Train acc:			0.627022
+Final results:
+Val loss:			1.499826
+Val acc:			0.515200
+Epoch 64 of 100 took 9.974s
+eta 0.00999999977648
+Final results:
+Train loss:			0.980591
+Train acc:			0.626400
+Final results:
+Val loss:			1.506945
+Val acc:			0.504200
+Epoch 65 of 100 took 9.963s
+eta 0.00999999977648
+Final results:
+Train loss:			0.977412
+Train acc:			0.627067
+Final results:
+Val loss:			1.496326
+Val acc:			0.506800
+Epoch 66 of 100 took 9.958s
+eta 0.00999999977648
+Final results:
+Train loss:			0.979944
+Train acc:			0.628800
+Final results:
+Val loss:			1.490808
+Val acc:			0.512000
+Epoch 67 of 100 took 9.945s
+eta 0.00999999977648
+Final results:
+Train loss:			0.981253
+Train acc:			0.622156
+Final results:
+Val loss:			1.489966
+Val acc:			0.513200
+Epoch 68 of 100 took 9.946s
+eta 0.00999999977648
+Final results:
+Train loss:			0.979982
+Train acc:			0.628956
+Final results:
+Val loss:			1.481299
+Val acc:			0.510400
+Epoch 69 of 100 took 9.969s
+eta 0.00999999977648
+Final results:
+Train loss:			0.976490
+Train acc:			0.627889
+Final results:
+Val loss:			1.510142
+Val acc:			0.508400
+Epoch 70 of 100 took 9.971s
+eta 0.00999999977648
+Final results:
+Train loss:			0.976398
+Train acc:			0.627444
+Final results:
+Val loss:			1.506923
+Val acc:			0.510200
+Epoch 71 of 100 took 10.066s
+eta 0.00999999977648
+Final results:
+Train loss:			0.981293
+Train acc:			0.629467
+Final results:
+Val loss:			1.500205
+Val acc:			0.508800
+Epoch 72 of 100 took 10.124s
+eta 0.00999999977648
+Final results:
+Train loss:			0.971775
+Train acc:			0.628600
+Final results:
+Val loss:			1.538078
+Val acc:			0.507600
+Epoch 73 of 100 took 10.024s
+eta 0.00999999977648
+Final results:
+Train loss:			0.976230
+Train acc:			0.627867
+Final results:
+Val loss:			1.487843
+Val acc:			0.510000
+Epoch 74 of 100 took 10.016s
+eta 0.00999999977648
+Final results:
+Train loss:			0.969820
+Train acc:			0.634378
+Final results:
+Val loss:			1.496987
+Val acc:			0.515400
+Epoch 75 of 100 took 10.009s
+eta 0.00999999977648
+Final results:
+Train loss:			0.969020
+Train acc:			0.631378
+Final results:
+Val loss:			1.505185
+Val acc:			0.513800
+Epoch 76 of 100 took 10.010s
+eta 0.00999999977648
+Final results:
+Train loss:			0.973377
+Train acc:			0.630178
+Final results:
+Val loss:			1.503285
+Val acc:			0.501800
+Epoch 77 of 100 took 10.006s
+eta 0.00999999977648
+Final results:
+Train loss:			0.969881
+Train acc:			0.628778
+Final results:
+Val loss:			1.474932
+Val acc:			0.517000
+Epoch 78 of 100 took 10.023s
+eta 0.00999999977648
+Final results:
+Train loss:			0.968153
+Train acc:			0.630156
+Final results:
+Val loss:			1.504519
+Val acc:			0.512600
+Epoch 79 of 100 took 9.994s
+eta 0.00999999977648
+Final results:
+Train loss:			0.972119
+Train acc:			0.629467
+Final results:
+Val loss:			1.527915
+Val acc:			0.507800
+Epoch 80 of 100 took 10.021s
+eta 0.00999999977648
+Final results:
+Train loss:			0.969071
+Train acc:			0.631756
+Final results:
+Val loss:			1.551050
+Val acc:			0.506600
+Epoch 81 of 100 took 10.061s
+eta 0.00999999977648
+Final results:
+Train loss:			0.965541
+Train acc:			0.634378
+Final results:
+Val loss:			1.516217
+Val acc:			0.511400
+Epoch 82 of 100 took 10.035s
+eta 0.00999999977648
+Final results:
+Train loss:			0.960429
+Train acc:			0.633911
+Final results:
+Val loss:			1.491271
+Val acc:			0.510400
+Epoch 83 of 100 took 10.069s
+eta 0.00999999977648
+Final results:
+Train loss:			0.968062
+Train acc:			0.633733
+Final results:
+Val loss:			1.544602
+Val acc:			0.501000
+Epoch 84 of 100 took 9.971s
+eta 0.00999999977648
+Final results:
+Train loss:			0.963896
+Train acc:			0.634844
+Final results:
+Val loss:			1.539413
+Val acc:			0.497800
+Epoch 85 of 100 took 9.987s
+eta 0.00999999977648
+Final results:
+Train loss:			0.971767
+Train acc:			0.632533
+Final results:
+Val loss:			1.531958
+Val acc:			0.510000
+Epoch 86 of 100 took 9.979s
+eta 0.00999999977648
+Final results:
+Train loss:			0.967043
+Train acc:			0.634956
+Final results:
+Val loss:			1.527231
+Val acc:			0.507200
+Epoch 87 of 100 took 9.971s
+eta 0.00999999977648
+Final results:
+Train loss:			0.977226
+Train acc:			0.629822
+Final results:
+Val loss:			1.539095
+Val acc:			0.508000
+Epoch 88 of 100 took 9.974s
+eta 0.00999999977648
+Final results:
+Train loss:			0.967792
+Train acc:			0.632489
+Final results:
+Val loss:			1.526989
+Val acc:			0.506600
+Epoch 89 of 100 took 9.990s
+eta 0.00999999977648
+Final results:
+Train loss:			0.968914
+Train acc:			0.632133
+Final results:
+Val loss:			1.519504
+Val acc:			0.505000
+Epoch 90 of 100 took 9.993s
+eta 0.00999999977648
+Final results:
+Train loss:			0.973207
+Train acc:			0.630089
+Final results:
+Val loss:			1.513167
+Val acc:			0.514800
+Epoch 91 of 100 took 9.978s
+eta 0.00999999977648
+Final results:
+Train loss:			0.971868
+Train acc:			0.634333
+Final results:
+Val loss:			1.521922
+Val acc:			0.505000
+Epoch 92 of 100 took 10.132s
+eta 0.00999999977648
+Final results:
+Train loss:			0.972776
+Train acc:			0.631444
+Final results:
+Val loss:			1.521877
+Val acc:			0.511200
+Epoch 93 of 100 took 10.024s
+eta 0.00999999977648
+Final results:
+Train loss:			0.969832
+Train acc:			0.633200
+Final results:
+Val loss:			1.573523
+Val acc:			0.503000
+Epoch 94 of 100 took 10.009s
+eta 0.00999999977648
+Final results:
+Train loss:			0.981198
+Train acc:			0.628578
+Final results:
+Val loss:			1.555401
+Val acc:			0.507000
+Epoch 95 of 100 took 10.046s
+eta 0.00999999977648
+Final results:
+Train loss:			0.974003
+Train acc:			0.631978
+Final results:
+Val loss:			1.540930
+Val acc:			0.512200
+Epoch 96 of 100 took 10.042s
+eta 0.00999999977648
+Final results:
+Train loss:			0.967348
+Train acc:			0.634289
+Final results:
+Val loss:			1.545820
+Val acc:			0.512800
+Epoch 97 of 100 took 10.006s
+eta 0.00999999977648
+Final results:
+Train loss:			0.976278
+Train acc:			0.631578
+Final results:
+Val loss:			1.556397
+Val acc:			0.510800
+Epoch 98 of 100 took 10.042s
+eta 0.00999999977648
+Final results:
+Train loss:			0.985797
+Train acc:			0.628200
+Final results:
+Val loss:			1.526428
+Val acc:			0.499600
+Epoch 99 of 100 took 10.033s
+eta 0.00999999977648
+Final results:
+Train loss:			0.979845
+Train acc:			0.629956
+Final results:
+Val loss:			1.523862
+Val acc:			0.507400
+Epoch 100 of 100 took 10.024s
+Final results:
+Test loss:			1.555063
+Test acc:			0.502600
+[[ 591.   22.   45.   13.   29.   32.   40.   32.  138.   58.]
+ [  39.  522.   19.   27.   20.   25.   38.   27.   70.  213.]
+ [ 102.   16.  320.   56.  144.  125.  109.   71.   27.   30.]
+ [  42.   12.   61.  296.   51.  252.  156.   59.   29.   42.]
+ [  65.    8.  100.   51.  378.   89.  164.  104.   26.   15.]
+ [  21.   11.   57.  175.   73.  437.  100.   68.   37.   21.]
+ [  15.    7.   47.   54.   79.   67.  674.   28.   17.   12.]
+ [  33.   11.   35.   54.   79.  119.   43.  553.   20.   53.]
+ [ 106.   41.   14.   17.   15.   21.   21.   19.  663.   83.]
+ [  50.  125.    9.   25.   11.   28.   50.   45.   65.  592.]]
+Final results:
+Post-train loss:			0.812606
+Post-train acc:			0.688356
+('aggegate accuracy', 0.50260000000000005)
+('NNN:', 'fncr_3')
+DONE
