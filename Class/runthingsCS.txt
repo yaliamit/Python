@@ -1,1 +1,1 @@
-python start_class.py net=_BP_CIFAR100/igor2R_slow output=igor2R_slow_OUT>igor2R_slow_OUT.txt
+python start_class.py net=_BP_CIFAR100/igor2R_slow output=igor2R100_slow>igor2R100_slow.txt
