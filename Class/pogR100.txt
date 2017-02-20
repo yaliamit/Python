@@ -8,7 +8,7 @@ edges:False
 start:0
 Mnist:cifar_100
 net:fn
-eta_schedule:(100,.001)
+eta_schedule:(30,.001)
 update:nestorov
 batch_size:100
 eta_init:.01
@@ -17,8 +17,8 @@ mult:1
 num_train:50000
 agg:True
 adapt_eta:False
-hinge:2
-hinge_down:2
+hinge:1
+hinge_down:1
 TRAIN:True
 global_prob:(.5,.5)
 name:input1
