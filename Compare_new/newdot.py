@@ -35,6 +35,7 @@ class NewDotOp(theano.Op):
         i_dtypes = [input.type.dtype for input in inputs[0:3]]
         outputs = [theano.tensor.basic.tensor(scal.upcast(*i_dtypes), bz)]
         return theano.Apply(self, inputs[0:3]+inputs[4:6], outputs)
+        #return theano.Apply(self, inputs, outputs)
 
     def perform(self, node, inp, out):
         x, y, R, Wzer, Rzer = inp
@@ -76,14 +77,17 @@ class NewDotOp(theano.Op):
             #xgrad = T.dot(gz, y.T)
             xgrad = T.dot(gz, R.T)
             # Gradient of weights - input*deltas^t - zero'd out for those that don't exist.
-            yygrad = T.dot(x.T,gz)
-            #yygrad = T.dot(T.maximum(x,0),gz)
-            #zzgrad=T.dot(x,T.maximum(gz,0))
+            if (self.prob.data[1]>=0):
+                yygrad = T.dot(x.T,gz)
+                zzgrad=yygrad
+            else:
+                yygrad = T.dot(T.maximum(x.T,0),gz)
+                zzgrad=T.dot(x.T,T.maximum(gz,0))
             #u=(self.srng.uniform(yygrad.shape)<self.prob.data[0])
             ygrad=yygrad*Wzer
 
         #v=(self.srng.uniform(yygrad.shape)<self.prob.data[1])
-        zgrad=yygrad*Rzer
+        zgrad=zzgrad*Rzer
 
         #d_prob=theano.gradient.grad_undefined(self,3,prob)
 

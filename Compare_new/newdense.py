@@ -7,6 +7,7 @@ from lasagne import nonlinearities
 import newdot
 from lasagne.layers.base import Layer
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
+import numpy as np
 from theano import printing
 import theano
 __all__ = [
@@ -76,7 +77,7 @@ class NewDenseLayer(Layer):
         self.Wzero=self.add_param(Wzero,(num_inputs,num_units),name="Wzero", trainable=False)
         self.Rzero=self.add_param(Rzero,(num_inputs,num_units),name="Rzero", trainable=False)
         self.Wzero=self.Wzero<self.prob[0]
-        self.Rzero=self.Rzero<self.prob[0]
+        self.Rzero=self.Rzero<np.abs(self.prob[0])
         self.W=self.W*self.Wzero
         self.R=self.R*self.Rzero
         # self.prob[1]=0 no gradient on R
