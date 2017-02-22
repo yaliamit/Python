@@ -233,7 +233,12 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                 name=None
                 if (len(layer_list)==0):
                     name=l['name']
-                    convb=lasagne.layers.BatchNormLayer(lay,name=name,beta=lasagne.init.Constant(0), gamma=lasagne.init.Constant(1), mean=lasagne.init.Constant(0), inv_std=lasagne.init.Constant(1))
+                    gamma=None
+                    beta=None
+                    if ('gamma' in l):
+                        gamma=lasagne.init.Constant(1)
+                        beta=lasagne.init.Constant(0)
+                    convb=lasagne.layers.BatchNormLayer(lay,name=name,beta=beta, gamma=gamma, mean=lasagne.init.Constant(0), inv_std=lasagne.init.Constant(1))
                 else:
                     convb=lasagne.layers.BatchNormLayer(lay,beta=layer_list[0].beta, gamma=layer_list[0].gamma, mean=layer_list[0].mean, inv_std=layer_list[0].inv_std)
 
