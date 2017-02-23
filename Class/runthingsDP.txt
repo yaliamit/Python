@@ -1,1 +1,1 @@
-python start_class.py net=pogR_tanh Mnist:cifar_100 output=pogR100_tanh_OUT>pogR100_tanh_OUT.txt
+python start_class.py net=pogR100_tanh output=pogR100_tanh_OUT>pogR100_tanh_OUT.txt
