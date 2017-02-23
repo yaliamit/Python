@@ -1,1 +1,1 @@
-python start_class.py net=pogRR_tanh output=pogRR_tanh_OUT>pogRR_tanh_OUT.txt
+python start_class.py net=pogRR_tanh use_existing=True start=1 mult=2 output=pogRR_tanh_OUT>pogRR_tanh_OUT.txt
