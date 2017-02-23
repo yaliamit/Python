@@ -81,8 +81,10 @@ class NewDotOp(theano.Op):
                 yygrad = T.dot(x.T,gz)
                 zzgrad=yygrad
             else:
-                yygrad = T.dot(T.maximum(x.T,0),gz)
-                zzgrad=T.dot(x.T,T.maximum(gz,0))
+                #yygrad = T.dot(T.maximum(x.T,0),gz)
+                yygrad = T.dot(x.T,gz)
+                #zzgrad=T.dot(x.T,T.maximum(gz,0))
+                zzgrad=T.dot(x.T,T.tanh(gz))
             #u=(self.srng.uniform(yygrad.shape)<self.prob.data[0])
             ygrad=yygrad*Wzer
 
