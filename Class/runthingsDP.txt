@@ -1,1 +1,1 @@
-python start_class.py net=pogR_new output=pogR_new_OUT>pogR_new_OUT.txt
+python start_class.py net=pogR_tanh output=pogR_tanh_OUT>pogR_tanh_OUT.txt
