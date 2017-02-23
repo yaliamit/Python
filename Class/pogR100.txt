@@ -1,6 +1,6 @@
 output_net:fnc
 seed:45239
-num_epochs:100
+num_epochs:200
 simple_augmentation:True
 num_val:0
 mod_net:None
@@ -8,7 +8,7 @@ edges:False
 start:0
 Mnist:cifar_100
 net:fn
-eta_schedule:(30,.001)
+eta_schedule:(30,.001,100,.0001)
 update:nestorov
 batch_size:100
 eta_init:.01
