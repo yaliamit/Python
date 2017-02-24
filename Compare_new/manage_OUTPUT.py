@@ -25,13 +25,26 @@ def process_args(args,parms):
             aa=str.split(s,'=')
             name=str.strip(aa[0],' ')
             value=str.strip(aa[1],' ')
-            try:
-                v=int(value)
-            except ValueError:
+            if ('(' in value):
+                aa=str.split(str.strip(value,' ()\n'),',')
+                a=[]
                 try:
-                    v=float(value)
-                except:
-                    v=value
+                    int(aa[0])
+                    for aaa in aa:
+                        a.append(int(aaa))
+                    v=tuple(a)
+                except ValueError:
+                    for aaa in aa:
+                        a.append(float(aaa))
+                    v=tuple(a)
+            else:
+                try:
+                    v=int(value)
+                except ValueError:
+                    try:
+                        v=float(value)
+                    except:
+                        v=value
             if (v=='True'):
                 pp[name]=True
             elif (v=='False'):
