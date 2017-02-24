@@ -25,8 +25,8 @@ def process_args(args,parms):
             aa=str.split(s,'=')
             name=str.strip(aa[0],' ')
             value=str.strip(aa[1],' ')
-            if ('(' in value):
-                aa=str.split(str.strip(value,' ()\n'),',')
+            if ('[' in value):
+                aa=str.split(str.strip(value,' []\n'),',')
                 a=[]
                 try:
                     int(aa[0])
