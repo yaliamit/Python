@@ -7,10 +7,10 @@ edges:False
 start:0
 Mnist:cifar_10
 net:fn
-eta_schedule:(50,.0001,60,.00001)
+eta_schedule:(50,.001,60,.0001)
 update:momentum
 batch_size:100
-eta_init:.001
+eta_init:.01
 train:True
 mult:1
 num_train:50000
