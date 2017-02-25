@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pog Mnist=cifar_100 update=momentum output=pog_OUT>pog_OUT.txt
+python start_class.py net=_pars/pog Mnist=cifar_100 seed=5642345 update=momentum output=pog_OUT>pog_OUT.txt
