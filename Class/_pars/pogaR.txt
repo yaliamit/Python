@@ -1,0 +1,38 @@
+output_net:fnc
+seed:45239
+num_epochs:65
+simple_augmentation:True
+mod_net:None
+edges:False
+start:0
+Mnist:cifar_10
+net:fn
+eta_schedule:(50,.0001,60,.00001)
+update:momentum
+batch_size:100
+eta_init:.001
+train:True
+mult:1
+num_train:50000
+agg:True
+adapt_eta:False
+hinge:2
+hing_down:2
+TRAIN:True
+name:input1
+name:convR1;num_filters:32;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:lasagne.nonlinearity.linear;parent:input1
+name:batch0;parent:convR1
+name:non_linearity1;non_linearity:lasagne.nonlinearity.sigmoid;parent:batch0
+name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:non_linearity1
+name:convR2;num_filters:64;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:lasagne.nonlinearity.linear;parent:pool1
+name:batch1;parent:convR2
+name:non_linearity2;non_linearity:lasagne.nonlinearity.sigmoid;parent:batch1
+name:pool2;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:non_linearity2
+name:convR3;num_filters:64;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:lasagne.nonlinearity.linear;parent:pool2
+name:batch2;parent:convR3
+name:non_linearity3;non_linearity:lasagne.nonlinearity.sigmoid;parent:batch2
+name:pool3;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:non_linearity3
+name:newdens0;num_units:128;non_linearity:lasagne.nonlinearity.linear;parent:pool3
+name:batch3;parent:newdens0
+name:non_linearity4;non_linearity:lasagne.nonlinearity.sigmoid;parent:batch3
+name:newdens2;num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:non_linearity4;final:final

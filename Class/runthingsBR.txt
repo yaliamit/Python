@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pogb Mnist=cifar_100 update=momentum output=pogb_OUT>pogb_OUT.txt
+python start_class.py net=_pars/pogaR Mnist=cifar_100 update=momentum output=pogaR_OUT>pogaR_OUT.txt
