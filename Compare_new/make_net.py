@@ -268,11 +268,14 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                     name=l['name']
                 layer_list.append(lasagne.layers.NonlinearityLayer(lay,nonlinearity=l['non_linearity'],name=name))
         elif 'dense' in l['name']:
+                num_units=l['num_units']
+                if ('final' in l and num_class is not None):
+                    num_units=num_class
                 for lay in input_la:
                     if (len(layer_list)==0):
-                        layer_list.append(lasagne.layers.DenseLayer(lay,name=l['name'],num_units=l['num_units'],W=lasagne.init.GlorotUniform(gain=gain), b=None, nonlinearity=l['non_linearity']))
+                        layer_list.append(lasagne.layers.DenseLayer(lay,name=l['name'],num_units=num_units,W=lasagne.init.GlorotUniform(gain=gain), b=None, nonlinearity=l['non_linearity']))
                     else:
-                        layer_list.append(lasagne.layers.DenseLayer(lay,num_units=l['num_units'],nonlinearity=l['non_linearity'],
+                        layer_list.append(lasagne.layers.DenseLayer(lay,num_units=num_units,nonlinearity=l['non_linearity'],
                                           W=layer_list[0].W, b=layer_list[0].b))
         elif 'newdens' in l['name']:
                 num_units=l['num_units']
@@ -285,7 +288,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                                                                     R=lasagne.init.GlorotUniform(gain=gain),
                                                                     b=None, prob=prob,nonlinearity=l['non_linearity']))
                     else:
-                        layer_list.append(lasagne.layers.DenseLayer(lay,num_units=l['num_units'],nonlinearity=l['non_linearity'],
+                        layer_list.append(lasagne.layers.DenseLayer(lay,num_units=num_units,nonlinearity=l['non_linearity'],
                                           W=layer_list[0].W, b=layer_list[0].b))
         elif 'sparse' in l['name']:
             for lay in input_la:
