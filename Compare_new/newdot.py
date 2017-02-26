@@ -17,11 +17,6 @@ class NewDotOp(theano.Op):
 
     def make_node(self, *inputs):
         inputs = list(map(theano.tensor.basic.as_tensor_variable, inputs))
-        # if len(inputs) != 4:
-        #     raise TypeError(
-        #         'AffineOP: 4 arguments required, %d given ' %
-        #         len(inputs))
-
         i_broadcastables = [input.type.broadcastable for input in inputs]
         bx, by, br, bp, byz, brz = i_broadcastables
         if len(by) == 2:  # y is a matrix
@@ -85,11 +80,11 @@ class NewDotOp(theano.Op):
 
                 zzgrad=T.dot(x.T,T.maximum(gz,.01*gz))
 
-            #u=(self.srng.uniform(yygrad.shape)<self.prob.data[0])
-            ygrad=yygrad*Wzer
+            u=(self.srng.uniform(yygrad.shape)<self.prob.data[0])
+            ygrad=yygrad*Wzer*u
 
-        #v=(self.srng.uniform(yygrad.shape)<self.prob.data[1])
-        zgrad=zzgrad*Rzer
+        v=(self.srng.uniform(yygrad.shape)<self.prob.data[0])
+        zgrad=zzgrad*Rzer*v
 
         #d_prob=theano.gradient.grad_undefined(self,3,prob)
 
