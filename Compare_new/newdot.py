@@ -80,11 +80,11 @@ class NewDotOp(theano.Op):
 
                 zzgrad=T.dot(x.T,T.maximum(gz,.01*gz))
 
-            u=(self.srng.uniform(yygrad.shape)<self.prob.data[0])
-            ygrad=yygrad*Wzer*u
+            #u=(self.srng.uniform(yygrad.shape)<self.prob.data[0])
+            ygrad=yygrad*Wzer #*u
 
-        v=(self.srng.uniform(yygrad.shape)<self.prob.data[0])
-        zgrad=zzgrad*Rzer*v
+        #v=(self.srng.uniform(yygrad.shape)<self.prob.data[0])
+        zgrad=zzgrad*Rzer #*v
 
         #d_prob=theano.gradient.grad_undefined(self,3,prob)
 
