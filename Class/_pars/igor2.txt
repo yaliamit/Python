@@ -6,7 +6,7 @@ adapt_eta:False
 update:adam
 batch_size:100
 #eta_schedule:(100,.01)
-eta_init:0.001
+eta_init:0.1
 train:False
 num_epochs:200
 net:igor2
