@@ -13,7 +13,7 @@ net:igor2
 seed:12345
 reg_param:0
 Mnist:cifar_10
-global_drop:0.5
+global_drop:0.2
 name:input1
 name:batch0;parent:input1
 name:conv1;num_filters:64;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:batch0
