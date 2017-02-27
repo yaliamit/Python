@@ -4,7 +4,7 @@ agg:True
 mod_net:None
 adapt_eta:False
 update:adam
-batch_size:100
+batch_size:400
 #eta_schedule:(100,.01)
 eta_init:0.1
 train:False
