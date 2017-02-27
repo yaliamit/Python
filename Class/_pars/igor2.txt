@@ -5,8 +5,8 @@ mod_net:None
 adapt_eta:False
 update:momentum
 batch_size:100
-eta_schedule:(100,.001)
-eta_init:0.01
+eta_schedule:(100,.01)
+eta_init:0.1
 train:False
 num_epochs:200
 net:igor2
