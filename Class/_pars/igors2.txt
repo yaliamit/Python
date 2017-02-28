@@ -8,14 +8,14 @@ batch_size:400
 #eta_schedule:(100,.01)
 eta_init:0.01
 train:False
-num_epochs:200
+num_epochs:600
 net:igor2
 seed:12345
 reg_param:0
 Mnist:cifar_10
 global_drop:0.5
-hinge:1
-hinge_down:1
+hinge:2
+hinge_down:2
 name:input1
 name:batch0;parent:input1
 name:conv1;num_filters:64;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:batch0
