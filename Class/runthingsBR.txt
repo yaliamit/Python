@@ -1,1 +1,1 @@
-python start_class.py net=_pars/igorsR global_prob=[.5,.5] output=igorsR_OUT>igorsR_OUT.txt
+python start_class.py net=_pars/igorsR global_prob=[1.,0.] output=igorsRR_full_OUT>igorsRR_full_OUT.txt
