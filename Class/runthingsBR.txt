@@ -1,1 +1,1 @@
-python start_class.py net=_pars/igor Mnist=cifar_100 output=igors100_OUT>igors100_OUT.txt
+python start_class.py net=_pars/igor2 Mnist=cifar_100 output=igors100_OUT>igors100_OUT.txt
