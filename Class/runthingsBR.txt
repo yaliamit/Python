@@ -1,1 +1,1 @@
-python start_class.py net=_pars/igorsR global_prob=[.5,0] global_drop=.2 num_epochs=200 eta_schedule=[70.,.005] output=igorsRR_OUT>igorsRR_OUT.txt
+python start_class.py net=_pars/igorsR Mnist=cifar_100 global_prob=[1.,1.] output=igorsR100_full_OUT>igorsR100_full_OUT.txt
