@@ -91,17 +91,19 @@ def plot_OUTPUT(name='OUTPUT'):
     havetrain=False
     bt=np.fromstring(commands.getoutput('grep Train ' + name + '.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
     bv=np.fromstring(commands.getoutput('grep Val ' + name + '.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
-    ss='grep aggegate ' + name + '.txt | cut -d"," -f4 | cut -d")" -f1'
-    atest=np.fromstring(commands.getoutput(ss),sep='\n\t\t\t')
-    if (type(atest) is np.ndarray and len(atest)>0 ):
-        atest=atest[-1]
-    ss='grep Post-train ' + name + '.txt | grep acc | cut -d":" -f2'
-    atrain=np.fromstring(commands.getoutput(ss),sep='\n\t\t\t')
-    if (type(atrain) is np.ndarray and len(atrain)>0):
-        havetrain=True
-        atrain=atrain[-1]
-    if (havetrain):
-        print(atest,atrain)
+    ss='grep aggegate ' + name + '.txt'
+    if (len(commands.getoutput(ss))):
+        ss='grep aggegate ' + name + '.txt | cut -d"," -f4 | cut -d")" -f1'
+        atest=np.fromstring(commands.getoutput(ss),sep='\n\t\t\t')
+        if (type(atest) is np.ndarray and len(atest)>0 ):
+            atest=atest[-1]
+        ss='grep Post-train ' + name + '.txt | grep acc | cut -d":" -f2'
+        atrain=np.fromstring(commands.getoutput(ss),sep='\n\t\t\t')
+        if (type(atrain) is np.ndarray and len(atrain)>0):
+            havetrain=True
+            atrain=atrain[-1]
+        if (havetrain):
+            print(atest,atrain)
 
     print(len(bt))
     py.plot(bt,label='train')
