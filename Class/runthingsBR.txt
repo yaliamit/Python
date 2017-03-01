@@ -1,1 +1,1 @@
-python start_class.py net=_pars/igorsR global_prob=[.5,.5] output=igorsR_OUT>igorsR_OUT.txt
+python start_class.py net=_pars/igors2 Mnist_cifar_100 dep_fac=10 output=igorsR100_a_OUT>igorsR100_a_OUT.txt
