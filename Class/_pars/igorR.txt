@@ -31,4 +31,4 @@ name:pool3;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:convR3
 name:drop3;drop:0.5;parent:pool3
 name:newdens4;num_units:256;non_linearity:lasagne.nonlinearity.rectify;parent:drop3
 name:drop4;drop:0.5;parent:newdens4
-name:newdens;num_units:10;non_linearity:lasagne.nonlinearity.softmax;parent:drop5;final:final
+name:newdens;num_units:10;non_linearity:lasagne.nonlinearity.softmax;parent:drop4;final:final
