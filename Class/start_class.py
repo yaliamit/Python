@@ -85,7 +85,7 @@ for i,ne in enumerate(nets):
             exit()
     else:
         NETPARS={}
-        parse_net_pars.parse_text_file(parms['net'],NETPARS,lname='layers', dump=True)
+        parse_net_pars.parse_text_file(parms['net'],NETPARS,lname='layers', dump=False)
         if (i==0):
             np.random.seed(NETPARS['seed'])
 
@@ -105,7 +105,16 @@ for i,ne in enumerate(nets):
     # # Command line overrides.
     # if ('num_train' in parms):
     #     NETPARS['num_train']=parms['num_train']
+
+    for key in NETPARS:
+        if (type(NETPARS[key]) is not list):
+            print key+":"+str(NETPARS[key])
+    for key in NETPARS:
+        if (type(NETPARS[key]) is list):
+            for l in NETPARS[key]:
+                print l
     [NETPARS,out]=run_class.main_new(NETPARS)
+
     many=False
     if agg is None:
         agg=out[2]
