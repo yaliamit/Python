@@ -1,4 +1,4 @@
-output_net:fnl_1
+output_net:_pars/fnl_1
 seed:45239
 num_epochs:100
 hing_down:2
@@ -7,9 +7,9 @@ mod_net:None
 start:0
 TRAIN:True
 Mnist:cifar_10
-net:fnl_0
+net:_pars/fnl_0
 update:sgd
-batch_size:50
+batch_size:100
 use_existing:False
 eta_init:0.001
 train:True

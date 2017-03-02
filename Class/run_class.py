@@ -33,7 +33,7 @@ def iterate_minibatches_new(inputs, targets, batchsize, shuffle=False):
     labels=np.unique(targets)
     num_class=max(labels)+1
 
-    max_class_per_batch=101
+    max_class_per_batch=10
 
 
     if (type(inputs) is not list):
