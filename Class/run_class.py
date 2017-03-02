@@ -29,17 +29,41 @@ def get_confusion_matrix(pred,y):
 
 
 def iterate_minibatches_new(inputs, targets, batchsize, shuffle=False):
+
+    labels=np.unique(targets)
+    num_class=max(labels)+1
+
+    max_class_per_batch=101
+
+
     if (type(inputs) is not list):
-        assert len(inputs) == len(targets)
-        if shuffle:
-            indices = np.arange(len(inputs))
-            np.random.shuffle(indices)
-        for start_idx in range(0, len(inputs) - batchsize + 1, batchsize):
+        if (num_class<=max_class_per_batch):
+            assert len(inputs) == len(targets)
             if shuffle:
-                excerpt = indices[start_idx:start_idx + batchsize]
-            else:
-                excerpt = slice(start_idx, start_idx + batchsize)
-            yield inputs[excerpt], targets[excerpt]
+                indices = np.arange(len(inputs))
+                np.random.shuffle(indices)
+            for start_idx in range(0, len(inputs) - batchsize + 1, batchsize):
+                if shuffle:
+                    excerpt = indices[start_idx:start_idx + batchsize]
+                else:
+                    excerpt = slice(start_idx, start_idx + batchsize)
+                yield inputs[excerpt], targets[excerpt]
+        elif num_class==100:
+            num_batches=len(targets)/batchsize
+            num_rep=(num_batches*max_class_per_batch)/num_class
+            labelss=np.repeat(labels,num_rep)
+            np.random.shuffle(labelss)
+            pc=batchsize/max_class_per_batch
+            k=0
+            for b in range(num_batches):
+                excerpt=np.int32(np.zeros(batchsize))
+                for j in range(max_class_per_batch):
+                    c=np.where(targets==labelss[k])[0]
+                    k+=1
+                    np.random.shuffle(c)
+                    excerpt[j*pc:(j+1)*pc]=c[0:pc]
+                #np.random.shuffle[excerpt]
+                yield inputs[excerpt], targets[excerpt]
     else:
         num_data=inputs[0].shape[0]
         if shuffle:
