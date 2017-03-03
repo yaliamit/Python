@@ -17,20 +17,21 @@ global_drop:0.5
 hinge:.1
 hinge_down:.1
 name:input1
-name:batch0;gamma:1;parent:input1
+name:batch0;parent:input1
 name:conv1;num_filters:64;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:batch0
 name:conv1a;num_filters:64;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:conv1
 name:pool1;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:conv1a
-name:batch1;gamma:1;parent:pool1
+name:batch1;parent:pool1
 name:drop1;drop:0.5;parent:batch1
 name:conv2;num_filters:128;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:drop1
 name:conv2a;num_filters:128;filter_size:(1, 1);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:conv2
 name:pool2;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:conv2a
-name:batch2;gamma:1;parent:pool2
+name:batch2;parent:pool2
 name:drop2;drop:0.5;parent:batch2
 name:conv3;num_filters:256;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:drop2
 name:pool3;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:conv3
 name:drop3;drop:0.5;parent:pool3
 name:dense4;num_units:256;non_linearity:lasagne.nonlinearity.sigmoid;parent:drop3
-name:drop4;drop:0.5;parent:dense4
+name:batch3;parent:dense4
+name:drop4;drop:0.5;parent:batch3
 name:dense;num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:drop4;final:final
