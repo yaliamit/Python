@@ -14,8 +14,8 @@ seed:12345
 reg_param:0
 Mnist:cifar_10
 global_drop:0.5
-hinge:.1
-hinge_down:.1
+hinge:1
+hinge_down:1
 name:input1
 name:batch0;gamma:1;parent:input1
 name:conv1;num_filters:64;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:batch0
