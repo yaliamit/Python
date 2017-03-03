@@ -1,1 +1,1 @@
-python start_class.py net=_pars/igorh2 Mnist=cifar_100 eta_init=.05 hinge=.1 hinge_down=.1 output=igorh100_OUT>igorh100_OUT.txt
+python start_class.py net=_pars/igorh2 Mnist=cifar_100 eta_init=.01 batch_size=100 output=igorh100_OUT>igorh100_OUT.txt
