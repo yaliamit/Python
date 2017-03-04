@@ -1,1 +1,1 @@
-python start_class.py net=_pars/igors2 Mnist=cifar_100 eta_init=.05 eta_current=.025 start=2 mult=3 use_existing=True batch_size=20 output=igorsh100_2_OUT>igorsh100_2_OUT.txt
+python start_class.py net=_pars/igors2 Mnist=cifar_100 eta_init=.1 eta_schedule=[25.,.07,50.,.05,70.,03,90,.01] num_epochs=200 batch_size=20 output=igorsh100_a_OUT>igorsh100_a_OUT.txt
