@@ -5,10 +5,10 @@ mod_net:None
 adapt_eta:False
 update:momentum
 batch_size:400
-#eta_schedule:(80.,.001)
+eta_schedule:(100.,.025)
 eta_init:0.05
 train:False
-num_epochs:600
+num_epochs:200
 net:igor2
 seed:12345
 reg_param:0
