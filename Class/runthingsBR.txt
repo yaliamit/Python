@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pogR global_prob=[.5,0.] output=pog100R5_OUT>pog100R5_OUT.txt
+python start_class.py net=_pars/pogR global_prob=[.5,.5] output=pog100R5_OUT>pog100R5_OUT.txt
