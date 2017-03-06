@@ -321,9 +321,6 @@ def main_new(NETPARS):
     print("seed",NETPARS['seed'])
     print("Loading data...")
     X_train, y_train, X_val, y_val, X_test, y_test=data.get_train(NETPARS)
-    y_train=np.int32(y_train/10)
-    y_val=np.int32(y_val/10)
-    y_test=np.int32(y_test/10)
     num_class=len(np.unique(y_test))
     print("num_class", num_class)
     # Prepare Theano variables for inputs and targets
