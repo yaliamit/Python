@@ -27,8 +27,10 @@ name:conv2;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearit
 name:conv2a;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:conv2
 name:pool2;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv2a
 name:batch1;parent:pool2
-name:conv3;num_filters:64;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:batch1
+name:drop1;prob:.5;parent:batch1
+name:conv3;num_filters:64;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:drop1
 name:pool3;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv3
 name:batch2;parent:pool3
-name:dense0;num_units:128;non_linearity:lasagne.nonlinearity.rectify;parent:batch2
+name:drop2;prob:.5;parent:batch2
+name:dense0;num_units:128;non_linearity:lasagne.nonlinearity.rectify;parent:drop2
 name:dense2;num_units:10;non_linearity:lasagne.nonlinearity.softmax;parent:dense0;final:final
