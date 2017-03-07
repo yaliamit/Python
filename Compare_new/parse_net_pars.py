@@ -149,16 +149,8 @@ def parse_text_file(net_name,NETPARS,lname='layers', dump=False):
             f.close()
         # Check if NETPARS is using hinge loss use sigmoid non-linearity on final dense layer
         # Otherwise use softmax
-        if (len(LAYERS)):
-            if ('hinge' not in NETPARS or not NETPARS['hinge']):
-                LAYERS[-1]['non_linearity']=lasagne.nonlinearities.softmax
-            else:
-                if NETPARS['hinge'] == 'rect_sym':
-                    LAYERS[-1]['non_linearity']=make_net.rect_sym
-                elif NETPARS['hinge'] == 'rect':
-                    LAYERS[-1]['non_linearity']=lasagne.nonlinearities.rectify
-                # else:
-                #     LAYERS[-1]['non_linearity']=lasagne.nonlinearities.sigmoid
+
+
 
             NETPARS[lname]=LAYERS
 

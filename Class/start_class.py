@@ -4,6 +4,7 @@ import os
 import numpy as np
 import sys
 import manage_OUTPUT
+import lasagne
 parms={}
 parms['net']='igor2_maxout'
 parms['output_net']=None
@@ -101,6 +102,17 @@ for i,ne in enumerate(nets):
 
     NETPARS['net']=ne
     NETPARS['output_net']=output_nets[i]
+    LAYERS=NETPARS['layers']
+    if (len(LAYERS)):
+            if ('hinge' not in NETPARS or not NETPARS['hinge']):
+                LAYERS[-1]['non_linearity']=lasagne.nonlinearities.softmax
+            else:
+
+                for l in LAYERS:
+                    if ('non_linearity' in l):
+                        l['non_linearity']=lasagne.nonlinearities.sigmoid
+                LAYERS[-1]['non_linearity']=lasagne.nonlinearities.linear
+    NETPARS['layers']=LAYERS
     # NETPARS['output']=parms['output']
     # # Command line overrides.
     # if ('num_train' in parms):
