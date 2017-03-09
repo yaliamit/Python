@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pogdRR global_prob=[1.,0.] Mnist=cifar_100 eta_init=.001 eta_schedule=[100.,.0001] num_epochs=200 output=pogdRR100_OUT>pogdRR100_OUT.txt
+python start_class.py net=_pars/pogdR Mnist=cifar_100 hinge=.2 hinge_down=.2 eta_init=.01 num_epochs=200 eta_schedule=[100.,.005] global_prob=[1.,1.] output=pogdRh100_OUT>pogdRh100_OUT.txt
