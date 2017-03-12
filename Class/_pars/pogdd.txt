@@ -29,8 +29,8 @@ name:conv2a;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_lineari
 name:pool2;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv2a
 name:batch1;parent:pool2
 name:drop1;drop:0.5;parent:batch1
-name:conv3;num_filters:64;filter_size:(3,3);pad:(2,2);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:drop1
-name:conv3a;num_filters:64;filter_size:(3,3);pad:(2,2);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:conv3
+name:conv3;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:drop1
+name:conv3a;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:conv3
 name:pool3;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv3a
 name:batch2;parent:pool3
 name:drop2;drop:0.5;parent:batch2
