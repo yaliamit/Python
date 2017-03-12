@@ -20,7 +20,8 @@ adapt_eta:False
 #hing_down:2
 TRAIN:True
 name:input1
-name:conv1;num_filters:32;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:input1
+name:conv1;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:input1
+name:conv1a;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:input1
 name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:conv1
 name:batch0;parent:pool1
 name:drop0;drop:0.5;parent:batch0
