@@ -22,7 +22,7 @@ TRAIN:True
 name:input1
 name:conv1;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:input1
 name:convR1a;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:conv1
-name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:convR1
+name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:convR1a
 name:batch0;parent:pool1
 name:drop0;drop:0.5;parent:batch0
 name:convR2;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:batch0
