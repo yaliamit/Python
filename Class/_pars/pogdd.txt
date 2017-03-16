@@ -20,17 +20,17 @@ adapt_eta:False
 #hing_down:2
 TRAIN:True
 name:input1
-name:conv1;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:input1
+name:conv1;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.linear;parent:input1
 name:conv1a;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:conv1
 name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:conv1a
 name:batch0;parent:pool1
 name:drop0;drop:0.5;parent:batch0
-name:conv2;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:batch0
+name:conv2;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.linear;parent:batch0
 name:conv2a;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:conv2
 name:pool2;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv2a
 name:batch1;parent:pool2
 name:drop1;drop:0.5;parent:batch1
-name:conv3;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:drop1
+name:conv3;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.linear;parent:drop1
 name:conv3a;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:conv3
 name:pool3;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv3a
 name:batch2;parent:pool3
