@@ -472,7 +472,10 @@ def make_file_from_params(network,NETPARS):
             if ('input' in l.name):
                 s='name:'+l.name
             elif ('conv' in l.name):
-                sfunc='lasagne.nonlinearity.'+l.nonlinearity.func_name
+                if (hasattr(l.nonlinearity,'func_name')):
+                    sfunc='lasagne.nonlinearity.'+l.nonlinearity.func_name
+                else:
+                    sfunc='lasagne.nonlinearity.tanh'
                 s='name:'+l.name+';num_filters:'+str(l.num_filters)+';pad:'+str(l.pad)+';filter_size:'\
                   +str(l.filter_size)+';stride:'+str(l.stride)+';non_linearity:'+sfunc
                 if (hasattr(l,'prob')):
@@ -505,7 +508,10 @@ def make_file_from_params(network,NETPARS):
                 else:
                     s='name:'+l.name+';pool_size:'+str(l.pool_size)+';stride:'+str(l.stride)+';pad:'+str(l.pad)
             elif ('dens' in l.name):
-                sfunc='lasagne.nonlinearity.'+l.nonlinearity.func_name
+                if (hasattr(l.nonlinearity,'func_name')):
+                    sfunc='lasagne.nonlinearity.'+l.nonlinearity.func_name
+                else:
+                    sfunc='lasagne.nonlinearity.tanh'
                 s='name:'+l.name+';num_units:'+str(l.num_units)+';non_linearity:'+sfunc
                 if (hasattr(l,'prob')):
                     s=s+';prob:'+str(l.prob)
