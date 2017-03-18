@@ -107,9 +107,9 @@ for i,ne in enumerate(nets):
             if ('hinge' not in NETPARS or not NETPARS['hinge']):
                 LAYERS[-1]['non_linearity']=lasagne.nonlinearities.softmax
             else:
-                for l in LAYERS:
-                    if ('non_linearity' in l):
-                        l['non_linearity']=lasagne.nonlinearities.sigmoid
+                # for l in LAYERS:
+                #     if ('non_linearity' in l):
+                #         l['non_linearity']=lasagne.nonlinearities.sigmoid
                 LAYERS[-1]['non_linearity']=lasagne.nonlinearities.linear
     NETPARS['layers']=LAYERS
     # NETPARS['output']=parms['output']
