@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pogdd_tanh Mnist=cifar_100 eta_init=.001 eta_schedule=[300.,.001] num_epochs=400 output=pog100_a_OUT>pog100_a_OUT.txt
+python start_class.py net=_pars/pogdd_tanh Mnist=cifar_100 eta_init=.001 eta_schedule=[300.,.0001] num_epochs=400 output=pog100_a_OUT>pog100_a_OUT.txt
