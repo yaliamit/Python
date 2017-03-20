@@ -16,8 +16,6 @@ mult:1
 num_train:50000
 agg:True
 adapt_eta:False
-hinge:2
-hinge_down:2
 TRAIN:True
 name:input1
 name:conv1;num_filters:32;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:lasagne.nonlinearity.tanh;parent:input1
@@ -27,4 +25,4 @@ name:pool2;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent
 name:convR3;num_filters:64;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:lasagne.nonlinearity.tanh;parent:pool2
 name:pool3;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:convR3
 name:newdens0;num_units:128;non_linearity:lasagne.nonlinearity.tanh;parent:pool3
-name:newdens2;num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:newdens0;final:final
+name:newdens2;num_units:10;prob:(1.,1.);non_linearity:lasagne.nonlinearity.softmax;parent:newdens0;final:final
