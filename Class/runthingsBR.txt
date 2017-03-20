@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pog_tanh hinge=2 hinge_down=2 Mnist=cifar_100 eta_init=.001 eta_schedule=[100.,0.0001] num_epochs=200 output=pog100_OUT>pog100_OUT.txt
+python start_class.py net=_pars/pog_tanh hinge=2 hinge_down=2 Mnist=cifar_100 eta_init=.001 eta_schedule=[100.,0.0001] num_epochs=200 output=pogh100_OUT>pogh100_OUT.txt
