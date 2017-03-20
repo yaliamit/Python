@@ -510,7 +510,11 @@ def make_file_from_params(network,NETPARS):
             elif ('reshape' in l.name):
                 s='name:'+l.name+';shape:'+str(l.shape[1:])
             elif ('sparse' in l.name):
-                sfunc=l.nonlinearity.func_name
+                if (hasattr(l.nonlinearity,'func_name')):
+                    sfunc=l.nonlinearity.func_name
+                else:
+                    sfunc='tanh'+';tinout:('+str(l.nonlinearity.scale_in)+\
+                          ','+str(l.nonlinearity.scale_out)+')'
                 s='name:'+l.name+';num_units:'+str(l.num_units)+';non_linearity:'+sfunc
             elif ('noise' in l.name):
                 p=l.p
@@ -538,7 +542,8 @@ def make_file_from_params(network,NETPARS):
                 if (hasattr(l.nonlinearity,'func_name')):
                     sfunc=l.nonlinearity.func_name
                 else:
-                    sfunc='tanh'
+                    sfunc='tanh'+';tinout:('+str(l.nonlinearity.scale_in)+\
+                          ','+str(l.nonlinearity.scale_out)+')'
                 s='name:'+l.name+';num_units:'+str(l.num_units)+';non_linearity:'+sfunc
                 if (hasattr(l,'prob')):
                     s=s+';prob:'+str(l.prob)
