@@ -57,18 +57,19 @@ def process_network_line(line,global_drop):
                 # Process the parameter value
                 # A nonlinearity function
                 if ('lasagne' in s1):
-                        if ('rectify' in s1):
-                            lp['non_linearity']=lasagne.nonlinearities.rectify
-                        elif ('rect_sym' in s1):
-                            lp['non_linearity']=make_net.rect_sym
-                        elif ('sigmoid' in s1):
-                            lp['non_linearity']=lasagne.nonlinearities.sigmoid
-                        elif ('tanh' in s1):
-                            lp['non_linearity']=lasagne.nonlinearities.ScaledTanH(scale_in=.5,scale_out=2.4)
-                        elif ('softmax' in s1):
-                            lp['non_linearity']=lasagne.nonlinearities.softmax
-                        else:
-                            lp['non_linearity']=lasagne.nonlinearities.linear
+                        # if ('rectify' in s1):
+                        #     lp['non_linearity']=lasagne.nonlinearities.rectify
+                        # elif ('rect_sym' in s1):
+                        #     lp['non_linearity']=make_net.rect_sym
+                        # elif ('sigmoid' in s1):
+                        #     lp['non_linearity']=lasagne.nonlinearities.sigmoid
+                        # elif ('tanh' in s1):
+                        #     lp['non_linearity']=lasagne.nonlinearities.ScaledTanH(scale_in=.5,scale_out=2.4)
+                        # elif ('softmax' in s1):
+                        #     lp['non_linearity']=lasagne.nonlinearities.softmax
+                        # else:
+                        #     lp['non_linearity']=lasagne.nonlinearities.linear
+                        print('lasagne')
                 else:
                     a=''
                     # A number

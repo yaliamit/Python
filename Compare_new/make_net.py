@@ -12,6 +12,7 @@ import lasagne.utils
 import Conv2dLayerR
 import theano.tensor.nnet
 import densesparse
+import make_net
 import scipy.sparse as sp
 # Experimenting with git
 # Experimenting again
@@ -133,6 +134,28 @@ def extra_pars(network,l):
             network.stride=l['stride']
     return (network)
 
+def get_nonlinearity(l,tinout):
+
+    s1=l['non_linearity']
+    if ('rectify' in s1):
+        f=lasagne.nonlinearities.rectify
+    elif ('rect_sym' in s1):
+        f=make_net.rect_sym
+    elif ('sigmoid' in s1):
+        f=lasagne.nonlinearities.sigmoid
+    elif ('tanh' in s1):
+        scale_in=tinout[0]
+        scale_out=tinout[1]
+        if ('tinout' in l):
+            scale_in=l['tinout'][0]
+            scale_out=l['tinout'][1]
+        f=lasagne.nonlinearities.ScaledTanH(scale_in=scale_in,scale_out=scale_out)
+    elif ('softmax' in s1):
+        f=lasagne.nonlinearities.softmax
+    else:
+        f=lasagne.nonlinearities.linear
+    return(f)
+
 def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
 
     add_on=(input_layer is not None)
@@ -148,10 +171,16 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
         prob=(.5,.5)
         if ('global_prob' in PARS):
             prob=PARS['global_prob']
+        tinout=(1.,1.)
+        if ('global_tinout' in PARS):
+            tinout=PARS['global_tinout']
         if ('prob' in l):
             prob=l['prob']
         prob=tuple([np.float32(i) for i in prob])
         #prob.shape=(1,2)
+        nonlin=lasagne.nonlinearities.identity
+        if 'non_linearity' in l:
+            nonlin=get_nonlinearity(l,tinout)
         if ('parent' in l):
             ip=l['parent']
             if (type(ip)==list):
@@ -204,10 +233,6 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                     filter_size=l['filter_size']
 
                 for lay in input_la:
-
-                    nonlin=lasagne.nonlinearities.identity
-                    if 'non_linearity' in l:
-                         nonlin=l['non_linearity']
                     if (len(layer_list)==0):
                         if ('R' not in l['name']):
                             convp=lasagne.layers.Conv2DLayer(lay, num_filters=l['num_filters'], filter_size=filter_size,
@@ -266,16 +291,17 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                 name=None
                 if (len(layer_list)==0):
                     name=l['name']
-                layer_list.append(lasagne.layers.NonlinearityLayer(lay,nonlinearity=l['non_linearity'],name=name))
+                layer_list.append(lasagne.layers.NonlinearityLayer(lay,nonlinearity=nonlin,name=name))
         elif 'dense' in l['name']:
                 num_units=l['num_units']
                 if ('final' in l and num_class is not None):
                     num_units=num_class
                 for lay in input_la:
                     if (len(layer_list)==0):
-                        layer_list.append(lasagne.layers.DenseLayer(lay,name=l['name'],num_units=num_units,W=lasagne.init.GlorotUniform(gain=gain), b=None, nonlinearity=l['non_linearity']))
+                        layer_list.append(lasagne.layers.DenseLayer(lay,name=l['name'],num_units=num_units,W=lasagne.init.GlorotUniform(gain=gain),
+                                                                    b=None, nonlinearity=nonlin))
                     else:
-                        layer_list.append(lasagne.layers.DenseLayer(lay,num_units=num_units,nonlinearity=l['non_linearity'],
+                        layer_list.append(lasagne.layers.DenseLayer(lay,num_units=num_units,nonlinearity=nonlin,
                                           W=layer_list[0].W, b=layer_list[0].b))
         elif 'newdens' in l['name']:
                 num_units=l['num_units']
@@ -286,9 +312,9 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                         layer_list.append(newdense.NewDenseLayer(lay,name=l['name'],num_units=num_units,
                                                                     W=lasagne.init.GlorotUniform(gain=gain),
                                                                     R=lasagne.init.GlorotUniform(gain=gain),
-                                                                    b=None, prob=prob,nonlinearity=l['non_linearity']))
+                                                                    b=None, prob=prob,nonlinearity=nonlin))
                     else:
-                        layer_list.append(lasagne.layers.DenseLayer(lay,num_units=num_units,nonlinearity=l['non_linearity'],
+                        layer_list.append(lasagne.layers.DenseLayer(lay,num_units=num_units,nonlinearity=nonlin,
                                           W=layer_list[0].W, b=layer_list[0].b))
         elif 'sparse' in l['name']:
             for lay in input_la:
@@ -296,17 +322,17 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                 if (len(layer_list)==0):
                     if ('R' in l['name']):
                         layer_list.append(newdensesparse.SparseDenseLayer(lay,num_units=l['num_units'],
-                                                          b=None,nonlinearity=l['non_linearity'],name=l['name']))
+                                                          b=None,nonlinearity=nonlin,name=l['name']))
                     else:
                         layer_list.append(densesparse.SparseDenseLayer(lay,num_units=l['num_units'],
-                                                          b=None,nonlinearity=l['non_linearity'],name=l['name']))
+                                                          b=None,nonlinearity=nonlin,name=l['name']))
                 else:
                     if ('R' in l['name']):
                         layer_list.append(newdensesparse.SparseDenseLayer(lay,num_units=l['num_units'],
-                                                          b=None,nonlinearity=l['non_linearity'],name=l['name']))
+                                                          b=None,nonlinearity=nonlin,name=l['name']))
                     else:
                         layer_list.append(densesparse.SparseDenseLayer(lay,num_units=l['num_units'],
-                                        nonlinearity=l['non_linearity'],
+                                        nonlinearity=nonlin,
                                           W=layer_list[0].W, b=layer_list[0].b))
         elif 'reshape' in l['name']:
             for lay in input_la:
@@ -473,9 +499,10 @@ def make_file_from_params(network,NETPARS):
                 s='name:'+l.name
             elif ('conv' in l.name):
                 if (hasattr(l.nonlinearity,'func_name')):
-                    sfunc='lasagne.nonlinearity.'+l.nonlinearity.func_name
+                    sfunc=l.nonlinearity.func_name
                 else:
-                    sfunc='lasagne.nonlinearity.tanh'
+                    sfunc='tanh'+';tinout:('+str(l.nonlinearity.scale_in)+\
+                          ','+str(l.nonlinearity.scale_out)+')'
                 s='name:'+l.name+';num_filters:'+str(l.num_filters)+';pad:'+str(l.pad)+';filter_size:'\
                   +str(l.filter_size)+';stride:'+str(l.stride)+';non_linearity:'+sfunc
                 if (hasattr(l,'prob')):
@@ -483,7 +510,7 @@ def make_file_from_params(network,NETPARS):
             elif ('reshape' in l.name):
                 s='name:'+l.name+';shape:'+str(l.shape[1:])
             elif ('sparse' in l.name):
-                sfunc='lasagne.nonlinearity.'+l.nonlinearity.func_name
+                sfunc=l.nonlinearity.func_name
                 s='name:'+l.name+';num_units:'+str(l.num_units)+';non_linearity:'+sfunc
             elif ('noise' in l.name):
                 p=l.p
@@ -509,9 +536,9 @@ def make_file_from_params(network,NETPARS):
                     s='name:'+l.name+';pool_size:'+str(l.pool_size)+';stride:'+str(l.stride)+';pad:'+str(l.pad)
             elif ('dens' in l.name):
                 if (hasattr(l.nonlinearity,'func_name')):
-                    sfunc='lasagne.nonlinearity.'+l.nonlinearity.func_name
+                    sfunc=l.nonlinearity.func_name
                 else:
-                    sfunc='lasagne.nonlinearity.tanh'
+                    sfunc='tanh'
                 s='name:'+l.name+';num_units:'+str(l.num_units)+';non_linearity:'+sfunc
                 if (hasattr(l,'prob')):
                     s=s+';prob:'+str(l.prob)

@@ -105,12 +105,12 @@ for i,ne in enumerate(nets):
     LAYERS=NETPARS['layers']
     if (len(LAYERS)):
             if ('hinge' not in NETPARS or not NETPARS['hinge']):
-                LAYERS[-1]['non_linearity']=lasagne.nonlinearities.softmax
+                LAYERS[-1]['non_linearity']='softmax'
             else:
                 # for l in LAYERS:
                 #     if ('non_linearity' in l):
                 #         l['non_linearity']=lasagne.nonlinearities.sigmoid
-                LAYERS[-1]['non_linearity']=lasagne.nonlinearities.linear
+                LAYERS[-1]['non_linearity']='linear'
     NETPARS['layers']=LAYERS
     # NETPARS['output']=parms['output']
     # # Command line overrides.
