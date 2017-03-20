@@ -64,7 +64,7 @@ def process_network_line(line,global_drop):
                         elif ('sigmoid' in s1):
                             lp['non_linearity']=lasagne.nonlinearities.sigmoid
                         elif ('tanh' in s1):
-                            lp['non_linearity']=lasagne.nonlinearities.ScaledTanH(scale_in=1.,scale_out=1.)
+                            lp['non_linearity']=lasagne.nonlinearities.tanh #ScaledTanH(scale_in=1.,scale_out=1.)
                         elif ('softmax' in s1):
                             lp['non_linearity']=lasagne.nonlinearities.softmax
                         else:
