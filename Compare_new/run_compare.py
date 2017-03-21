@@ -30,7 +30,7 @@ def multiclass_hinge_loss_alt(predictions, targets, delta_up=1., delta_down=1., 
         restm=theano.tensor.max(rest,axis=1)
         err=delta_up-corrects+restm
         loss=theano.tensor.nnet.relu(err)
-    return loss
+    return loss #,corrects,restm,err
 
 
 
@@ -184,10 +184,10 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             acc = T.mean(T.eq(T.argmax(pred, axis=1), target_var),
                           dtype=theano.config.floatX)
 
-            #layers=lasagne.layers.get_all_layers(network)
+            layers=lasagne.layers.get_all_layers(network)
             # for l in layers:
-            #     if ('dens' in l.name):
-            #             gloss.append(T.grad(loss,l.W))
+            #      if ('dense2' in l.name):
+            #              gloss.append(T.grad(loss,l.W))
             #             gloss.append(T.grad(loss,l.R))
 
             # Instead of randomly dropping inputs drop updates on some subsets of weights.
@@ -223,7 +223,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
         if ('reg_param_weights' in NETPARS and Train):
             train_fn = theano.function([input_var,target_var], [loss, acc, pred]+spen, updates=updates)
         else:
-            train_fn = theano.function([input_var,target_var], [loss, acc, pred,aloss]+ gloss, updates=updates)
+            train_fn = theano.function([input_var,target_var], [loss, acc, pred, aloss, corrects, restm, errs]+ gloss, updates=updates)
             #train_fn = theano.function(inp, [loss, acc], updates=updates)
 
 
