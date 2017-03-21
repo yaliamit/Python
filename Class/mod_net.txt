@@ -1,0 +1,5 @@
+hinge:2
+hinge_down:2
+REMOVE:dense2
+NOT_TRAINABLE:conv1,conv2,dense0
+name:dense2;num_units:100;non_linearity:linear;parent:dense0;final:final
