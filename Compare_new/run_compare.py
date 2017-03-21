@@ -26,7 +26,7 @@ def multiclass_hinge_loss_alt(predictions, targets, delta_up=1., delta_down=1., 
         #relc=theano.tensor.nnet.relu(delta_up-corrects)
         #relr=dep_fac*theano.tensor.nnet.relu(delta_down+rest)/(num_cls-1)
         relc=theano.tensor.nnet.softplus(10.*(delta_up-corrects))/10.
-        relr=dep_fac*theano.tensor.nnet.softplut(10.*(delta_down+rest))/(10*(num_cls-1))
+        relr=dep_fac*theano.tensor.nnet.softplus(10.*(delta_down+rest))/(10*(num_cls-1))
         loss=theano.tensor.sum(relr,axis=1)+relc
     else:
         restm=theano.tensor.max(rest,axis=1)
