@@ -223,7 +223,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
         if ('reg_param_weights' in NETPARS and Train):
             train_fn = theano.function([input_var,target_var], [loss, acc, pred]+spen, updates=updates)
         else:
-            train_fn = theano.function([input_var,target_var], [loss, acc, pred, aloss, corrects, restm, errs]+ gloss, updates=updates)
+            train_fn = theano.function([input_var,target_var], [loss, acc, pred, aloss]+ gloss, updates=updates)
             #train_fn = theano.function(inp, [loss, acc], updates=updates)
 
 
