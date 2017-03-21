@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pog_tanh output=pogs100_OUT>pogs100_OUT.txt
+python start_class.py net=_pars/pog_tanh eta_init=.01 eta_schdule=[100.,.001] output=pogs100_OUT>pogs100_OUT.txt
