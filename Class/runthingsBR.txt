@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pog_tanh hinge=2 use_existing=True start=1 mult=2 eta_current=.01 eta_init=.01 num_epochs=400 hinge_down=2 eta_schedule=[400.,.001] output=pogsh100__1_OUT>pogsh100__1_OUT.txt
+python start_class.py net=_pars/pog_tanh hinge=2 hinge_down=2 eta_init=.01 eta_schedule=[200.,.001] output=pogsh100_OUT>pogsh100_OUT.txt
