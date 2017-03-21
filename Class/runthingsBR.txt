@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pog_tanh hinge=2 dep_fac=99. hinge_down=2 eta_init=.01 eta_schedule=[100.,.001] output=pogsh100_OUT>pogsh100_OUT.txt
+python start_class.py net=_pars/pog_tanh hinge=2 dep_fac=99. hinge_down=2 eta_init=.001 eta_schedule=[100.,.001] output=pogsh100_OUT>pogsh100_OUT.txt
