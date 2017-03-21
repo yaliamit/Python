@@ -36,4 +36,5 @@ name:pool3;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent
 name:batch2;parent:pool3
 name:drop2;drop:0.5;parent:batch2
 name:dense0;num_units:128;non_linearity:lasagne.nonlinearity.rectify;parent:drop2
-name:dense2;num_units:10;non_linearity:lasagne.nonlinearity.softmax;parent:dense0;final:final
+name:drop3;drop:0.5;parent:dense0
+name:dense2;num_units:10;non_linearity:lasagne.nonlinearity.softmax;parent:drop3;final:final
