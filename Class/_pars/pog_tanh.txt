@@ -29,4 +29,4 @@ name:conv3;num_filters:64;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearit
 name:pool3;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv3
 name:drop3;drop:.5;parent:pool3
 name:dense0;num_units:128;non_linearity:tanh;parent:drop3
-name:dense2;num_units:10;gain:.1;non_linearity:softmax;parent:dense0;final:final
+name:dense2;num_units:10;non_linearity:softmax;parent:dense0;final:final
