@@ -45,7 +45,7 @@ agg=None
 for i,ne in enumerate(nets):
 
     if (parms['mult']>1 and parms['mult']-parms['start']>1):
-        if (not parms['use_existing']):
+        #if (not parms['use_existing']):
             parms['seed']=np.random.randint(0,200000)
             if (i==0):
                 agg=[]

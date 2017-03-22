@@ -184,10 +184,9 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
         if ('parent' in l):
             ip=l['parent']
             if (type(ip)==list):
-                for i,lay in enumerate(input_la):
-                    layer_list=[network[ipl][i] for ipl in ip]
-                    input_la[i]=lasagne.layers.ElemwiseMergeLayer(layer_list,T.maximum,name='merge')
-                #input_la=lasagne.layers.ConcatLayer(layer_list)
+                    for i,lay in enumerate(input_la):
+                        layer_list=[network[ipl][i] for ipl in ip]
+                        input_la[i]=lasagne.layers.ElemwiseMergeLayer(layer_list,T.maximum,name='merge')
             elif (not add_on):
                 input_la=network[ip]
         if (type(input_la) is not list):
@@ -344,6 +343,9 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                         name=l['name']
                 layer_list.append(lasagne.layers.Pool2DLayer(lay,name=name,pool_size=lay.output_shape[2:],mode='average_inc_pad'))
 
+        elif 'concat' in l['name']:
+            for lay in input_la:
+                layer_list.append(lay)
         if upd:
             if ('merge' in l):
                         if l['merge']=='max':
