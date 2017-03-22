@@ -34,4 +34,8 @@ name:drop3b;drop:.5;parent:dense0
 name:dense2b;num_units:100;non_linearity:linear;parent:drop3b
 name:drop3c;drop:.5;parent:dense0
 name:dense2c;num_units:100;non_linearity:linear;parent:drop3c
+name:drop3d;drop:.5;parent:dense0
+name:dense2d;num_units:100;non_linearity:linear;parent:drop3d
+name:drop3e;drop:.5;parent:dense0
+name:dense2e;num_units:100;non_linearity:linear;parent:drop3e
 name:concat;parent:[dense2a,dense2b,dense2c];final:final
