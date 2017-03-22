@@ -191,7 +191,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                 else:
                     for i,lay in enumerate(input_la):
                         layer_list=[network[ipl][i] for ipl in ip]
-                        input_la[i]=lasagne.layers.ElemwiseMergeLayer(layer_list,T.maximum,name='merge')
+                        input_la[i]=lasagne.layers.ElemwiseMergeLayer(layer_list,T.add,name='merge')
             elif (not add_on):
                 input_la=network[ip]
         if (type(input_la) is not list):
