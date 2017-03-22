@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pogs Mnist=cifar_100 eta_init=.001 num_epochs=100 output=pogs100_OUT>pogs100_OUT.txt
+python start_class.py net=_pars/pogs Mnist=cifar_100 eta_init=.001 num_epochs=200 pogs100_OUT output=eta_schedule=[100.,.0001]>eta_schedule=[100.,.0001].txt
