@@ -103,7 +103,7 @@ for i,ne in enumerate(nets):
     NETPARS['net']=ne
     NETPARS['output_net']=output_nets[i]
     LAYERS=NETPARS['layers']
-    if (len(LAYERS)):
+    if (len(LAYERS) and 'concat' not in LAYERS[-1]):
             if ('hinge' not in NETPARS or not NETPARS['hinge']):
                 LAYERS[-1]['non_linearity']='softmax'
             else:
