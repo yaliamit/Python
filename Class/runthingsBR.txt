@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pog_tanh seed=7364444 Mnist=cifar_100 hinge=.25 hinge_down=2 update=adam eta_init=.01 num_epochs=200 output=pog2ch100_OUT>pog2ch100_OUT.txt
+python start_class.py net=_pars/pog_tanh seed=7364444 Mnist=cifar_100 hinge=.25 hinge_down=2 update=adam eta_init=.0005 num_epochs=200 output=pog2ch100_OUT>pog2ch100_OUT.txt
