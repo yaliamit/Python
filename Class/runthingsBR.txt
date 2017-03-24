@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pogRR_tanh hinge=.5 hinge_down=2 seed=7364444 Mnist=cifar_100 update=sgd global_prob=[.5,0.] eta_init=.1 num_epochs=1000 output=pogRRh_5_tanh100_OUT>pogRRh_5_tanh100_OUT.txt
+python start_class.py net=_pars/pogRR_tanh seed=7364444 Mnist=cifar_100 update=sgd global_prob=[1.,0.] eta_init=.1 num_epochs=1000 output=pogRR_tanh100_OUT>pogRR_tanh100_OUT.txt
