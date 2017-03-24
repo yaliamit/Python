@@ -31,5 +31,5 @@ name:conv3;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearit
 name:conv3a;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.tanh;parent:conv3
 name:pool3;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv3a
 name:drop3;drop:0.5;parent:pool3
-name:dense0;num_units$:128;non_linearity:tinout:(0.1,1.);lasagne.nonlinearity.tanh;parent:drop3
+name:dense0;num_units$:128;non_linearity;tinout:(0.1,1.);lasagne.nonlinearity.tanh;parent:drop3
 name:dense2;num_units:10;non_linearity:lasagne.nonlinearity.softmax;parent:dense0;final:final
