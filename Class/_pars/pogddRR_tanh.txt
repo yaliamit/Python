@@ -7,7 +7,7 @@ edges:False
 start:0
 Mnist:cifar_10
 net:fn
-eta_schedule:(70,.0005)
+#eta_schedule:(70,.0005)
 update:momentum
 batch_size:100
 eta_init:.001
@@ -19,17 +19,17 @@ adapt_eta:False
 global_tinout:(.5,1.)
 TRAIN:True
 name:input1
-name:convR1;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.tanh;parent:input1
-name:convR1a;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.tanh;parent:convR1
+name:convR1;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:input1
+name:convR1a;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:convR1
 name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:convR1a
 name:drop1;drop:0.5;parent:pool1
-name:convR2;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.tanh;parent:drop1
-name:convR2a;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.tanh;parent:convR2
+name:convR2;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:drop1
+name:convR2a;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:convR2
 name:pool2;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:convR2a
 name:drop2;drop:0.5;parent:pool2
-name:convR3;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.tanh;parent:drop2
-name:convR3a;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.tanh;parent:convR3
+name:convR3;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:drop2
+name:convR3a;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:convR3
 name:pool3;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:convR3a
 name:drop3;drop:0.5;parent:pool3
-name:newdens0;num_units:128;tinout:(0.1,1.);non_linearity:lasagne.nonlinearity.tanh;parent:drop3
-name:newdens2;num_units:10;prob:(1.,0.);non_linearity:lasagne.nonlinearity.softmax;parent:newdens0;final:final
+name:newdens0;num_units:128;tinout:(0.1,1.);non_linearity:tanh;parent:drop3
+name:newdens2;num_units:10;prob:(1.,0.);non_linearity:softmax;parent:newdens0;final:final
