@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pogdd_tanh seed=7364444 Mnist=cifar_100 update=sgd eta_init=.01 start=1 mult=2 use_existing=True num_epochs=1000 output=pogdd_tanh100_1_OUT>pogdd_tanh100_1_OUT.txt
+python start_class.py net=_pars/pogdd_tanh seed=7364444 Mnist=cifar_100 update=sgd eta_init=.001 start=2 mult=3 use_existing=True num_epochs=1000 output=pogdd_tanh100_2_OUT>pogdd_tanh100_2_OUT.txt
