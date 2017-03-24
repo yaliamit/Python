@@ -22,7 +22,7 @@ TRAIN:True
 global_tinout:(.5,1.)
 name:input1
 name:conv1;num_filters:32;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:tanh;parent:input1
-name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:convR1
+name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:conv1
 name:convR2;num_filters:64;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:tanh;parent:pool1
 name:pool2;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:convR2
 name:convR3;num_filters:64;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:tanh;parent:pool2
