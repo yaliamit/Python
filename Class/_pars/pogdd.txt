@@ -20,21 +20,18 @@ adapt_eta:False
 #hing_down:2
 TRAIN:True
 name:input1
-name:conv1;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.linear;parent:input1
-name:conv1a;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:conv1
+name:conv1;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:sigmoid;parent:input1
+name:conv1a;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:sigmoid;parent:conv1
 name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:conv1a
-name:batch0;parent:pool1
-name:drop0;drop:0.5;parent:batch0
-name:conv2;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.linear;parent:batch0
-name:conv2a;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:conv2
+name:drop1;drop:0.5;parent:pool1
+name:conv2;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:sigmoid;parent:drop1
+name:conv2a;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:sigmoid;parent:conv2
 name:pool2;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv2a
-name:batch1;parent:pool2
-name:drop1;drop:0.5;parent:batch1
-name:conv3;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.linear;parent:drop1
-name:conv3a;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.rectify;parent:conv3
+name:drop2;drop:0.5;parent:pool2
+name:conv3;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:sigmoid;parent:drop2
+name:conv3a;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:sigmoid;parent:conv3
 name:pool3;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv3a
-name:batch2;parent:pool3
-name:drop2;drop:0.5;parent:batch2
-name:dense0;num_units:128;non_linearity:lasagne.nonlinearity.rectify;parent:drop2
+name:drop3;drop:0.5;parent:pool3
+name:dense0;num_units:128;non_linearity:sigmoid;parent:drop3
 name:drop3;drop:0.5;parent:dense0
-name:dense2;num_units:10;non_linearity:lasagne.nonlinearity.softmax;parent:drop3;final:final
+name:dense2;num_units:10;non_linearity:softmax;parent:drop3;final:final
