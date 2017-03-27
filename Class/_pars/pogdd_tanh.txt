@@ -15,7 +15,7 @@ train:True
 mult:1
 num_train:50000
 agg:True
-global_tinout:(.5,2.4)
+global_tinout:(.5,1.)
 adapt_eta:False
 TRAIN:True
 name:input1
