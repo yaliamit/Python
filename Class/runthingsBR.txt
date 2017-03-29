@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pogddR_tanh global_prob=[1.,1.] seed=7364444 Mnist=cifar_100 update=sgd eta_init=.1 num_epochs=2000 output=pogddR_tanh100_OUT>pogddR_tanh100_OUT.txt
+python start_class.py net=_pars/pogddRR_tanh global_prob=[1.,0.] seed=7364444 Mnist=cifar_100 update=sgd eta_init=.1 num_epochs=2000 output=pogddRR_tanh100_OUT>pogddRR_tanh100_OUT.txt
