@@ -20,7 +20,7 @@ adapt_eta:False
 TRAIN:True
 name:input1
 name:conv1;num_filters:32;filter_size:(3,3);pad:(1,1);tinout:(.5,2.4);stride:(1, 1);non_linearity:tanh;parent:input1
-name:convR1a;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:convR1
+name:convR1a;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:conv1
 name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:convR1a
 name:drop1;drop:.5;parent:pool1
 name:convR2;num_filters:64;filter_size:(3,3);pad:(1,1);tinout:(.5,2.4);stride:(1, 1);non_linearity:tanh;parent:drop1
