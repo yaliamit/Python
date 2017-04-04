@@ -1,4 +1,4 @@
-output_net:fnc
+poutput_net:fnc
 seed:45239
 num_epochs:100
 simple_augmentation:True
