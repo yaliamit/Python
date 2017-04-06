@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pogddR_5_tanh global_tinout=[.5,1.] global_prob=[.5,.5] seed-7364444 hinge=.5 hinge_down=2 seed=7364444 Mnist=cifar_100 update=sgd eta_init=.05 num_epocht_schedule=[300.,.01] num_epochs=350 output=pogddRh_5_tanh100_OUT>pogddRh_5_tanh100_OUT.txt
+python start_class.py net=_pars/pogddR_5_tanh global_tinout=[.5,1.] global_prob=[.5,.5] seed-7364444 hinge=.5 hinge_down=2 seed=7364444 Mnist=cifar_100 update=sgd eta_init=.05 eta_schedule=[300.,.01] num_epochs=350 output=pogddRh_5_tanh100_OUT>pogddRh_5_tanh100_OUT.txt
