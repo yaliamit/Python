@@ -79,7 +79,7 @@ def iterate_minibatches_new(inputs, targets, batchsize, shuffle=False):
             yield out, targets[excerpt]
 
 
-def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, network=None, pars=None):
+def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, network=None, pars=None, iter=None):
     if (len(X)==0):
         return(0,0)
     shuffle=False
@@ -160,7 +160,22 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
     print(typ+" loss:\t\t\t{:.6f}".format(err / (batches+1)))
     print(typ+" acc:\t\t\t{:.6f}".format(acc / (batches+1)))
 
-
+    if (network is not None and iter is not None and np.mod(iter,10)==0):
+        layers=lasagne.layers.get_all_layers(network)
+        grad=np.zeros(((len(tout)-4),8))
+        t=0
+        for l in layers:
+            if ('dens' in l.name or 'convR' in l.name):
+                grad[t,0]=np.mean(np.array(l.W.eval()))
+                grad[t,1]=np.std(np.array(l.W.eval()))
+                grad[t,2]=np.mean(np.array(l.R.eval()))
+                grad[t,3]=np.std(np.array(l.R.eval()))
+                grad[t,4]=np.mean(tout[2*t+4])
+                grad[t,5]=np.std(tout[2*t+4])
+                grad[t,6]=np.mean(tout[2*t+1+4])
+                grad[t,7]=np.std(tout[2*t+1+4])
+                print('zz:',l.name,':',grad[t,])
+                t=t+1
     sys.stdout.flush()
     return(err,batches, pred, grad, fac)
 
@@ -381,7 +396,7 @@ def main_new(NETPARS):
             # In each epoch, do a full pass over the training data:
             start_time = time.time()
             print("eta",eta.get_value())
-            out_tr=iterate_on_batches(train_fn,X_train,y_train,batch_size,typ='Train',network=network,pars=NETPARS)
+            out_tr=iterate_on_batches(train_fn,X_train,y_train,batch_size,typ='Train',network=network,pars=NETPARS,iter=epoch)
             pars=None
             if ('one' in NETPARS):
                 pars=NETPARS['one']
