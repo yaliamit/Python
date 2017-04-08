@@ -161,6 +161,7 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
     print(typ+" acc:\t\t\t{:.6f}".format(acc / (batches+1)))
 
     if (network is not None and iter is not None and np.mod(iter,10)==0):
+        np.set_printoptions(precision=4,linewidth=130)
         layers=lasagne.layers.get_all_layers(network)
         grad=np.zeros(((len(tout)-4),8))
         t=0
