@@ -220,7 +220,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
                 elif (NETPARS['update']=='sgd'):
                     updates = lasagne.updates.sgd(loss, params, learning_rate=eta)
                 if ('clip' in NETPARS):
-                    updates=clip_w(updates,params,clip=NETPARS['clip'])
+                    updates=clip_w(updates,params,clipt=NETPARS['clip'])
 
             else:
                 updates = lasagne.updates.nesterov_momentum(loss, params, learning_rate=eta, momentum=0.9)
