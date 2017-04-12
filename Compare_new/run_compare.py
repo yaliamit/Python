@@ -9,11 +9,50 @@ import make_net
 import data
 from theano.tensor.shared_randomstreams import RandomStreams
 
+from collections import OrderedDict
 
 def clip_w(updates,params,clipt=.1):
     for p in params:
         updates[p]=theano.tensor.clip(p,-clipt,clipt)
     return updates
+
+
+def ladam(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
+         beta2=0.999, epsilon=1e-8):
+
+
+    all_grads = lasagne.updates.get_or_compute_grads(loss_or_grads, params)
+    t_prev = theano.shared(lasagne.utils.floatX(0.))
+    updates = OrderedDict()
+
+    # Using theano constant to prevent upcasting of float32
+    one = T.constant(1)
+
+    t = t_prev + 1
+    a_t = learning_rate*T.sqrt(one-beta2**t)/(one-beta1**t)
+
+    for param, g_t in zip(params, all_grads):
+        value = param.get_value(borrow=True)
+        tens=True
+
+
+        m_prev = theano.shared(np.zeros(value.shape, dtype=value.dtype),broadcastable=param.broadcastable)
+        v_prev = theano.shared(np.zeros(value.shape, dtype=value.dtype),broadcastable=param.broadcastable)
+
+        m_t = beta1*m_prev + (one-beta1)*g_t
+        #v_t = beta2*v_prev + (one-beta2)*g_t**2
+        v_t= beta2*v_prev + (one-beta2)*g_t*g_t
+
+        step = a_t*m_t/(T.sqrt(v_t) + epsilon)
+
+
+        updates[m_prev] = m_t
+        updates[v_prev] = v_t
+        updates[param] = theano.tensor.clip(param - step,-.2,.2)
+
+    updates[t_prev] = t
+    return updates
+
 
 def multiclass_hinge_loss_alt(predictions, targets, delta_up=1., delta_down=1., dep_fac=1.):
 
@@ -210,7 +249,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             if ('update' in NETPARS):
                 if (NETPARS['update']=='adam'):
                     print('Using adam to update timestep')
-                    updates=lasagne.updates.adam(loss, params, learning_rate=eta, beta1=0.9,beta2=0.999,epsilon=1e-08)
+                    updates=ladam(loss, params, learning_rate=eta, beta1=0.9,beta2=0.999,epsilon=1e-08)
                 elif (NETPARS['update']=='nestorov'):
                     print('Using Nestorov momentum')
                     updates = lasagne.updates.nesterov_momentum(loss, params, learning_rate=eta, momentum=0.9)
