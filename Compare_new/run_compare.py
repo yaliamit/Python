@@ -10,9 +10,9 @@ import data
 from theano.tensor.shared_randomstreams import RandomStreams
 
 
-def clip_w(updates,params,clip=.1):
+def clip_w(updates,params,clipt=.1):
     for p in params:
-        updates[p]=np.clip(p,-clip,clip)
+        updates[p]=theano.tensor.clip(p,-clipt,clipt)
     return updates
 
 def multiclass_hinge_loss_alt(predictions, targets, delta_up=1., delta_down=1., dep_fac=1.):
