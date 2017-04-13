@@ -48,7 +48,7 @@ def ladam(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
 
         updates[m_prev] = m_t
         updates[v_prev] = v_t
-        updates[param] = param-step #theano.tensor.clip(param - step,-.4,.4)
+        updates[param] = theano.tensor.clip(param - step,-.4,.4)
 
     updates[t_prev] = t
     return updates
