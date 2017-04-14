@@ -166,7 +166,7 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
         grad=np.zeros(((len(tout)-4),8))
         t=0
         for l in layers:
-            if ('dens' in l.name or 'convR' in l.name):
+            if ('dens' in l.name or 'conv' in l.name):
                 grad[t,0]=np.mean(np.array(l.W.eval()))
                 grad[t,1]=np.std(np.array(l.W.eval()))
                 grad[t,2]=np.mean(np.array(l.R.eval()))

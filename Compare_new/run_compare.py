@@ -231,7 +231,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
 
             layers=lasagne.layers.get_all_layers(network)
             for l in layers:
-                  if ('dens' in l.name or 'convR' in l.name):
+                  if ('dens' in l.name or 'conv' in l.name):
                           gloss.append(T.grad(loss,l.W))
                           gloss.append(T.grad(loss,l.R))
 
