@@ -19,15 +19,15 @@ global_tinout:(.25,1.)
 adapt_eta:False
 TRAIN:True
 name:input1
-name:conv1;num_filters:32;filter_size:(3,3);pad:(1,1);tinout:(.5,2.4);stride:(1, 1);non_linearity:tanh;parent:input1
+name:conv1;num_filters:32;filter_size:(3,3);pad:(1,1);tinout:(.25,2.4);stride:(1, 1);non_linearity:tanh;parent:input1
 name:conv1a;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:conv1
 name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:conv1a
 name:drop1;drop:.5;parent:pool1
-name:conv2;num_filters:64;filter_size:(3,3);pad:(1,1);tinout:(.5,2.4);stride:(1, 1);non_linearity:tanh;parent:drop1
+name:conv2;num_filters:64;filter_size:(3,3);pad:(1,1);tinout:(.25,2.4);stride:(1, 1);non_linearity:tanh;parent:drop1
 name:conv2a;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:conv2
 name:pool2;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv2a
 name:drop2;drop:.5;parent:pool2
-name:conv3;num_filters:64;filter_size:(3,3);pad:(1,1);tinout:(.5,2.4);stride:(1, 1);non_linearity:tanh;parent:drop2
+name:conv3;num_filters:64;filter_size:(3,3);pad:(1,1);tinout:(.25,2.4);stride:(1, 1);non_linearity:tanh;parent:drop2
 name:conv3a;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:conv3
 name:pool3;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv3a
 name:drop3;drop:0.5;parent:pool3
