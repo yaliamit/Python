@@ -160,24 +160,30 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
     print(typ+" loss:\t\t\t{:.6f}".format(err / (batches+1)))
     print(typ+" acc:\t\t\t{:.6f}".format(acc / (batches+1)))
 
-    # if (network is not None and iter is not None and np.mod(iter,10)==0):
-    #     np.set_printoptions(precision=4,linewidth=130)
-    #     layers=lasagne.layers.get_all_layers(network)
-    #     grad=np.zeros(((len(tout)-4),8))
-        #t=0
-        # for l in layers:
-        #     if ('dens' in l.name or 'conv' in l.name):
-        #         grad[t,0]=np.mean(np.array(l.W.eval()))
-        #         grad[t,1]=np.std(np.array(l.W.eval()))
-        #         if (hasattr(l,'R')):
-        #             grad[t,2]=np.mean(np.array(l.R.eval()))
-        #             grad[t,3]=np.std(np.array(l.R.eval()))
-        #         grad[t,4]=np.mean(tout[2*t+4])
-        #         grad[t,5]=np.std(tout[2*t+4])
-        #         grad[t,6]=np.mean(tout[2*t+1+4])
-        #         grad[t,7]=np.std(tout[2*t+1+4])
-        #         print('zz:',l.name,':',grad[t,])
-        #         t=t+1
+    if (network is not None and iter is not None and np.mod(iter,10)==0):
+        np.set_printoptions(precision=4,linewidth=130)
+        layers=lasagne.layers.get_all_layers(network)
+        d=0
+
+        grad=np.zeros(((len(tout)-4),8))
+        t=0
+        d=0
+        for l in layers:
+            if ('dens' in l.name or 'conv' in l.name):
+                grad[t,0]=np.mean(np.array(l.W.eval()))
+                grad[t,1]=np.std(np.array(l.W.eval()))
+                if (hasattr(l,'R')):
+                    grad[t,2]=np.mean(np.array(l.R.eval()))
+                    grad[t,3]=np.std(np.array(l.R.eval()))
+                grad[t,4]=np.mean(tout[d+4])
+                grad[t,5]=np.std(tout[d+4])
+                d=d+1
+                if (hasattr(l,'R')):
+                    grad[t,6]=np.mean(tout[d+4])
+                    grad[t,7]=np.std(tout[d+4])
+                    d=d+1
+                print('zz:',l.name,':',grad[t,])
+                t=t+1
     sys.stdout.flush()
     return(err,batches, pred, fac)
 
