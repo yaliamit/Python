@@ -1,1 +1,1 @@
-python start_class.py  output=net=_pars/pogl>net=_pars/pogl.txt
+python start_class.py net=_pars/pogl output=polg_OUT>polg_OUT.txt
