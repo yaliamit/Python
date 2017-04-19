@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pogl clip=.1 eta_init=.0001 output=pogl_cl1_OUT>pogl_cl1_OUT.txt
+python start_class.py net=_pars/pogl clip=.1 eta_init=.00001 output=pogl_cl1_OUT>pogl_cl1_OUT.txt
