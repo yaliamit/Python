@@ -1,1 +1,1 @@
-python start_class.py net=_pars/p1 eta_init=.001 num_epochs=200 update=adam output=p1_OUT>p1_OUT.txt
+python start_class.py net=_pars/p1 eta_init=.001 num_epochs=200 update=adam output=p2_OUT>p2_OUT.txt
