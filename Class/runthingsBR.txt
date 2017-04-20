@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pogl clip=.1 eta_init=.001 update=sgd output=pogl_scl1_OUT>pogl_scl1_OUT.txt
+python start_class.py net=_pars/pogl clip=.1 eta_init=.001 update=sgd num_epochs=300 output=pogl_scl1_OUT>pogl_scl1_OUT.txt
