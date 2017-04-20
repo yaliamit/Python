@@ -15,4 +15,5 @@ num_train:50000
 agg:True
 adapt_eta:False
 name:input1
-name:dense2;num_units:10;non_linearity:softmax;parent:input1;final:final
+name:conv1;num_filters:32;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:sigmoid;parent:input1
+name:dense2;num_units:10;non_linearity:softmax;parent:dense0;final:final
