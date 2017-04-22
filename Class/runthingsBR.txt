@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pogla eta_init=.001 num_epochs=200 update=adam output=pogla_OUT>pogla_OUT.txt
+python start_class.py net=_pars/pogla eta_init=.001 num_epochs=200 update=adam output=pogla_1_OUT>pogla_1_OUT.txt

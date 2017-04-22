@@ -17,9 +17,12 @@ adapt_eta:False
 name:input1
 name:conv1;num_filters:32;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:sigmoid;parent:input1
 name:conv1a;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(2,2);non_linearity:linear;parent:conv1
-name:conv2;num_filters:64;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:linear;parent:conv1a
+name:drop1;drop:.5;parent:conv1a
+name:conv2;num_filters:64;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:linear;parent:drop1
 name:conv2a;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(2,2);non_linearity:linear;parent:conv2
-name:conv3;num_filters:64;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:linear;parent:conv2a
+name:drop2;drop:.5;parent:conv2a
+name:conv3;num_filters:64;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:linear;parent:drop2
 name:conv3a;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(2,2);non_linearity:linear;parent:conv3
-name:dense0;num_units:128;non_linearity:linear;parent:conv3a
+name:drop3;drop:.5;parent:conv3a
+name:dense0;num_units:128;non_linearity:linear;parent:drop3
 name:dense2;num_units:10;non_linearity:softmax;parent:dense0;final:final
