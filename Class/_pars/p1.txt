@@ -16,7 +16,7 @@ agg:True
 adapt_eta:False
 name:input1
 name:conv1;num_filters:32;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:sigmoid;parent:input1
-name:conv1a;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(2, 2);non_linearity:linear;parent:conv1
-name:drop1;drop:.5;parent:conv1a
+#name:conv1a;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(2, 2);non_linearity:linear;parent:conv1
+name:drop1;drop:.5;parent:conv1
 #name:dense1;num_units:128;non_linearity:linear;parent:drop1
 name:dense2;num_units:10;non_linearity:softmax;parent:drop1;final:final
