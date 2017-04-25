@@ -57,11 +57,11 @@ for i,ne in enumerate(nets):
          if (os.path.isfile(ne+'.txt')):
             print('read parameter file',ne+'.txt')
             NETPARS={}
-            parse_net_pars.parse_text_file(ne,NETPARS,lname='layers',dump=True)
+            parse_net_pars.parse_text_file(ne,NETPARS,lname='layers',dump=False)
             # Modifications of parameters come from mod_net_name
             if (parms['mod_net'] is not None): # and parms['train']):
              if (parms['mult']==parms['start']):
-                parse_net_pars.parse_text_file(parms['mod_net'],NETPARS,lname='INSERT_LAYERS', dump=True)
+                parse_net_pars.parse_text_file(parms['mod_net'],NETPARS,lname='INSERT_LAYERS', dump=False)
              else:
                  # A sequence of modifications to the basic parameters
                 f=open(parms['mod_net']+'.txt','r')
@@ -123,8 +123,10 @@ for i,ne in enumerate(nets):
             print key+":"+str(NETPARS[key])
     for key in NETPARS:
         if (type(NETPARS[key]) is list):
+            print key
             for l in NETPARS[key]:
-                print l
+                print l,
+            print '\n'
     [NETPARS,out]=run_class.main_new(NETPARS)
 
     many=False
