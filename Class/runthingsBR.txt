@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pogd_1 use_existing=True start=1 mult=1 mod_net=mod_net output=pogd_sig_mod1_OUT>pogd_sig_mod1_OUT.txt
+python start_class.py net=_pars/pogd output=pogd_tanh_OUT>pogd_tanh_OUT.txt
