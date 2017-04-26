@@ -1,3 +1,3 @@
-REMOVE:conv2,drop2,conv3,pool3,drop3,dense0,dense2
+REMOVE:conv2,pool2,drop2,conv3,pool3,drop3,dense0,dense2
 NOT_TRAINABLE:conv1,
 name:dense2;num_units:10;non_linearity:softmax;parent:drop2;final:final
