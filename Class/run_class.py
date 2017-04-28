@@ -278,7 +278,7 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
         elif 'drop' in l.name:
             layer_list.append(lasagne.layers.DropoutLayer(layer_list[-1],p=l.input_layers[1].p, name=l.name))
         elif 'pool' in l.name:
-            layer_list.append(lasagne.layers.Pool2DLayer(layer_list[-1],pool_size=l.pool_size, name=l.name))
+            layer_list.append(lasagne.layers.Pool2DLayer(layer_list[-1],pool_size=l.pool_size, stride=l.stride, pad=l.pad, name=l.name))
         elif 'dense' in l.name:
             layer_list.append(lasagne.layers.DenseLayer(layer_list[-1],num_units=l.num_units,nonlinearity=l.nonlinearity,W=l.W, b=None, name=l.name))
         elif 'batch' in l.name:
