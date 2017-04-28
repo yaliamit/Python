@@ -488,11 +488,19 @@ def make_file_from_params(network,NETPARS):
         if (key != 'layers'):
                 if (type(value) != dict):
                     if(type(value) != list):
-                        s=key+':'+str(value)
+                        if (type(value)==tuple and type(value[0])==str):
+                            s=key+':'
+                            for r in value:
+                                s=s+r+","
+                        else:
+                            s=key+':'+str(value)
                     else:
                         s=key+':'
                         for r in value:
-                            s=s+str(r)+','
+                            if (type(r)==str):
+                                s=s+r+","
+                            else:
+                                s=s+str(r)+','
                 else:
                     s='dict:'+key
                     for skey, svalue in value.iteritems():

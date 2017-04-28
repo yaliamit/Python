@@ -34,9 +34,15 @@ def process_args(args,parms):
                         a.append(int(aaa))
                     v=tuple(a)
                 except ValueError:
-                    for aaa in aa:
-                        a.append(float(aaa))
-                    v=tuple(a)
+                    try:
+                        float(aa[0])
+                        for aaa in aa:
+                            a.append(float(aaa))
+                        v=tuple(a)
+                    except ValueError:
+                        for aaa in aa:
+                            a.append(aaa)
+                        v=tuple(a)
             else:
                 try:
                     v=int(value)

@@ -188,14 +188,14 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
     return(err,batches, pred, fac)
 
 # Prepare the functions that will make the full matrix corresponding to a convolutional layer given its input
-def get_matrix_func(network,input_var):
+def get_matrix_func(network,input_var,NETPARS):
 
     layers=lasagne.layers.get_all_layers(network)
 
     GET_CONV=[]
     for l in layers:
         if (l.name is not None):
-            if ('conv' in l.name and 'S' in l.name):
+            if ('conv' in l.name and l.name in NETPARS['sparsify']):
                     dims=l.input_shape[1:]
                     input_v=T.tensor4()
                     new_layer=lasagne.layers.InputLayer(shape=(None,dims[0],dims[1],dims[2]),input_var=input_v)
@@ -261,7 +261,7 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
     SP=[]
     for l in layers:
         if (l.name is not None):
-            if ('conv' in l.name and 'S' in l.name):
+            if ('conv' in l.name and l.name in NETPARS['sparsify']):
                 SP.append(get_matrix(l,GET_CONV[il]))
                 il+=1
                 if ('R' in l.name):
@@ -278,7 +278,7 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
         elif 'drop' in l.name:
             layer_list.append(lasagne.layers.DropoutLayer(layer_list[-1],p=l.input_layers[1].p, name=l.name))
         elif 'pool' in l.name:
-            layer_list.append(lasagne.layers.Pool2DLayer(layer_list[-1],pool_size=l.pool_size, stride=l.stride, pad=l.pad, name=l.name))
+            layer_list.append(lasagne.layers.Pool2DLayer(layer_list[-1],pool_size=l.pool_size, stride=l.stride, pad=l.pad, name=l.name,mode=l.mode))
         elif 'dense' in l.name:
             layer_list.append(lasagne.layers.DenseLayer(layer_list[-1],num_units=l.num_units,nonlinearity=l.nonlinearity,W=l.W, b=None, name=l.name))
         elif 'batch' in l.name:
@@ -293,7 +293,7 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
                                             nonlinearity=l.nonlinearity,W=lpars[-4],R=lpars[-3], Wzero=lpars[-2], Rzero=lpars[-1], b=None, name=l.name))
         elif 'conv' in l.name:
             # Sparse
-            if 'S' in l.name:
+            if l.name in NETPARS['sparsify']:
                 num_units=SP[t].shape[1]
                 W = theano.shared(SP[t])
                 t+=1
@@ -447,7 +447,7 @@ def main_new(NETPARS):
             np.save(NETPARS['output_net'],params)
 
     if ('write_sparse' in NETPARS and NETPARS['write_sparse']):
-            GET_CONV=get_matrix_func(network,input_var)
+            GET_CONV=get_matrix_func(network,input_var,NETPARS)
             apply_get_matrix(network,GET_CONV,NETPARS)
     # After training, we compute and print the test error
     fac=0
