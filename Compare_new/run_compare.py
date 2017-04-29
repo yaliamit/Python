@@ -1,6 +1,8 @@
 import mnist
 import numpy as np
 import theano
+import theano.sparse as sparse
+import scipy.sparse as sp
 import theano.tensor as T
 import time
 import lasagne
@@ -15,8 +17,8 @@ from collections import OrderedDict
 def adamloc(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
          beta2=0.999, epsilon=1e-8):
 
-    all_grads = get_or_compute_grads(loss_or_grads, params)
-    t_prev = theano.shared(utils.floatX(0.))
+    all_grads = lasagne.updates.get_or_compute_grads(loss_or_grads, params)
+    t_prev = theano.shared(lasagne.utils.floatX(0.))
     updates = OrderedDict()
 
     # Using theano constant to prevent upcasting of float32
