@@ -261,7 +261,7 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
     SP=[]
     for l in layers:
         if (l.name is not None):
-            if ('conv' in l.name and l.name in NETPARS['sparsify']):
+            if ('conv' in l.name and 'sparsify' in NETPARS and l.name in NETPARS['sparsify']):
                 SP.append(get_matrix(l,GET_CONV[il]))
                 il+=1
                 if ('R' in l.name):
@@ -293,24 +293,24 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
                                             nonlinearity=l.nonlinearity,W=lpars[-4],R=lpars[-3], Wzero=lpars[-2], Rzero=lpars[-1], b=None, name=l.name))
         elif 'conv' in l.name:
             # Sparse
-            if l.name in NETPARS['sparsify']:
-                num_units=SP[t].shape[1]
-                W = theano.shared(SP[t])
-                t+=1
-                # Also separate R
-                if 'R' in l.name:
-                    R=theano.shared(SP[t])
-                    t=t+1
-                    layer_list.append(newdensesparse.SparseDenseLayer(layer_list[-1],num_units=num_units,
-                                            W=W,R=R, b=None,nonlinearity=l.nonlinearity,name='sparseR'+str(t)))
-            # JUst sparse
-                else:
-                    layer_list.append(densesparse.SparseDenseLayer(layer_list[-1],num_units=num_units,
-                                            W=W, b=None,nonlinearity=l.nonlinearity,name='sparse'+str(t)))
-                # Reshape for subsequent pooling
-                shp=l.output_shape[1:]
-                layer_list.append(lasagne.layers.reshape(layer_list[-1],([0],)+shp,name='reshape'+str(t)))
-            elif 'densify' in NETPARS and l.name in NETPARS['densify']:
+            # if 'sparsify' in NETPARS and l.name in NETPARS['sparsify']:
+            #     num_units=SP[t].shape[1]
+            #     W = theano.shared(SP[t])
+            #     t+=1
+            #     # Also separate R
+            #     if 'R' in l.name:
+            #         R=theano.shared(SP[t])
+            #         t=t+1
+            #         layer_list.append(newdensesparse.SparseDenseLayer(layer_list[-1],num_units=num_units,
+            #                                 W=W,R=R, b=None,nonlinearity=l.nonlinearity,name='sparseR'+str(t)))
+            # # JUst sparse
+            #     else:
+            #         layer_list.append(densesparse.SparseDenseLayer(layer_list[-1],num_units=num_units,
+            #                                 W=W, b=None,nonlinearity=l.nonlinearity,name='sparse'+str(t)))
+            #     # Reshape for subsequent pooling
+            #     shp=l.output_shape[1:]
+            #     layer_list.append(lasagne.layers.reshape(layer_list[-1],([0],)+shp,name='reshape'+str(t)))
+            if 'sparsify' in NETPARS and l.name in NETPARS['sparsify']:
                 num_units=SP[t].shape[1]
                 W = theano.shared(SP[t])
                 t+=1
