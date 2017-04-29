@@ -253,7 +253,7 @@ def get_matrix(l,gl):
                             #csc=sp.vstack([csc,cscr],format='csc')
                             cscr=YY
                             csc=np.vstack([csc,cscr])
-                    print('Sparsity:',yy,len(csc.data),np.float32(len(csc.data))/yy)
+                    #print('Sparsity:',yy,len(csc.data),np.float32(len(csc.data))/yy)
                     return(csc)
 
 # Put the sparse matrices in a new network and write it out.
@@ -322,11 +322,11 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
                     R=theano.shared(SP[t])
                     t=t+1
                     layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=num_units,
-                                            W=W,R=R, b=None,nonlinearity=l.nonlinearity,name='sparseR'+str(t)))
+                                            W=W,R=R, b=None,nonlinearity=l.nonlinearity,name='newdens'+str(t)))
             # JUst sparse
                 else:
                     layer_list.append(lasagne.layers.DenseLayer(layer_list[-1],num_units=num_units,
-                                            W=W, b=None,nonlinearity=l.nonlinearity,name='sparse'+str(t)))
+                                            W=W, b=None,nonlinearity=l.nonlinearity,name='dense'+str(t)))
                 # Reshape for subsequent pooling
                 shp=l.output_shape[1:]
                 layer_list.append(lasagne.layers.reshape(layer_list[-1],([0],)+shp,name='reshape'+str(t)))
