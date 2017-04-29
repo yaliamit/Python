@@ -11,18 +11,12 @@ from theano.tensor.shared_randomstreams import RandomStreams
 
 from collections import OrderedDict
 
-def clip_w(updates,params,clipt=.1):
-    for p in params:
-        updates[p]=theano.tensor.clip(updates[p],-clipt,clipt)
-    return updates
 
-
-def ladam(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
+def adamloc(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
          beta2=0.999, epsilon=1e-8):
 
-
-    all_grads = lasagne.updates.get_or_compute_grads(loss_or_grads, params)
-    t_prev = theano.shared(lasagne.utils.floatX(0.))
+    all_grads = get_or_compute_grads(loss_or_grads, params)
+    t_prev = theano.shared(utils.floatX(0.))
     updates = OrderedDict()
 
     # Using theano constant to prevent upcasting of float32
@@ -34,24 +28,40 @@ def ladam(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
     for param, g_t in zip(params, all_grads):
         value = param.get_value(borrow=True)
         tens=True
-
-
-        m_prev = theano.shared(np.zeros(value.shape, dtype=value.dtype),broadcastable=param.broadcastable)
-        v_prev = theano.shared(np.zeros(value.shape, dtype=value.dtype),broadcastable=param.broadcastable)
+        if (type(param) is theano.sparse.sharedvar.SparseTensorSharedVariable):
+            tens=False
+            m_prev = theano.shared(sp.csc_matrix((np.zeros(len(value.data),dtype=np.float32),value.indices,value.indptr),value.shape))
+            v_prev = theano.shared(sp.csc_matrix((np.zeros(len(value.data),dtype=np.float32),value.indices,value.indptr),value.shape))
+        else:
+            m_prev = theano.shared(np.zeros(value.shape, dtype=value.dtype),broadcastable=param.broadcastable)
+            v_prev = theano.shared(np.zeros(value.shape, dtype=value.dtype),broadcastable=param.broadcastable)
 
         m_t = beta1*m_prev + (one-beta1)*g_t
         #v_t = beta2*v_prev + (one-beta2)*g_t**2
         v_t= beta2*v_prev + (one-beta2)*g_t*g_t
-
-        step = a_t*m_t/(T.sqrt(v_t) + epsilon)
-
+        if (tens):
+            step = a_t*m_t/(T.sqrt(v_t) + epsilon)
+        else:
+            step = a_t*m_t
+            ss=sparse.sqrt(v_t)
+            #ss=sparse.structured_add_s_v(ss,np.reshape(np.float32(epsilon),(1,1)))
+            ss=ss+np.float32(epsilon)*sparse.basic.sp_ones_like(ss)
+            ss=sparse.structured_pow(ss,-1.)
+            step = step*ss
 
         updates[m_prev] = m_t
         updates[v_prev] = v_t
-        updates[param] = theano.tensor.clip(param - step,-.4,.4)
+        updates[param] = param - step
 
     updates[t_prev] = t
     return updates
+
+def clip_w(updates,params,clipt=.1):
+    for p in params:
+        updates[p]=theano.tensor.clip(updates[p],-clipt,clipt)
+    return updates
+
+
 
 
 def multiclass_hinge_loss_alt(predictions, targets, delta_up=1., delta_down=1., dep_fac=1.):
@@ -251,7 +261,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             if ('update' in NETPARS):
                 if (NETPARS['update']=='adam'):
                     print('Using adam to update timestep')
-                    updates=lasagne.updates.adam(loss, params, learning_rate=eta, beta1=0.9,beta2=0.999,epsilon=1e-08)
+                    updates=lasagne.updates.adamloc(loss, params, learning_rate=eta, beta1=0.9,beta2=0.999,epsilon=1e-08)
                 elif (NETPARS['update']=='nestorov'):
                     print('Using Nestorov momentum')
                     updates = lasagne.updates.nesterov_momentum(loss, params, learning_rate=eta, momentum=0.9)
