@@ -1,1 +1,1 @@
-python start_class.py net=_pars/sppog_tanh_R start=2 mult=3 use_existing=True train=False write_sparse=False output=sppog_OUT>sppog_OUT.txt
+python start_class.py net=_pars/sppog_tanh_R start=2 mult=3 use_existing=True train=True num_epochs=10 write_sparse=False output=sppog_OUT_3>sppog_OUT_3.txt
