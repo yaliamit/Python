@@ -62,6 +62,8 @@ for i,ne in enumerate(nets):
             if (parms['mod_net'] is not None): # and parms['train']):
              if (parms['mult']==parms['start']):
                 parse_net_pars.parse_text_file(parms['mod_net'],NETPARS,lname='INSERT_LAYERS', dump=False)
+                if ("write_sparse" in NETPARS):
+                    del NETPARS["write_sparse"]
              else:
                  # A sequence of modifications to the basic parameters
                 f=open(parms['mod_net']+'.txt','r')
@@ -87,6 +89,8 @@ for i,ne in enumerate(nets):
     else:
         NETPARS={}
         parse_net_pars.parse_text_file(parms['net'],NETPARS,lname='layers', dump=False)
+        if ("write_sparse" in NETPARS):
+                del NETPARS["write_sparse"]
         if (i==0):
             np.random.seed(NETPARS['seed'])
 
