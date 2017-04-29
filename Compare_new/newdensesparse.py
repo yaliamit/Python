@@ -92,7 +92,7 @@ class SparseDenseLayer(Layer):
             # if the input has more than two dimensions, flatten it into a
             # batch of feature vectors.
             input = input.flatten(2)
-        activation = sparse_new.new_structured_dot(input, self.W, self.R)
+        activation = sparse.new_structured_dot(input, self.W, self.R)
         if self.b is not None:
             activation = activation + self.b.dimshuffle('x', 0)
         return self.nonlinearity(activation)
