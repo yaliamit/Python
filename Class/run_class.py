@@ -244,12 +244,15 @@ def get_matrix(l,gl):
                         YY=np.reshape(YY,(YY.shape[0],np.prod(YY.shape[1:])))
                         yy+=np.prod(YY.shape)
                         print(yy)
-                        if (r==0):
-                            csc=sp.csc_matrix(YY)
-                        else:
-                            cscr=sp.csc_matrix(YY)
-                            csc=sp.vstack([csc,cscr],format='csc')
 
+                        if (r==0):
+                            csc=YY
+                            #csc=sp.csc_matrix(YY)
+                        else:
+                            #cscr=sp.csc_matrix(YY)
+                            #csc=sp.vstack([csc,cscr],format='csc')
+                            cscr=YY
+                            csc=np.vstack([csc,cscr])
                     print('Sparsity:',yy,len(csc.data),np.float32(len(csc.data))/yy)
                     return(csc)
 
