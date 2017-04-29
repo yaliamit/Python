@@ -156,3 +156,4 @@ def parse_text_file(net_name,NETPARS,lname='layers', dump=False):
             NETPARS[lname]=LAYERS
 
 
+            del NETPARS["write_sparse"]
