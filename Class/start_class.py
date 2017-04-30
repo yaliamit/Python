@@ -58,6 +58,8 @@ for i,ne in enumerate(nets):
             print('read parameter file',ne+'.txt')
             NETPARS={}
             parse_net_pars.parse_text_file(ne,NETPARS,lname='layers',dump=False)
+            if ("write_sparse" in NETPARS):
+                    del NETPARS["write_sparse"]
             # Modifications of parameters come from mod_net_name
             if (parms['mod_net'] is not None): # and parms['train']):
              if (parms['mult']==parms['start']):
