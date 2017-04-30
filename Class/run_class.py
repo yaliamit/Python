@@ -288,8 +288,10 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
             layer_list.append(lasagne.layers.BatchNormLayer(layer_list[-1],name=l.name,beta=l.beta,gamma=l.gamma,mean=l.mean,inv_std=l.inv_std))
         elif 'newdens' in l.name:
             lpars=lasagne.layers.get_all_param_values(l)
+            Wz=np.float32(lpars[-4]>0)
+            Rz=np.float32(lpars[-3]>0)
             layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=l.num_units,prob=l.prob,
-                                            nonlinearity=l.nonlinearity,W=lpars[-4],R=lpars[-3], Wzero=lpars[-2], Rzero=lpars[-1], b=None, name=l.name))
+                                            nonlinearity=l.nonlinearity,W=lpars[-4],R=lpars[-3], Wzero=Wz, Rzero=Rz, b=None, name=l.name))
         elif 'conv' in l.name:
             # Sparse
             # if 'sparsify' in NETPARS and l.name in NETPARS['sparsify']:
