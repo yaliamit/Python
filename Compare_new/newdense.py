@@ -70,19 +70,20 @@ class NewDenseLayer(Layer):
         self.num_units = num_units
 
         num_inputs = int(np.prod(self.input_shape[1:]))
-
+        #W=W*Wzero
+        #R=R*Rzero
         self.W = self.add_param(W, (num_inputs, num_units), name="W")
         self.R = self.add_param(R, (num_inputs, num_units), name="R")#, trainable=False)
         self.prob = prob
-        self.Wzero=self.add_param(Wzero,(num_inputs,num_units),name="Wzero", trainable=False)
-        self.Rzero=self.add_param(Rzero,(num_inputs,num_units),name="Rzero", trainable=False)
-        self.Wzero=(self.Wzero<self.prob[0]) #*(self.W>0)
-        self.Rzero=(self.Rzero<self.prob[0]) #*(self.R>0)
-        self.W=self.W*self.Wzero
-        self.R=self.R*self.Rzero
-        # self.prob[1]=0 no gradient on R
-        if (self.prob[1]==0.):
-            self.Rzero=self.Rzero<0
+        #self.Wzero=self.add_param(Wzero,(num_inputs,num_units),name="Wzero", trainable=False)
+        #self.Rzero=self.add_param(Rzero,(num_inputs,num_units),name="Rzero", trainable=False)
+        self.Wzero=Wzero
+        self.Rzero=Rzero
+        #self.Wzero=(self.Wzero<self.prob[0]) #*(self.W>0)
+        #self.Rzero=(self.Rzero<self.prob[0]) #*(self.R>0)
+        #self.W=self.W*self.Wzero
+        #self.R=self.R*self.Rzero
+
 
         if b is None:
             self.b = None

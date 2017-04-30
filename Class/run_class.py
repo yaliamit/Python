@@ -288,10 +288,6 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
             layer_list.append(lasagne.layers.BatchNormLayer(layer_list[-1],name=l.name,beta=l.beta,gamma=l.gamma,mean=l.mean,inv_std=l.inv_std))
         elif 'newdens' in l.name:
             lpars=lasagne.layers.get_all_param_values(l)
-            # W=l.W.eval()
-            # R=l.R.eval()
-            # Wzero=l.Wzero.eval()
-            # Rzero=l.Rzero.eval()
             layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=l.num_units,prob=l.prob,
                                             nonlinearity=l.nonlinearity,W=lpars[-4],R=lpars[-3], Wzero=lpars[-2], Rzero=lpars[-1], b=None, name=l.name))
         elif 'conv' in l.name:
@@ -316,13 +312,19 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
             if 'sparsify' in NETPARS and l.name in NETPARS['sparsify']:
                 num_units=SP[t].shape[1]
                 W = theano.shared(SP[t])
+                Wz=np.random.rand(SP[t].shape[0],num_units)
+                Wz[SP[t]==0]=1
+                Wzero = theano.shared(Wz)
                 t+=1
                 # Also separate R
                 if 'R' in l.name:
                     R=theano.shared(SP[t])
+                    Rz=np.random.rand(SP[t].shape[0],num_units)
+                    Rz[SP[t]==0]=1
+                    Rzero = theano.shared(Rz)
                     t=t+1
                     layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=num_units,
-                                            W=W,R=R, b=None,nonlinearity=l.nonlinearity,name='newdens'+str(t)))
+                                            W=W,R=R,Wzero=Wzero, Rzero=Rzero, b=None,nonlinearity=l.nonlinearity,name='newdens'+str(t)))
             # JUst sparse
                 else:
                     layer_list.append(lasagne.layers.DenseLayer(layer_list[-1],num_units=num_units,

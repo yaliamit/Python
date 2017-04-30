@@ -72,21 +72,11 @@ class NewDotOp(theano.Op):
             #xgrad = T.dot(gz, y.T)
             xgrad = T.dot(gz, R.T)
             # Gradient of weights - input*deltas^t - zero'd out for those that don't exist.
-            if (self.prob.data[1]>=0):
-                yygrad = T.dot(x.T,gz)
-                zzgrad=yygrad
-            else:
-                yygrad = T.dot(T.maximum(x.T,.01*x.T),gz)
+            yygrad = T.dot(x.T,gz)
+            zzgrad=yygrad
+            ygrad=yygrad*Wzer
+            zgrad=zzgrad*Rzer
 
-                zzgrad=T.dot(x.T,T.maximum(gz,.01*gz))
-
-            #u=(self.srng.uniform(yygrad.shape)<self.prob.data[0])
-            ygrad=yygrad*Wzer #*u
-
-        #v=(self.srng.uniform(yygrad.shape)<self.prob.data[0])
-        zgrad=zzgrad*Rzer #*v
-
-        #d_prob=theano.gradient.grad_undefined(self,3,prob)
 
         #zgrad=T.zeros(T.shape(R))
         # If x or y contain broadcastable dimensions but only one of

@@ -311,15 +311,28 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                 num_units=l['num_units']
                 if ('final' in l and num_class is not None):
                     num_units=num_class
+
+
                 for lay in input_la:
+                    input_dim=np.prod(lay.output_shape[1:])
+                    # Reading in existing network, adjust masks to existing parameter values later on
+                    if ('use_existing' in PARS and PARS['use_existing']):
+                        Wz=np.float32(np.ones((input_dim,num_units)))
+                        Rz=np.float32(np.ones((input_dim,num_units)))
+                    else:
+                        Wz=np.float32(np.random.rand(input_dim,num_units)<prob[0])
+                        Rz=np.float32(np.random.rand(input_dim,num_units)<prob[0])
+                    W=np.float32(np.random.rand(input_dim,num_units)*np.sqrt(2./(input_dim+num_units)))*Wz
+                    R=np.float32(np.random.rand(input_dim,num_units)*np.sqrt(2./(input_dim+num_units)))*Rz
+
                     if (len(layer_list)==0):
                         layer_list.append(newdense.NewDenseLayer(lay,name=l['name'],num_units=num_units,
-                                                                    W=lasagne.init.GlorotUniform(gain=gain),
-                                                                    R=lasagne.init.GlorotUniform(gain=gain),
-                                                                    b=None, prob=prob,nonlinearity=nonlin))
+                                                                    W=W,#lasagne.init.GlorotUniform(gain=gain),
+                                                                    R=R,#lasagne.init.GlorotUniform(gain=gain),
+                                                                    Wzero=Wz, Rzero=Rz,b=None, prob=prob,nonlinearity=nonlin))
                     else:
                         layer_list.append(lasagne.layers.DenseLayer(lay,num_units=num_units,nonlinearity=nonlin,
-                                          W=layer_list[0].W, b=layer_list[0].b))
+                                          W=layer_list[0].W, R=layer_list[0].R, Wzero=Wz, Rzero=Rz, b=layer_list[0].b))
         elif 'sparse' in l['name']:
             for lay in input_la:
 
@@ -396,6 +409,11 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                         pp=np.float32(p)
                  spars32.append(pp)
             lasagne.layers.set_all_param_values(fnet,spars32)
+            layers=lasagne.layers.get_all_layers(fnet)
+            for l in layers:
+                if ('newdens' in l.name):
+                    l.Wzero=np.float32(np.array(l.W.eval())>0)
+                    l.Rzero=np.float32(np.array(l.R.eval())>0)
 
     if ('NOT_TRAINABLE' in PARS or 'REMOVE' in PARS or 'INSERT_LAYERS' in PARS):
         layers=lasagne.layers.get_all_layers(fnet)
