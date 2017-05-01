@@ -334,8 +334,10 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
             else:
                 # Separate R
                 if 'R' in l.name:
+                    WW=l.W.eval()
+                    RR=l.R.eval()
                     layer_list.append(Conv2dLayerR.Conv2DLayerR(layer_list[-1], pad=l.pad, num_filters=l.num_filters, filter_size=l.filter_size,
-                                nonlinearity=l.nonlinearity,W=l.W,R=l.R,prob=l.prob,name=l.name, b=None))
+                                nonlinearity=l.nonlinearity,W=WW,R=RR,prob=l.prob,name=l.name, b=None))
                 else:
                     layer_list.append(lasagne.layers.Conv2DLayer(layer_list[-1],num_filters=l.num_filters,name=l.name,
                                                              filter_size=l.filter_size,pad=l.pad,W=l.W,b=l.b,nonlinearity=l.nonlinearity))
