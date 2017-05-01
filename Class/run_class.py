@@ -319,7 +319,12 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
                 # Also separate R
                 if 'R' in l.name:
                     R=theano.shared(SP[t])
+                    # Record all non-zero entreis of SP these include the random loctions in R and W that were updated and the
+                    # non-zero locations in the dense matrix corresponding to the convolution.
                     Rz=np.float32(SP[t]>0)
+                    # If RR fixed feedback
+                    if ('global_prob' in PARS and NETPARS['global_prob'][1]==0):
+                        Rz=np.float32(np.zeros(np.shape(Rz)))
                     t=t+1
                     layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=num_units,
                                             W=W,R=R,Wzero=Wz, Rzero=Rz, b=None,nonlinearity=l.nonlinearity,name='newdens'+str(t)))
