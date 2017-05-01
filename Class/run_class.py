@@ -290,6 +290,8 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
             lpars=lasagne.layers.get_all_param_values(l)
             Wz=np.float32(lpars[-2]>0)
             Rz=np.float32(lpars[-1]>0)
+            if ('global_prob' in NETPARS and NETPARS['global_prob'][1]==0):
+                        Rz=np.float32(np.zeros(np.shape(Rz)))
             layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=l.num_units,prob=l.prob,
                                             nonlinearity=l.nonlinearity,W=lpars[-2],R=lpars[-1], Wzero=Wz, Rzero=Rz, b=None, name=l.name))
         elif 'conv' in l.name:
