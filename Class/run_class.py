@@ -292,7 +292,7 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
             #Wz=np.float32(lpars[-2]>0)
             #Rz=np.float32(lpars[-1]>0)
             # Put in a random initial R with the correct sparsity.
-            R=theano.shared(np.random.rand(lpars[-1].shape[0],lpars[-1])*(lpars[-1]>0))
+            R=theano.shared(np.random.rand(lpars[-1].shape[0],lpars[-1].shape[1])*(lpars[-1]>0))
             #if ('global_prob' in NETPARS and NETPARS['global_prob'][1]==0):
             #            Rz=np.float32(np.zeros(np.shape(Rz)))
             layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=l.num_units,prob=l.prob,
