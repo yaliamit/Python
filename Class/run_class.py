@@ -353,7 +353,6 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
     new_net=layer_list[-1]
     print('Done making sparse network')
     spparams=lasagne.layers.get_all_param_values(new_net)
-    params=lasagne.layers.get_all_param_values(network)
     PARS=NETPARS.copy()
     ss=str.split(PARS['output_net'],'/')
     ss[-1]='sp'+ss[-1]
