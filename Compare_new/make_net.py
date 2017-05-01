@@ -412,10 +412,12 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
             layers=lasagne.layers.get_all_layers(fnet)
             for l in layers:
                 if ('newdens' in l.name):
-                    l.Wzero=np.float32(np.array(l.W.eval())>0)
-                    l.Rzero=np.float32(np.array(l.R.eval())>0)
+                    WW=np.array(l.W.eval())
+                    RR=np.array(l.R.eval())
+                    l.Wzero=np.float32(WW>0)*np.float32(np.random.rand(WW.shape[0],WW.shape[1])<prob[0])
+                    l.Rzero=np.float32(RR>0)*np.float32(np.random.rand(RR.shape[0],RR.shape[1])<prob[0])
                     if ('global_prob' in PARS and PARS['global_prob'][1]==0):
-                        l.Rzero=np.float32(np.zeros(np.shape(Rz)))
+                        l.Rzero=np.float32(np.zeros(np.shape(RR)))
 
     if ('NOT_TRAINABLE' in PARS or 'REMOVE' in PARS or 'INSERT_LAYERS' in PARS):
         layers=lasagne.layers.get_all_layers(fnet)

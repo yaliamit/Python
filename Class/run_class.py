@@ -288,12 +288,15 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
             layer_list.append(lasagne.layers.BatchNormLayer(layer_list[-1],name=l.name,beta=l.beta,gamma=l.gamma,mean=l.mean,inv_std=l.inv_std))
         elif 'newdens' in l.name:
             lpars=lasagne.layers.get_all_param_values(l)
-            Wz=np.float32(lpars[-2]>0)
-            Rz=np.float32(lpars[-1]>0)
-            if ('global_prob' in NETPARS and NETPARS['global_prob'][1]==0):
-                        Rz=np.float32(np.zeros(np.shape(Rz)))
+            #Rz, Wz are not preserved so no need to do them correctly, only when reading in the network.
+            #Wz=np.float32(lpars[-2]>0)
+            #Rz=np.float32(lpars[-1]>0)
+            # Put in a random initial R with the correct sparsity.
+            R=theano.shared(np.random.rand(lpars[-1].shape[0],lpars[-1])*(lpars[-1]>0))
+            #if ('global_prob' in NETPARS and NETPARS['global_prob'][1]==0):
+            #            Rz=np.float32(np.zeros(np.shape(Rz)))
             layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=l.num_units,prob=l.prob,
-                                            nonlinearity=l.nonlinearity,W=lpars[-2],R=lpars[-1], Wzero=Wz, Rzero=Rz, b=None, name=l.name))
+                                            nonlinearity=l.nonlinearity,W=lpars[-2],R=R, b=None, name=l.name))
         elif 'conv' in l.name:
             # Sparse
             # if 'sparsify' in NETPARS and l.name in NETPARS['sparsify']:
@@ -316,20 +319,21 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
             if 'sparsify' in NETPARS and l.name in NETPARS['sparsify']:
                 num_units=SP[t].shape[1]
                 W = theano.shared(SP[t])
-                Wz= np.float32(SP[t]>0)
+                #Wz= np.float32(SP[t]>0)
                 t+=1
                 # Also separate R
                 if 'R' in l.name:
-                    R=theano.shared(SP[t])
+                    #R=theano.shared(np.zeros(SP[t].shape)*(SP[t]>0))
+                    R=theano.shared(np.random.rand(SP[t].shape[0],num_units)*(SP[t]>0))
                     # Record all non-zero entreis of SP these include the random loctions in R and W that were updated and the
                     # non-zero locations in the dense matrix corresponding to the convolution.
-                    Rz=np.float32(SP[t]>0)
-                    # If RR fixed feedback
-                    if ('global_prob' in NETPARS and NETPARS['global_prob'][1]==0):
-                        Rz=np.float32(np.zeros(np.shape(Rz)))
+                    # Rz=np.float32(SP[t]>0)
+                    # # If RR fixed feedback
+                    # if ('global_prob' in NETPARS and NETPARS['global_prob'][1]==0):
+                    #     Rz=np.float32(np.zeros(np.shape(Rz)))
                     t=t+1
                     layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=num_units,
-                                            W=W,R=R,Wzero=Wz, Rzero=Rz, b=None,nonlinearity=l.nonlinearity,name='newdens'+str(t)))
+                                            W=W,R=R, b=None,nonlinearity=l.nonlinearity,name='newdens'+str(t)))
             # JUst sparse
                 else:
                     layer_list.append(lasagne.layers.DenseLayer(layer_list[-1],num_units=num_units,
