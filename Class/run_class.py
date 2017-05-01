@@ -323,7 +323,7 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
                     # non-zero locations in the dense matrix corresponding to the convolution.
                     Rz=np.float32(SP[t]>0)
                     # If RR fixed feedback
-                    if ('global_prob' in PARS and NETPARS['global_prob'][1]==0):
+                    if ('global_prob' in NETPARS and NETPARS['global_prob'][1]==0):
                         Rz=np.float32(np.zeros(np.shape(Rz)))
                     t=t+1
                     layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=num_units,
