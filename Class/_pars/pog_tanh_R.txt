@@ -28,5 +28,5 @@ name:pool2;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent
 name:conv3R;num_filters:64;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:tanh;parent:pool2
 name:pool3;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv3R
 name:drop3;drop:.5;parent:pool3
-name:newdens0;num_units:128;non_linearity:tanh;tinout:(.1,1.);parent:drop3
-name:newdens2;num_units:10;non_linearity:softmax;parent:newdens0;final:final
+name:newdensp;num_units:128;non_linearity:tanh;tinout:(.1,1.);parent:drop3
+name:newdensf;num_units:10;non_linearity:softmax;parent:newdens0;final:final
