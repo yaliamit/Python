@@ -344,8 +344,9 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
                     layer_list.append(Conv2dLayerR.Conv2DLayerR(layer_list[-1], pad=l.pad, num_filters=l.num_filters, filter_size=l.filter_size,
                                 nonlinearity=l.nonlinearity,W=WW,R=RR,prob=l.prob,name=l.name, b=None))
                 else:
+                    WW=l.W.eval()
                     layer_list.append(lasagne.layers.Conv2DLayer(layer_list[-1],num_filters=l.num_filters,name=l.name,
-                                                             filter_size=l.filter_size,pad=l.pad,W=l.W,b=l.b,nonlinearity=l.nonlinearity))
+                                                             filter_size=l.filter_size,pad=l.pad,W=WW,b=l.b,nonlinearity=l.nonlinearity))
 
 
     new_net=layer_list[-1]
