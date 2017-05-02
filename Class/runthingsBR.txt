@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pog_tanh_R use_existing=True start=1 mult=2 num_epochs=60 NOT_TRAINABLE=[conv1,] output=try_OUT_2>try_OUT_2.txt
+python start_class.py net=_pars/pog_tanh_R use_existing=True start=1 mult=2 num_epochs=120 NOT_TRAINABLE=[conv1,] output=try_OUT_2>try_OUT_2.txt
