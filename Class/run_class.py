@@ -295,7 +295,7 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
             input_dim=lpars[-1].shape[0]
             num_units=lpars[-1].shape[1]
             std=np.sqrt(6./(input_dim+num_units))
-            R=theano.shared((np.random.unifrom(-std,std,(input_dim,num_units)))*(lpars[-1]>0))
+            R=theano.shared((np.random.uniform(-std,std,(input_dim,num_units)))*(lpars[-1]>0))
             layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=l.num_units,prob=l.prob,
                                             nonlinearity=l.nonlinearity,W=lpars[-2],R=R, b=None, name=l.name))
         elif 'conv' in l.name:
@@ -306,7 +306,7 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
                 # Also separate R
                 if 'R' in l.name:
                     input_dim=SP[t].shape[0]
-                    R=theano.shared((np.random.unifrom(-std,std,(input_dim,num_units)))*(SP[t]>0))
+                    R=theano.shared((np.random.uniform(-std,std,(input_dim,num_units)))*(SP[t]>0))
                     # Record all non-zero entries of SP i.e. the ones corresponding to the conv filters.
                     t=t+1
                     layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=num_units,
