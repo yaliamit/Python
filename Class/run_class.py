@@ -306,6 +306,7 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
                 # Also separate R
                 if 'R' in l.name:
                     input_dim=SP[t].shape[0]
+                    std=np.sqrt(6./(input_dim+num_units))
                     R=theano.shared((np.random.uniform(-std,std,(input_dim,num_units)))*(SP[t]>0))
                     # Record all non-zero entries of SP i.e. the ones corresponding to the conv filters.
                     t=t+1
