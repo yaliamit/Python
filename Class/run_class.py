@@ -170,8 +170,10 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
         d=0
         for l in layers:
             if ('dens' in l.name or 'conv' in l.name):
-                grad[t,0]=np.mean(np.array(l.W.eval()))
-                grad[t,1]=np.std(np.array(l.W.eval()))
+                WW=np.array(l.W.eval())
+                grad[t,0]=np.mean(WW)
+                grad[t,1]=np.std(WW)
+                sp=np.mean(WW==0)
                 if (hasattr(l,'R')):
                     grad[t,2]=np.mean(np.array(l.R.eval()))
                     grad[t,3]=np.std(np.array(l.R.eval()))
@@ -182,7 +184,7 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
                     grad[t,6]=np.mean(tout[d+4])
                     grad[t,7]=np.std(tout[d+4])
                     d=d+1
-                print('zz:',l.name,':',grad[t,])
+                print('zz:',l.name,':',grad[t,],':',sp)
                 t=t+1
     sys.stdout.flush()
     return(err,batches, pred, fac)
