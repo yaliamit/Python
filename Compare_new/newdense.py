@@ -76,7 +76,7 @@ class NewDenseLayer(Layer):
         if (prob[1]>=0):
             self.R = self.add_param(R, (num_inputs, num_units), name="R")#, trainable=False)
         else:
-            self.R=self.add_param(R,(1,1),name="R")
+            self.R=self.add_param(R,(1,1),name="R",trainable=False)
         self.prob = prob
         #self.Wzero=self.add_param(Wzero,(num_inputs,num_units),name="Wzero", trainable=False)
         #self.Rzero=self.add_param(Rzero,(num_inputs,num_units),name="Rzero", trainable=False)
