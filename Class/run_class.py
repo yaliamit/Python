@@ -314,8 +314,8 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
                                             W=W,R=R, b=None,nonlinearity=l.nonlinearity,name='newdens'+str(t)))
             # JUst sparse
                 else:
-                    layer_list.append(lasagne.layers.DenseLayer(layer_list[-1],num_units=num_units,
-                                            W=W, b=None,nonlinearity=l.nonlinearity,name='dense'+str(t)))
+                    layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=num_units,
+                                            W=W, b=None,Rzero=np.float32(np.ones((1,1))), prob=[1.,-1.],nonlinearity=l.nonlinearity,name='newdens'+str(t)))
                 # Reshape for subsequent pooling
                 shp=l.output_shape[1:]
                 layer_list.append(lasagne.layers.reshape(layer_list[-1],([0],)+shp,name='reshape'+str(t)))

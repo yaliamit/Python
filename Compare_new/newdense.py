@@ -73,11 +73,16 @@ class NewDenseLayer(Layer):
         #W=W*Wzero
         #R=R*Rzero
         self.W = self.add_param(W, (num_inputs, num_units), name="W")
-        self.R = self.add_param(R, (num_inputs, num_units), name="R")#, trainable=False)
+        if (prob[1]>=0):
+            self.R = self.add_param(R, (num_inputs, num_units), name="R")#, trainable=False)
+        else:
+            self.R=self.add_param(R,(1,1),name="R")
         self.prob = prob
         #self.Wzero=self.add_param(Wzero,(num_inputs,num_units),name="Wzero", trainable=False)
         #self.Rzero=self.add_param(Rzero,(num_inputs,num_units),name="Rzero", trainable=False)
         self.Wzero=Wzero
+        if (self.prob[1]<0):
+            self.Rzero=None
         self.Rzero=Rzero
         if (self.prob[1]==0.):
             self.Rzer=self.Rzer<0

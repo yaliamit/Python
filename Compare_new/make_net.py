@@ -315,16 +315,21 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
 
                 for lay in input_la:
                     input_dim=np.prod(lay.output_shape[1:])
+                    Rz=np.float32(np.ones((1,1)))
+                    R=np.float32(np.ones((1,1)))
                     # Reading in existing network, adjust masks to existing parameter values later on
                     if ('use_existing' in PARS and PARS['use_existing']):
                         Wz=np.float32(np.ones((input_dim,num_units)))
-                        Rz=np.float32(np.ones((input_dim,num_units)))
+                        if (prob[1]>=0):
+                            Rz=np.float32(np.ones((input_dim,num_units)))
                     else:
                         Wz=np.float32(np.random.rand(input_dim,num_units)<prob[0])
-                        Rz=np.float32(np.random.rand(input_dim,num_units)<prob[0])
+                        if (prob[1]>=0):
+                            Rz=np.float32(np.random.rand(input_dim,num_units)<prob[0])
                     std=np.sqrt(6./(input_dim+num_units))
                     W=np.float32(np.random.uniform(-std,std,(input_dim,num_units)))*Wz
-                    R=np.float32(np.random.uniform(-std,std,(input_dim,num_units)))*Rz
+                    if (Rz.shape[0] > 1):
+                        R=np.float32(np.random.uniform(-std,std,(input_dim,num_units)))*Rz
                     if (len(layer_list)==0):
                         layer_list.append(newdense.NewDenseLayer(lay,name=l['name'],num_units=num_units,
                                                                     W=W,#lasagne.init.GlorotUniform(gain=gain),
@@ -415,7 +420,8 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                     WW=np.array(l.W.eval())
                     RR=np.array(l.R.eval())
                     l.Wzero=np.float32(WW!=0)*np.float32(np.random.rand(WW.shape[0],WW.shape[1])<prob[0])
-                    l.Rzero=np.float32(RR!=0)*np.float32(np.random.rand(RR.shape[0],RR.shape[1])<prob[0])
+                    if l.Rzero.shape[0] > 1:
+                        l.Rzero=np.float32(RR!=0)*np.float32(np.random.rand(RR.shape[0],RR.shape[1])<prob[0])
                     if ('global_prob' in PARS and PARS['global_prob'][1]==0):
                         l.Rzero=np.float32(np.zeros(np.shape(RR)))
 

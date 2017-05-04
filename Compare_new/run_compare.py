@@ -246,7 +246,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
                    if ('dens' in l.name or 'conv' in l.name):
                        if (hasattr(l,'W')):
                            gloss.append(T.grad(loss,l.W))
-                       if (hasattr(l,'R')):
+                       if (hasattr(l,'R') and l.Rzero.shape[0]>1):
                            gloss.append(T.grad(loss,l.R))
 
             # Instead of randomly dropping inputs drop updates on some subsets of weights.

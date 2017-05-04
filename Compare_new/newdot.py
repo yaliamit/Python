@@ -69,13 +69,18 @@ class NewDotOp(theano.Op):
 
         # x is matrix, y is matrix, grad is matrix
         elif xdim == ydim == 2:
-            #xgrad = T.dot(gz, y.T)
-            xgrad = T.dot(gz, R.T)
+            if (Rzer.data.shape[0] == 1):
+                xgrad = T.dot(gz, y.T)
+            else:
+                xgrad = T.dot(gz, R.T)
             # Gradient of weights - input*deltas^t - zero'd out for those that don't exist.
             yygrad = T.dot(x.T,gz)
             zzgrad=yygrad
             ygrad=yygrad*Wzer
-            zgrad=zzgrad*Rzer
+            if (Rzer.data.shape[0] == 1):
+                zgrad=theano.gradient.grad_undefined(self,2,R)
+            else:
+                zgrad=zzgrad*Rzer
 
 
         #zgrad=T.zeros(T.shape(R))
@@ -87,8 +92,9 @@ class NewDotOp(theano.Op):
             xgrad = theano.tensor.basic.patternbroadcast(xgrad, x.broadcastable)
         if ygrad.broadcastable != y.broadcastable:
             ygrad = theano.tensor.basic.patternbroadcast(ygrad, y.broadcastable)
-        if zgrad.broadcastable != R.broadcastable:
-            zgrad = theano.tensor.basic.patternbroadcast(zgrad, R.broadcastable)
+        if (Rzer.data.shape[0]!=1):
+            if zgrad.broadcastable != R.broadcastable:
+                zgrad = theano.tensor.basic.patternbroadcast(zgrad, R.broadcastable)
         Wz=theano.gradient.grad_undefined(self,3,Wzer)
         Rz=theano.gradient.grad_undefined(self,4,Rzer)
 
