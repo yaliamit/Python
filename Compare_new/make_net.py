@@ -423,7 +423,10 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                     RR=np.array(l.R.eval())
                     l.Wzero=np.float32(WW!=0)*np.float32(np.random.rand(WW.shape[0],WW.shape[1])<prob[0])
                     if l.Rzero.shape[0] > 1:
-                        l.Rzero=np.float32(RR!=0)*np.float32(np.random.rand(RR.shape[0],RR.shape[1])<prob[0])
+                       if prob[1]>0:
+                            l.Rzero=np.float32(RR!=0)*np.float32(np.random.rand(RR.shape[0],RR.shape[1])<prob[0])
+                       else:
+                            l.Rzero=np.float32(np.zeros(RR.shape))
                     if ('global_prob' in PARS and PARS['global_prob'][1]==0):
                         l.Rzero=np.float32(np.zeros(np.shape(RR)))
 
