@@ -409,6 +409,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
             print('net name',PARS['net']+'.npy')
             spars=np.load(PARS['net']+'.npy')
             spars32=[]
+            
             for p in spars:
                  if (p.dtype == np.float32):
                         pp=p
