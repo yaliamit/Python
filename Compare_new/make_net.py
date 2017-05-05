@@ -176,7 +176,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
             tinout=PARS['global_tinout']
         if ('prob' in l):
             prob=l['prob']
-        if ('force_global_prob' in PARS and l.prob[1]!=-1):
+        if ('force_global_prob' in PARS and hasattr(l,'prob') and l.prob[1]!=-1):
             prob=PARS['force_global_prob']
         prob=tuple([np.float32(i) for i in prob])
         #prob.shape=(1,2)
