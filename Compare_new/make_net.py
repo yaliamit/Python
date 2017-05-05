@@ -409,7 +409,6 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
             print('net name',PARS['net']+'.npy')
             spars=np.load(PARS['net']+'.npy')
             spars32=[]
-            
             for p in spars:
                  if (p.dtype == np.float32):
                         pp=p
@@ -425,7 +424,6 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                     l.Wzero=np.float32(WW!=0)*np.float32(np.random.rand(WW.shape[0],WW.shape[1])<prob[0])
                     if l.Rzero.shape[0] > 1:
                        if prob[1]>0:
-
                             l.Rzero=np.float32(RR!=0)*np.float32(np.random.rand(RR.shape[0],RR.shape[1])<prob[0])
                        else:
                             l.Rzero=np.float32(np.zeros(RR.shape))
