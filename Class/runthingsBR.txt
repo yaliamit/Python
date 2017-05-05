@@ -1,1 +1,1 @@
-python start_class.py net=_pars/sppog_tanh_R start=3 mult=4 use_existing=True num_epochs=50 NOT_TRAINABLE=[conv1,] output=sptry_2_OUT>sptry_2_OUT.txt
+python start_class.py net=_pars/sppog_tanh_R use_existing=True num_epochs=50 global_prob=[1.,0.] NOT_TRAINABLE=[conv1,] output=sptryR_2_OUT>sptryR_2_OUT.txt
