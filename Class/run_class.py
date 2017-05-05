@@ -310,7 +310,7 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
                     R=theano.shared((np.random.uniform(-std,std,(input_dim,num_units)))*(SP[t]>0))
                     # Record all non-zero entries of SP i.e. the ones corresponding to the conv filters.
                     t=t+1
-                    layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=num_units,
+                    layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=num_units,prob=l.prob,
                                             W=W,R=R, b=None,nonlinearity=l.nonlinearity,name='newdens'+str(t)))
             # JUst sparse
                 else:
