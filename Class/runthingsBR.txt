@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pogh_tanh_R start=1 mult=2 use_existing=True train=False write_sparse=True sparsify=[conv2,conv3R] output=sparse_OUT>sparse_OUT.txt
+python start_class.py net=_pars/pog_tanh_R use_existing=True train=False write_sparse=True sparsify=[conv2,conv3R] output=sparse_OUT>sparse_OUT.txt
