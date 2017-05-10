@@ -59,7 +59,7 @@ def adamloc(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
     return updates
 
 def clip_w(updates,params,clipt):
-    for i,p in params:
+    for i,p in enumerate(params):
         updates[p]=theano.tensor.clip(updates[p],-clipt[i],clipt[i])
     return updates
 
