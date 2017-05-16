@@ -87,7 +87,7 @@ def multiclass_hinge_loss_alt(predictions, targets, delta_up=1., delta_down=1., 
         restm=theano.tensor.max(rest,axis=1)
         err=delta_up-corrects+restm
         loss=theano.tensor.nnet.relu(err)
-    return loss #,corrects,restm,err
+    return loss, corrects,restm,err
 
 
 
@@ -234,7 +234,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
                     delta_down=NETPARS['hinge_down']
                 if ('dep_fac' in NETPARS):
                     dep_fac=NETPARS['dep_fac']
-                aloss = multiclass_hinge_loss_alt(pred,target_var,delta_up=NETPARS['hinge'],delta_down=delta_down,dep_fac=dep_fac)
+                aloss, c ,m, r = multiclass_hinge_loss_alt(pred,target_var,delta_up=NETPARS['hinge'],delta_down=delta_down,dep_fac=dep_fac)
 
             loss = aloss.mean()
             loss=loss+spe
