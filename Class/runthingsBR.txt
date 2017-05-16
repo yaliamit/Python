@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pog_tanh hinge=1. output=pog_tanh_H_OUT>pog_tanh_H_OUT.txt
+python start_class.py net=_pars/pog_tanh output=pog_tanh_OUT>pog_tanh_OUT.txt
