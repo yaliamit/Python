@@ -356,12 +356,12 @@ def main_new(NETPARS):
     print("Loading data...")
     X_train, y_train, X_val, y_val, X_test, y_test=data.get_train(NETPARS)
 
-    X_train=np.float32(X_train)
-    X_val=np.float32(X_val)
-    X_test=np.float32(X_test)
-    y_train=np.int32(y_train)
-    y_test=np.int32(y_test)
-    y_val=np.int32(y_val)
+    # X_train=np.float32(X_train)
+    # X_val=np.float32(X_val)
+    # X_test=np.float32(X_test)
+    # y_train=np.int32(y_train)
+    # y_test=np.int32(y_test)
+    # y_val=np.int32(y_val)
 
     num_class=len(np.unique(y_test))
     print("num_class", num_class)
