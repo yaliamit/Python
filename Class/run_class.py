@@ -241,7 +241,7 @@ def get_matrix(l,gl):
                                 for k in range(dims[2]):
                                     XX[t,i,j,k]=1.
                                     t+=1
-                        XX=np.floatX(XX)
+                        XX=np.float32(XX)
                         YY=gl(XX)
                         YY=np.reshape(YY,(YY.shape[0],np.prod(YY.shape[1:])))
                         yy+=np.prod(YY.shape)
@@ -316,7 +316,7 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
             # JUst sparse
                 else:
                     layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=num_units,
-                                            W=W, b=None,Rzero=np.floatX(np.ones((1,1))), prob=(1.,-1.),nonlinearity=l.nonlinearity,name='newdens'+str(t)))
+                                            W=W, b=None,Rzero=np.float32(np.ones((1,1))), prob=(1.,-1.),nonlinearity=l.nonlinearity,name='newdens'+str(t)))
                 # Reshape for subsequent pooling
                 shp=l.output_shape[1:]
                 layer_list.append(lasagne.layers.reshape(layer_list[-1],([0],)+shp,name='reshape'+str(t)))
