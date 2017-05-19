@@ -40,7 +40,7 @@ def get_shifted_correlations(input_std,NETPARS):
                     corrs[:,l,ll-l+sr]=np.sum(tcor,axis=1)
                 else:
                     corrs[:,l,ll-l+sr]=tcor
-    corrs=(corrs+np.float32(1.))/np.float32(2.)
+    corrs=(corrs+np.floatX(1.))/np.floatX(2.)
     return(corrs)
 
 # Dynamic programming optimization of matching cost

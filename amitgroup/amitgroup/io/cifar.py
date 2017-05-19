@@ -42,7 +42,7 @@ def load_cifar_10(section, offset=0, count=10000, x_dtype=np.float32,
     X0 = X[batch_offset:batch_offset+count].reshape(-1, 3, 32, 32)
     y0 = y[batch_offset:batch_offset+count]
 
-    if x_dtype in [np.float16, np.float32, np.float64]:
+    if x_dtype in [np.float16, np.floatX, np.float64]:
         X0 = X0.astype(x_dtype) / 255
     elif x_dtype == np.uint8:
         pass  # Do nothing
@@ -90,7 +90,7 @@ def load_cifar_100(section, offset=0, count=10000, x_dtype=np.float32,
     X0 = X[batch_offset:batch_offset+count].reshape(-1, 3, 32, 32)
     y0 = y[batch_offset:batch_offset+count]
 
-    if x_dtype in [np.float16, np.float32, np.float64]:
+    if x_dtype in [np.float16, np.floatX, np.float64]:
         X0 = X0.astype(x_dtype) / 255
     elif x_dtype == np.uint8:
         pass  # Do nothing

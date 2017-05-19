@@ -106,7 +106,7 @@ def rotate_dataset_rand(X,angle=0,scale=0,shift=0,gr=0,flip=False,blur=False,sat
     #             py.subplot(1,2,2)
     #             py.imshow(Xrr[n].transpose(1,2,0))
     #             py.show()
-    return(np.float32(Xr))
+    return(np.floatX(Xr))
 
 def rotate_dataset(X,NETPARS):
     angle=NETPARS['trans']['angle']
@@ -179,7 +179,7 @@ def  do_read_det(ss,num_train):
                         end=X.shape[0]+num_train-tot
                     Xtr.append(X[0:end])
             X_out=np.concatenate(Xtr,axis=0)
-            X_out=np.float32(X_out)
+            X_out=np.floatX(X_out)
             X_out=np.transpose(X_out,(1,0,2,3,4))
             X_out=list(X_out)
             return(X_out)
@@ -199,14 +199,14 @@ def do_rands(x,NETPARS,insert=False):
         if (len(Xtr)>1):
             X=Xtr
         else:
-            X=np.float32(Xtr[0])
+            X=np.floatX(Xtr[0])
 
         return(X)
 
 def do_det(x,NETPARS,ss):
         X=rotate_dataset(x,NETPARS)
         X=np.transpose(X,(1,0,2,3,4))
-        X=np.float32(X)
+        X=np.floatX(X)
         X=list(X)
         return(X)
 
@@ -350,10 +350,10 @@ def get_train(NETPARS):
 
 def get_edges(X):
 
-    Xe=np.zeros((X.shape[0],24,X.shape[2],X.shape[3]),dtype=np.float32)
+    Xe=np.zeros((X.shape[0],24,X.shape[2],X.shape[3]),dtype=np.floatX)
     for i in range(X.shape[1]):
         XX=np.float64(X[:,i,:,:])
-        Xee=np.float32(ag.features.bedges(XX,minimum_contrast=.05))
+        Xee=np.floatX(ag.features.bedges(XX,minimum_contrast=.05))
         Xee=Xee.transpose(0,3,1,2)
         Xe[:,i*8:(i+1)*8,:,:]=Xee
     return(Xe)
@@ -403,7 +403,7 @@ def create_paired_data_set(NETPARS,X,y,num,cls=[],reps=1):
         Xtr_comp=np.vstack(Xtr_comp)
         ytr=np.hstack(ytr)
 
-    return np.float32(Xtr), np.float32(Xtr_comp), np.float32(ytr)
+    return np.floatX(Xtr), np.floatX(Xtr_comp), np.floatX(ytr)
 
 
 
@@ -424,4 +424,4 @@ def create_paired_data_set_with_fonts(X,y,num):
     ytr=(yy==yyy)
     ylab=y[ii1]
     Xtr_comp=np.expand_dims(Xtr_comp,axis=1)
-    return np.float32(Xtr), np.float32(Xtr_comp), np.float32(ytr), np.int32(ylab)
+    return np.floatX(Xtr), np.floatX(Xtr_comp), np.floatX(ytr), np.int32(ylab)

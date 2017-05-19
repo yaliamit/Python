@@ -881,7 +881,7 @@ bcast = Cast('int8')
 wcast = Cast('int16')
 icast = Cast('int32')
 lcast = Cast('int64')
-fcast = Cast('float32')
+fcast = Cast('floatX')
 dcast = Cast('float64')
 ccast = Cast('complex64')
 zcast = Cast('complex128')
@@ -955,10 +955,10 @@ class DenseFromSparse(gof.op.Op):
             # Do upcasting if necessary to avoid an unimplemented case
             # of mul
 
-            if right.dtype == 'float64' and left.dtype == 'float32':
+            if right.dtype == 'float64' and left.dtype == 'floatX':
                 left = left.astype('float64')
 
-            if right.dtype == 'float32' and left.dtype == 'float64':
+            if right.dtype == 'floatX' and left.dtype == 'float64':
                 right = right.astype('float64')
 
             return [left * right]
@@ -2450,10 +2450,10 @@ class MulSV(gof.op.Op):
 
         # mul_s_v is not implemented if the types vary
 
-        if gz.dtype == 'float64' and y.dtype == 'float32':
+        if gz.dtype == 'float64' and y.dtype == 'floatX':
             y = y.astype('float64')
 
-        if gz.dtype == 'float32' and y.dtype == 'float64':
+        if gz.dtype == 'floatX' and y.dtype == 'float64':
             gz = gz.astype('float64')
 
         return mul_s_v(gz, y), sp_sum(x * gz, axis=0, sparse_grad=True)
@@ -2519,14 +2519,14 @@ def mul(x, y):
     if x_is_sparse_variable and y_is_sparse_variable:
 
         # mul_s_s is not implemented if the types differ
-        if y.dtype == 'float64' and x.dtype == 'float32':
+        if y.dtype == 'float64' and x.dtype == 'floatX':
             x = x.astype('float64')
 
         return mul_s_s(x, y)
     elif x_is_sparse_variable and not y_is_sparse_variable:
 
         # mul is unimplemented if the dtypes differ
-        if y.dtype == 'float64' and x.dtype == 'float32':
+        if y.dtype == 'float64' and x.dtype == 'floatX':
             x = x.astype('float64')
 
         return mul_s_d(x, y)

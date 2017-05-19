@@ -15,7 +15,7 @@ from math import fabs
 # cython.numeric does not include uint8
 # Can be expended to complex types if needed
 ctypedef fused TYPE:
-    np.float32_t
+    np.floatX_t
     np.float64_t
     np.int16_t
     np.int32_t

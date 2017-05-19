@@ -17,7 +17,7 @@ from amitgroup.features.features import (array_bedges,
 #
 #     xx=np.transpose(xx,(1,2,0))
 #
-#     yy=change_saturation_c(np.float32(xx),np.float32(fac))
+#     yy=change_saturation_c(np.floatX(xx),np.floatX(fac))
 #     yy=np.transpose(yy,(2,0,1))
 #
 #     return(yy)
@@ -31,7 +31,7 @@ def change_saturation(xx,fac):
         y[:,1,:]=np.minimum(y[:,1,:]*fac[i],1)
         yy[i]=col.hsv_to_rgb(y)
 
-    #yy=change_saturation_c(np.float32(xx),np.float32(fac))
+    #yy=change_saturation_c(np.floatX(xx),np.floatX(fac))
     yy=np.transpose(yy,(0,3,1,2))
 
     return(yy)

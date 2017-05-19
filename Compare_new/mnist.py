@@ -34,11 +34,11 @@ def load_dataset(pad=0,nval=10000):
             new_data=np.zeros((data.shape[0],data.shape[1],data.shape[2]+2*pad,data.shape[3]+2*pad))
             new_data[:,:,pad:pad+28,pad:pad+28]=data
             data=new_data
-        # The inputs come as bytes, we convert them to float32 in range [0,1].
+        # The inputs come as bytes, we convert them to floatX in range [0,1].
         # (Actually to range [0, 255/256], for compatibility to the version
         # provided at http://deeplearning.net/data/mnist/mnist.pkl.gz.)
 
-        return data / np.float32(256)
+        return data / np.floatX(256)
 
     def load_mnist_labels(filename):
         if not os.path.exists(filename):

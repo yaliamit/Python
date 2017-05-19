@@ -9,9 +9,9 @@ import cython
 import numpy as np
 cimport numpy as np
 #from cython.parallel import prange
-DTYPE = np.float32
+DTYPE = np.floatX
 UINT = np.uint8
-ctypedef np.float32_t DTYPE_t
+ctypedef np.floatX_t DTYPE_t
 
 ctypedef np.uint8_t UINT_t
 

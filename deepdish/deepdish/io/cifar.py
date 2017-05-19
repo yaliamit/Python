@@ -50,7 +50,7 @@ def load_cifar_10(section, offset=0, count=10000, marg=5, x_dtype=np.float32,
     X0 = X[0:count,:].reshape(-1, 3, 32, 32)
     y0 = y[0:count]
 
-    if x_dtype in [np.float16, np.float32, np.float64]:
+    if x_dtype in [np.float16, np.floatX, np.float64]:
         X0 = X0.astype(x_dtype) / 255
     elif x_dtype == np.uint8:
         pass  # Do nothing

@@ -90,18 +90,18 @@ cdef inline void _byte_checkedge(np.uint8_t[:,:,:] images, np.uint8_t[:,:,:,:] r
         ret[ii, vi + displace*<int>(Iy > Iz), z0, z1] = 1 
 
 
-# def change_saturation_c(np.ndarray[np.float32_t,ndim=3] xx,float fac):
+# def change_saturation_c(np.ndarray[np.floatX_t,ndim=3] xx,float fac):
 #
 #     cdef int rows = xx.shape[0]
 #     cdef int cols = xx.shape[1]
-#     cdef np.ndarray[np.float32_t, ndim=3] yy = np.zeros((rows, cols, 3), dtype=np.float32)
-#     cdef np.ndarray[np.float32_t, ndim=1] uu = np.zeros(3, dtype=np.float32)
+#     cdef np.ndarray[np.floatX_t, ndim=3] yy = np.zeros((rows, cols, 3), dtype=np.floatX)
+#     cdef np.ndarray[np.floatX_t, ndim=1] uu = np.zeros(3, dtype=np.floatX)
 #
 #     for i in range(rows):
 #         for j in range(cols):
-#             uu=np.array(colorsys.rgb_to_hsv(xx[i,j,0],xx[i,j,1],xx[i,j,2]),dtype=np.float32)
+#             uu=np.array(colorsys.rgb_to_hsv(xx[i,j,0],xx[i,j,1],xx[i,j,2]),dtype=np.floatX)
 #             uu[1]=np.minimum(uu[1]*fac,1)
-#             uu=np.array(colorsys.hsv_to_rgb(uu[0],uu[1],uu[2]),dtype=np.float32)
+#             uu=np.array(colorsys.hsv_to_rgb(uu[0],uu[1],uu[2]),dtype=np.floatX)
 #             for k in range(3):
 #                 yy[i,j,k]=uu[k]
 #
@@ -109,19 +109,19 @@ cdef inline void _byte_checkedge(np.uint8_t[:,:,:] images, np.uint8_t[:,:,:,:] r
 #     return(yy)
 
 
-def change_saturation_c(np.ndarray[np.float32_t,ndim=4] xx,np.ndarray[np.float32_t, ndim=1] fac):
+def change_saturation_c(np.ndarray[np.floatX_t,ndim=4] xx,np.ndarray[np.floatX_t, ndim=1] fac):
 
     cdef int N = xx.shape[0]
     cdef int rows = xx.shape[1]
     cdef int cols = xx.shape[2]
-    cdef np.ndarray[np.float32_t, ndim=4] yy = np.zeros((N,rows, cols, 3), dtype=np.float32)
-    cdef np.ndarray[np.float32_t, ndim=1] uu = np.zeros(3, dtype=np.float32)
+    cdef np.ndarray[np.floatX_t, ndim=4] yy = np.zeros((N,rows, cols, 3), dtype=np.floatX)
+    cdef np.ndarray[np.floatX_t, ndim=1] uu = np.zeros(3, dtype=np.floatX)
     for n in range(N):
         for i in range(rows):
             for j in range(cols):
-                uu=np.array(colorsys.rgb_to_hsv(xx[n,i,j,0],xx[n,i,j,1],xx[n,i,j,2]),dtype=np.float32)
+                uu=np.array(colorsys.rgb_to_hsv(xx[n,i,j,0],xx[n,i,j,1],xx[n,i,j,2]),dtype=np.floatX)
                 uu[1]=np.minimum(uu[1]*fac[n],1)
-                uu=np.array(colorsys.hsv_to_rgb(uu[0],uu[1],uu[2]),dtype=np.float32)
+                uu=np.array(colorsys.hsv_to_rgb(uu[0],uu[1],uu[2]),dtype=np.floatX)
                 for k in range(3):
                     yy[n,i,j,k]=uu[k]
 

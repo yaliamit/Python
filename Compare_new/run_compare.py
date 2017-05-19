@@ -21,7 +21,7 @@ def adamloc(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
     t_prev = theano.shared(lasagne.utils.floatX(0.))
     updates = OrderedDict()
 
-    # Using theano constant to prevent upcasting of float32
+    # Using theano constant to prevent upcasting of floatX
     one = T.constant(1)
 
     t = t_prev + 1
@@ -32,8 +32,8 @@ def adamloc(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
         tens=True
         if (type(param) is theano.sparse.sharedvar.SparseTensorSharedVariable):
             tens=False
-            m_prev = theano.shared(sp.csc_matrix((np.zeros(len(value.data),dtype=np.float32),value.indices,value.indptr),value.shape))
-            v_prev = theano.shared(sp.csc_matrix((np.zeros(len(value.data),dtype=np.float32),value.indices,value.indptr),value.shape))
+            m_prev = theano.shared(sp.csc_matrix((np.zeros(len(value.data),dtype=np.floatX),value.indices,value.indptr),value.shape))
+            v_prev = theano.shared(sp.csc_matrix((np.zeros(len(value.data),dtype=np.floatX),value.indices,value.indptr),value.shape))
         else:
             m_prev = theano.shared(np.zeros(value.shape, dtype=value.dtype),broadcastable=param.broadcastable)
             v_prev = theano.shared(np.zeros(value.shape, dtype=value.dtype),broadcastable=param.broadcastable)
@@ -46,8 +46,8 @@ def adamloc(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
         else:
             step = a_t*m_t
             ss=sparse.sqrt(v_t)
-            #ss=sparse.structured_add_s_v(ss,np.reshape(np.float32(epsilon),(1,1)))
-            ss=ss+np.float32(epsilon)*sparse.basic.sp_ones_like(ss)
+            #ss=sparse.structured_add_s_v(ss,np.reshape(np.floatX(epsilon),(1,1)))
+            ss=ss+np.floatX(epsilon)*sparse.basic.sp_ones_like(ss)
             ss=sparse.structured_pow(ss,-1.)
             step = step*ss
 
@@ -149,7 +149,7 @@ class eta_params:
                 # Put in the best parameters on training data
                 #lasagne.layers.set_all_param_values(network,self.best_params)
                 #print('resetting to best params')
-                eta.set_value(eta.get_value()*np.float32(.7))
+                eta.set_value(eta.get_value()*np.floatX(.7))
                 self.bad_count=0
                 val_e=self.best_e
             self.val_e_old=val_e
@@ -341,7 +341,7 @@ def correlation(input1,input2):
 
     corr=T.sum(((input1-m0)/s0)*((input2-m1)/s1), axis=1)/n1
 
-    corr=(corr+np.float32(1.))/np.float32(2.)
+    corr=(corr+np.floatX(1.))/np.floatX(2.)
     corr=T.reshape(corr,(n0,))
     return corr
 

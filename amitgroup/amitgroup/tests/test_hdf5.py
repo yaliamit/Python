@@ -48,7 +48,7 @@ class TestHDF5(unittest.TestCase):
     def test_hdf5_numpy_array_inside(self):
         x = dict(a=np.arange(10),
                  b=np.ones(1, dtype=np.bool_),
-                 c=[np.ones(10), np.array([1.23, 1.34], dtype=np.float32)])
+                 c=[np.ones(10), np.array([1.23, 1.34], dtype=np.floatX)])
         y = self._reconstruct(x)
         assert isinstance(y, dict)
         assert set(y.keys()) == set(x.keys())

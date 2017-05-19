@@ -105,7 +105,7 @@ def load_mnist(section="training", offset=0, count=None, ret='xy', marg=0,
         # images=large_images
         if x_dtype == np.uint8:
             pass  # already this type
-        elif x_dtype in (np.float16, np.float32, np.float64):
+        elif x_dtype in (np.float16, np.floatX, np.float64):
             images /= 255.0
         else:
             raise ValueError("Unsupported value for x_dtype")

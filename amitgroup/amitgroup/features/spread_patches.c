@@ -615,15 +615,15 @@ typedef npy_uint64 __pyx_t_5numpy_uint64_t;
 /* "../../../../../../Library/Python/2.7/site-packages/Cython/Includes/numpy/__init__.pxd":737
  * #ctypedef npy_uint128    uint128_t
  * 
- * ctypedef npy_float32    float32_t             # <<<<<<<<<<<<<<
+ * ctypedef npy_floatX    floatX_t             # <<<<<<<<<<<<<<
  * ctypedef npy_float64    float64_t
  * #ctypedef npy_float80    float80_t
  */
-typedef npy_float32 __pyx_t_5numpy_float32_t;
+typedef npy_floatX __pyx_t_5numpy_floatX_t;
 
 /* "../../../../../../Library/Python/2.7/site-packages/Cython/Includes/numpy/__init__.pxd":738
  * 
- * ctypedef npy_float32    float32_t
+ * ctypedef npy_floatX    floatX_t
  * ctypedef npy_float64    float64_t             # <<<<<<<<<<<<<<
  * #ctypedef npy_float80    float80_t
  * #ctypedef npy_float128   float128_t
@@ -730,16 +730,16 @@ typedef npy_double __pyx_t_5numpy_double_t;
 typedef npy_longdouble __pyx_t_5numpy_longdouble_t;
 
 /* "amitgroup/features/spread_patches.pyx":12
- * DTYPE = np.float32
+ * DTYPE = np.floatX
  * UINT = np.uint8
- * ctypedef np.float32_t DTYPE_t             # <<<<<<<<<<<<<<
+ * ctypedef np.floatX_t DTYPE_t             # <<<<<<<<<<<<<<
  * 
  * ctypedef np.uint8_t UINT_t
  */
-typedef __pyx_t_5numpy_float32_t __pyx_t_9amitgroup_8features_14spread_patches_DTYPE_t;
+typedef __pyx_t_5numpy_floatX_t __pyx_t_9amitgroup_8features_14spread_patches_DTYPE_t;
 
 /* "amitgroup/features/spread_patches.pyx":14
- * ctypedef np.float32_t DTYPE_t
+ * ctypedef np.floatX_t DTYPE_t
  * 
  * ctypedef np.uint8_t UINT_t             # <<<<<<<<<<<<<<
  * 
@@ -1590,7 +1590,7 @@ static char __pyx_k_unpack[] = "unpack";
 static char __pyx_k_xrange[] = "xrange";
 static char __pyx_k_X_dim_0[] = "X_dim_0";
 static char __pyx_k_X_dim_1[] = "X_dim_1";
-static char __pyx_k_float32[] = "float32";
+static char __pyx_k_floatX[] = "floatX";
 static char __pyx_k_fortran[] = "fortran";
 static char __pyx_k_memview[] = "memview";
 static char __pyx_k_Ellipsis[] = "Ellipsis";
@@ -1695,7 +1695,7 @@ static PyObject *__pyx_n_s_enumerate;
 static PyObject *__pyx_n_s_error;
 static PyObject *__pyx_n_s_f;
 static PyObject *__pyx_n_s_flags;
-static PyObject *__pyx_n_s_float32;
+static PyObject *__pyx_n_s_floatX;
 static PyObject *__pyx_n_s_format;
 static PyObject *__pyx_n_s_fortran;
 static PyObject *__pyx_n_u_fortran;
@@ -2320,7 +2320,7 @@ static PyObject *__pyx_pw_9amitgroup_8features_14spread_patches_3spread_patches_
     __pyx_v_llh = ((PyArrayObject *)values[0]);
     __pyx_v_spread_0_dim = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_spread_0_dim == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
     __pyx_v_spread_1_dim = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_spread_1_dim == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 71; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_tau = __pyx_PyFloat_AsFloat(values[3]); if (unlikely((__pyx_v_tau == (npy_float32)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_tau = __pyx_PyFloat_AsFloat(values[3]); if (unlikely((__pyx_v_tau == (npy_floatX)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
@@ -2467,7 +2467,7 @@ static PyObject *__pyx_pf_9amitgroup_8features_14spread_patches_2spread_patches_
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_6 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_6 == (npy_float32)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 78; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __pyx_PyFloat_AsFloat(__pyx_t_1); if (unlikely((__pyx_t_6 == (npy_floatX)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 78; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_NINF = __pyx_t_6;
 
@@ -16314,7 +16314,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_error, __pyx_k_error, sizeof(__pyx_k_error), 0, 0, 1, 1},
   {&__pyx_n_s_f, __pyx_k_f, sizeof(__pyx_k_f), 0, 0, 1, 1},
   {&__pyx_n_s_flags, __pyx_k_flags, sizeof(__pyx_k_flags), 0, 0, 1, 1},
-  {&__pyx_n_s_float32, __pyx_k_float32, sizeof(__pyx_k_float32), 0, 0, 1, 1},
+  {&__pyx_n_s_floatX, __pyx_k_floatX, sizeof(__pyx_k_floatX), 0, 0, 1, 1},
   {&__pyx_n_s_format, __pyx_k_format, sizeof(__pyx_k_format), 0, 0, 1, 1},
   {&__pyx_n_s_fortran, __pyx_k_fortran, sizeof(__pyx_k_fortran), 0, 0, 1, 1},
   {&__pyx_n_u_fortran, __pyx_k_fortran, sizeof(__pyx_k_fortran), 0, 1, 0, 1},
@@ -16829,13 +16829,13 @@ PyMODINIT_FUNC PyInit_spread_patches(void)
   /* "amitgroup/features/spread_patches.pyx":10
  * cimport numpy as np
  * #from cython.parallel import prange
- * DTYPE = np.float32             # <<<<<<<<<<<<<<
+ * DTYPE = np.floatX             # <<<<<<<<<<<<<<
  * UINT = np.uint8
- * ctypedef np.float32_t DTYPE_t
+ * ctypedef np.floatX_t DTYPE_t
  */
   __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 10; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_float32); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 10; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_floatX); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 10; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_DTYPE, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 10; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -16843,9 +16843,9 @@ PyMODINIT_FUNC PyInit_spread_patches(void)
 
   /* "amitgroup/features/spread_patches.pyx":11
  * #from cython.parallel import prange
- * DTYPE = np.float32
+ * DTYPE = np.floatX
  * UINT = np.uint8             # <<<<<<<<<<<<<<
- * ctypedef np.float32_t DTYPE_t
+ * ctypedef np.floatX_t DTYPE_t
  * 
  */
   __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 11; __pyx_clineno = __LINE__; goto __pyx_L1_error;}

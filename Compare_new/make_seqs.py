@@ -91,7 +91,7 @@ def make_seqs(NETPARS):
             py.axis('off')
             py.show()
 
-    TEST=np.float32(np.expand_dims(np.array(TEST),1))
-    TEST1=np.float32(np.expand_dims(np.array(TEST1),1))
+    TEST=np.floatX(np.expand_dims(np.array(TEST),1))
+    TEST1=np.floatX(np.expand_dims(np.array(TEST1),1))
 
     return TEST,TEST1

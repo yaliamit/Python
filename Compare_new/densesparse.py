@@ -70,7 +70,7 @@ class SparseDenseLayer(Layer):
 
         num_inputs = int(np.prod(self.input_shape[1:]))
         if (W is None):
-            W=theano.shared(sp.csc_matrix(np.float32(np.eye(num_inputs, num_units))))
+            W=theano.shared(sp.csc_matrix(np.floatX(np.eye(num_inputs, num_units))))
         self.W = self.add_param(W, (num_inputs, num_units), name="W")
 
         if b is None:

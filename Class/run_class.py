@@ -241,7 +241,7 @@ def get_matrix(l,gl):
                                 for k in range(dims[2]):
                                     XX[t,i,j,k]=1.
                                     t+=1
-                        XX=np.float32(XX)
+                        XX=np.floatX(XX)
                         YY=gl(XX)
                         YY=np.reshape(YY,(YY.shape[0],np.prod(YY.shape[1:])))
                         yy+=np.prod(YY.shape)
@@ -255,7 +255,7 @@ def get_matrix(l,gl):
                             #csc=sp.vstack([csc,cscr],format='csc')
                             cscr=YY
                             csc=np.vstack([csc,cscr])
-                    #print('Sparsity:',yy,len(csc.data),np.float32(len(csc.data))/yy)
+                    #print('Sparsity:',yy,len(csc.data),np.floatX(len(csc.data))/yy)
                     return(csc)
 
 # Put the sparse matrices in a new network and write it out.
@@ -316,7 +316,7 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
             # JUst sparse
                 else:
                     layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=num_units,
-                                            W=W, b=None,Rzero=np.float32(np.ones((1,1))), prob=(1.,-1.),nonlinearity=l.nonlinearity,name='newdens'+str(t)))
+                                            W=W, b=None,Rzero=np.floatX(np.ones((1,1))), prob=(1.,-1.),nonlinearity=l.nonlinearity,name='newdens'+str(t)))
                 # Reshape for subsequent pooling
                 shp=l.output_shape[1:]
                 layer_list.append(lasagne.layers.reshape(layer_list[-1],([0],)+shp,name='reshape'+str(t)))
@@ -355,6 +355,14 @@ def main_new(NETPARS):
     print("seed",NETPARS['seed'])
     print("Loading data...")
     X_train, y_train, X_val, y_val, X_test, y_test=data.get_train(NETPARS)
+
+    X_train=np.float32(X_train)
+    X_val=np.float32(X_val)
+    X_test=np.float32(X_test)
+    y_train=np.int32(y_train)
+    y_test=np.int32(y_test)
+    y_val=np.int32(y_val)
+
     num_class=len(np.unique(y_test))
     print("num_class", num_class)
     # Prepare Theano variables for inputs and targets

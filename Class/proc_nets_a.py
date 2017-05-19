@@ -35,7 +35,7 @@ for j in range(parms['start'],parms['stop']):
     # py.show()
 PARAC=[]
 for p in PARA:
-    p=np.float32(p/num_nets)
+    p=np.floatX(p/num_nets)
     PARAC.append(np.copy(p))
 
 NETPARS={}

@@ -615,15 +615,15 @@ typedef npy_uint64 __pyx_t_5numpy_uint64_t;
 /* "../../../../../../Library/Python/2.7/site-packages/Cython/Includes/numpy/__init__.pxd":737
  * #ctypedef npy_uint128    uint128_t
  * 
- * ctypedef npy_float32    float32_t             # <<<<<<<<<<<<<<
+ * ctypedef npy_floatX    floatX_t             # <<<<<<<<<<<<<<
  * ctypedef npy_float64    float64_t
  * #ctypedef npy_float80    float80_t
  */
-typedef npy_float32 __pyx_t_5numpy_float32_t;
+typedef npy_floatX __pyx_t_5numpy_floatX_t;
 
 /* "../../../../../../Library/Python/2.7/site-packages/Cython/Includes/numpy/__init__.pxd":738
  * 
- * ctypedef npy_float32    float32_t
+ * ctypedef npy_floatX    floatX_t
  * ctypedef npy_float64    float64_t             # <<<<<<<<<<<<<<
  * #ctypedef npy_float80    float80_t
  * #ctypedef npy_float128   float128_t

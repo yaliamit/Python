@@ -615,15 +615,15 @@ typedef npy_uint64 __pyx_t_5numpy_uint64_t;
 /* "../../../../../../Library/Python/2.7/site-packages/Cython/Includes/numpy/__init__.pxd":737
  * #ctypedef npy_uint128    uint128_t
  * 
- * ctypedef npy_float32    float32_t             # <<<<<<<<<<<<<<
+ * ctypedef npy_floatX    floatX_t             # <<<<<<<<<<<<<<
  * ctypedef npy_float64    float64_t
  * #ctypedef npy_float80    float80_t
  */
-typedef npy_float32 __pyx_t_5numpy_float32_t;
+typedef npy_floatX __pyx_t_5numpy_floatX_t;
 
 /* "../../../../../../Library/Python/2.7/site-packages/Cython/Includes/numpy/__init__.pxd":738
  * 
- * ctypedef npy_float32    float32_t
+ * ctypedef npy_floatX    floatX_t
  * ctypedef npy_float64    float64_t             # <<<<<<<<<<<<<<
  * #ctypedef npy_float80    float80_t
  * #ctypedef npy_float128   float128_t
@@ -1325,7 +1325,7 @@ static int __Pyx_ValidateAndInit_memviewslice(
                 __Pyx_memviewslice *memviewslice,
                 PyObject *original_obj);
 
-static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsds_nn___pyx_t_5numpy_float32_t(PyObject *);
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsds_nn___pyx_t_5numpy_floatX_t(PyObject *);
 
 static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsds_nn___pyx_t_5numpy_float64_t(PyObject *);
 
@@ -1588,7 +1588,7 @@ static void __pyx_memoryview_refcount_objects_in_slice_with_gil(char *, Py_ssize
 static void __pyx_memoryview_refcount_objects_in_slice(char *, Py_ssize_t *, Py_ssize_t *, int, int); /*proto*/
 static void __pyx_memoryview_slice_assign_scalar(__Pyx_memviewslice *, int, size_t, void *, int); /*proto*/
 static void __pyx_memoryview__slice_assign_scalar(char *, Py_ssize_t *, Py_ssize_t *, int, size_t, void *); /*proto*/
-static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t = { "float32_t", NULL, sizeof(__pyx_t_5numpy_float32_t), { 0 }, 0, 'R', 0, 0 };
+static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_floatX_t = { "floatX_t", NULL, sizeof(__pyx_t_5numpy_floatX_t), { 0 }, 0, 'R', 0, 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t = { "float64_t", NULL, sizeof(__pyx_t_5numpy_float64_t), { 0 }, 0, 'R', 0, 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_int16_t = { "int16_t", NULL, sizeof(__pyx_t_5numpy_int16_t), { 0 }, 0, IS_UNSIGNED(__pyx_t_5numpy_int16_t) ? 'U' : 'I', IS_UNSIGNED(__pyx_t_5numpy_int16_t), 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t = { "int32_t", NULL, sizeof(__pyx_t_5numpy_int32_t), { 0 }, 0, IS_UNSIGNED(__pyx_t_5numpy_int32_t) ? 'U' : 'I', IS_UNSIGNED(__pyx_t_5numpy_int32_t), 0 };
@@ -1737,7 +1737,7 @@ static char __pyx_k_new_dim0[] = "new_dim0";
 static char __pyx_k_new_dim1[] = "new_dim1";
 static char __pyx_k_TypeError[] = "TypeError";
 static char __pyx_k_enumerate[] = "enumerate";
-static char __pyx_k_float32_t[] = "float32_t";
+static char __pyx_k_floatX_t[] = "floatX_t";
 static char __pyx_k_float64_t[] = "float64_t";
 static char __pyx_k_IndexError[] = "IndexError";
 static char __pyx_k_ValueError[] = "ValueError";
@@ -1841,7 +1841,7 @@ static PyObject *__pyx_n_s_enumerate;
 static PyObject *__pyx_n_s_error;
 static PyObject *__pyx_n_s_fabs;
 static PyObject *__pyx_n_s_flags;
-static PyObject *__pyx_n_s_float32_t;
+static PyObject *__pyx_n_s_floatX_t;
 static PyObject *__pyx_n_s_float64_t;
 static PyObject *__pyx_n_s_format;
 static PyObject *__pyx_n_s_fortran;
@@ -2365,7 +2365,7 @@ static PyObject *__pyx_pf_9amitgroup_4util_4nn2d_nn_resample2d(CYTHON_UNUSED PyO
             }
             break;
             case 'f':
-            __pyx_t_3 = (((sizeof(__pyx_t_5numpy_float32_t)) == __pyx_v_itemsize) != 0);
+            __pyx_t_3 = (((sizeof(__pyx_t_5numpy_floatX_t)) == __pyx_v_itemsize) != 0);
             if (__pyx_t_3) {
             } else {
               __pyx_t_2 = __pyx_t_3;
@@ -2379,7 +2379,7 @@ static PyObject *__pyx_pf_9amitgroup_4util_4nn2d_nn_resample2d(CYTHON_UNUSED PyO
             __pyx_t_2 = __pyx_t_3;
             __pyx_L39_bool_binop_done:;
             if (__pyx_t_2) {
-              if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_float32_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+              if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_floatX_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
               goto __pyx_L17_break;
             }
             __pyx_t_3 = (((sizeof(__pyx_t_5numpy_float64_t)) == __pyx_v_itemsize) != 0);
@@ -2418,15 +2418,15 @@ static PyObject *__pyx_pf_9amitgroup_4util_4nn2d_nn_resample2d(CYTHON_UNUSED PyO
         __pyx_t_2 = __pyx_t_3;
         goto __pyx_L45_bool_binop_done;
       }
-      __pyx_t_3 = ((__pyx_v_itemsize == (sizeof(__pyx_t_5numpy_float32_t))) != 0);
+      __pyx_t_3 = ((__pyx_v_itemsize == (sizeof(__pyx_t_5numpy_floatX_t))) != 0);
       __pyx_t_2 = __pyx_t_3;
       __pyx_L45_bool_binop_done:;
       if (__pyx_t_2) {
-        __pyx_v_memslice = __Pyx_PyObject_to_MemoryviewSlice_dsds_nn___pyx_t_5numpy_float32_t(__pyx_v_arg);
+        __pyx_v_memslice = __Pyx_PyObject_to_MemoryviewSlice_dsds_nn___pyx_t_5numpy_floatX_t(__pyx_v_arg);
         __pyx_t_2 = (__pyx_v_memslice.memview != 0);
         if (__pyx_t_2) {
           __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1);
-          if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_float32_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_floatX_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           goto __pyx_L17_break;
         }
         /*else*/ {
@@ -2887,7 +2887,7 @@ static PyObject *__pyx_pf_9amitgroup_4util_4nn2d_2nn_resample2d(CYTHON_UNUSED Py
   __pyx_pybuffernd_X.rcbuffer = &__pyx_pybuffer_X;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_X.rcbuffer->pybuffer, (PyObject*)__pyx_v_X, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_X.rcbuffer->pybuffer, (PyObject*)__pyx_v_X, &__Pyx_TypeInfo_nn___pyx_t_5numpy_floatX_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_pybuffernd_X.diminfo[0].strides = __pyx_pybuffernd_X.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_X.diminfo[0].shape = __pyx_pybuffernd_X.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_X.diminfo[1].strides = __pyx_pybuffernd_X.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_X.diminfo[1].shape = __pyx_pybuffernd_X.rcbuffer->pybuffer.shape[1];
 
@@ -2946,7 +2946,7 @@ static PyObject *__pyx_pf_9amitgroup_4util_4nn2d_2nn_resample2d(CYTHON_UNUSED Py
  *         TYPE[:,:] Y_mv = Y
  * 
  */
-  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_nn___pyx_t_5numpy_float32_t(((PyObject *)__pyx_v_X));
+  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_dsds_nn___pyx_t_5numpy_floatX_t(((PyObject *)__pyx_v_X));
   if (unlikely(!__pyx_t_6.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 33; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_X_mv = __pyx_t_6;
   __pyx_t_6.memview = NULL;
@@ -2959,7 +2959,7 @@ static PyObject *__pyx_pf_9amitgroup_4util_4nn2d_2nn_resample2d(CYTHON_UNUSED Py
  * 
  *         int dim0 = X.shape[0]
  */
-  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_dsds_nn___pyx_t_5numpy_float32_t(__pyx_v_Y);
+  __pyx_t_7 = __Pyx_PyObject_to_MemoryviewSlice_dsds_nn___pyx_t_5numpy_floatX_t(__pyx_v_Y);
   if (unlikely(!__pyx_t_7.memview)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_Y_mv = __pyx_t_7;
   __pyx_t_7.memview = NULL;
@@ -3074,7 +3074,7 @@ static PyObject *__pyx_pf_9amitgroup_4util_4nn2d_2nn_resample2d(CYTHON_UNUSED Py
             __pyx_t_13 = ((int)(__pyx_v_j * __pyx_v_ratio1));
             __pyx_t_14 = __pyx_v_i;
             __pyx_t_15 = __pyx_v_j;
-            *((__pyx_t_5numpy_float32_t *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_Y_mv.data + __pyx_t_14 * __pyx_v_Y_mv.strides[0]) ) + __pyx_t_15 * __pyx_v_Y_mv.strides[1]) )) = (*((__pyx_t_5numpy_float32_t *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_X_mv.data + __pyx_t_12 * __pyx_v_X_mv.strides[0]) ) + __pyx_t_13 * __pyx_v_X_mv.strides[1]) )));
+            *((__pyx_t_5numpy_floatX_t *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_Y_mv.data + __pyx_t_14 * __pyx_v_Y_mv.strides[0]) ) + __pyx_t_15 * __pyx_v_Y_mv.strides[1]) )) = (*((__pyx_t_5numpy_floatX_t *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_X_mv.data + __pyx_t_12 * __pyx_v_X_mv.strides[0]) ) + __pyx_t_13 * __pyx_v_X_mv.strides[1]) )));
           }
         }
       }
@@ -18313,7 +18313,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_error, __pyx_k_error, sizeof(__pyx_k_error), 0, 0, 1, 1},
   {&__pyx_n_s_fabs, __pyx_k_fabs, sizeof(__pyx_k_fabs), 0, 0, 1, 1},
   {&__pyx_n_s_flags, __pyx_k_flags, sizeof(__pyx_k_flags), 0, 0, 1, 1},
-  {&__pyx_n_s_float32_t, __pyx_k_float32_t, sizeof(__pyx_k_float32_t), 0, 0, 1, 1},
+  {&__pyx_n_s_floatX_t, __pyx_k_floatX_t, sizeof(__pyx_k_floatX_t), 0, 0, 1, 1},
   {&__pyx_n_s_float64_t, __pyx_k_float64_t, sizeof(__pyx_k_float64_t), 0, 0, 1, 1},
   {&__pyx_n_s_format, __pyx_k_format, sizeof(__pyx_k_format), 0, 0, 1, 1},
   {&__pyx_n_s_fortran, __pyx_k_fortran, sizeof(__pyx_k_fortran), 0, 0, 1, 1},
@@ -18870,7 +18870,7 @@ PyMODINIT_FUNC PyInit_nn2d(void)
   __pyx_t_1 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0__pyx_mdef_9amitgroup_4util_4nn2d_3nn_resample2d, 0, __pyx_n_s_nn_resample2d, NULL, __pyx_n_s_amitgroup_util_nn2d, __pyx_d, ((PyObject *)__pyx_codeobj__25)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_1, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_float32_t, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_floatX_t, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1__pyx_mdef_9amitgroup_4util_4nn2d_5nn_resample2d, 0, __pyx_n_s_nn_resample2d, NULL, __pyx_n_s_amitgroup_util_nn2d, __pyx_d, ((PyObject *)__pyx_codeobj__25)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
@@ -19029,7 +19029,7 @@ PyMODINIT_FUNC PyInit_nn2d(void)
  * 
  * cdef extern from *:             # <<<<<<<<<<<<<<
  *     void __pyx_PyErr_Clear "PyErr_Clear" ()
- *     __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsds_nn___pyx_t_5numpy_float32_t(object)
+ *     __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsds_nn___pyx_t_5numpy_floatX_t(object)
  */
 
   /*--- Wrapped vars code ---*/
@@ -22193,7 +22193,7 @@ no_fail:
     return retval;
 }
 
-static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsds_nn___pyx_t_5numpy_float32_t(PyObject *obj) {
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsds_nn___pyx_t_5numpy_floatX_t(PyObject *obj) {
     __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
     __Pyx_BufFmt_StackElem stack[1];
     int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED), (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED) };
@@ -22204,7 +22204,7 @@ static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsds_n
     }
     retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, 0,
                                                  PyBUF_RECORDS, 2,
-                                                 &__Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t, stack,
+                                                 &__Pyx_TypeInfo_nn___pyx_t_5numpy_floatX_t, stack,
                                                  &result, obj);
     if (unlikely(retcode == -1))
         goto __pyx_fail;

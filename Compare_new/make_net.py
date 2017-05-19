@@ -25,11 +25,11 @@ def rect_sym(x):
     """Rectify activation function :math:`\\varphi(x) = \\max(0, x)`
     Parameters
     ----------
-    x : float32
+    x : floatX
         The activation (the summed, weighted input of a neuron).
     Returns
     -------
-    float32
+    floatX
         The output of the rectify function applied to the activation.
     """
     y=theano.tensor.nnet.relu(x+1)-1
@@ -179,6 +179,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
         if ('force_global_prob' in PARS and 'prob' in l and l['prob'][1]>=0):
             prob=PARS['force_global_prob']
         prob=tuple([np.float32(i) for i in prob])
+        tinout=tuple(np.float32(i) for i in tinout)
         #prob.shape=(1,2)
         nonlin=lasagne.nonlinearities.identity
         if 'non_linearity' in l:

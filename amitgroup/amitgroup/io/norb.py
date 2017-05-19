@@ -103,7 +103,7 @@ def _load_small_norb_data(section, path=None, offset=0, count=None,
 
         X = X.reshape((count,) + dims[1:])
 
-        if dtype in [np.float16, np.float32, np.float64]:
+        if dtype in [np.float16, np.floatX, np.float64]:
             X = X.astype(dtype) / 255
         elif dtype == np.uint8:
             pass  # Do nothing

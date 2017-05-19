@@ -681,15 +681,15 @@ typedef npy_uint64 __pyx_t_5numpy_uint64_t;
 /* "../../../../../../anaconda/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":739
  * #ctypedef npy_uint128    uint128_t
  * 
- * ctypedef npy_float32    float32_t             # <<<<<<<<<<<<<<
+ * ctypedef npy_floatX    floatX_t             # <<<<<<<<<<<<<<
  * ctypedef npy_float64    float64_t
  * #ctypedef npy_float80    float80_t
  */
-typedef npy_float32 __pyx_t_5numpy_float32_t;
+typedef npy_floatX __pyx_t_5numpy_floatX_t;
 
 /* "../../../../../../anaconda/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":740
  * 
- * ctypedef npy_float32    float32_t
+ * ctypedef npy_floatX    floatX_t
  * ctypedef npy_float64    float64_t             # <<<<<<<<<<<<<<
  * #ctypedef npy_float80    float80_t
  * #ctypedef npy_float128   float128_t
@@ -1704,7 +1704,7 @@ static void __pyx_memoryview_slice_assign_scalar(__Pyx_memviewslice *, int, size
 static void __pyx_memoryview__slice_assign_scalar(char *, Py_ssize_t *, Py_ssize_t *, int, size_t, void *); /*proto*/
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_9amitgroup_8features_8features_DTYPE_t = { "DTYPE_t", NULL, sizeof(__pyx_t_9amitgroup_8features_8features_DTYPE_t), { 0 }, 0, 'R', 0, 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_uint8_t = { "uint8_t", NULL, sizeof(__pyx_t_5numpy_uint8_t), { 0 }, 0, IS_UNSIGNED(__pyx_t_5numpy_uint8_t) ? 'U' : 'I', IS_UNSIGNED(__pyx_t_5numpy_uint8_t), 0 };
-static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t = { "float32_t", NULL, sizeof(__pyx_t_5numpy_float32_t), { 0 }, 0, 'R', 0, 0 };
+static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_floatX_t = { "floatX_t", NULL, sizeof(__pyx_t_5numpy_floatX_t), { 0 }, 0, 'R', 0, 0 };
 #define __Pyx_MODULE_NAME "amitgroup.features.features"
 int __pyx_module_is_main_amitgroup__features__features = 0;
 
@@ -1790,7 +1790,7 @@ static const char __pyx_k_rounds[] = "rounds";
 static const char __pyx_k_spread[] = "spread";
 static const char __pyx_k_struct[] = "struct";
 static const char __pyx_k_unpack[] = "unpack";
-static const char __pyx_k_float32[] = "float32";
+static const char __pyx_k_floatX[] = "floatX";
 static const char __pyx_k_float64[] = "float64";
 static const char __pyx_k_fortran[] = "fortran";
 static const char __pyx_k_max_con[] = "max_con";
@@ -1930,7 +1930,7 @@ static PyObject *__pyx_n_s_enumerate;
 static PyObject *__pyx_n_s_error;
 static PyObject *__pyx_n_s_fac;
 static PyObject *__pyx_n_s_flags;
-static PyObject *__pyx_n_s_float32;
+static PyObject *__pyx_n_s_floatX;
 static PyObject *__pyx_n_s_float64;
 static PyObject *__pyx_n_s_format;
 static PyObject *__pyx_n_s_fortran;
@@ -3221,7 +3221,7 @@ static CYTHON_INLINE void __pyx_f_9amitgroup_8features_8features__byte_checkedge
 /* "amitgroup/features/features.pyx":112
  * 
  * 
- * def change_saturation_c(np.ndarray[np.float32_t,ndim=4] xx,np.ndarray[np.float32_t, ndim=1] fac):             # <<<<<<<<<<<<<<
+ * def change_saturation_c(np.ndarray[np.floatX_t,ndim=4] xx,np.ndarray[np.floatX_t, ndim=1] fac):             # <<<<<<<<<<<<<<
  * 
  *     cdef int N = xx.shape[0]
  */
@@ -3347,7 +3347,7 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
   PyObject *__pyx_t_33 = NULL;
   Py_ssize_t __pyx_t_34;
   Py_ssize_t __pyx_t_35;
-  __pyx_t_5numpy_float32_t __pyx_t_36;
+  __pyx_t_5numpy_floatX_t __pyx_t_36;
   Py_ssize_t __pyx_t_37;
   Py_ssize_t __pyx_t_38;
   Py_ssize_t __pyx_t_39;
@@ -3377,17 +3377,17 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
   __pyx_pybuffernd_fac.rcbuffer = &__pyx_pybuffer_fac;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_xx.rcbuffer->pybuffer, (PyObject*)__pyx_v_xx, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t, PyBUF_FORMAT| PyBUF_STRIDES, 4, 0, __pyx_stack) == -1)) __PYX_ERR(0, 112, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_xx.rcbuffer->pybuffer, (PyObject*)__pyx_v_xx, &__Pyx_TypeInfo_nn___pyx_t_5numpy_floatX_t, PyBUF_FORMAT| PyBUF_STRIDES, 4, 0, __pyx_stack) == -1)) __PYX_ERR(0, 112, __pyx_L1_error)
   }
   __pyx_pybuffernd_xx.diminfo[0].strides = __pyx_pybuffernd_xx.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_xx.diminfo[0].shape = __pyx_pybuffernd_xx.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_xx.diminfo[1].strides = __pyx_pybuffernd_xx.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_xx.diminfo[1].shape = __pyx_pybuffernd_xx.rcbuffer->pybuffer.shape[1]; __pyx_pybuffernd_xx.diminfo[2].strides = __pyx_pybuffernd_xx.rcbuffer->pybuffer.strides[2]; __pyx_pybuffernd_xx.diminfo[2].shape = __pyx_pybuffernd_xx.rcbuffer->pybuffer.shape[2]; __pyx_pybuffernd_xx.diminfo[3].strides = __pyx_pybuffernd_xx.rcbuffer->pybuffer.strides[3]; __pyx_pybuffernd_xx.diminfo[3].shape = __pyx_pybuffernd_xx.rcbuffer->pybuffer.shape[3];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_fac.rcbuffer->pybuffer, (PyObject*)__pyx_v_fac, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 112, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_fac.rcbuffer->pybuffer, (PyObject*)__pyx_v_fac, &__Pyx_TypeInfo_nn___pyx_t_5numpy_floatX_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 112, __pyx_L1_error)
   }
   __pyx_pybuffernd_fac.diminfo[0].strides = __pyx_pybuffernd_fac.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_fac.diminfo[0].shape = __pyx_pybuffernd_fac.rcbuffer->pybuffer.shape[0];
 
   /* "amitgroup/features/features.pyx":114
- * def change_saturation_c(np.ndarray[np.float32_t,ndim=4] xx,np.ndarray[np.float32_t, ndim=1] fac):
+ * def change_saturation_c(np.ndarray[np.floatX_t,ndim=4] xx,np.ndarray[np.floatX_t, ndim=1] fac):
  * 
  *     cdef int N = xx.shape[0]             # <<<<<<<<<<<<<<
  *     cdef int rows = xx.shape[1]
@@ -3400,7 +3400,7 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
  *     cdef int N = xx.shape[0]
  *     cdef int rows = xx.shape[1]             # <<<<<<<<<<<<<<
  *     cdef int cols = xx.shape[2]
- *     cdef np.ndarray[np.float32_t, ndim=4] yy = np.zeros((N,rows, cols, 3), dtype=np.float32)
+ *     cdef np.ndarray[np.floatX_t, ndim=4] yy = np.zeros((N,rows, cols, 3), dtype=np.floatX)
  */
   __pyx_v_rows = (__pyx_v_xx->dimensions[1]);
 
@@ -3408,16 +3408,16 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
  *     cdef int N = xx.shape[0]
  *     cdef int rows = xx.shape[1]
  *     cdef int cols = xx.shape[2]             # <<<<<<<<<<<<<<
- *     cdef np.ndarray[np.float32_t, ndim=4] yy = np.zeros((N,rows, cols, 3), dtype=np.float32)
- *     cdef np.ndarray[np.float32_t, ndim=1] uu = np.zeros(3, dtype=np.float32)
+ *     cdef np.ndarray[np.floatX_t, ndim=4] yy = np.zeros((N,rows, cols, 3), dtype=np.floatX)
+ *     cdef np.ndarray[np.floatX_t, ndim=1] uu = np.zeros(3, dtype=np.floatX)
  */
   __pyx_v_cols = (__pyx_v_xx->dimensions[2]);
 
   /* "amitgroup/features/features.pyx":117
  *     cdef int rows = xx.shape[1]
  *     cdef int cols = xx.shape[2]
- *     cdef np.ndarray[np.float32_t, ndim=4] yy = np.zeros((N,rows, cols, 3), dtype=np.float32)             # <<<<<<<<<<<<<<
- *     cdef np.ndarray[np.float32_t, ndim=1] uu = np.zeros(3, dtype=np.float32)
+ *     cdef np.ndarray[np.floatX_t, ndim=4] yy = np.zeros((N,rows, cols, 3), dtype=np.floatX)             # <<<<<<<<<<<<<<
+ *     cdef np.ndarray[np.floatX_t, ndim=1] uu = np.zeros(3, dtype=np.floatX)
  *     for n in range(N):
  */
   __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
@@ -3454,7 +3454,7 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_float32); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_floatX); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_dtype, __pyx_t_1) < 0) __PYX_ERR(0, 117, __pyx_L1_error)
@@ -3468,7 +3468,7 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
   __pyx_t_6 = ((PyArrayObject *)__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yy.rcbuffer->pybuffer, (PyObject*)__pyx_t_6, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 4, 0, __pyx_stack) == -1)) {
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_yy.rcbuffer->pybuffer, (PyObject*)__pyx_t_6, &__Pyx_TypeInfo_nn___pyx_t_5numpy_floatX_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 4, 0, __pyx_stack) == -1)) {
       __pyx_v_yy = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_yy.rcbuffer->pybuffer.buf = NULL;
       __PYX_ERR(0, 117, __pyx_L1_error)
     } else {__pyx_pybuffernd_yy.diminfo[0].strides = __pyx_pybuffernd_yy.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_yy.diminfo[0].shape = __pyx_pybuffernd_yy.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_yy.diminfo[1].strides = __pyx_pybuffernd_yy.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_yy.diminfo[1].shape = __pyx_pybuffernd_yy.rcbuffer->pybuffer.shape[1]; __pyx_pybuffernd_yy.diminfo[2].strides = __pyx_pybuffernd_yy.rcbuffer->pybuffer.strides[2]; __pyx_pybuffernd_yy.diminfo[2].shape = __pyx_pybuffernd_yy.rcbuffer->pybuffer.shape[2]; __pyx_pybuffernd_yy.diminfo[3].strides = __pyx_pybuffernd_yy.rcbuffer->pybuffer.strides[3]; __pyx_pybuffernd_yy.diminfo[3].shape = __pyx_pybuffernd_yy.rcbuffer->pybuffer.shape[3];
@@ -3480,8 +3480,8 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
 
   /* "amitgroup/features/features.pyx":118
  *     cdef int cols = xx.shape[2]
- *     cdef np.ndarray[np.float32_t, ndim=4] yy = np.zeros((N,rows, cols, 3), dtype=np.float32)
- *     cdef np.ndarray[np.float32_t, ndim=1] uu = np.zeros(3, dtype=np.float32)             # <<<<<<<<<<<<<<
+ *     cdef np.ndarray[np.floatX_t, ndim=4] yy = np.zeros((N,rows, cols, 3), dtype=np.floatX)
+ *     cdef np.ndarray[np.floatX_t, ndim=1] uu = np.zeros(3, dtype=np.floatX)             # <<<<<<<<<<<<<<
  *     for n in range(N):
  *         for i in range(rows):
  */
@@ -3494,7 +3494,7 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_float32); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 118, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_floatX); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_2) < 0) __PYX_ERR(0, 118, __pyx_L1_error)
@@ -3507,7 +3507,7 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
   __pyx_t_7 = ((PyArrayObject *)__pyx_t_2);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_uu.rcbuffer->pybuffer, (PyObject*)__pyx_t_7, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 1, 0, __pyx_stack) == -1)) {
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_uu.rcbuffer->pybuffer, (PyObject*)__pyx_t_7, &__Pyx_TypeInfo_nn___pyx_t_5numpy_floatX_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_uu = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_uu.rcbuffer->pybuffer.buf = NULL;
       __PYX_ERR(0, 118, __pyx_L1_error)
     } else {__pyx_pybuffernd_uu.diminfo[0].strides = __pyx_pybuffernd_uu.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_uu.diminfo[0].shape = __pyx_pybuffernd_uu.rcbuffer->pybuffer.shape[0];
@@ -3518,8 +3518,8 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
   __pyx_t_2 = 0;
 
   /* "amitgroup/features/features.pyx":119
- *     cdef np.ndarray[np.float32_t, ndim=4] yy = np.zeros((N,rows, cols, 3), dtype=np.float32)
- *     cdef np.ndarray[np.float32_t, ndim=1] uu = np.zeros(3, dtype=np.float32)
+ *     cdef np.ndarray[np.floatX_t, ndim=4] yy = np.zeros((N,rows, cols, 3), dtype=np.floatX)
+ *     cdef np.ndarray[np.floatX_t, ndim=1] uu = np.zeros(3, dtype=np.floatX)
  *     for n in range(N):             # <<<<<<<<<<<<<<
  *         for i in range(rows):
  *             for j in range(cols):
@@ -3529,11 +3529,11 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
     __pyx_v_n = __pyx_t_9;
 
     /* "amitgroup/features/features.pyx":120
- *     cdef np.ndarray[np.float32_t, ndim=1] uu = np.zeros(3, dtype=np.float32)
+ *     cdef np.ndarray[np.floatX_t, ndim=1] uu = np.zeros(3, dtype=np.floatX)
  *     for n in range(N):
  *         for i in range(rows):             # <<<<<<<<<<<<<<
  *             for j in range(cols):
- *                 uu=np.array(colorsys.rgb_to_hsv(xx[n,i,j,0],xx[n,i,j,1],xx[n,i,j,2]),dtype=np.float32)
+ *                 uu=np.array(colorsys.rgb_to_hsv(xx[n,i,j,0],xx[n,i,j,1],xx[n,i,j,2]),dtype=np.floatX)
  */
     __pyx_t_10 = __pyx_v_rows;
     for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
@@ -3543,7 +3543,7 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
  *     for n in range(N):
  *         for i in range(rows):
  *             for j in range(cols):             # <<<<<<<<<<<<<<
- *                 uu=np.array(colorsys.rgb_to_hsv(xx[n,i,j,0],xx[n,i,j,1],xx[n,i,j,2]),dtype=np.float32)
+ *                 uu=np.array(colorsys.rgb_to_hsv(xx[n,i,j,0],xx[n,i,j,1],xx[n,i,j,2]),dtype=np.floatX)
  *                 uu[1]=np.minimum(uu[1]*fac[n],1)
  */
       __pyx_t_12 = __pyx_v_cols;
@@ -3553,9 +3553,9 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
         /* "amitgroup/features/features.pyx":122
  *         for i in range(rows):
  *             for j in range(cols):
- *                 uu=np.array(colorsys.rgb_to_hsv(xx[n,i,j,0],xx[n,i,j,1],xx[n,i,j,2]),dtype=np.float32)             # <<<<<<<<<<<<<<
+ *                 uu=np.array(colorsys.rgb_to_hsv(xx[n,i,j,0],xx[n,i,j,1],xx[n,i,j,2]),dtype=np.floatX)             # <<<<<<<<<<<<<<
  *                 uu[1]=np.minimum(uu[1]*fac[n],1)
- *                 uu=np.array(colorsys.hsv_to_rgb(uu[0],uu[1],uu[2]),dtype=np.float32)
+ *                 uu=np.array(colorsys.hsv_to_rgb(uu[0],uu[1],uu[2]),dtype=np.floatX)
  */
         __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 122, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
@@ -3575,7 +3575,7 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
         if (__pyx_t_15 < 0) __pyx_t_15 += __pyx_pybuffernd_xx.diminfo[1].shape;
         if (__pyx_t_16 < 0) __pyx_t_16 += __pyx_pybuffernd_xx.diminfo[2].shape;
         if (__pyx_t_17 < 0) __pyx_t_17 += __pyx_pybuffernd_xx.diminfo[3].shape;
-        __pyx_t_5 = PyFloat_FromDouble((*__Pyx_BufPtrStrided4d(__pyx_t_5numpy_float32_t *, __pyx_pybuffernd_xx.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_xx.diminfo[0].strides, __pyx_t_15, __pyx_pybuffernd_xx.diminfo[1].strides, __pyx_t_16, __pyx_pybuffernd_xx.diminfo[2].strides, __pyx_t_17, __pyx_pybuffernd_xx.diminfo[3].strides))); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 122, __pyx_L1_error)
+        __pyx_t_5 = PyFloat_FromDouble((*__Pyx_BufPtrStrided4d(__pyx_t_5numpy_floatX_t *, __pyx_pybuffernd_xx.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_xx.diminfo[0].strides, __pyx_t_15, __pyx_pybuffernd_xx.diminfo[1].strides, __pyx_t_16, __pyx_pybuffernd_xx.diminfo[2].strides, __pyx_t_17, __pyx_pybuffernd_xx.diminfo[3].strides))); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 122, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_18 = __pyx_v_n;
         __pyx_t_19 = __pyx_v_i;
@@ -3585,7 +3585,7 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
         if (__pyx_t_19 < 0) __pyx_t_19 += __pyx_pybuffernd_xx.diminfo[1].shape;
         if (__pyx_t_20 < 0) __pyx_t_20 += __pyx_pybuffernd_xx.diminfo[2].shape;
         if (__pyx_t_21 < 0) __pyx_t_21 += __pyx_pybuffernd_xx.diminfo[3].shape;
-        __pyx_t_3 = PyFloat_FromDouble((*__Pyx_BufPtrStrided4d(__pyx_t_5numpy_float32_t *, __pyx_pybuffernd_xx.rcbuffer->pybuffer.buf, __pyx_t_18, __pyx_pybuffernd_xx.diminfo[0].strides, __pyx_t_19, __pyx_pybuffernd_xx.diminfo[1].strides, __pyx_t_20, __pyx_pybuffernd_xx.diminfo[2].strides, __pyx_t_21, __pyx_pybuffernd_xx.diminfo[3].strides))); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 122, __pyx_L1_error)
+        __pyx_t_3 = PyFloat_FromDouble((*__Pyx_BufPtrStrided4d(__pyx_t_5numpy_floatX_t *, __pyx_pybuffernd_xx.rcbuffer->pybuffer.buf, __pyx_t_18, __pyx_pybuffernd_xx.diminfo[0].strides, __pyx_t_19, __pyx_pybuffernd_xx.diminfo[1].strides, __pyx_t_20, __pyx_pybuffernd_xx.diminfo[2].strides, __pyx_t_21, __pyx_pybuffernd_xx.diminfo[3].strides))); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 122, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __pyx_t_22 = __pyx_v_n;
         __pyx_t_23 = __pyx_v_i;
@@ -3595,7 +3595,7 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
         if (__pyx_t_23 < 0) __pyx_t_23 += __pyx_pybuffernd_xx.diminfo[1].shape;
         if (__pyx_t_24 < 0) __pyx_t_24 += __pyx_pybuffernd_xx.diminfo[2].shape;
         if (__pyx_t_25 < 0) __pyx_t_25 += __pyx_pybuffernd_xx.diminfo[3].shape;
-        __pyx_t_26 = PyFloat_FromDouble((*__Pyx_BufPtrStrided4d(__pyx_t_5numpy_float32_t *, __pyx_pybuffernd_xx.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_xx.diminfo[0].strides, __pyx_t_23, __pyx_pybuffernd_xx.diminfo[1].strides, __pyx_t_24, __pyx_pybuffernd_xx.diminfo[2].strides, __pyx_t_25, __pyx_pybuffernd_xx.diminfo[3].strides))); if (unlikely(!__pyx_t_26)) __PYX_ERR(0, 122, __pyx_L1_error)
+        __pyx_t_26 = PyFloat_FromDouble((*__Pyx_BufPtrStrided4d(__pyx_t_5numpy_floatX_t *, __pyx_pybuffernd_xx.rcbuffer->pybuffer.buf, __pyx_t_22, __pyx_pybuffernd_xx.diminfo[0].strides, __pyx_t_23, __pyx_pybuffernd_xx.diminfo[1].strides, __pyx_t_24, __pyx_pybuffernd_xx.diminfo[2].strides, __pyx_t_25, __pyx_pybuffernd_xx.diminfo[3].strides))); if (unlikely(!__pyx_t_26)) __PYX_ERR(0, 122, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_26);
         __pyx_t_27 = NULL;
         __pyx_t_28 = 0;
@@ -3636,7 +3636,7 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
         __Pyx_GOTREF(__pyx_t_2);
         __pyx_t_29 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_29)) __PYX_ERR(0, 122, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_29);
-        __pyx_t_26 = __Pyx_PyObject_GetAttrStr(__pyx_t_29, __pyx_n_s_float32); if (unlikely(!__pyx_t_26)) __PYX_ERR(0, 122, __pyx_L1_error)
+        __pyx_t_26 = __Pyx_PyObject_GetAttrStr(__pyx_t_29, __pyx_n_s_floatX); if (unlikely(!__pyx_t_26)) __PYX_ERR(0, 122, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_26);
         __Pyx_DECREF(__pyx_t_29); __pyx_t_29 = 0;
         if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_dtype, __pyx_t_26) < 0) __PYX_ERR(0, 122, __pyx_L1_error)
@@ -3651,10 +3651,10 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
         {
           __Pyx_BufFmt_StackElem __pyx_stack[1];
           __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_uu.rcbuffer->pybuffer);
-          __pyx_t_30 = __Pyx_GetBufferAndValidate(&__pyx_pybuffernd_uu.rcbuffer->pybuffer, (PyObject*)__pyx_t_7, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 1, 0, __pyx_stack);
+          __pyx_t_30 = __Pyx_GetBufferAndValidate(&__pyx_pybuffernd_uu.rcbuffer->pybuffer, (PyObject*)__pyx_t_7, &__Pyx_TypeInfo_nn___pyx_t_5numpy_floatX_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 1, 0, __pyx_stack);
           if (unlikely(__pyx_t_30 < 0)) {
             PyErr_Fetch(&__pyx_t_31, &__pyx_t_32, &__pyx_t_33);
-            if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_uu.rcbuffer->pybuffer, (PyObject*)__pyx_v_uu, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 1, 0, __pyx_stack) == -1)) {
+            if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_uu.rcbuffer->pybuffer, (PyObject*)__pyx_v_uu, &__Pyx_TypeInfo_nn___pyx_t_5numpy_floatX_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 1, 0, __pyx_stack) == -1)) {
               Py_XDECREF(__pyx_t_31); Py_XDECREF(__pyx_t_32); Py_XDECREF(__pyx_t_33);
               __Pyx_RaiseBufferFallbackError();
             } else {
@@ -3670,9 +3670,9 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
 
         /* "amitgroup/features/features.pyx":123
  *             for j in range(cols):
- *                 uu=np.array(colorsys.rgb_to_hsv(xx[n,i,j,0],xx[n,i,j,1],xx[n,i,j,2]),dtype=np.float32)
+ *                 uu=np.array(colorsys.rgb_to_hsv(xx[n,i,j,0],xx[n,i,j,1],xx[n,i,j,2]),dtype=np.floatX)
  *                 uu[1]=np.minimum(uu[1]*fac[n],1)             # <<<<<<<<<<<<<<
- *                 uu=np.array(colorsys.hsv_to_rgb(uu[0],uu[1],uu[2]),dtype=np.float32)
+ *                 uu=np.array(colorsys.hsv_to_rgb(uu[0],uu[1],uu[2]),dtype=np.floatX)
  *                 for k in range(3):
  */
         __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 123, __pyx_L1_error)
@@ -3684,7 +3684,7 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
         if (__pyx_t_34 < 0) __pyx_t_34 += __pyx_pybuffernd_uu.diminfo[0].shape;
         __pyx_t_35 = __pyx_v_n;
         if (__pyx_t_35 < 0) __pyx_t_35 += __pyx_pybuffernd_fac.diminfo[0].shape;
-        __pyx_t_2 = PyFloat_FromDouble(((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float32_t *, __pyx_pybuffernd_uu.rcbuffer->pybuffer.buf, __pyx_t_34, __pyx_pybuffernd_uu.diminfo[0].strides)) * (*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float32_t *, __pyx_pybuffernd_fac.rcbuffer->pybuffer.buf, __pyx_t_35, __pyx_pybuffernd_fac.diminfo[0].strides)))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 123, __pyx_L1_error)
+        __pyx_t_2 = PyFloat_FromDouble(((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_floatX_t *, __pyx_pybuffernd_uu.rcbuffer->pybuffer.buf, __pyx_t_34, __pyx_pybuffernd_uu.diminfo[0].strides)) * (*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_floatX_t *, __pyx_pybuffernd_fac.rcbuffer->pybuffer.buf, __pyx_t_35, __pyx_pybuffernd_fac.diminfo[0].strides)))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 123, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __pyx_t_1 = NULL;
         __pyx_t_28 = 0;
@@ -3713,16 +3713,16 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
         __Pyx_GOTREF(__pyx_t_26);
         __Pyx_DECREF(__pyx_t_29); __pyx_t_29 = 0;
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_36 = __pyx_PyFloat_AsFloat(__pyx_t_26); if (unlikely((__pyx_t_36 == (npy_float32)-1) && PyErr_Occurred())) __PYX_ERR(0, 123, __pyx_L1_error)
+        __pyx_t_36 = __pyx_PyFloat_AsFloat(__pyx_t_26); if (unlikely((__pyx_t_36 == (npy_floatX)-1) && PyErr_Occurred())) __PYX_ERR(0, 123, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_26); __pyx_t_26 = 0;
         __pyx_t_37 = 1;
         if (__pyx_t_37 < 0) __pyx_t_37 += __pyx_pybuffernd_uu.diminfo[0].shape;
-        *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float32_t *, __pyx_pybuffernd_uu.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_uu.diminfo[0].strides) = __pyx_t_36;
+        *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_floatX_t *, __pyx_pybuffernd_uu.rcbuffer->pybuffer.buf, __pyx_t_37, __pyx_pybuffernd_uu.diminfo[0].strides) = __pyx_t_36;
 
         /* "amitgroup/features/features.pyx":124
- *                 uu=np.array(colorsys.rgb_to_hsv(xx[n,i,j,0],xx[n,i,j,1],xx[n,i,j,2]),dtype=np.float32)
+ *                 uu=np.array(colorsys.rgb_to_hsv(xx[n,i,j,0],xx[n,i,j,1],xx[n,i,j,2]),dtype=np.floatX)
  *                 uu[1]=np.minimum(uu[1]*fac[n],1)
- *                 uu=np.array(colorsys.hsv_to_rgb(uu[0],uu[1],uu[2]),dtype=np.float32)             # <<<<<<<<<<<<<<
+ *                 uu=np.array(colorsys.hsv_to_rgb(uu[0],uu[1],uu[2]),dtype=np.floatX)             # <<<<<<<<<<<<<<
  *                 for k in range(3):
  *                     yy[n,i,j,k]=uu[k]
  */
@@ -3738,15 +3738,15 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
         __Pyx_DECREF(__pyx_t_29); __pyx_t_29 = 0;
         __pyx_t_38 = 0;
         if (__pyx_t_38 < 0) __pyx_t_38 += __pyx_pybuffernd_uu.diminfo[0].shape;
-        __pyx_t_29 = PyFloat_FromDouble((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float32_t *, __pyx_pybuffernd_uu.rcbuffer->pybuffer.buf, __pyx_t_38, __pyx_pybuffernd_uu.diminfo[0].strides))); if (unlikely(!__pyx_t_29)) __PYX_ERR(0, 124, __pyx_L1_error)
+        __pyx_t_29 = PyFloat_FromDouble((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_floatX_t *, __pyx_pybuffernd_uu.rcbuffer->pybuffer.buf, __pyx_t_38, __pyx_pybuffernd_uu.diminfo[0].strides))); if (unlikely(!__pyx_t_29)) __PYX_ERR(0, 124, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_29);
         __pyx_t_39 = 1;
         if (__pyx_t_39 < 0) __pyx_t_39 += __pyx_pybuffernd_uu.diminfo[0].shape;
-        __pyx_t_1 = PyFloat_FromDouble((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float32_t *, __pyx_pybuffernd_uu.rcbuffer->pybuffer.buf, __pyx_t_39, __pyx_pybuffernd_uu.diminfo[0].strides))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 124, __pyx_L1_error)
+        __pyx_t_1 = PyFloat_FromDouble((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_floatX_t *, __pyx_pybuffernd_uu.rcbuffer->pybuffer.buf, __pyx_t_39, __pyx_pybuffernd_uu.diminfo[0].strides))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 124, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __pyx_t_40 = 2;
         if (__pyx_t_40 < 0) __pyx_t_40 += __pyx_pybuffernd_uu.diminfo[0].shape;
-        __pyx_t_3 = PyFloat_FromDouble((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float32_t *, __pyx_pybuffernd_uu.rcbuffer->pybuffer.buf, __pyx_t_40, __pyx_pybuffernd_uu.diminfo[0].strides))); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 124, __pyx_L1_error)
+        __pyx_t_3 = PyFloat_FromDouble((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_floatX_t *, __pyx_pybuffernd_uu.rcbuffer->pybuffer.buf, __pyx_t_40, __pyx_pybuffernd_uu.diminfo[0].strides))); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 124, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __pyx_t_5 = NULL;
         __pyx_t_28 = 0;
@@ -3787,7 +3787,7 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
         __Pyx_GOTREF(__pyx_t_26);
         __pyx_t_27 = __Pyx_GetModuleGlobalName(__pyx_n_s_np); if (unlikely(!__pyx_t_27)) __PYX_ERR(0, 124, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_27);
-        __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_27, __pyx_n_s_float32); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 124, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_27, __pyx_n_s_floatX); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 124, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_27); __pyx_t_27 = 0;
         if (PyDict_SetItem(__pyx_t_26, __pyx_n_s_dtype, __pyx_t_3) < 0) __PYX_ERR(0, 124, __pyx_L1_error)
@@ -3802,10 +3802,10 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
         {
           __Pyx_BufFmt_StackElem __pyx_stack[1];
           __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_uu.rcbuffer->pybuffer);
-          __pyx_t_30 = __Pyx_GetBufferAndValidate(&__pyx_pybuffernd_uu.rcbuffer->pybuffer, (PyObject*)__pyx_t_7, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 1, 0, __pyx_stack);
+          __pyx_t_30 = __Pyx_GetBufferAndValidate(&__pyx_pybuffernd_uu.rcbuffer->pybuffer, (PyObject*)__pyx_t_7, &__Pyx_TypeInfo_nn___pyx_t_5numpy_floatX_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 1, 0, __pyx_stack);
           if (unlikely(__pyx_t_30 < 0)) {
             PyErr_Fetch(&__pyx_t_33, &__pyx_t_32, &__pyx_t_31);
-            if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_uu.rcbuffer->pybuffer, (PyObject*)__pyx_v_uu, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 1, 0, __pyx_stack) == -1)) {
+            if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_uu.rcbuffer->pybuffer, (PyObject*)__pyx_v_uu, &__Pyx_TypeInfo_nn___pyx_t_5numpy_floatX_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 1, 0, __pyx_stack) == -1)) {
               Py_XDECREF(__pyx_t_33); Py_XDECREF(__pyx_t_32); Py_XDECREF(__pyx_t_31);
               __Pyx_RaiseBufferFallbackError();
             } else {
@@ -3821,7 +3821,7 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
 
         /* "amitgroup/features/features.pyx":125
  *                 uu[1]=np.minimum(uu[1]*fac[n],1)
- *                 uu=np.array(colorsys.hsv_to_rgb(uu[0],uu[1],uu[2]),dtype=np.float32)
+ *                 uu=np.array(colorsys.hsv_to_rgb(uu[0],uu[1],uu[2]),dtype=np.floatX)
  *                 for k in range(3):             # <<<<<<<<<<<<<<
  *                     yy[n,i,j,k]=uu[k]
  * 
@@ -3830,7 +3830,7 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
           __pyx_v_k = __pyx_t_41;
 
           /* "amitgroup/features/features.pyx":126
- *                 uu=np.array(colorsys.hsv_to_rgb(uu[0],uu[1],uu[2]),dtype=np.float32)
+ *                 uu=np.array(colorsys.hsv_to_rgb(uu[0],uu[1],uu[2]),dtype=np.floatX)
  *                 for k in range(3):
  *                     yy[n,i,j,k]=uu[k]             # <<<<<<<<<<<<<<
  * 
@@ -3846,7 +3846,7 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
           if (__pyx_t_44 < 0) __pyx_t_44 += __pyx_pybuffernd_yy.diminfo[1].shape;
           if (__pyx_t_45 < 0) __pyx_t_45 += __pyx_pybuffernd_yy.diminfo[2].shape;
           if (__pyx_t_46 < 0) __pyx_t_46 += __pyx_pybuffernd_yy.diminfo[3].shape;
-          *__Pyx_BufPtrStrided4d(__pyx_t_5numpy_float32_t *, __pyx_pybuffernd_yy.rcbuffer->pybuffer.buf, __pyx_t_43, __pyx_pybuffernd_yy.diminfo[0].strides, __pyx_t_44, __pyx_pybuffernd_yy.diminfo[1].strides, __pyx_t_45, __pyx_pybuffernd_yy.diminfo[2].strides, __pyx_t_46, __pyx_pybuffernd_yy.diminfo[3].strides) = (*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float32_t *, __pyx_pybuffernd_uu.rcbuffer->pybuffer.buf, __pyx_t_42, __pyx_pybuffernd_uu.diminfo[0].strides));
+          *__Pyx_BufPtrStrided4d(__pyx_t_5numpy_floatX_t *, __pyx_pybuffernd_yy.rcbuffer->pybuffer.buf, __pyx_t_43, __pyx_pybuffernd_yy.diminfo[0].strides, __pyx_t_44, __pyx_pybuffernd_yy.diminfo[1].strides, __pyx_t_45, __pyx_pybuffernd_yy.diminfo[2].strides, __pyx_t_46, __pyx_pybuffernd_yy.diminfo[3].strides) = (*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_floatX_t *, __pyx_pybuffernd_uu.rcbuffer->pybuffer.buf, __pyx_t_42, __pyx_pybuffernd_uu.diminfo[0].strides));
         }
       }
     }
@@ -3867,7 +3867,7 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
   /* "amitgroup/features/features.pyx":112
  * 
  * 
- * def change_saturation_c(np.ndarray[np.float32_t,ndim=4] xx,np.ndarray[np.float32_t, ndim=1] fac):             # <<<<<<<<<<<<<<
+ * def change_saturation_c(np.ndarray[np.floatX_t,ndim=4] xx,np.ndarray[np.floatX_t, ndim=1] fac):             # <<<<<<<<<<<<<<
  * 
  *     cdef int N = xx.shape[0]
  */
@@ -22204,7 +22204,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_error, __pyx_k_error, sizeof(__pyx_k_error), 0, 0, 1, 1},
   {&__pyx_n_s_fac, __pyx_k_fac, sizeof(__pyx_k_fac), 0, 0, 1, 1},
   {&__pyx_n_s_flags, __pyx_k_flags, sizeof(__pyx_k_flags), 0, 0, 1, 1},
-  {&__pyx_n_s_float32, __pyx_k_float32, sizeof(__pyx_k_float32), 0, 0, 1, 1},
+  {&__pyx_n_s_floatX, __pyx_k_floatX, sizeof(__pyx_k_floatX), 0, 0, 1, 1},
   {&__pyx_n_s_float64, __pyx_k_float64, sizeof(__pyx_k_float64), 0, 0, 1, 1},
   {&__pyx_n_s_format, __pyx_k_format, sizeof(__pyx_k_format), 0, 0, 1, 1},
   {&__pyx_n_s_fortran, __pyx_k_fortran, sizeof(__pyx_k_fortran), 0, 0, 1, 1},
@@ -22311,8 +22311,8 @@ static int __Pyx_InitCachedConstants(void) {
 
   /* "amitgroup/features/features.pyx":118
  *     cdef int cols = xx.shape[2]
- *     cdef np.ndarray[np.float32_t, ndim=4] yy = np.zeros((N,rows, cols, 3), dtype=np.float32)
- *     cdef np.ndarray[np.float32_t, ndim=1] uu = np.zeros(3, dtype=np.float32)             # <<<<<<<<<<<<<<
+ *     cdef np.ndarray[np.floatX_t, ndim=4] yy = np.zeros((N,rows, cols, 3), dtype=np.floatX)
+ *     cdef np.ndarray[np.floatX_t, ndim=1] uu = np.zeros(3, dtype=np.floatX)             # <<<<<<<<<<<<<<
  *     for n in range(N):
  *         for i in range(rows):
  */
@@ -22547,7 +22547,7 @@ static int __Pyx_InitCachedConstants(void) {
   /* "amitgroup/features/features.pyx":112
  * 
  * 
- * def change_saturation_c(np.ndarray[np.float32_t,ndim=4] xx,np.ndarray[np.float32_t, ndim=1] fac):             # <<<<<<<<<<<<<<
+ * def change_saturation_c(np.ndarray[np.floatX_t,ndim=4] xx,np.ndarray[np.floatX_t, ndim=1] fac):             # <<<<<<<<<<<<<<
  * 
  *     cdef int N = xx.shape[0]
  */
@@ -22898,7 +22898,7 @@ PyMODINIT_FUNC PyInit_features(void)
   /* "amitgroup/features/features.pyx":112
  * 
  * 
- * def change_saturation_c(np.ndarray[np.float32_t,ndim=4] xx,np.ndarray[np.float32_t, ndim=1] fac):             # <<<<<<<<<<<<<<
+ * def change_saturation_c(np.ndarray[np.floatX_t,ndim=4] xx,np.ndarray[np.floatX_t, ndim=1] fac):             # <<<<<<<<<<<<<<
  * 
  *     cdef int N = xx.shape[0]
  */
