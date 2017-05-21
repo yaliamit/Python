@@ -132,6 +132,7 @@ for i,ne in enumerate(nets):
             print key
             for l in NETPARS[key]:
                 print l,
+                print '\n'
             print '\n'
     [NETPARS,out]=run_class.main_new(NETPARS)
 

@@ -121,12 +121,13 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
         acc += tout[1]; err += tout[0]
         if (fac or agg):
             pred.append(tout[2])
+        pred.append(tout[2])
         #loss.append(tout[3])
 
     # if len(tout)==4:
     #    pr=np.sum(np.abs(np.array(network.W.eval())))
     # # Aggregating over angles.
-
+    pred0=np.concatenate(pred)
     if (fac):
         pred0=np.concatenate(pred)
         pred1=np.reshape(pred0,(fac,pred0.shape[0]/fac)+pred0.shape[1:])
@@ -186,6 +187,11 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
                     d=d+1
                 print('zz:',l.name,':',grad[t,],':',sp)
                 t=t+1
+
+        yp=np.argmax(pred0,axis=1)
+        print(np.mean(np.max(pred0[yp==y],axis=1)),np.std(np.max(pred0[yp==y],axis=1)))
+        print(np.mean(np.max(pred0[yp!=y],axis=1)),np.std(np.max(pred0[yp!=y],axis=1)))
+
     sys.stdout.flush()
     return(err,batches, pred, fac)
 
