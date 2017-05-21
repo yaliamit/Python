@@ -108,6 +108,7 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
         yy=y
     err=acc=0
     pred=[]
+    pred0=[]
     grad=None
 
     for batches,batch in enumerate(iterate_minibatches_new(X, yy, batch_size, shuffle=shuffle)):
@@ -121,13 +122,13 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
         acc += tout[1]; err += tout[0]
         if (fac or agg):
             pred.append(tout[2])
-        pred.append(tout[2])
+        pred0.append(tout[2])
         #loss.append(tout[3])
 
     # if len(tout)==4:
     #    pr=np.sum(np.abs(np.array(network.W.eval())))
     # # Aggregating over angles.
-    pred0=np.concatenate(pred)
+    pred0=np.concatenate(pred0)
     if (fac):
         pred0=np.concatenate(pred)
         pred1=np.reshape(pred0,(fac,pred0.shape[0]/fac)+pred0.shape[1:])
