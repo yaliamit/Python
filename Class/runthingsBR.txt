@@ -1,1 +1,1 @@
-python start_class.py net=_pars/sppog_tanh_R_deep_2 start=2 mult=2 use_existing=True num_epochs=100 hinge=1. force_global_prob=[1.,1.] mod_net=mod_net output=sptryRh_2_OUT>sptryRh_2_OUT.txt
+python start_class.py net=_pars/sppog_tanh_R_deep_2 start=2 mult=2 use_existing=True num_epochs=100 hinge=1. force_global_prob=[1.,0.] mod_net=modR_net output=sptryRRh_2_OUT>sptryRRh_2_OUT.txt
