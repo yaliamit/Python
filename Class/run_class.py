@@ -37,42 +37,39 @@ def iterate_minibatches_new(inputs, targets, batchsize, shuffle=False):
 
 
     if (type(inputs) is not list):
-        if (num_class<=max_class_per_batch):
+            num_data=len(targets)
             assert len(inputs) == len(targets)
             if shuffle:
                 indices = np.arange(len(inputs))
                 np.random.shuffle(indices)
-            for start_idx in range(0, len(inputs) - batchsize + 1, batchsize):
+            for start_idx in range(0, len(inputs), batchsize):
                 if shuffle:
-                    excerpt = indices[start_idx:start_idx + batchsize]
+                    if (start_idx+batchsize>num_data):
+                        excerpt=  indices[start_idx:num_data]
+                    else:
+                        excerpt = indices[start_idx:start_idx + batchsize]
                 else:
-                    excerpt = slice(start_idx, start_idx + batchsize)
-                yield inputs[excerpt], targets[excerpt]
-        elif num_class==100:
-            num_batches=len(targets)/batchsize
-            num_rep=(num_batches*max_class_per_batch)/num_class
-            labelss=np.repeat(labels,num_rep)
-            np.random.shuffle(labelss)
-            pc=batchsize/max_class_per_batch
-            k=0
-            for b in range(num_batches):
-                excerpt=np.int32(np.zeros(batchsize))
-                for j in range(max_class_per_batch):
-                    c=np.where(targets==labelss[k])[0]
-                    k+=1
-                    np.random.shuffle(c)
-                    excerpt[j*pc:(j+1)*pc]=c[0:pc]
-                #np.random.shuffle[excerpt]
+                    if (start_idx+batchsize>num_data):
+                        excerpt=  slice(start_idx,num_data)
+                    else:
+                        excerpt = slice(start_idx, start_idx + batchsize)
                 yield inputs[excerpt], targets[excerpt]
     else:
         num_data=inputs[0].shape[0]
         if shuffle:
             indices = np.arange(num_data)
-        for start_idx in range(0, num_data - batchsize + 1, batchsize):
+        #for start_idx in range(0, num_data - batchsize + 1, batchsize):
+        for start_idx in range(0, num_data, batchsize):
             if shuffle:
-                excerpt = indices[start_idx:start_idx + batchsize]
+                if (start_idx+batchsize>num_data):
+                    excerpt=  indices[start_idx:num_data]
+                else:
+                    excerpt = indices[start_idx:start_idx + batchsize]
             else:
-                excerpt = slice(start_idx, start_idx + batchsize)
+                if (start_idx+batchsize>num_data):
+                    excerpt=  slice(start_idx,num_data)
+                else:
+                    excerpt = slice(start_idx, start_idx + batchsize)
             out=[]
             for inp in inputs:
                 out.append(inp[excerpt])
@@ -86,7 +83,6 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
     if (typ=='Train'):
         shuffle=True
     # Randomized augmentation at each batch step instead of for the whole data set at the beginning
-
     if (pars is not None and type(pars) is dict and 'trans' in pars and pars['trans']['repeat']):
         X=data.do_rands(X,pars,pars['trans']['insert'])
         ll=1
@@ -96,20 +92,18 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
             y=np.tile(y,ll)
         if (typ=='Test'):
             fac=ll
-    curr_class=-1
-    if (pars is not None and (type(pars) is dict and 'one' in pars)):
-        curr_class=pars['one']
-    elif type(pars) is int:
-        curr_class=pars
-    if (curr_class>=0):
-        yy=y+1
-        yy[yy>curr_class]=0
-    else:
-        yy=y
+
+    yy=y
     err=acc=0
     pred=[]
-    pred0=[]
-    grad=None
+    if (pars is not None and "num_class" in pars and typ=='Train'):
+        ncl=np.int32(np.max(np.unique(y)))+1;
+        ii=range(ncl)
+        np.random.shuffle(ii)
+        iin=ii[0:pars['num_class']]
+        print('Classes',iin)
+        iitr=np.where(np.in1d(y,iin))
+        X=X[iitr]; yy=y[iitr]
 
     for batches,batch in enumerate(iterate_minibatches_new(X, yy, batch_size, shuffle=shuffle)):
         inputs,targets = batch
@@ -120,15 +114,15 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
                 tout=f(inputs,targets)
         # Information on gradient magnitude
         acc += tout[1]; err += tout[0]
-        if (fac or agg):
-            pred.append(tout[2])
-        pred0.append(tout[2])
+        #if (fac or agg):
+        pred.append(tout[2])
+
         #loss.append(tout[3])
 
     # if len(tout)==4:
     #    pr=np.sum(np.abs(np.array(network.W.eval())))
     # # Aggregating over angles.
-    pred0=np.concatenate(pred0)
+    #pred0=np.concatenate(pred0)
     if (fac):
         pred0=np.concatenate(pred)
         pred1=np.reshape(pred0,(fac,pred0.shape[0]/fac)+pred0.shape[1:])
@@ -145,17 +139,8 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
         pred=pred1[np.int32(np.floor((len(pred1)-1)/2))]
         print("Mean over different rotations",newacc)
         print("Maxmax over different rotations",newacca)
-        # preed=np.zeros(pred2.shape)
-        # for j in range(pred1.shape[1]):
-        #     ee=np.zeros(pred1.shape[0])
-        #     for i in range(pred1.shape[0]):
-        #         ee=scipy.stats.entropy(pred1[i,j,:])
-        #         ie=np.argmin(ee)
-        #         preed[j,:]=pred1[ie,j,:]
-        # ypreed=np.argmax(preed,axis=1)
-        # neewacc=np.mean(ypreed==y[:len(y)/fac])
-        # print("Min ent over rotations",neewacc)
-    if (agg and not fac):
+
+    if (not fac):
         pred=np.concatenate(pred)
 
     print("Final results:")
@@ -189,9 +174,9 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
                 print('zz:',l.name,':',grad[t,],':',sp)
                 t=t+1
 
-        yp=np.argmax(pred0,axis=1)
-        print(np.mean(np.max(pred0[yp==y],axis=1)),np.std(np.max(pred0[yp==y],axis=1)))
-        print(np.mean(np.max(pred0[yp!=y],axis=1)),np.std(np.max(pred0[yp!=y],axis=1)))
+        yp=np.argmax(pred,axis=1)
+        print(np.mean(np.max(pred[yp==yy],axis=1)),np.std(np.max(pred[yp==yy],axis=1)))
+        print(np.mean(np.max(pred[yp!=yy],axis=1)),np.std(np.max(pred[yp!=yy],axis=1)))
 
     sys.stdout.flush()
     return(err,batches, pred, fac)
@@ -363,14 +348,7 @@ def main_new(NETPARS):
     print("Loading data...")
     X_train, y_train, X_val, y_val, X_test, y_test=data.get_train(NETPARS)
 
-    # X_train=np.float32(X_train)
-    # X_val=np.float32(X_val)
-    # X_test=np.float32(X_test)
-    # y_train=np.int32(y_train)
-    # y_test=np.int32(y_test)
-    # y_val=np.int32(y_val)
-
-    num_class=len(np.unique(y_test))
+    num_class=len(np.unique(y_train))
     print("num_class", num_class)
     # Prepare Theano variables for inputs and targets
     if (type(X_train) is not list):
@@ -432,8 +410,6 @@ def main_new(NETPARS):
             print("eta",eta.get_value())
             out_tr=iterate_on_batches(train_fn,X_train,y_train,batch_size,typ='Train',network=network,pars=NETPARS,iter=epoch)
             pars=None
-            if ('one' in NETPARS):
-                pars=NETPARS['one']
             out_te=iterate_on_batches(val_fn,X_val,y_val,batch_size,typ='Val',pars=pars)
 
             if (epoch>0 and 'one' in NETPARS and np.mod(epoch,NETPARS['num_epochs']/num_class)==0):

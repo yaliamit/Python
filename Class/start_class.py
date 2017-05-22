@@ -62,11 +62,10 @@ for i,ne in enumerate(nets):
                     del NETPARS["write_sparse"]
             # Modifications of parameters come from mod_net_name
             if (parms['mod_net'] is not None): # and parms['train']):
-             if (parms['mult']==parms['start']):
                 parse_net_pars.parse_text_file(parms['mod_net'],NETPARS,lname='INSERT_LAYERS', dump=False)
                 if ("write_sparse" in NETPARS):
                     del NETPARS["write_sparse"]
-             else:
+            else:
                  # A sequence of modifications to the basic parameters
                 f=open(parms['mod_net']+'.txt','r')
                 t=0
@@ -137,18 +136,26 @@ for i,ne in enumerate(nets):
     [NETPARS,out]=run_class.main_new(NETPARS)
 
     many=False
+
     if agg is None:
         agg=out[2]
         y=out[-1]
         acc=np.mean(np.argmax(agg,axis=1)==y)
     else:
+        CL=None
+        if ('Classes' in NETPARS):
+            CL=np.array(NETPARS['Classes'])
         many=True
         if (len(agg)==0):
             ag=np.argmax(out[2],axis=1) #out[2]
+            if (CL is not None):
+                ag=CL[ag]
             agg=np.zeros(out[2].shape)
             agg[np.array(range(out[2].shape[0])),ag]=1
         else:
             ag=np.argmax(out[2],axis=1)
+            if (CL is not None):
+                ag=CL[ag]
             aggt=np.zeros(out[2].shape)
             aggt[np.array(range(out[2].shape[0])),ag]=1
             agg=agg+aggt
