@@ -61,11 +61,12 @@ for i,ne in enumerate(nets):
             if ("write_sparse" in NETPARS):
                     del NETPARS["write_sparse"]
             # Modifications of parameters come from mod_net_name
-            if (parms['mod_net'] is not None): # and parms['train']):
+            if parms['mod_net'] is not None:
+             if (parms['start']==parms['mult']): # and parms['train']):
                 parse_net_pars.parse_text_file(parms['mod_net'],NETPARS,lname='INSERT_LAYERS', dump=False)
                 if ("write_sparse" in NETPARS):
                     del NETPARS["write_sparse"]
-            else:
+             else:
                  # A sequence of modifications to the basic parameters
                 f=open(parms['mod_net']+'.txt','r')
                 t=0
