@@ -348,7 +348,7 @@ def main_new(NETPARS):
     print("Loading data...")
     X_train, y_train, X_val, y_val, X_test, y_test=data.get_train(NETPARS)
 
-    num_class=len(np.unique(y_train))
+    num_class=len(np.unique(y_test))
     print("num_class", num_class)
     # Prepare Theano variables for inputs and targets
     if (type(X_train) is not list):
