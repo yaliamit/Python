@@ -13,9 +13,10 @@ from theano.tensor.shared_randomstreams import RandomStreams
 
 from collections import OrderedDict
 
+classes=None
 
 def adamloc(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
-         beta2=0.999, epsilon=1e-8):
+         beta2=0.999, epsilon=1e-8, classes=None):
 
     all_grads = lasagne.updates.get_or_compute_grads(loss_or_grads, params)
     t_prev = theano.shared(lasagne.utils.floatX(0.))
@@ -26,7 +27,8 @@ def adamloc(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
 
     t = t_prev + 1
     a_t = learning_rate*T.sqrt(one-beta2**t)/(one-beta1**t)
-
+    lastp=len(params)-1
+    p=0
     for param, g_t in zip(params, all_grads):
         value = param.get_value(borrow=True)
         tens=True
@@ -53,8 +55,12 @@ def adamloc(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
 
         updates[m_prev] = m_t
         updates[v_prev] = v_t
+        if (classes is not None and p==lastp):
+            aa=theano.tensor.zeros(theano.tensor.shape(step))
+            aa=theano.tensor.set_subtensor(aa[:,classes.get_value()],1)
+            step=step*aa
         updates[param] = param - step
-
+        p+=1
     updates[t_prev] = t
     return updates
 
@@ -259,12 +265,14 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
                       dtype=theano.config.floatX)
 
         eta=None
+        tclasses=None
         if (Train):
             eta = theano.shared(np.array(NETPARS['eta_init'], dtype=theano.config.floatX))
+            tclasses=theano.shared(np.array(np.arange(0,10,1),dtype=np.int32))
             if ('update' in NETPARS):
                 if (NETPARS['update']=='adam'):
                     print('Using adam to update timestep')
-                    updates=adamloc(loss, params, learning_rate=eta, beta1=0.9,beta2=0.999,epsilon=1e-08)
+                    updates=adamloc(loss, params, learning_rate=eta, beta1=0.9,beta2=0.999,epsilon=1e-08, classes=tclasses)
                 elif (NETPARS['update']=='nestorov'):
                     print('Using Nestorov momentum')
                     updates = lasagne.updates.nesterov_momentum(loss, params, learning_rate=eta, momentum=0.9)
@@ -289,7 +297,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             #train_fn = theano.function(inp, [loss, acc], updates=updates)
 
 
-        return(train_fn,eta)
+        return(train_fn,eta, tclasses)
 
 
 def setup_function_seq(network,NETPARS,input_var,target_var,step,Train=True,loss_type='class'):

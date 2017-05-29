@@ -10,11 +10,7 @@ import lasagne
 import run_compare
 import data
 import sys
-import scipy.sparse as sp
-import densesparse
-import newdensesparse
-import newdense
-import Conv2dLayerR
+import untied_conv_mat
 
 def get_confusion_matrix(pred,y):
         num_class=np.max(y)+1
@@ -76,78 +72,7 @@ def iterate_minibatches_new(inputs, targets, batchsize, shuffle=False):
             yield out, targets[excerpt]
 
 
-def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, network=None, pars=None, iter=None):
-    if (len(X)==0):
-        return(0,0)
-    shuffle=False
-    if (typ=='Train'):
-        shuffle=True
-    # Randomized augmentation at each batch step instead of for the whole data set at the beginning
-    if (pars is not None and type(pars) is dict and 'trans' in pars and pars['trans']['repeat']):
-        X=data.do_rands(X,pars,pars['trans']['insert'])
-        ll=1
-        if (type(X) is list):
-            ll=len(X)
-            X=np.concatenate(X,axis=0)
-            y=np.tile(y,ll)
-        if (typ=='Test'):
-            fac=ll
-
-    yy=y
-    err=acc=0
-    pred=[]
-    if (pars is not None and "num_class" in pars and typ=='Train'):
-        ncl=np.int32(np.max(np.unique(y)))+1;
-        ii=range(ncl)
-        np.random.shuffle(ii)
-        iin=ii[0:pars['num_class']]
-        print('Classes',iin)
-        iitr=np.where(np.in1d(y,iin))
-        X=X[iitr]; yy=y[iitr]
-
-    for batches,batch in enumerate(iterate_minibatches_new(X, yy, batch_size, shuffle=shuffle)):
-        inputs,targets = batch
-        if (type(func) is not list):
-            tout=func(inputs,targets)
-        else:
-            for f in func:
-                tout=f(inputs,targets)
-        # Information on gradient magnitude
-        acc += tout[1]; err += tout[0]
-        #if (fac or agg):
-        pred.append(tout[2])
-
-        #loss.append(tout[3])
-
-    # if len(tout)==4:
-    #    pr=np.sum(np.abs(np.array(network.W.eval())))
-    # # Aggregating over angles.
-    #pred0=np.concatenate(pred0)
-    if (fac):
-        pred0=np.concatenate(pred)
-        pred1=np.reshape(pred0,(fac,pred0.shape[0]/fac)+pred0.shape[1:])
-        pred_m=np.max(pred1,axis=2)
-        pred_am=np.argmax(pred1,axis=2)
-        pred_amm=np.argmax(pred_m,axis=0)
-        pred2=np.mean(pred1,axis=0)
-        #pred2=np.max(pred1,axis=0)
-        ypred=np.argmax(pred2,axis=1)
-        ypreda=pred_am[tuple(pred_amm),range(pred_am.shape[1])]
-        newacc=np.mean(ypred==yy[:len(yy)/fac])
-        newacca=np.mean(ypreda==yy[:len(yy)/fac])
-
-        pred=pred1[np.int32(np.floor((len(pred1)-1)/2))]
-        print("Mean over different rotations",newacc)
-        print("Maxmax over different rotations",newacca)
-
-    if (not fac):
-        pred=np.concatenate(pred)
-
-    print("Final results:")
-    print(typ+" loss:\t\t\t{:.6f}".format(err / (batches+1)))
-    print(typ+" acc:\t\t\t{:.6f}".format(acc / (batches+1)))
-
-    if (network is not None and iter is not None and np.mod(iter,10)==0):
+def print_W_and_Wgrad_info(network,tout,pred,yy):
         np.set_printoptions(precision=4,linewidth=130)
         layers=lasagne.layers.get_all_layers(network)
         d=0
@@ -177,165 +102,74 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
         yp=np.argmax(pred,axis=1)
         print(np.mean(np.max(pred[yp==yy],axis=1)),np.std(np.max(pred[yp==yy],axis=1)))
         print(np.mean(np.max(pred[yp!=yy],axis=1)),np.std(np.max(pred[yp!=yy],axis=1)))
+        sys.stdout.flush()
 
-    sys.stdout.flush()
+
+def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, network=None, pars=None, iter=None):
+    if (len(X)==0):
+        return(0,0)
+    shuffle=False
+    if (typ=='Train'):
+        shuffle=True
+    # Randomized augmentation at each batch step instead of for the whole data set at the beginning
+    if (pars is not None and type(pars) is dict and 'trans' in pars and pars['trans']['repeat']):
+        X=data.do_rands(X,pars,pars['trans']['insert'])
+        ll=1
+        if (type(X) is list):
+            ll=len(X)
+            X=np.concatenate(X,axis=0)
+            y=np.tile(y,ll)
+        if (typ=='Test'):
+            fac=ll
+
+    yy=y
+    err=acc=0
+    pred=[]
+
+    for batches,batch in enumerate(iterate_minibatches_new(X, yy, batch_size, shuffle=shuffle)):
+        inputs,targets = batch
+        if (type(func) is not list):
+            tout=func(inputs,targets)
+        else:
+            for f in func:
+                tout=f(inputs,targets)
+        # Information on gradient magnitude
+        acc += tout[1]; err += tout[0]
+
+        pred.append(tout[2])
+
+
+    if (fac):
+        pred0=np.concatenate(pred)
+        pred1=np.reshape(pred0,(fac,pred0.shape[0]/fac)+pred0.shape[1:])
+        pred_m=np.max(pred1,axis=2)
+        pred_am=np.argmax(pred1,axis=2)
+        pred_amm=np.argmax(pred_m,axis=0)
+        pred2=np.mean(pred1,axis=0)
+        #pred2=np.max(pred1,axis=0)
+        ypred=np.argmax(pred2,axis=1)
+        ypreda=pred_am[tuple(pred_amm),range(pred_am.shape[1])]
+        newacc=np.mean(ypred==yy[:len(yy)/fac])
+        newacca=np.mean(ypreda==yy[:len(yy)/fac])
+
+        pred=pred1[np.int32(np.floor((len(pred1)-1)/2))]
+        print("Mean over different rotations",newacc)
+        print("Maxmax over different rotations",newacca)
+
+    if (not fac):
+        pred=np.concatenate(pred)
+
+    print("Final results:")
+    print(typ+" loss:\t\t\t{:.6f}".format(err / (batches+1)))
+    print(typ+" acc:\t\t\t{:.6f}".format(acc / (batches+1)))
+
+    if (network is not None and iter is not None and np.mod(iter,10)==0):
+        print_W_and_Wgrad_info(network,tout,pred,yy)
+
+
+
+
     return(err,batches, pred, fac)
-
-# Prepare the functions that will make the full matrix corresponding to a convolutional layer given its input
-def get_matrix_func(network,input_var,NETPARS):
-
-    layers=lasagne.layers.get_all_layers(network)
-
-    GET_CONV=[]
-    for l in layers:
-        if (l.name is not None):
-            if ('conv' in l.name and l.name in NETPARS['sparsify']):
-                    dims=l.input_shape[1:]
-                    input_v=T.tensor4()
-                    new_layer=lasagne.layers.InputLayer(shape=(None,dims[0],dims[1],dims[2]),input_var=input_v)
-                    new_net=lasagne.layers.Conv2DLayer(new_layer, num_filters=l.num_filters, filter_size=l.filter_size,
-                                nonlinearity=lasagne.nonlinearities.linear,pad=l.pad,
-                                W=l.W)
-                    out=lasagne.layers.get_output(new_net)
-                    get_conv=theano.function([input_v], out, updates=None)
-                    GET_CONV.append(get_conv)
-                    # Get the matrix corresponding to the feedback R
-                    if ('R' in l.name):
-                        dims=l.input_shape[1:]
-                        input_v=T.tensor4()
-                        new_layer=lasagne.layers.InputLayer(shape=(None,dims[0],dims[1],dims[2]),input_var=input_v)
-                        new_net=lasagne.layers.Conv2DLayer(new_layer, num_filters=l.num_filters, filter_size=l.filter_size,
-                                    nonlinearity=lasagne.nonlinearities.linear,pad=l.pad,
-                                    W=l.R)
-                        out=lasagne.layers.get_output(new_net)
-                        get_conv=theano.function([input_v], out, updates=None)
-                        GET_CONV.append(get_conv)
-
-    return GET_CONV
-
-# Apply the functions to get the matrices and turn them into sparse matrices
-def get_matrix(l,gl):
-                    dims=l.input_shape[1:]
-                    nda=np.prod(dims[1:])
-
-                    t=0
-                    # Create the identity matrix that will extract the sparse matrix corresponding
-                    # to the linear map defined by conv.
-                    rr=tuple(np.arange(0,dims[0],4))+(dims[0],)
-                    yy=0
-                    for r in range(len(rr)-1): #range(dims[0]):
-                        print('r',r)
-                        nd=(rr[r+1]-rr[r])*nda
-                        XX=np.zeros((nd,)+dims)
-                        t=0
-                        for i in np.arange(rr[r],rr[r+1],1):
-                            for j in range(dims[1]):
-                                for k in range(dims[2]):
-                                    XX[t,i,j,k]=1.
-                                    t+=1
-                        XX=np.float32(XX)
-                        YY=gl(XX)
-                        YY=np.reshape(YY,(YY.shape[0],np.prod(YY.shape[1:])))
-                        yy+=np.prod(YY.shape)
-                        print(yy)
-
-                        if (r==0):
-                            csc=YY
-                            #csc=sp.csc_matrix(YY)
-                        else:
-                            #cscr=sp.csc_matrix(YY)
-                            #csc=sp.vstack([csc,cscr],format='csc')
-                            cscr=YY
-                            csc=np.vstack([csc,cscr])
-                    #print('Sparsity:',yy,len(csc.data),np.floatX(len(csc.data))/yy)
-                    return(csc)
-
-# Put the sparse matrices in a new network and write it out.
-def apply_get_matrix(network,GET_CONV, NETPARS):
-
-    layers=lasagne.layers.get_all_layers(network)
-    il=0
-    SP=[]
-    for l in layers:
-        if (l.name is not None):
-            if ('conv' in l.name and 'sparsify' in NETPARS and l.name in NETPARS['sparsify']):
-                SP.append(get_matrix(l,GET_CONV[il]))
-                il+=1
-                if ('R' in l.name):
-                    SP.append(get_matrix(l,GET_CONV[il]))
-                    il+=1
-
-    # Now make a network which is a copy of the original but with dense sparse layers intstead of conv layers,
-    # initialized with the collected sparse matrices.
-    layer_list=[]
-    t=0
-    for l in layers:
-        if 'input' in l.name:
-            layer_list.append(lasagne.layers.InputLayer(l.shape,input_var=l.input_var,name=l.name))
-        elif 'drop' in l.name:
-            layer_list.append(lasagne.layers.DropoutLayer(layer_list[-1],p=l.input_layers[1].p, name=l.name))
-        elif 'pool' in l.name:
-            layer_list.append(lasagne.layers.Pool2DLayer(layer_list[-1],pool_size=l.pool_size, stride=l.stride, pad=l.pad, name=l.name,mode=l.mode))
-        elif 'dense' in l.name:
-            layer_list.append(lasagne.layers.DenseLayer(layer_list[-1],num_units=l.num_units,nonlinearity=l.nonlinearity,W=l.W, b=None, name=l.name))
-        elif 'batch' in l.name:
-            layer_list.append(lasagne.layers.BatchNormLayer(layer_list[-1],name=l.name,beta=l.beta,gamma=l.gamma,mean=l.mean,inv_std=l.inv_std))
-        elif 'newdens' in l.name:
-            lpars=lasagne.layers.get_all_param_values(l)
-            #Rz, Wz are not preserved so no need to do them correctly, only when reading in the network.
-            # Put in a random initial R with the correct sparsity.
-            input_dim=lpars[-1].shape[0]
-            num_units=lpars[-1].shape[1]
-            std=np.sqrt(6./(input_dim+num_units))
-            R=theano.shared((np.random.uniform(-std,std,(input_dim,num_units)))*(lpars[-1]>0))
-            layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=l.num_units,prob=l.prob,
-                                            nonlinearity=l.nonlinearity,W=lpars[-2],R=R, b=None, name=l.name))
-        elif 'conv' in l.name:
-            if 'sparsify' in NETPARS and l.name in NETPARS['sparsify']:
-                num_units=SP[t].shape[1]
-                input_dim=SP[t].shape[0]
-                std=np.sqrt(6./(input_dim+num_units))
-                #W = theano.shared(SP[t])
-                W=theano.shared((np.random.uniform(-std,std,(input_dim,num_units)))*(SP[t]>0))
-                t+=1
-                # Also separate R
-                if 'R' in l.name:
-                    R=theano.shared((np.random.uniform(-std,std,(input_dim,num_units)))*(SP[t]>0))
-                    # Record all non-zero entries of SP i.e. the ones corresponding to the conv filters.
-                    t=t+1
-                    layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=num_units,prob=l.prob,
-                                            W=W,R=R, b=None,nonlinearity=l.nonlinearity,name='newdens'+str(t)))
-            # JUst sparse
-                else:
-                    layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=num_units,
-                                            W=W, b=None,Rzero=np.float32(np.ones((1,1))), prob=(1.,-1.),nonlinearity=l.nonlinearity,name='newdens'+str(t)))
-                # Reshape for subsequent pooling
-                shp=l.output_shape[1:]
-                layer_list.append(lasagne.layers.reshape(layer_list[-1],([0],)+shp,name='reshape'+str(t)))
-            # Stays conv
-            else:
-                # Separate R
-                if 'R' in l.name:
-                    WW=l.W.eval()
-                    RR=l.R.eval()
-                    layer_list.append(Conv2dLayerR.Conv2DLayerR(layer_list[-1], pad=l.pad, num_filters=l.num_filters, filter_size=l.filter_size,
-                                nonlinearity=l.nonlinearity,W=WW,R=RR,prob=l.prob,name=l.name, b=None))
-                else:
-                    layer_list.append(lasagne.layers.Conv2DLayer(layer_list[-1],num_filters=l.num_filters,name=l.name,
-                                                             filter_size=l.filter_size,pad=l.pad,W=l.W,b=l.b,nonlinearity=l.nonlinearity))
-
-
-    new_net=layer_list[-1]
-    print('Done making sparse network')
-    spparams=lasagne.layers.get_all_param_values(new_net)
-    PARS=NETPARS.copy()
-    ss=str.split(PARS['output_net'],'/')
-    ss[-1]='sp'+ss[-1]
-    PARS['output_net']='/'.join(ss)
-    np.save(PARS['output_net'],spparams)
-    make_net.make_file_from_params(new_net,PARS)
-    NETPARS['output_net']=PARS['output_net']
-    print("done writing it")
 
 
 
@@ -349,6 +183,10 @@ def main_new(NETPARS):
     X_train, y_train, X_val, y_val, X_test, y_test=data.get_train(NETPARS)
 
     num_class=len(np.unique(y_test))
+    NETPARS['Classes']=None
+    if ('num_class' in NETPARS):
+        num_class=NETPARS['num_class']['num_class']
+
     print("num_class", num_class)
     # Prepare Theano variables for inputs and targets
     if (type(X_train) is not list):
@@ -381,6 +219,7 @@ def main_new(NETPARS):
 
 
     print("Building model and compiling functions...")
+    NETPARS['Classes']=None
     # Create neural network model (depending on first command line parameter)
     network = make_net.build_cnn_on_pars(input_var,NETPARS,num_class=num_class)
     step=T.iscalar()
@@ -391,9 +230,9 @@ def main_new(NETPARS):
             # Sequential update of layers. Not interesting.
             train_fn, eta=run_compare.setup_function_seq(network,NETPARS,input_var,target_var,step,Train=True)
         else:
-            train_fn,eta=run_compare.setup_function(network,NETPARS,input_var,target_var,Train=True)
+            train_fn,eta, tclasses=run_compare.setup_function(network,NETPARS,input_var,target_var,Train=True)
 
-    val_fn,dummy=run_compare.setup_function(network,NETPARS,input_var,target_var,Train=False)
+    val_fn,dummy, tdummy=run_compare.setup_function(network,NETPARS,input_var,target_var,Train=False)
 
     NETPARS=make_net.make_file_from_params(network,NETPARS)
     # Iterate over epochs:
@@ -405,15 +244,33 @@ def main_new(NETPARS):
         #if NETPARS['update']!='adam':
         #    mod_eta=True
         for epoch in range(NETPARS['num_epochs']):
+
+
+            if ('num_class' in NETPARS and np.mod(epoch,NETPARS['num_class']['class_epoch'])==0):
+                if NETPARS['num_class']['det']:
+                    if NETPARS['Classes'] is not None:
+                        y_train=ytr.copy()
+                        y_val=yvl.copy()
+                        NETPARS['Done_Classes']=NETPARS['Done_Classes']+NETPARS['Classes']
+                        NETPARS['Classes']=list(np.arange(np.max(NETPARS['Classes'])+1,np.max(NETPARS['Classes'])+11,1))
+                    else:
+                        ytr=y_train.copy()
+                        yvl=y_val.copy()
+                        NETPARS['Classes']=list(np.arange(0,10,1))
+                        NETPARS['Done_Classes']=list()
+                    tclasses.set_value(np.array(NETPARS['Classes']+NETPARS['Done_Classes'],dtype=np.int32))
+                # print(NETPARS['Classes'])
+                # z=np.in1d(y_train,np.array(NETPARS['Classes']+NETPARS['Done_Classes']))
+                # y_train[np.logical_not(z)]=NETPARS['num_class']['num_class']
+                # z=np.in1d(y_val,np.array(NETPARS['Classes']+NETPARS['Done_Classes']))
+                # y_val[np.logical_not(z)]=NETPARS['num_class']['num_class']
+                print(np.unique(y_train))
             # In each epoch, do a full pass over the training data:
             start_time = time.time()
             print("eta",eta.get_value())
             out_tr=iterate_on_batches(train_fn,X_train,y_train,batch_size,typ='Train',network=network,pars=NETPARS,iter=epoch)
             pars=None
             out_te=iterate_on_batches(val_fn,X_val,y_val,batch_size,typ='Val',pars=pars)
-
-            if (epoch>0 and 'one' in NETPARS and np.mod(epoch,NETPARS['num_epochs']/num_class)==0):
-                NETPARS['one']+=1
             if ('eta_schedule' in NETPARS):
                 sc=NETPARS['eta_schedule']
                 if (curr_sched<len(sc)):
@@ -441,16 +298,11 @@ def main_new(NETPARS):
         NETPARS['prev_epochs']=prev_epochs+epoch+1
         NETPARS=make_net.make_file_from_params(network,NETPARS)
         if (NETPARS['num_epochs']>0):
-            # if (NETPARS['adapt_eta']):
-            #     print('Updating best params to network')
-            #     np.save(NETPARS['output_net'],eta_p.best_params)
-            #     lasagne.layers.set_all_param_values(network,eta_p.best_params)
-            # else:
             np.save(NETPARS['output_net'],params)
 
     if ('write_sparse' in NETPARS and NETPARS['write_sparse']):
-            GET_CONV=get_matrix_func(network,input_var,NETPARS)
-            apply_get_matrix(network,GET_CONV,NETPARS)
+            GET_CONV=untied_conv_mat.get_matrix_func(network,input_var,NETPARS)
+            untied_conv_mat.apply_get_matrix(network,GET_CONV,NETPARS)
     # After training, we compute and print the test error
     fac=0
     if (type(NETPARS['simple_augmentation']) is int):

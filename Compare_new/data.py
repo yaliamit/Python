@@ -264,26 +264,6 @@ def get_train(NETPARS):
         if ('num_val' in NETPARS):
             num_val=NETPARS['num_val']
         X_train, y_train, X_val, y_val, X_test, y_test = cifar.load_dataset(NETPARS['Mnist'],Train=NETPARS['train'],white=False,num_val=num_val)
-     ## Less classes
-    # if ('num_class' in NETPARS):
-    #     ncl=np.int32(np.max(np.unique(y_train)))+1;
-    #     ii=range(ncl)
-    #     np.random.shuffle(ii)
-    #     iin=ii[0:NETPARS['num_class']]
-    #     print('Classes',iin)
-    #     NETPARS['Classes']=np.sort(iin)
-    #     iitr=np.where(np.in1d(y_train,iin))
-    #     iite=np.where(np.in1d(y_test,iin))
-    #     iival=np.where(np.in1d(y_val,iin))
-    #     X_train=X_train[iitr]; y_train=y_train[iitr];
-    #
-    #     #X_test=X_test[iite]; y_test=y_test[iite];
-    #     X_val=X_val[iival]; y_val=y_val[iival]
-    #     for i,j in enumerate(list(iin)):
-    #         y_train[y_train==j]=i
-    #         #y_test[y_test==j]=i
-    #         y_val[y_val==j]=i
-
     num_train=NETPARS['num_train']
     if (num_train==0):
         num_train=np.shape(y_train)[0]
