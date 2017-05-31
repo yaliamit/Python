@@ -57,7 +57,7 @@ def adamloc(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
         updates[v_prev] = v_t
         if (classes is not None and p==lastp):
             aa=theano.tensor.zeros(theano.tensor.shape(step))
-            #aa=theano.tensor.set_subtensor(aa[:,classes.get_value()],1)
+            aa=theano.tensor.set_subtensor(aa[:,classes.get_value()],1)
             step=step*aa
         updates[param] = param - step
         p+=1
