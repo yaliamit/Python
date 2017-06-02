@@ -5,7 +5,7 @@ import lasagne
 import pickle
 import os
 import make_net
-
+import sys
 
 def process_param_line(line):
 
@@ -155,3 +155,15 @@ def parse_text_file(net_name,NETPARS,lname='layers', dump=False):
 
             NETPARS[lname]=LAYERS
 
+def dump_pars(NETPARS):
+        import collections
+        NETPARS = collections.OrderedDict(sorted(NETPARS.items()))
+        for key in NETPARS:
+            if (type(NETPARS[key]) is not list):
+                print(key+":"+str(NETPARS[key]))
+        for key in NETPARS:
+            if (type(NETPARS[key]) is list):
+                print(key)
+                for l in NETPARS[key]:
+                    print(l,)
+                    #print('\n')

@@ -639,4 +639,5 @@ def make_file_from_params(network,NETPARS):
     f.close()
     PARS={}
     parse_net_pars.parse_text_file(NETPARS['output_net'],PARS)
+    parse_net_pars.dump_pars(PARS)
     return(PARS)

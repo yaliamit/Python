@@ -122,18 +122,9 @@ for i,ne in enumerate(nets):
     # # Command line overrides.
     # if ('num_train' in parms):
     #     NETPARS['num_train']=parms['num_train']
-    import collections
-    NETPARS = collections.OrderedDict(sorted(NETPARS.items()))
-    for key in NETPARS:
-        if (type(NETPARS[key]) is not list):
-            print key+":"+str(NETPARS[key])
-    for key in NETPARS:
-        if (type(NETPARS[key]) is list):
-            print key
-            for l in NETPARS[key]:
-                print l,
-                print '\n'
-            print '\n'
+    parse_net_pars.dump_pars(NETPARS)
+
+            #print '\n'
     [NETPARS,out]=run_class.main_new(NETPARS)
 
     many=False

@@ -163,7 +163,7 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
     print(typ+" loss:\t\t\t{:.6f}".format(err / (batches+1)))
     print(typ+" acc:\t\t\t{:.6f}".format(acc / (batches+1)))
 
-    if ('Classes' in pars):
+    if ('Classes' in pars and pars['Classes'] is not None):
         lcl=pars['Done_Classes']+pars['Classes']
         yind=np.in1d(yy,lcl)
         yp=np.argmax(pred[:,lcl],axis=1)
