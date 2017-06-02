@@ -192,7 +192,7 @@ def main_new(NETPARS):
 
     if ('Classes' not in NETPARS):
         NETPARS['Classes']=None
-    elif (NETPARS['Classes']!='None'):
+    elif (NETPARS['Classes']!='None' and NETPARS['Classes'] is not None):
         lcl=list()
         if ('Done_Classes' in NETPARS and NETPARS['Done_Classes']!='None'):
             lcl=lcl+list(np.int32(NETPARS['Done_Classes']))
