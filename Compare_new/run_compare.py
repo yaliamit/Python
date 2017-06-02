@@ -32,32 +32,19 @@ def adamloc(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
     for param, g_t in zip(params, all_grads):
         value = param.get_value(borrow=True)
         tens=True
-        if (type(param) is theano.sparse.sharedvar.SparseTensorSharedVariable):
-            tens=False
-            m_prev = theano.shared(sp.csc_matrix((np.zeros(len(value.data),dtype=np.floatX),value.indices,value.indptr),value.shape))
-            v_prev = theano.shared(sp.csc_matrix((np.zeros(len(value.data),dtype=np.floatX),value.indices,value.indptr),value.shape))
-        else:
-            m_prev = theano.shared(np.zeros(value.shape, dtype=value.dtype),broadcastable=param.broadcastable)
-            v_prev = theano.shared(np.zeros(value.shape, dtype=value.dtype),broadcastable=param.broadcastable)
+
+        m_prev = theano.shared(np.zeros(value.shape, dtype=value.dtype),broadcastable=param.broadcastable)
+        v_prev = theano.shared(np.zeros(value.shape, dtype=value.dtype),broadcastable=param.broadcastable)
 
         m_t = beta1*m_prev + (one-beta1)*g_t
         #v_t = beta2*v_prev + (one-beta2)*g_t**2
         v_t= beta2*v_prev + (one-beta2)*g_t*g_t
-        if (tens):
-            step = a_t*m_t/(T.sqrt(v_t) + epsilon)
-        else:
-            step = a_t*m_t
-            ss=sparse.sqrt(v_t)
-            #ss=sparse.structured_add_s_v(ss,np.reshape(np.floatX(epsilon),(1,1)))
-            ss=ss+np.floatX(epsilon)*sparse.basic.sp_ones_like(ss)
-            ss=sparse.structured_pow(ss,-1.)
-            step = step*ss
 
+        step = a_t*m_t/(T.sqrt(v_t) + epsilon)
         updates[m_prev] = m_t
         updates[v_prev] = v_t
-        if (classes is not None and p==lastp):
-            aa=theano.tensor.zeros(theano.tensor.shape(step))
-            aa=theano.tensor.set_subtensor(aa[:,classes.get_value()],1)
+        if (classes is not None and value.shape[1]==100):
+            aa=theano.tensor.repeat(classes,value.shape[0],axis=0)
             step=step*aa
         updates[param] = param - step
         p+=1
@@ -268,7 +255,9 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
         tclasses=None
         if (Train):
             eta = theano.shared(np.array(NETPARS['eta_init'], dtype=theano.config.floatX))
-            tclasses=theano.shared(np.array(np.arange(0,10,1),dtype=np.int32))
+            if ('num_class' in NETPARS):
+                zz=np.zeros((1,NETPARS['num_class']['num_class']),dtype=np.float32)
+                tclasses=theano.shared(zz)
             if ('update' in NETPARS):
                 if (NETPARS['update']=='adam'):
                     print('Using adam to update timestep')

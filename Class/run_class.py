@@ -112,7 +112,7 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
     if (typ=='Train'):
         shuffle=True
     # Randomized augmentation at each batch step instead of for the whole data set at the beginning
-    if (pars is not None and type(pars) is dict and 'trans' in pars and pars['trans']['repeat']):
+    if (typ!='Val' and pars is not None and type(pars) is dict and 'trans' in pars and pars['trans']['repeat']):
         X=data.do_rands(X,pars,pars['trans']['insert'])
         ll=1
         if (type(X) is list):
@@ -163,6 +163,13 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
     print(typ+" loss:\t\t\t{:.6f}".format(err / (batches+1)))
     print(typ+" acc:\t\t\t{:.6f}".format(acc / (batches+1)))
 
+    if ('Classes' in pars):
+        lcl=pars['Done_Classes']+pars['Classes']
+        yind=np.in1d(yy,lcl)
+        yp=np.argmax(pred[:,lcl],axis=1)
+        errc=np.mean(yy[yind]!=yp[yind])
+        print('Number of learned classes',len(lcl))
+        print('Error on learned classes', errc)
     if (network is not None and iter is not None and np.mod(iter,10)==0):
         print_W_and_Wgrad_info(network,tout,pred,yy)
 
@@ -182,8 +189,26 @@ def main_new(NETPARS):
     print("Loading data...")
     X_train, y_train, X_val, y_val, X_test, y_test=data.get_train(NETPARS)
 
+
+    if ('Classes' not in NETPARS):
+        NETPARS['Classes']=None
+    elif (NETPARS['Classes']!='None'):
+        lcl=list()
+        if ('Done_Classes' in NETPARS and NETPARS['Done_Classes']!='None'):
+            lcl=lcl+list(np.int32(NETPARS['Done_Classes']))
+        lcl=lcl+list(np.int32(NETPARS['Classes']))
+        if (NETPARS['train']):
+            yind=np.in1d(y_train,lcl)
+            y_train=y_train[yind]
+            X_train=X_train[yind,:]
+            yind=np.in1d(y_val,lcl)
+            y_val=y_val[yind]
+            X_val=X_val[yind,:]
+        yind=np.in1d(y_test,lcl)
+        y_test=y_test[yind]
+        X_test=X_test[yind,:]
+
     num_class=len(np.unique(y_test))
-    NETPARS['Classes']=None
     if ('num_class' in NETPARS):
         num_class=NETPARS['num_class']['num_class']
 
@@ -219,9 +244,10 @@ def main_new(NETPARS):
 
 
     print("Building model and compiling functions...")
-    NETPARS['Classes']=None
+
     # Create neural network model (depending on first command line parameter)
     network = make_net.build_cnn_on_pars(input_var,NETPARS,num_class=num_class)
+
     step=T.iscalar()
     params=lasagne.layers.get_all_params(network)
 
@@ -235,6 +261,9 @@ def main_new(NETPARS):
     val_fn,dummy, tdummy=run_compare.setup_function(network,NETPARS,input_var,target_var,Train=False)
 
     NETPARS=make_net.make_file_from_params(network,NETPARS)
+    if (NETPARS['Classes'] is not None):
+        NETPARS['Done_Classes']=list()
+        NETPARS['Classes']=list(NETPARS['Classes'])
     # Iterate over epochs:
     eta_p=run_compare.eta_params(network)
     curr_sched=0
@@ -249,28 +278,39 @@ def main_new(NETPARS):
             if ('num_class' in NETPARS and np.mod(epoch,NETPARS['num_class']['class_epoch'])==0):
                 if NETPARS['num_class']['det']:
                     if NETPARS['Classes'] is not None:
-                        y_train=ytr.copy()
-                        y_val=yvl.copy()
                         NETPARS['Done_Classes']=NETPARS['Done_Classes']+NETPARS['Classes']
                         NETPARS['Classes']=list(np.arange(np.max(NETPARS['Classes'])+1,np.max(NETPARS['Classes'])+11,1))
                     else:
-                        ytr=y_train.copy()
-                        yvl=y_val.copy()
                         NETPARS['Classes']=list(np.arange(0,10,1))
                         NETPARS['Done_Classes']=list()
-                    tclasses.set_value(np.array(NETPARS['Classes']+NETPARS['Done_Classes'],dtype=np.int32))
-                # print(NETPARS['Classes'])
+                    value=np.array(network.W.eval())
+                    pm=np.max(NETPARS['Classes'])-9
+                    if (pm==0 and NETPARS['num_class']['first']):
+                        std=np.sqrt(6./(value.shape[0]+100))
+                        value[:,pm:(pm+10)]=np.float32(np.random.uniform(-std,std,(value.shape[0],10)))
+                        value[:,(pm+10):100]=0
+                        network.W.set_value(value)
+                    else:
+                        std=np.std(value[:,0:pm])/10
+
+
+                    cl_temp=np.zeros((1,NETPARS['num_class']['num_class']),dtype=np.float32)
+                    cl_temp[0,NETPARS['Done_Classes']+NETPARS['Classes']]=1
+                    tclasses.set_value(np.array(cl_temp))
+                print(NETPARS['Done_Classes']+NETPARS['Classes'])
                 # z=np.in1d(y_train,np.array(NETPARS['Classes']+NETPARS['Done_Classes']))
                 # y_train[np.logical_not(z)]=NETPARS['num_class']['num_class']
                 # z=np.in1d(y_val,np.array(NETPARS['Classes']+NETPARS['Done_Classes']))
                 # y_val[np.logical_not(z)]=NETPARS['num_class']['num_class']
-                print(np.unique(y_train))
+
             # In each epoch, do a full pass over the training data:
             start_time = time.time()
             print("eta",eta.get_value())
             out_tr=iterate_on_batches(train_fn,X_train,y_train,batch_size,typ='Train',network=network,pars=NETPARS,iter=epoch)
-            pars=None
-            out_te=iterate_on_batches(val_fn,X_val,y_val,batch_size,typ='Val',pars=pars)
+            #pars=None
+            out_te=iterate_on_batches(val_fn,X_val,y_val,batch_size,typ='Val',pars=NETPARS)
+            #out_te=iterate_on_batches(val_fn,X_train,y_train,batch_size,typ='Val',pars=NETPARS)
+
             if ('eta_schedule' in NETPARS):
                 sc=NETPARS['eta_schedule']
                 if (curr_sched<len(sc)):
