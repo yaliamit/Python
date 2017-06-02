@@ -323,9 +323,9 @@ def main_new(NETPARS):
             print("Epoch {} of {} took {:.3f}s".format(
                 epoch + 1, NETPARS['num_epochs'], time.time() - start_time))
             # Save params in intermediate steps
-            if (np.mod(epoch,10)==0 and epoch>0):
-                params = lasagne.layers.get_all_param_values(network)
-                np.save(NETPARS['output_net'],params)
+            # if (np.mod(epoch,10)==0 and epoch>0):
+            #     params = lasagne.layers.get_all_param_values(network)
+            #     np.save(NETPARS['output_net'],params)
 
 
 

@@ -40,8 +40,12 @@ def process_param_line(line):
                         else:
                             a=[]
                             for ss in s11:
-                                if (ss != ''):
-                                    a.append(ss)
+                                try:
+                                    aa=int(ss)
+                                    a.append(aa)
+                                except ValueError:
+                                    if (ss != ''):
+                                        a.append(ss)
 
 
             return(s[0],a)
@@ -155,6 +159,7 @@ def parse_text_file(net_name,NETPARS,lname='layers', dump=False):
 
             NETPARS[lname]=LAYERS
 
+
 def dump_pars(NETPARS):
         import collections
         NETPARS = collections.OrderedDict(sorted(NETPARS.items()))
@@ -165,5 +170,7 @@ def dump_pars(NETPARS):
             if (type(NETPARS[key]) is list):
                 print(key)
                 for l in NETPARS[key]:
-                    print(l,)
-                    #print('\n')
+                    if (key=='layers'):
+                        print(l,)
+                    else:
+                        print(l," ",end="")
