@@ -536,7 +536,7 @@ def make_file_from_params(network,NETPARS):
                                 s=s+r+","
                             else:
                                 s=s+str(r)+','
-                        s[-1]=')'
+                        s=s[:-1]+')'
                 else:
                     s='dict:'+key
                     for skey, svalue in value.iteritems():
