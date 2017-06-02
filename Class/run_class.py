@@ -357,7 +357,7 @@ def main_new(NETPARS):
     fac=1
     out_test=out_test+(y_test[0:len(y_test)/fac],)
     if (NETPARS['train']):
-        iterate_on_batches(val_fn,X_train,y_train,batch_size,typ='Post-train',fac=False, agg=True) #NETPARS['simple_augmentation'])
+        iterate_on_batches(val_fn,X_train,y_train,batch_size,typ='Post-train',fac=False, agg=True, pars=NETPARS) #NETPARS['simple_augmentation'])
 
 
     return(NETPARS,out_test)
