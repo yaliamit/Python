@@ -530,13 +530,13 @@ def make_file_from_params(network,NETPARS):
                         else:
                             s=key+':'+str(value)
                     else:
-                        s=key+':('
+                        s=key+':'
                         for r in value:
                             if (type(r)==str):
                                 s=s+r+","
                             else:
                                 s=s+str(r)+','
-                        s=s[:-1]+')'
+                        #s=s[:-1]+')'
                 else:
                     s='dict:'+key
                     for skey, svalue in value.iteritems():
