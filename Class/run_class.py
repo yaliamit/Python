@@ -296,9 +296,9 @@ def main_new(NETPARS):
 
 
                     cl_temp=np.zeros((1,NETPARS['num_class']['num_class']),dtype=np.float32)
-                    cl_temp[0,NETPARS['Done_Classes']+NETPARS['Classes']]=1
+                    cl_temp[0,NETPARS['Classes']]=1
                     tclasses.set_value(np.array(cl_temp))
-                print(NETPARS['Done_Classes']+NETPARS['Classes'])
+                print(NETPARS['Classes'])
                 # z=np.in1d(y_train,np.array(NETPARS['Classes']+NETPARS['Done_Classes']))
                 # y_train[np.logical_not(z)]=NETPARS['num_class']['num_class']
                 # z=np.in1d(y_val,np.array(NETPARS['Classes']+NETPARS['Done_Classes']))
