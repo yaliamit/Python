@@ -276,19 +276,20 @@ def main_new(NETPARS):
 
 
             if ('num_class' in NETPARS and np.mod(epoch,NETPARS['num_class']['class_epoch'])==0):
+                bdel=NETPARS['num_class']['batch_size']
                 if NETPARS['num_class']['det']:
                     if NETPARS['Classes'] is not None:
                         NETPARS['Done_Classes']=NETPARS['Done_Classes']+NETPARS['Classes']
-                        NETPARS['Classes']=list(np.arange(np.max(NETPARS['Classes'])+1,np.max(NETPARS['Classes'])+11,1))
+                        NETPARS['Classes']=list(np.arange(np.max(NETPARS['Classes'])+1,np.max(NETPARS['Classes'])+bdel+1,1))
                     else:
-                        NETPARS['Classes']=list(np.arange(0,10,1))
+                        NETPARS['Classes']=list(np.arange(0,bdel,1))
                         NETPARS['Done_Classes']=list()
                     value=np.array(network.W.eval())
-                    pm=np.max(NETPARS['Classes'])-9
+                    pm=np.max(NETPARS['Classes'])-bdel+1
                     if (pm==0 and NETPARS['num_class']['first']):
                         std=np.sqrt(6./(value.shape[0]+100))
-                        value[:,pm:(pm+10)]=np.float32(np.random.uniform(-std,std,(value.shape[0],10)))
-                        value[:,(pm+10):100]=0
+                        value[:,pm:(pm+bdel)]=np.float32(np.random.uniform(-std,std,(value.shape[0],bdel)))
+                        value[:,(pm+bdel):100]=0
                         network.W.set_value(value)
                     else:
                         std=np.std(value[:,0:pm])/10
