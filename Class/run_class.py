@@ -279,11 +279,11 @@ def main_new(NETPARS):
                 bdel=NETPARS['num_class']['batch_size']
                 if NETPARS['num_class']['det']:
                     NETPARS['Classes']=list(np.arange(np.mod(icl,num_class),np.mod(icl+bdel,num_class),1))
-                    icl+=bdel
-                    if NETPARS['Classes'] is not None:
+                    if icl==0:
                         NETPARS['Done_Classes']=NETPARS['Done_Classes']+NETPARS['Classes']
                     else:
                         NETPARS['Done_Classes']=list()
+                    icl+=bdel
                     value=np.array(network.W.eval())
                     if (icl==0 and NETPARS['num_class']['first']):
                         std=np.sqrt(6./(value.shape[0]+100))
