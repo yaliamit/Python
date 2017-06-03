@@ -268,33 +268,30 @@ def main_new(NETPARS):
     eta_p=run_compare.eta_params(network)
     curr_sched=0
     if (NETPARS['train'] and NETPARS['num_epochs']>0):
+        icl=0
         print("Starting training...","Training set size:",X_train.shape[0])
         mod_eta=True
         #if NETPARS['update']!='adam':
         #    mod_eta=True
         for epoch in range(NETPARS['num_epochs']):
-
-
             if ('num_class' in NETPARS and np.mod(epoch,NETPARS['num_class']['class_epoch'])==0):
+
                 bdel=NETPARS['num_class']['batch_size']
                 if NETPARS['num_class']['det']:
+                    NETPARS['Classes']=list(np.arange(np.mod(icl,num_class),np.mod(icl+bdel,num_class),1))
+                    icl+=bdel
                     if NETPARS['Classes'] is not None:
                         NETPARS['Done_Classes']=NETPARS['Done_Classes']+NETPARS['Classes']
-                        NETPARS['Classes']=list(np.arange(np.max(NETPARS['Classes'])+1,np.max(NETPARS['Classes'])+bdel+1,1))
                     else:
-                        NETPARS['Classes']=list(np.arange(0,bdel,1))
                         NETPARS['Done_Classes']=list()
                     value=np.array(network.W.eval())
-                    pm=np.max(NETPARS['Classes'])-bdel+1
-                    if (pm==0 and NETPARS['num_class']['first']):
+                    if (icl==0 and NETPARS['num_class']['first']):
                         std=np.sqrt(6./(value.shape[0]+100))
                         value[:,pm:(pm+bdel)]=np.float32(np.random.uniform(-std,std,(value.shape[0],bdel)))
                         value[:,(pm+bdel):100]=0
                         network.W.set_value(value)
                     else:
                         std=np.std(value[:,0:pm])/10
-
-
                     cl_temp=np.zeros((1,NETPARS['num_class']['num_class']),dtype=np.float32)
                     cl_temp[0,NETPARS['Classes']]=1
                     tclasses.set_value(np.array(cl_temp))
