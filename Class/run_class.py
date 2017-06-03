@@ -283,15 +283,16 @@ def main_new(NETPARS):
                         NETPARS['Done_Classes']=NETPARS['Done_Classes']+NETPARS['Classes']
                     else:
                         NETPARS['Done_Classes']=list()
-                    icl+=bdel
+
                     value=np.array(network.W.eval())
                     if (icl==0 and NETPARS['num_class']['first']):
                         std=np.sqrt(6./(value.shape[0]+100))
-                        value[:,pm:(pm+bdel)]=np.float32(np.random.uniform(-std,std,(value.shape[0],bdel)))
-                        value[:,(pm+bdel):100]=0
+                        value[:,icl:(icl+bdel)]=np.float32(np.random.uniform(-std,std,(value.shape[0],bdel)))
+                        value[:,(icl+bdel):100]=0
                         network.W.set_value(value)
                     else:
-                        std=np.std(value[:,0:pm])/10
+                        std=np.std(value[:,0:icl])/10
+                    icl+=bdel
                     cl_temp=np.zeros((1,NETPARS['num_class']['num_class']),dtype=np.float32)
                     cl_temp[0,NETPARS['Classes']]=1
                     tclasses.set_value(np.array(cl_temp))
