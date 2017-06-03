@@ -290,8 +290,8 @@ def main_new(NETPARS):
                         value[:,icl:(icl+bdel)]=np.float32(np.random.uniform(-std,std,(value.shape[0],bdel)))
                         value[:,(icl+bdel):100]=0
                         network.W.set_value(value)
-                    else:
-                        std=np.std(value[:,0:icl])/10
+                    #else:
+                    #    std=np.std(value[:,0:icl])/10
                     icl+=bdel
                     cl_temp=np.zeros((1,NETPARS['num_class']['num_class']),dtype=np.float32)
                     cl_temp[0,NETPARS['Classes']]=1
