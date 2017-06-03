@@ -279,7 +279,7 @@ def main_new(NETPARS):
                 bdel=NETPARS['num_class']['batch_size']
                 if NETPARS['num_class']['det']:
                     NETPARS['Classes']=list(np.arange(np.mod(icl,num_class),np.mod(icl+bdel,num_class),1))
-                    if icl==0:
+                    if icl>0:
                         NETPARS['Done_Classes']=NETPARS['Done_Classes']+NETPARS['Classes']
                     else:
                         NETPARS['Done_Classes']=list()
