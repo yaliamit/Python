@@ -275,15 +275,16 @@ def main_new(NETPARS):
         #    mod_eta=True
         for epoch in range(NETPARS['num_epochs']):
             if ('num_class' in NETPARS and np.mod(epoch,NETPARS['num_class']['class_epoch'])==0):
-
                 bdel=NETPARS['num_class']['batch_size']
                 if NETPARS['num_class']['det']:
-                    NETPARS['Classes']=list(np.arange(np.mod(icl,num_class),np.mod(icl+bdel,num_class),1))
+
                     if icl>0:
                         NETPARS['Done_Classes']=NETPARS['Done_Classes']+NETPARS['Classes']
                     else:
                         NETPARS['Done_Classes']=list()
-
+                    NETPARS['Classes']=list(np.arange(np.mod(icl,num_class),np.mod(icl+bdel,num_class),1))
+                    print('icl',icl,'Classes',NETPARS['Classes'])
+                    print(NETPARS['Done_Classes'])
                     value=np.array(network.W.eval())
                     if (icl==0 and NETPARS['num_class']['first']):
                         std=np.sqrt(6./(value.shape[0]+100))
@@ -296,7 +297,7 @@ def main_new(NETPARS):
                     cl_temp=np.zeros((1,NETPARS['num_class']['num_class']),dtype=np.float32)
                     cl_temp[0,NETPARS['Classes']]=1
                     tclasses.set_value(np.array(cl_temp))
-                print(NETPARS['Classes'])
+
                 # z=np.in1d(y_train,np.array(NETPARS['Classes']+NETPARS['Done_Classes']))
                 # y_train[np.logical_not(z)]=NETPARS['num_class']['num_class']
                 # z=np.in1d(y_val,np.array(NETPARS['Classes']+NETPARS['Done_Classes']))
