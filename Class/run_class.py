@@ -163,7 +163,7 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
     print(typ+" loss:\t\t\t{:.6f}".format(err / (batches+1)))
     print(typ+" acc:\t\t\t{:.6f}".format(acc / (batches+1)))
 
-    if ('Classes' in pars and pars['Classes'] is not None):
+    if (pars is not None and 'Classes' in pars and pars['Classes'] is not None):
         lcl=pars['Done_Classes']+pars['Classes']
         yind=np.in1d(yy,lcl)
         yp=np.argmax(pred[:,lcl],axis=1)
@@ -282,7 +282,7 @@ def main_new(NETPARS):
                         NETPARS['Done_Classes']=NETPARS['Done_Classes']+NETPARS['Classes']
                     else:
                         NETPARS['Done_Classes']=list()
-                    NETPARS['Classes']=list(np.arange(np.mod(icl,num_class),np.mod(icl+bdel,num_class),1))
+                    NETPARS['Classes']=list(np.arange(np.mod(icl,num_class),np.mod(icl+bdel-1,num_class)+1,1))
                     print('icl',icl,'Classes',NETPARS['Classes'])
                     print(NETPARS['Done_Classes'])
                     value=np.array(network.W.eval())
@@ -347,7 +347,7 @@ def main_new(NETPARS):
     fac=0
     if (type(NETPARS['simple_augmentation']) is int):
          fac=NETPARS['simple_augmentation']
-    out_test=iterate_on_batches(val_fn,X_test,y_test,batch_size,typ='Test',agg=True,fac=fac,pars=NETPARS)
+    out_test=iterate_on_batches(val_fn,X_test,y_test,batch_size,typ='Test',agg=True,fac=fac,pars=None)
 
 
     conf_mat=get_confusion_matrix(out_test[2],y_test[0:(out_test[2]).shape[0]])
@@ -357,7 +357,7 @@ def main_new(NETPARS):
     fac=1
     out_test=out_test+(y_test[0:len(y_test)/fac],)
     if (NETPARS['train']):
-        iterate_on_batches(val_fn,X_train,y_train,batch_size,typ='Post-train',fac=False, agg=True, pars=NETPARS) #NETPARS['simple_augmentation'])
+        iterate_on_batches(val_fn,X_train,y_train,batch_size,typ='Post-train',fac=False, agg=True, pars=None) #NETPARS['simple_augmentation'])
 
 
     return(NETPARS,out_test)
