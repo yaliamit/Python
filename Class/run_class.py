@@ -291,7 +291,7 @@ def main_new(NETPARS):
                 value=np.array(network.W.eval())
                 if (icl==0 and NETPARS['num_class']['first']):
                     std=np.sqrt(6./(value.shape[0]+100))
-                    value=np.zeros(value.shape)
+                    value=np.float32(np.zeros(value.shape))
                     value[:,NETPARS['Classes']]=np.float32(np.random.uniform(-std,std,(value.shape[0],bdel)))
                     #value[:,bdel:100]=0
                     network.W.set_value(value)
