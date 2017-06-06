@@ -276,27 +276,30 @@ def main_new(NETPARS):
         for epoch in range(NETPARS['num_epochs']):
             if ('num_class' in NETPARS and np.mod(epoch,NETPARS['num_class']['class_epoch'])==0):
                 bdel=NETPARS['num_class']['batch_size']
-                if NETPARS['num_class']['det']:
-
-                    if icl>0:
-                        NETPARS['Done_Classes']=NETPARS['Done_Classes']+NETPARS['Classes']
-                    else:
-                        NETPARS['Done_Classes']=list()
+                if icl>0:
+                    NETPARS['Done_Classes']=list(np.unique(NETPARS['Done_Classes']+NETPARS['Classes']))
+                else:
+                    NETPARS['Done_Classes']=list()
+                if  NETPARS['num_class']['det']:
                     NETPARS['Classes']=list(np.arange(np.mod(icl,num_class),np.mod(icl+bdel-1,num_class)+1,1))
-                    print('icl',icl,'Classes',NETPARS['Classes'])
-                    print(NETPARS['Done_Classes'])
-                    value=np.array(network.W.eval())
-                    if (icl==0 and NETPARS['num_class']['first']):
-                        std=np.sqrt(6./(value.shape[0]+100))
-                        value[:,icl:(icl+bdel)]=np.float32(np.random.uniform(-std,std,(value.shape[0],bdel)))
-                        value[:,(icl+bdel):100]=0
-                        network.W.set_value(value)
-                    #else:
-                    #    std=np.std(value[:,0:icl])/10
-                    icl+=bdel
-                    cl_temp=np.zeros((1,NETPARS['num_class']['num_class']),dtype=np.float32)
-                    cl_temp[0,NETPARS['Classes']]=1
-                    tclasses.set_value(np.array(cl_temp))
+                else:
+                    ii=range(num_class)
+                    np.random.shuffle(ii)
+                    NETPARS['Classes']=ii[0:bdel]
+                print('icl',icl,'Classes',NETPARS['Classes'])
+                print(NETPARS['Done_Classes'])
+                value=np.array(network.W.eval())
+                if (icl==0 and NETPARS['num_class']['first']):
+                    std=np.sqrt(6./(value.shape[0]+100))
+                    value[:,0:bdel]=np.float32(np.random.uniform(-std,std,(value.shape[0],bdel)))
+                    value[:,bdel:100]=0
+                    network.W.set_value(value)
+                #else:
+                #    std=np.std(value[:,0:icl])/10
+                icl+=bdel
+                cl_temp=np.zeros((1,NETPARS['num_class']['num_class']),dtype=np.float32)
+                cl_temp[0,NETPARS['Classes']]=1
+                tclasses.set_value(np.array(cl_temp))
 
                 # z=np.in1d(y_train,np.array(NETPARS['Classes']+NETPARS['Done_Classes']))
                 # y_train[np.logical_not(z)]=NETPARS['num_class']['num_class']
