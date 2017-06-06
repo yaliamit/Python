@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pog_tanh_seq num_epochs=400 hinge=1. output=seqh_base_OUT>seqh_base_OUT.txt
+python start_class.py net=_pars/pog_tanh_seq num_epochs=1000 output=seq_rand_OUT>seq_rand_OUT.txt
