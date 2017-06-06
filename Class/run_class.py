@@ -285,7 +285,7 @@ def main_new(NETPARS):
                 else:
                     ii=range(num_class)
                     np.random.shuffle(ii)
-                    NETPARS['Classes']=ii[0:bdel]
+                    NETPARS['Classes']=list(np.sort(ii[0:bdel]))
                 print('icl',icl,'Classes',NETPARS['Classes'])
                 print(NETPARS['Done_Classes'])
                 value=np.array(network.W.eval())
