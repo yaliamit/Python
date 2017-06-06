@@ -167,6 +167,7 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
         lcl=pars['Done_Classes']+pars['Classes']
         yind=np.in1d(yy,lcl)
         yp=np.argmax(pred[:,lcl],axis=1)
+        yp=np.array(lcl)[yp]
         errc=np.mean(yy[yind]!=yp[yind])
         print('Number of learned classes',len(lcl))
         print('Error on learned classes', errc)
@@ -293,7 +294,6 @@ def main_new(NETPARS):
                     std=np.sqrt(6./(value.shape[0]+100))
                     value=np.float32(np.zeros(value.shape))
                     value[:,NETPARS['Classes']]=np.float32(np.random.uniform(-std,std,(value.shape[0],bdel)))
-                    #value[:,bdel:100]=0
                     network.W.set_value(value)
                 #else:
                 #    std=np.std(value[:,0:icl])/10
@@ -301,11 +301,6 @@ def main_new(NETPARS):
                 cl_temp=np.zeros((1,NETPARS['num_class']['num_class']),dtype=np.float32)
                 cl_temp[0,NETPARS['Classes']]=1
                 tclasses.set_value(np.array(cl_temp))
-
-                # z=np.in1d(y_train,np.array(NETPARS['Classes']+NETPARS['Done_Classes']))
-                # y_train[np.logical_not(z)]=NETPARS['num_class']['num_class']
-                # z=np.in1d(y_val,np.array(NETPARS['Classes']+NETPARS['Done_Classes']))
-                # y_val[np.logical_not(z)]=NETPARS['num_class']['num_class']
 
             # In each epoch, do a full pass over the training data:
             start_time = time.time()
