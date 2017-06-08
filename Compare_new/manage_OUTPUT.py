@@ -89,7 +89,7 @@ def print_OUTPUT(name='OUTPUT'):
     #time.sleep(10)
     shutil.copyfile(name+'.txt',OO+'/'+name+'_'+str(t)+'.txt')
 
-def plot_OUTPUT(name='OUTPUT'):
+def plot_OUTPUT(name='OUTPUT',first=None,last=None):
     import commands
     import numpy as np
     import pylab as py
@@ -110,7 +110,9 @@ def plot_OUTPUT(name='OUTPUT'):
             atrain=atrain[-1]
         if (havetrain):
             print(atest,atrain)
-
+    if (first is not None and last is not None):
+        bt=bt[first:last]
+        bv=bv[first:last]
     print(len(bt))
     py.plot(bt,label='train')
     py.plot(bv,label='val')
