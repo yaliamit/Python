@@ -15,41 +15,7 @@ from collections import OrderedDict
 
 classes=None
 
-def adamloc(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
-         beta2=0.999, epsilon=1e-8, classes=None):
 
-    all_grads = lasagne.updates.get_or_compute_grads(loss_or_grads, params)
-    t_prev = theano.shared(lasagne.utils.floatX(0.))
-    updates = OrderedDict()
-
-    # Using theano constant to prevent upcasting of floatX
-    one = T.constant(1)
-
-    t = t_prev + 1
-    a_t = learning_rate*T.sqrt(one-beta2**t)/(one-beta1**t)
-    lastp=len(params)-1
-    p=0
-    for param, g_t in zip(params, all_grads):
-        value = param.get_value(borrow=True)
-        tens=True
-
-        m_prev = theano.shared(np.zeros(value.shape, dtype=value.dtype),broadcastable=param.broadcastable)
-        v_prev = theano.shared(np.zeros(value.shape, dtype=value.dtype),broadcastable=param.broadcastable)
-
-        m_t = beta1*m_prev + (one-beta1)*g_t
-        #v_t = beta2*v_prev + (one-beta2)*g_t**2
-        v_t= beta2*v_prev + (one-beta2)*g_t*g_t
-
-        step = a_t*m_t/(T.sqrt(v_t) + epsilon)
-        updates[m_prev] = m_t
-        updates[v_prev] = v_t
-        if (classes is not None and value.shape[1]==100):
-            aa=theano.tensor.repeat(classes,value.shape[0],axis=0)
-            step=step*aa
-        updates[param] = param - step
-        p+=1
-    updates[t_prev] = t
-    return updates
 
 def clip_w(updates,params,clipt):
     for i,p in enumerate(params):
@@ -184,6 +150,43 @@ def iterate_on_batches(func,X_list,y,batch_size,typ='Test',y_lab=None):
     else:
         print("  test acc font:\t\t\t{:.6f}".format(np.double(np.sum(yii==y_lab)) / len(yii)))
     return(err,batches)
+
+
+def adamloc(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
+         beta2=0.999, epsilon=1e-8, classes=None):
+
+    all_grads = lasagne.updates.get_or_compute_grads(loss_or_grads, params)
+    t_prev = theano.shared(lasagne.utils.floatX(0.))
+    updates = OrderedDict()
+
+    # Using theano constant to prevent upcasting of floatX
+    one = T.constant(1)
+
+    t = t_prev + 1
+    a_t = learning_rate*T.sqrt(one-beta2**t)/(one-beta1**t)
+    lastp=len(params)-1
+    p=0
+    for param, g_t in zip(params, all_grads):
+        value = param.get_value(borrow=True)
+        tens=True
+
+        m_prev = theano.shared(np.zeros(value.shape, dtype=value.dtype),broadcastable=param.broadcastable)
+        v_prev = theano.shared(np.zeros(value.shape, dtype=value.dtype),broadcastable=param.broadcastable)
+
+        m_t = beta1*m_prev + (one-beta1)*g_t
+        #v_t = beta2*v_prev + (one-beta2)*g_t**2
+        v_t= beta2*v_prev + (one-beta2)*g_t*g_t
+
+        step = a_t*m_t/(T.sqrt(v_t) + epsilon)
+        updates[m_prev] = m_t
+        updates[v_prev] = v_t
+        if (classes is not None and value.shape[1]==100):
+            aa=theano.tensor.repeat(classes,value.shape[0],axis=0)
+            step=step*aa
+        updates[param] = param - step
+        p+=1
+    updates[t_prev] = t
+    return updates
 
 # Setup the theano function that computes the loss from the network output
 def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='class'):
