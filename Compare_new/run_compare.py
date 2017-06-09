@@ -292,39 +292,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
         return(train_fn,eta, tclasses)
 
 
-def setup_function_seq(network,NETPARS,input_var,target_var,step,Train=True,loss_type='class'):
 
-
-        params=lasagne.layers.get_all_params(network,trainable='True')
-        eta = theano.shared(np.array(NETPARS['eta_init'], dtype=theano.config.floatX))
-
-        #for pp in reverse(params):
-        if (Train):
-            pred = lasagne.layers.get_output(network)
-        else:
-            pred = lasagne.layers.get_output(network, deterministic=True)
-
-        pred = T.flatten(pred,outdim=2)
-        aloss = lasagne.objectives.categorical_crossentropy(pred, target_var)
-        loss = aloss.mean()
-
-        acc = T.mean(T.eq(T.argmax(pred, axis=1), target_var),
-                      dtype=theano.config.floatX)
-
-        if (Train):
-            train_fn=[]
-            for pp in reversed(params):
-                print(pp)
-                gloss=[]
-                gloss.append(T.grad(loss,pp))
-                updates=lasagne.updates.adam(gloss, [pp,], learning_rate=0.001, beta1=0.9,beta2=0.999,epsilon=1e-08)
-                train_fn.append(theano.function([input_var,target_var],[loss,acc],updates=updates))
-        else:
-            train_fn = theano.function([input_var,target_var], [loss, acc], updates=None)
-            #train_fn = theano.function(inp, [loss, acc], updates=updates)
-
-
-        return(train_fn,eta)
 
 
 # Correlation function for the correlation loss.
