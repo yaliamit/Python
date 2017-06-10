@@ -35,4 +35,4 @@ name:conv3aR;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linear
 name:pool3;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv3aR
 name:drop3;drop:.5;parent:pool3
 name:newdensp;num_units:128;non_linearity:tanh;tinout:(.1,1.);parent:drop3
-name:newdensf;num_units:10;non_linearity:softmax;parent:densep;final:final
+name:newdensf;num_units:10;non_linearity:softmax;parent:newdensp;final:final
