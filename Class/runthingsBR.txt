@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pog_tanh_R_seq hinge=1. dep_fac=5 num_epochs=2000 output=seqh_R_rand20_n_1_OUT>seqh_R_rand20_n_1_OUT.txt
+python start_class.py net=_pars/pog_tanh_R_seq dep_fac=5 num_epochs=2000 output=seq_R_rand20_n_1_OUT>seq_R_rand20_n_1_OUT.txt
