@@ -102,7 +102,6 @@ def print_W_and_Wgrad_info(network,tout,pred,yy):
         yp=np.argmax(pred,axis=1)
         print(np.mean(np.max(pred[yp==yy],axis=1)),np.std(np.max(pred[yp==yy],axis=1)))
         print(np.mean(np.max(pred[yp!=yy],axis=1)),np.std(np.max(pred[yp!=yy],axis=1)))
-        sys.stdout.flush()
 
 
 def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, network=None, pars=None, iter=None):
@@ -174,6 +173,7 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
     #if (network is not None and iter is not None and np.mod(iter,10)==0):
     #    print_W_and_Wgrad_info(network,tout,pred,yy)
 
+    sys.stdout.flush()
 
 
 
