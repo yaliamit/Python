@@ -103,6 +103,34 @@ def print_W_and_Wgrad_info(network,tout,pred,yy):
         print(np.mean(np.max(pred[yp==yy],axis=1)),np.std(np.max(pred[yp==yy],axis=1)))
         print(np.mean(np.max(pred[yp!=yy],axis=1)),np.std(np.max(pred[yp!=yy],axis=1)))
 
+def update_class_list(NETPARS,icl,network,tclasses):
+        num_class=NETPARS['num_class']['num_class']
+        bdel=NETPARS['num_class']['batch_size']
+        if icl>0:
+            NETPARS['Done_Classes']=list(np.unique(NETPARS['Done_Classes']+NETPARS['Classes']))
+        else:
+            NETPARS['Done_Classes']=list()
+        if  NETPARS['num_class']['det']:
+            NETPARS['Classes']=list(np.arange(np.mod(icl,num_class),np.mod(icl+bdel-1,num_class)+1,1))
+        else:
+            ii=range(num_class)
+            np.random.shuffle(ii)
+            NETPARS['Classes']=list(np.sort(ii[0:bdel]))
+        print('icl',icl,'Classes',NETPARS['Classes'])
+        print(NETPARS['Done_Classes'])
+        value=np.array(network.W.eval())
+        if (icl==0 and NETPARS['num_class']['first']):
+            std=np.sqrt(6./(value.shape[0]+100))
+            value=np.float32(np.zeros(value.shape))
+            value[:,NETPARS['Classes']]=np.float32(np.random.uniform(-std,std,(value.shape[0],bdel)))
+            network.W.set_value(value)
+        #else:
+        #    std=np.std(value[:,0:icl])/10
+        icl+=bdel
+        cl_temp=np.zeros((1,NETPARS['num_class']['num_class']),dtype=np.float32)
+        cl_temp[0,NETPARS['Classes']]=1
+        tclasses.set_value(np.array(cl_temp))
+
 
 def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, network=None, pars=None, iter=None):
     if (len(X)==0):
@@ -190,26 +218,9 @@ def main_new(NETPARS):
     print("Loading data...")
     X_train, y_train, X_val, y_val, X_test, y_test=data.get_train(NETPARS)
 
-
     if ('Classes' not in NETPARS):
         NETPARS['Classes']=None
-    elif (NETPARS['Classes']!='None' and NETPARS['Classes'] is not None):
-        lcl=list()
-        if ('Done_Classes' in NETPARS and NETPARS['Done_Classes']!='None'):
-            lcl=lcl+list(np.int32(NETPARS['Done_Classes']))
-        lcl=lcl+list(np.int32(NETPARS['Classes']))
-        if (NETPARS['train']):
-            yind=np.in1d(y_train,lcl)
-            y_train=y_train[yind]
-            X_train=X_train[yind,:]
-            yind=np.in1d(y_val,lcl)
-            y_val=y_val[yind]
-            X_val=X_val[yind,:]
-        yind=np.in1d(y_test,lcl)
-        y_test=y_test[yind]
-        X_test=X_test[yind,:]
-
-    num_class=len(np.unique(y_test))
+        num_class=len(np.unique(y_test))
     if ('num_class' in NETPARS):
         num_class=NETPARS['num_class']['num_class']
 
@@ -250,14 +261,9 @@ def main_new(NETPARS):
     network = make_net.build_cnn_on_pars(input_var,NETPARS,num_class=num_class)
 
     step=T.iscalar()
-    params=lasagne.layers.get_all_params(network)
 
     if (NETPARS['train']):
-        if ('seq' in NETPARS):
-            # Sequential update of layers. Not interesting.
-            train_fn, eta=run_compare.setup_function_seq(network,NETPARS,input_var,target_var,step,Train=True)
-        else:
-            train_fn,eta, tclasses=run_compare.setup_function(network,NETPARS,input_var,target_var,Train=True)
+        train_fn,eta, tclasses=run_compare.setup_function(network,NETPARS,input_var,target_var,Train=True)
 
     val_fn,dummy, tdummy=run_compare.setup_function(network,NETPARS,input_var,target_var,Train=False)
 
@@ -277,33 +283,9 @@ def main_new(NETPARS):
         ty_train=y_train; tX_train=X_train; ty_val=y_val; tX_val=X_val
         for epoch in range(NETPARS['num_epochs']):
             if ('num_class' in NETPARS and np.mod(epoch,NETPARS['num_class']['class_epoch'])==0):
-                out_te=iterate_on_batches(val_fn,X_train,y_train,batch_size,typ='Val',pars=NETPARS)
-                bdel=NETPARS['num_class']['batch_size']
-                if icl>0:
-                    NETPARS['Done_Classes']=list(np.unique(NETPARS['Done_Classes']+NETPARS['Classes']))
-                else:
-                    NETPARS['Done_Classes']=list()
-                if  NETPARS['num_class']['det']:
-                    NETPARS['Classes']=list(np.arange(np.mod(icl,num_class),np.mod(icl+bdel-1,num_class)+1,1))
-                else:
-                    ii=range(num_class)
-                    np.random.shuffle(ii)
-                    NETPARS['Classes']=list(np.sort(ii[0:bdel]))
-                print('icl',icl,'Classes',NETPARS['Classes'])
-                print(NETPARS['Done_Classes'])
-                value=np.array(network.W.eval())
-                if (icl==0 and NETPARS['num_class']['first']):
-                    std=np.sqrt(6./(value.shape[0]+100))
-                    value=np.float32(np.zeros(value.shape))
-                    value[:,NETPARS['Classes']]=np.float32(np.random.uniform(-std,std,(value.shape[0],bdel)))
-                    network.W.set_value(value)
-                #else:
-                #    std=np.std(value[:,0:icl])/10
-                icl+=bdel
-                cl_temp=np.zeros((1,NETPARS['num_class']['num_class']),dtype=np.float32)
-                cl_temp[0,NETPARS['Classes']]=1
-                tclasses.set_value(np.array(cl_temp))
+                update_class_list(NETPARS,icl,network,tclasses)
                 if ('sub' in NETPARS['num_class']):
+                    iterate_on_batches(val_fn,X_train,y_train,batch_size,typ='ValTrain',pars=NETPARS)
                     yind=np.in1d(y_train,NETPARS['Classes'])
                     ty_train=y_train[yind]
                     tX_train=X_train[yind]
@@ -315,8 +297,7 @@ def main_new(NETPARS):
             # In each epoch, do a full pass over the training data:
             start_time = time.time()
             print("eta",eta.get_value())
-            out_tr=iterate_on_batches(train_fn,tX_train,ty_train,batch_size,typ='Train',network=network,pars=NETPARS,iter=epoch)
-            #pars=None
+            iterate_on_batches(train_fn,tX_train,ty_train,batch_size,typ='Train',network=network,pars=NETPARS,iter=epoch)
             out_te=iterate_on_batches(val_fn,tX_val,ty_val,batch_size,typ='Val',pars=NETPARS)
 
             if ('eta_schedule' in NETPARS):
