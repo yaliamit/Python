@@ -130,7 +130,7 @@ def update_class_list(NETPARS,icl,network,tclasses):
         cl_temp=np.zeros((1,NETPARS['num_class']['num_class']),dtype=np.float32)
         cl_temp[0,NETPARS['Classes']]=1
         tclasses.set_value(np.array(cl_temp))
-
+        return(icl)
 
 def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, network=None, pars=None, iter=None):
     if (len(X)==0):
@@ -283,7 +283,7 @@ def main_new(NETPARS):
         ty_train=y_train; tX_train=X_train; ty_val=y_val; tX_val=X_val
         for epoch in range(NETPARS['num_epochs']):
             if ('num_class' in NETPARS and np.mod(epoch,NETPARS['num_class']['class_epoch'])==0):
-                update_class_list(NETPARS,icl,network,tclasses)
+                icl=update_class_list(NETPARS,icl,network,tclasses)
                 if ('sub' in NETPARS['num_class']):
                     iterate_on_batches(val_fn,X_train,y_train,batch_size,typ='ValTrain',pars=NETPARS)
                     yind=np.in1d(y_train,NETPARS['Classes'])
