@@ -171,8 +171,8 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
         errc=np.mean(yy[yind]!=yp[yind])
         print('Number of learned classes',len(lcl))
         print('Error on learned classes', errc)
-    if (network is not None and iter is not None and np.mod(iter,10)==0):
-        print_W_and_Wgrad_info(network,tout,pred,yy)
+    #if (network is not None and iter is not None and np.mod(iter,10)==0):
+    #    print_W_and_Wgrad_info(network,tout,pred,yy)
 
 
 
