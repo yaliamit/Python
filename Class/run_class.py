@@ -162,7 +162,7 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
     print(typ+" loss:\t\t\t{:.6f}".format(err / (batches+1)))
     print(typ+" acc:\t\t\t{:.6f}".format(acc / (batches+1)))
 
-    if (pars is not None and 'Classes' in pars and pars['Classes'] is not None):
+    if (pars is not None and 'Classes' in pars and pars['Classes'] is not None and typ!='Train'):
         lcl=pars['Done_Classes']+pars['Classes']
         yind=np.in1d(yy,lcl)
         yp=np.argmax(pred[:,lcl],axis=1)
@@ -274,8 +274,10 @@ def main_new(NETPARS):
         mod_eta=True
         #if NETPARS['update']!='adam':
         #    mod_eta=True
+        ty_train=y_train; tX_train=X_train; ty_val=y_val; tX_val=X_val
         for epoch in range(NETPARS['num_epochs']):
             if ('num_class' in NETPARS and np.mod(epoch,NETPARS['num_class']['class_epoch'])==0):
+                out_te=iterate_on_batches(val_fn,X_train,y_train,batch_size,typ='Val',pars=NETPARS)
                 bdel=NETPARS['num_class']['batch_size']
                 if icl>0:
                     NETPARS['Done_Classes']=list(np.unique(NETPARS['Done_Classes']+NETPARS['Classes']))
@@ -301,14 +303,21 @@ def main_new(NETPARS):
                 cl_temp=np.zeros((1,NETPARS['num_class']['num_class']),dtype=np.float32)
                 cl_temp[0,NETPARS['Classes']]=1
                 tclasses.set_value(np.array(cl_temp))
+                if ('sub' in NETPARS['num_class']):
+                    yind=np.in1d(y_train,NETPARS['Classes'])
+                    ty_train=y_train[yind]
+                    tX_train=X_train[yind]
+                    yind=np.in1d(y_val,NETPARS['Classes'])
+                    ty_val=y_val[yind]
+                    tX_val=X_val[yind]
+
 
             # In each epoch, do a full pass over the training data:
             start_time = time.time()
             print("eta",eta.get_value())
-            out_tr=iterate_on_batches(train_fn,X_train,y_train,batch_size,typ='Train',network=network,pars=NETPARS,iter=epoch)
+            out_tr=iterate_on_batches(train_fn,tX_train,ty_train,batch_size,typ='Train',network=network,pars=NETPARS,iter=epoch)
             #pars=None
-            out_te=iterate_on_batches(val_fn,X_val,y_val,batch_size,typ='Val',pars=NETPARS)
-            #out_te=iterate_on_batches(val_fn,X_train,y_train,batch_size,typ='Val',pars=NETPARS)
+            out_te=iterate_on_batches(val_fn,tX_val,ty_val,batch_size,typ='Val',pars=NETPARS)
 
             if ('eta_schedule' in NETPARS):
                 sc=NETPARS['eta_schedule']
