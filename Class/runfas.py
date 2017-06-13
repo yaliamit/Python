@@ -41,7 +41,7 @@ else:
     pnnn=str.split(pnn,':')
     netname=str.strip(pnnn[1],' ,\')')
 
-    com='scp yaliamit@linux2.cs.uchicago.edu:Desktop/Dropbox/Python/Class/'+netname+'.*  _cs/Amodels/.'
+    com='scp yaliamit@linux2.cs.uchicago.edu:Desktop/Dropbox/Python/Class/'+netname+'.txt  _cs/Amodels/.'
     os.system(com)
     manage_OUTPUT.print_OUTPUT(outname+'-cs')
 
