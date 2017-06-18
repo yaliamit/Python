@@ -129,7 +129,8 @@ def update_class_list(NETPARS,icl,network,tclasses):
         icl+=bdel
         cl_temp=np.zeros((1,NETPARS['num_class']['num_class']),dtype=np.float32)
         cl_temp[0,NETPARS['Classes']]=1
-        tclasses.set_value(np.array(cl_temp))
+        if ('sub' not in NETPARS['num_class']):
+            tclasses.set_value(np.array(cl_temp))
         return(icl)
 
 def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, network=None, pars=None, iter=None):

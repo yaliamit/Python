@@ -259,7 +259,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
         tclasses=None
         if (Train):
             eta = theano.shared(np.array(NETPARS['eta_init'], dtype=theano.config.floatX))
-            if ('num_class' in NETPARS):
+            if ('num_class' in NETPARS and 'sub' not in NETPARS['num_class']):
                 zz=np.zeros((1,NETPARS['num_class']['num_class']),dtype=np.float32)
                 tclasses=theano.shared(zz)
             if ('update' in NETPARS):
