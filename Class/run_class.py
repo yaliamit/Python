@@ -128,7 +128,8 @@ def update_class_list(NETPARS,icl,network,tclasses):
         #    std=np.std(value[:,0:icl])/10
         icl+=bdel
         cl_temp=np.zeros((1,NETPARS['num_class']['num_class']),dtype=np.float32)
-        cl_temp[0,NETPARS['Classes']]=1
+        #cl_temp[0,NETPARS['Classes']]=1
+        cl_temp[0,:]=1
         if ('sub' not in NETPARS['num_class']):
             tclasses.set_value(np.array(cl_temp))
         return(icl)

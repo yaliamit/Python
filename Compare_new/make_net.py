@@ -314,7 +314,9 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                 num_units=l['num_units']
                 if ('final' in l and num_class is not None):
                     num_units=num_class
-
+                gain=1.
+                if ('gain' in l):
+                    gain=l['gain']
 
                 for lay in input_la:
                     input_dim=np.prod(lay.output_shape[1:])
@@ -329,7 +331,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                         Wz=np.float32(np.random.rand(input_dim,num_units)<prob[0])
                         if (prob[1]>=0):
                             Rz=np.float32(np.random.rand(input_dim,num_units)<prob[0])
-                    std=np.sqrt(6./(input_dim+num_units))
+                    std=gain*np.sqrt(6./(input_dim+num_units))
                     W=np.float32(np.random.uniform(-std,std,(input_dim,num_units)))*Wz
                     if (Rz.shape[0] > 1):
                         R=np.float32(np.random.uniform(-std,std,(input_dim,num_units)))*Rz
@@ -422,11 +424,12 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                 if ('newdens' in l.name):
                     WW=np.array(l.W.eval())
                     RR=np.array(l.R.eval())
-                    l.Wzero=np.float32(WW!=0)*np.float32(np.random.rand(WW.shape[0],WW.shape[1])<prob[0])
+                    # Get the zeroed out connections from the W==0 array - and zero out some more if required ??
+                    l.Wzero=np.float32(WW!=0)*np.float32(np.random.rand(WW.shape[0],WW.shape[1])<l.prob[0])
 
                     if l.Rzero.shape[0] > 1:
-                       if prob[1]>0:
-                            l.Rzero=np.float32(RR!=0)*np.float32(np.random.rand(RR.shape[0],RR.shape[1])<prob[0])
+                       if l.prob[1]>0:
+                            l.Rzero=np.float32(RR!=0)*np.float32(np.random.rand(RR.shape[0],RR.shape[1])<l.prob[0])
                        else:
                             l.Rzero=np.float32(np.zeros(RR.shape))
                     if ('global_prob' in PARS and PARS['global_prob'][1]==0):
