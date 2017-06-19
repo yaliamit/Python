@@ -290,9 +290,9 @@ def main_new(NETPARS):
                     yind=np.in1d(y_train,NETPARS['Classes'])
                     ty_train=y_train[yind]
                     tX_train=X_train[yind]
-                    yind=np.in1d(y_val,NETPARS['Classes'])
-                    ty_val=y_val[yind]
-                    tX_val=X_val[yind]
+                    # yind=np.in1d(y_val,NETPARS['Classes'])
+                    # ty_val=y_val[yind]
+                    # tX_val=X_val[yind]
 
 
             # In each epoch, do a full pass over the training data:
