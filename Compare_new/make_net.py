@@ -315,8 +315,8 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                 if ('final' in l and num_class is not None):
                     num_units=num_class
                 gain=1.
-                if ('gain' in l):
-                    gain=l['gain']
+                # if ('gain' in l):
+                #     gain=l['gain']
 
                 for lay in input_la:
                     input_dim=np.prod(lay.output_shape[1:])
