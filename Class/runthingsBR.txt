@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pog_tanh_seq hinge=1. num_epochs=2000 dep_fac=5 output=baseh_OUT>baseh_OUT.txt
+python start_class.py net=_pars/pog_tanh_seq hinge=1. num_epochs=2000 dep_fac=10 output=baseh_d10_OUT>baseh_d10_OUT.txt
