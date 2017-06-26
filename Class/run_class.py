@@ -220,7 +220,7 @@ def main_new(NETPARS):
     print("Loading data...")
     X_train, y_train, X_val, y_val, X_test, y_test=data.get_train(NETPARS)
 
-    if ('Classes' not in NETPARS):
+    if ('Classes' not in NETPARS or NETPARS['Classes']==None):
         NETPARS['Classes']=None
         num_class=len(np.unique(y_test))
     if ('num_class' in NETPARS):
