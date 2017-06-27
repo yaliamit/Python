@@ -212,7 +212,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
         elif ('reg_param_weights' in NETPARS and NETPARS['reg_param_weights']>0):
             reg_p = NETPARS['reg_param_weights']
             for p in params:
-                if ('dense' in p.name):
+                if ('dens' in p.name):
                     spe+=T.mean(T.abs_(p))*reg_p
             spen.append(spe)
         if (Train):
