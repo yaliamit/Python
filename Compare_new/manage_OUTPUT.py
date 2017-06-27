@@ -113,7 +113,7 @@ def plot_OUTPUT(name='OUTPUT',first=None,last=None):
     if (first is not None and last is not None):
         bt=bt[first:last]
         bv=bv[first:last]
-        print(bv[last],bt[last])
+        print(bv[-1],bt[-1])
     else:
         print(len(bt),bv[-1],bt[-1])
     py.plot(bt,label='train')
