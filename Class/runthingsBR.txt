@@ -1,1 +1,1 @@
-python start_class.py net=_pars/sppog_tanh_R_seq_2 start=2 mult=2 use_existing=True hinge=1. force_global_prob=[1.,1.] mod_net=mod_net dep_fac=5 num_epochs=1000 output=sppog_R_d20_b500_ni_OUT>sppog_R_d20_b500_ni_OUT.txt
+python start_class.py net=_pars/sppog_tanh_R_seq_2 start=2 mult=2 use_existing=True hinge=1. force_global_prob=[1.,1.] mod_net=mod_net dep_fac=5 batch_size=100 num_epochs=1000 output=sppogh_R_d20_ni_OUT>sppogh_R_d20_ni_OUT.txt
