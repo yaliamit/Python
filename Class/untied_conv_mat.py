@@ -121,7 +121,9 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
             if 'sparsify' in NETPARS and l.name in NETPARS['sparsify']:
                 num_units=SP[t].shape[1]
                 input_dim=SP[t].shape[0]
-                std=np.sqrt(6./(input_dim+num_units))
+                #std=np.sqrt(6./(input_dim+num_units))
+                nn=l.W.shape.eval()
+                std=np.sqrt(6./((nn[0]+nn[1])*nn[2]*nn[3]))
                 #W = theano.shared(SP[t])
                 W=theano.shared((np.float32(np.random.uniform(-std,std,(input_dim,num_units))))*(SP[t]>0))
                 t+=1
