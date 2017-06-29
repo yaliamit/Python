@@ -489,6 +489,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
             else:
                 fnet=fnet_new
         if ('NOT_TRAINABLE' in PARS):
+            layers=lasagne.layers.get_all_layers(fnet)
             for n in PARS['NOT_TRAINABLE']:
                     for l in layers:
                         if l.name==n:
@@ -496,8 +497,9 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                               l.params[l.W].remove('trainable')
                               if (l.b is not None):
                                 l.params[l.b].remove('trainable')
-                              if ('R' in n):
-                                  l.params[l.R].remove('trainable')
+                              if ('R' in n or 'new' in n):
+                                  if ('trainable' in l.params[l.R]):
+                                    l.params[l.R].remove('trainable')
                             elif ('batch' in n):
                                 l.params[l.beta].remove('trainable')
                                 l.params[l.gamma].remove('trainable')
