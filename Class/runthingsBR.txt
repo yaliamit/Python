@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pog_tanh_R_seq start=1 mult=2 use_existing=True train=False write_sparse=True sparsify=[conv2,conv2aR,conv3R,conv3aR] output=sparse_OUT>sparse_OUT.txt
+python start_class.py net=_pars/sppog_tanh_R_seq_2 start=2 mult=2 use_existing=True hinge=1. force_global_prob=[1.,1.] mod_net=mod_net dep_fac=5 num_epochs=1000 output=sppog_R_d20-OUT>sppog_R_d20-OUT.txt
