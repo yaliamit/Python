@@ -125,16 +125,17 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
                 nn=l.W.shape.eval()
                 std=np.sqrt(6./((nn[0]+nn[1])*nn[2]*nn[3]))
                 #W = theano.shared(SP[t])
+                # Make W a random matrix with zeros where the original W had zeros.
                 W=theano.shared((np.float32(np.random.uniform(-std,std,(input_dim,num_units))))*(SP[t]>0))
                 t+=1
                 # Also separate R
                 if 'R' in l.name:
-                    R=theano.shared((np.float32(np.random.uniform(-std,std,(input_dim,num_units))))*(SP[t]>0))
                     # Record all non-zero entries of SP i.e. the ones corresponding to the conv filters.
+                    R=theano.shared((np.float32(np.random.uniform(-std,std,(input_dim,num_units))))*(SP[t]>0))
                     t=t+1
                     layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=num_units,prob=l.prob,
                                             W=W,R=R, b=None,nonlinearity=l.nonlinearity,name='newdens'+str(t)))
-            # JUst sparse
+            # JUst sparse no R, error updates are propagated with W.
                 else:
                     layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=num_units,
                                             W=W, b=None,Rzero=np.float32(np.ones((1,1))), prob=(1.,-1.),nonlinearity=l.nonlinearity,name='newdens'+str(t)))
