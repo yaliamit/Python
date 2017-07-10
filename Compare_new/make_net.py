@@ -21,6 +21,27 @@ import scipy.sparse as sp
 # And again
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
 
+
+def set_all_param_values_loc(layer, values, **tags):
+
+
+    params = lasagne.layers.get_all_params(layer, **tags)
+    if len(params) != len(values):
+        raise ValueError("mismatch: got %d values to set %d parameters" %
+                         (len(values), len(params)))
+
+    for p, v in zip(params, values):
+        if p.get_value().shape == v.shape:
+            p.set_value(v)
+        elif 'R' in p.name and p.get_value().shape[0]==1:
+            continue
+        else:
+            raise ValueError("mismatch: parameter has shape %r but value to "
+                             "set has shape %r" %
+                             (p.get_value().shape, v.shape))
+
+
+
 def rect_sym(x):
     """Rectify activation function :math:`\\varphi(x) = \\max(0, x)`
     Parameters
@@ -418,7 +439,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                  else:
                         pp=np.float32(p)
                  spars32.append(pp)
-            lasagne.layers.set_all_param_values(fnet,spars32)
+            set_all_param_values_loc(fnet,spars32)
             layers=lasagne.layers.get_all_layers(fnet)
             for l in layers:
                 if ('newdens' in l.name):
@@ -432,6 +453,9 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                             l.Rzero=np.float32(RR!=0)*np.float32(np.random.rand(RR.shape[0],RR.shape[1])<l.prob[0])
                        else:
                             l.Rzero=np.float32(np.zeros(RR.shape))
+                    if ('force_global_prob' in PARS and PARS['force_global_prob']==-1.):
+                        l.R=np.float32(np.ones((1,1)))
+                        l.Rzero=np.float32(np.ones((1,1)))
                     if ('global_prob' in PARS and PARS['global_prob'][1]==0):
                         l.Rzero=np.float32(np.zeros(np.shape(RR)))
 
