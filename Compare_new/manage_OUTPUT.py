@@ -116,10 +116,11 @@ def plot_OUTPUT(name='OUTPUT',first=None,last=None):
         print(bv[-1],bt[-1])
     else:
         print(len(bt),bv[-1],bt[-1])
+        if (havetrain>0):
+            py.plot(len(bt)-2, atest, 'go', markersize=4)
+            py.plot(len(bt)-2, atrain, 'bo', markersize=4)
     py.plot(bt,label='train')
     py.plot(bv,label='val')
-    if (havetrain>0):
-        py.plot(len(bt)-2, atest, 'go', markersize=4)
-        py.plot(len(bt)-2, atrain, 'bo', markersize=4)
+
     py.legend(loc=4)
     #py.show()
