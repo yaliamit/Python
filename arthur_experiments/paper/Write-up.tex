@@ -140,12 +140,12 @@ University of Chicago \\ % Your institution
 \section*{Introduction}
 \addcontentsline{toc}{section}{Introduction}
     
-  It is now well established that neural networks can successfully classify more than hundreds of classes with efficient architectures. This proves that such networks are able to learn non-linear representation of their inputs in spaces where different classes become linearly separable. Generative models, on the contrary, do not simply focus on the boundaries of different classes, but have to learn how to generate each of them. In this paper, we will show how to better generate images by designing an equivariant variational autoencoder. This network will insure equivariance by performing two tasks. First, it will learn a representation of the reference pose; second, it will learn a regression model for the spatial transformation. The combination of those two steps will allow us to achieve equivariance, as well as generating credible samples. We will also measure the quality of those samples by various methods.\\
+  It is now well established that neural networks can successfully classify more than hundreds of classes with efficient architectures. This proves that such networks are able to learn non-linear representations of their inputs in spaces where different classes become linearly separable. Generative models, on the contrary, do not simply focus on the boundaries of different classes, but have to learn how to generate each of them. In this paper, we will show how to better generate images by designing an equivariant variational autoencoder. This network will insure equivariance by performing two tasks. First, it will learn a representation of the reference pose; second, it will learn a regression model for the spatial transformation. The combination of those two steps will allow us to achieve equivariance, as well as generating credible samples. We will also measure the quality of those samples by various methods.\\
 
   Because they are fundamentally latent variable models, those kinds of networks share properties associated with dimensionality reduction. Namely: denoising property, manifold learning and visualization when the number of latent variable is low. Such properties provide applications in data-driven restoration of images, deconvolutions, which are techniques which can be used in Archeology, Medical imaging, up to license plate deblurring.
 
   \subsection*{Related work}
-    Latent variable models for images have had a long history in Statistics. In 1984, S. Geman and and D. Geman \cite{Geman:1984:SRG:2286442.2286617} used Markov Random Fields for prior distribution on images and tried to restore degraded images by sampling from the posterior distribution by the introduction in the same paper of the Gibbs Sampler. More recently, Allassonière, Amit and Trouvé \cite{Allasson.statfram} defined a Bayesian framework to learn deformable template models, and an estimation method for this model based on the EM algorithm.\\
+    Latent variable models for images have had a long history in Statistics. In 1984, S. Geman and D. Geman \cite{Geman:1984:SRG:2286442.2286617} used Markov Random Fields for prior distribution on images and tried to restore degraded images by sampling from the posterior distribution by the introduction in the same paper of the Gibbs Sampler. More recently, Allassonière, Amit and Trouvé \cite{Allasson.statfram} defined a Bayesian framework to learn deformable template models, and an estimation method for this model based on the EM algorithm.\\
 
     More recent approaches to image generation and restoration comprise Kingman's Variational autoencoder \cite{Kingma.aevb} which combines deep auto-encoder and the framework of Variational inference, yielding efficient optimization procedure with a Bayesian regularization which do not need to be fine-tuned. In \cite{Goodfellow.gan}, Goodfellow and al. introduced Generative Adversarial Networks, which are based on a generator network and a discriminative network. The generator slowly learns how to generate credible samples from random noise while the discriminator learns how to distinguish between generated and genuine samples. This approach led to sharper images, but it is not clear how the noise really influences the generated image. Chen and al address this issue by the InfoGAN \cite{chen.infogan} which incorporates a maximization of the mutual information between the noise and the generated image in the GAN optimization process. This allows to map each component of the noisy code to an interpretable feature of the image (e.g. class, width, shape). A drawback of this architecture is the need to simultaneously optimize two objectives. Other "hybrid" approaches have been taken, mixing variational inference with GAN \cite{Mescheder.advvae} or mixing informational approach with variational autoencoders \cite{Zhao.infoVAE}. Even though those approaches do have theoretical justifications, they still need parameter selection which arise from their optimizing multiple objectives at the same time.\\
 
@@ -192,7 +192,7 @@ University of Chicago \\ % Your institution
 
     In \cite{Kingma.aevb}, Kingma and Welling introduced variational inference for autoencoders to perform inference over continuous latent variables models. Their contribution is multiple. First, they use the neural nets to describe the approximate posterior $q(z|x)$ and the conditional distribution $p(x|z)$. Then, they reparametrize the approximate posterior to be able to sample from it and to get a less variable Monte-Carlo estimate of the reconstruction error (second term of the variational lower bound).\\
 
-    The graphical model in this case is described in figure \ref{vaegraphmodel}. This assumes that we observe i.i.d. data $(x_i)$, and that for every sample, there is a corresponding unobserved $z_i$. To generate new data, it would suffice to draw independently new $z_i$'s from their prior distribution, and draw the $x_i$'s from the conditional. Our goal here is therefore to learn the conditional distribution. To do so, we parametrize the conditional distribution and the prior by $\theta$, while parametrizing the approximate posterior by $\phi$. We will therefore denote the prior $p_\theta(z)$, the conditional $p_\theta(x|z)$, and the approximate posterior $q_\phi(z|x)$. For the procedure to work, $p_\theta(z)$ and $p_\theta(x|z)$ need to be differentiable almost everywhere with respect to $z$ and $\theta$, and $q_\phi(z|x)$ with respect to $\phi$, respectively. This assumption can be understood in terms of the actual neural network that will be used: $\theta$ and $\phi$ will be weights in the network, and $z$ will be expressed by some activations. By this assumption the score function, which is the lower bound $L$, will be differentiable with respect to the weights, which is mandatory if we hope to optimize it.\\
+    The graphical model in this case is described in figure \ref{vaegraphmodel}. This assumes that we observe i.i.d. data $(x_i)$, and that for every sample, there is a corresponding unobserved $z_i$. To generate new data, it would suffice to draw independently new $z_i$'s from their prior distribution, and draw the $x_i$'s from the conditional. Our goal here is therefore to learn the conditional distribution. To do so, we parametrize the conditional distribution and the prior by $\theta$, while parametrizing the approximate posterior by $\phi$. We will therefore denote the prior $p_\theta(z)$, the conditional $p_\theta(x|z)$, and the approximate posterior $q_\phi(z|x)$. For the procedure to work, $p_\theta(z)$ and $p_\theta(x|z)$ need to be differentiable almost everywhere with respect to $\theta$, and $q_\phi(z|x)$ with respect to $\phi$, respectively. This assumption can be understood in terms of the actual neural network that will be used: $\theta$ and $\phi$ will be weights in the network. By this assumption, the score function, which is the lower bound $L$, will be differentiable with respect to the weights, which is mandatory if we hope to optimize it.\\
 
     Under this framework, the KL-divergence is often analytically tractable. This, however, is not the case of the reconstruction error which needs to be estimated by a Monte-Carlo estimator. Thanks to the reparametrization trick, they achieve this stable estimator:\\
     \begin{align}
@@ -200,9 +200,9 @@ University of Chicago \\ % Your institution
     \end{align}
     Where $x_i$ is an observed sample, $(z_{i, j})_{j\in \{1, ..., L\}}$ are independent samples from $q_\phi(.|x_i)$. Those samples are in fact obtained by the following reparametrization: $z_{i, j}= g_\phi(\epsilon_j, x)$, where $\epsilon_j$ are independent from the same fixed distribution from which it is easy to sample (e.g Gaussian).
 
-    Thanks to this explicit score, we can design an appropriate network, and optimize it with the mini-batch version of the Auto-Encoding Variational Bayes algorithm, described in \cite{Kingma.aevb}. This algorithm iteratively considers a batch of samples in the dataset, samples noise $\epsilon$, creates the $z_i$'s,  computes the gradient of the lower bound with respect to $\theta$ and $\phi$ thanks to the neural net structure, and update the corresponding estimates by a standard stochastic gradient ascent method (e.g. SGD, SGD with momentum, Adam). In this regard, we can consider the variational autoencoder as a classical autoencoder regularized by noise. \\
+    Thanks to this explicit score, we can design an appropriate network, and optimize it with the mini-batch version of the Auto-Encoding Variational Bayes algorithm, described in \cite{Kingma.aevb}. This algorithm iteratively considers a batch of samples in the dataset, samples noise $\epsilon$, creates the $z_i$'s, computes the gradient of the lower bound with respect to $\theta$ and $\phi$ thanks to the neural net structure, and update the corresponding estimates by a standard stochastic gradient ascent method (e.g. SGD, SGD with momentum, Adam). In this regard, we can consider the variational autoencoder as a classical autoencoder regularized by noise. \\
 
-    Variational autoencoders have their limitations. Their most common drawback is that they tend to produce blurry samples when trained on images. The main reason is that the distance is pixel-wise. This means that the model learns first how to match big areas, leaving the boundaries, which carry less weight in the cost function, poorly matched and blurry. Another drawback, which is less often discussed, is that when the latent space becomes a too big, the quality of the samples deteriorates quite drastically. A possible interpretation lies in the generation process. Say we put a $d$-dimensional standard multivariate gaussian as a prior for $z$. The model has to learn how to match each point within the most probable region (i.e. the $d$-dimensional sphere of radius calibrated to match a chosen confidence probability) to a point in the distribution of the $x_i$'s. This mapping is learned through a finite number of examples. Each example is going to define a distribution $q_\phi(z|x)$ for the latent code, say, a gaussian with its center within the aforementioned sphere. It means that, in the latent space, the dataset covers a finite number of small $d$-dimensional spheres. Therefore, by the curse of dimensionality, when $d$ gets too large, there is little chance that picking a point from the prior distribution will lead to a reasonable candidate in the distribution of the $x_i$'s.
+    Variational autoencoders have their limitations. Their most common drawback is that they tend to produce blurry samples when trained on images. The main reason is that the distance is pixelwise. This means that the model learns first how to match big areas, leaving the boundaries, which carry less weight in the cost function, poorly matched and blurry. Another drawback, which is less often discussed, is that when the latent space becomes too big, the quality of the samples deteriorates quite drastically. A possible interpretation lies in the generation process. Say we put a $d$-dimensional standard multivariate gaussian as a prior for $z$. The model has to learn how to match each point within the most probable region (i.e. the $d$-dimensional sphere of radius calibrated to match a chosen confidence probability) to a point in the distribution of the $x_i$'s. This mapping is learned through a finite number of examples. Each example is going to define a distribution $q_\phi(z|x)$ for the latent code, say, a gaussian with its center within the aforementioned sphere. It means that, in the latent space, the dataset covers a finite number of small $d$-dimensional spheres. Therefore, by the curse of dimensionality, when $d$ gets too large, there is little chance that picking a point from the prior distribution will lead to a reasonable candidate in the distribution of the $x_i$'s.
     We will see an example of this phenomenon in the experiments. This paper proposes a solution to address both of those issues.
 
 
@@ -227,18 +227,18 @@ University of Chicago \\ % Your institution
     \end{figure}
 
   \subsection{Invariance and equivariance}
-        The main goal of this paper is to enhance the variational autoencoder with higher level information to 1. produce sharper generated samples, regardless of the allocated dimension of the latent space and 2. disentangle the information encoded in the latent representation. The higher level information mainly consists of which equivariances the model should have. \\
+        The main goal of this paper is to enhance the variational autoencoder with higher-level information to 1. produce sharper generated samples, regardless of the allocated dimension of the latent space and 2. disentangle the information encoded in the latent representation. The higher level information mainly consists of which equivariances the model should have. \\
 
-        To define formally the notion of equivariance and invariance, let's denote $\mathcal{X}$ the space of our data point. If our model is a function $\phi$ from $\mathcal{X}$ to itself (e.g. a denoiser for images). Then $\phi$ is equivariant to a family of transformations $\mathcal{G} \subset \mathcal{X}^\mathcal{X}$ if: \\
-        $\forall g \in \mathcal{G}, \phi \circ g = g \circ \phi$.\\
-        Similarly, if our model is a function $\phi$ from $\mathcal{X}$ to $\mathcal{Y}$ (not necessarly $\mathcal{X}$, e.g. a classifier), then $\phi$ is invariant to a family of transformations $\mathcal{G} \subset \mathcal{X}^\mathcal{X}$ if: \\
-        $\forall g \in \mathcal{G}, \phi \circ g = \phi$.\\
+        To define formally the notion of equivariance and invariance, let's denote $\mathcal{X}$ the space of our data point. If our model is a function $f$ from $\mathcal{X}$ to itself (e.g. a denoiser for images). Then $f$ is equivariant to a family of transformations $\mathcal{G} \subset \mathcal{X}^\mathcal{X}$ if: 
+        $\forall g \in \mathcal{G}, f \circ g = g \circ f$.\\
+        Similarly, if our model is a function $f$ from $\mathcal{X}$ to $\mathcal{Y}$ (not necessarly $\mathcal{X}$, e.g. a classifier), then $f$ is invariant to a family of transformations $\mathcal{G} \subset \mathcal{X}^\mathcal{X}$ if: 
+        $\forall g \in \mathcal{G}, f \circ g = f$.\\
         For many types of signal, scale is a feature that should not change the meaning of the signal. For images, rotating, shearing or translating should not change the content of an image but rather express the pose of an object. For natural images, acquisition artifact such as brightness or contrast should also have little influence on the content of the image. Given this knowledge, it seems important to directly use those features as latent variables, and then use them to correct generated samples.\\
 
   \subsection{Transformer Layers}
 
 
-    As we saw, several layers have been designed to allow neural networks to achieve equivariance or invariance to spatial transformations. In our case, since we aim at regressing the parameters, we choose Spatial Transformer layers \cite{Jaderberg.stn}. Those layers rely on two inputs, an image to transform, and the parameters of the transformation to use. The parameters are usually the output of a neural network themselves, so that there is a first network which regresses the parameters from the image, and then the layer applies the transformation. What is shown is that as long as the transformation is differentiable, the whole network can be trained end-to-end without having data about the pose of the objects in the images. The two transformations that are considered are the affine transformation (5 degrees of freedom: rotation, horizontal and vertical scale and translation or 6 degrees for the full $3\times 2$ matrix), and the thin plate splines transformation. The latter necessitates a sampling grid as parameters ($2 \times s^2$ degrees of freedom for a grid of size $s$). Points from the original image are then going to be sampled based on the grid and interpolated to a new square matrix.\\
+    As we saw, several layers have been designed to allow neural networks to achieve equivariance or invariance to spatial transformations. In our case, since we aim at regressing the parameters, we choose Spatial Transformer layers \cite{Jaderberg.stn}. Those layers rely on two inputs, an image to transform, and the parameters of the transformation to use. The parameters are usually the output of a neural network themselves, so that there is a first network which regresses the parameters from the image, and then the layer applies the transformation. What is shown is that as long as the transformation is differentiable, the whole network can be trained end-to-end without having data about the pose of the objects in the images. The two transformations that are considered are the affine transformation (5 degrees of freedom: rotation, horizontal and vertical scale and translation or 6 degrees for the full $3\times 2$ matrix), and the thin plate splines transformation. The latter necessitates a sampling grid as parameters ($2 \times s^2$ degrees of freedom for a grid of size $s$). This grid defines the positions of the $s^2$ reference points in the original image. The positions of those reference points in the output image is fixed to be a squared grid of size $s$ such as $G_s = \{(\frac{i}{s}, \frac{j}{s}) | 0 \leq i,j \leq s\}$ the grid of size $s$ inscribed in $[0, 1] \times [0, 1]$. A thin plate spline is then regressed based on those $s^2$ data points. This regression yields a differentiable function from the 2D-plane to itself. The original grid which supports the input image passes through the regression function and produces a warped grid. The output is obtained by bilinear sampling of this warped grid on $G_m$, where $m$ is the number of desired pixels in the output (usually the same as the input).\\
 
     Based on this differentiable way to sample images, we will incorporate higher level information in the latent code and we will see how the choice of the type of transformation influences our model, what it allows and what it doesn't.
 
@@ -249,7 +249,7 @@ University of Chicago \\ % Your institution
 \begin{align}
 log(p(x)) \geq L = - D_{KL}(q(z|x)||p(z)) - D_{KL}(q(u|x)||p(u)) + E_{(z, u)\sim q(.|x)}[log(p(x| z, u)]
 \end{align}
- Where the KL-divergence breaks into two parts thanks to the independence assumption between $u$ and $z$. We will see later in the experimentations to which extent this independence assumption holds.
+ Where the KL-divergence breaks into two parts thanks to the independence assumption between $u$ and $z$ on the prior and on the approximate prior. We will see later in the experimentations to which extent this independence assumption holds.
 
 
     \begin{figure}[h]
@@ -399,35 +399,72 @@ The different network architectures are regrouped in figure \ref{architectures}.
 
 \section{Datasets and distributions}
 We test those new architectures on the MNIST \cite{mnistlecun} dataset, which comprises 60,000 training samples and 10,000 testing samples of 28x28 pixels gray-scale images.
-Each image represent a single handwritten digit between 0 and 9. We also tested on a variation of this dataset: rot-MNIST which comprises 1500 training samples of rotated samples of MNIST. The wide of rotation is the whole range of 360 degrees. \\
+Each image represents a single handwritten digit between 0 and 9. We also tested on a variation of this dataset: rot-MNIST which comprises 1500 training samples of rotated samples of MNIST. The wide of rotation is the whole range of 360 degrees. \\
 
-This dataset gives us information about the kind of distributions to use as priors and approximate posterior. Each image is going to be described as a vector of independent Bernoulli given the latent variables with vector of probability given by the output of the network. We should note that the marginal distribution of each pixel is close to a Beta(0.05, 0.25) -therefore putting most probability on 0 and 1-, but for the sake of simplicity, we stick to a Bernoulli distribution. As for the prior distributions, we assume a standard normal $N(0, I)$ for the latent code $z$. For the spatial variables, we try different priors. The first one is equivalent to not putting a prior: we assume a uniform prior with approximate posterior distribution $q_\phi(u|x) = \delta_{f(x)}(u)$, where f(x) is the output of the encoder dedicated to $u$. This setup implies that the KL divergence on the spatial parameters is null, and that $u$ is a deterministic function of $x$. The second prior is a normal with unknown mean and variance. We will see from the experiments what choice of structure to give to the normal prior. All those distributions can be reparametrized, which allows the autoencoder variational Bayes algorithm \cite{Kingma.aevb} to be used. 
+This dataset gives us information about the kind of distributions to use as priors and approximate posterior. Each image is going to be described as a vector of independent Bernoulli given the latent variables with vector of probability given by the output of the network. We should note that the marginal distribution of each pixel is close to a Beta(0.05, 0.25) -therefore putting most probability on 0 and 1-, but for the sake of simplicity, we stick to a Bernoulli distribution. As for the prior distributions, we assume a standard normal $N(0, I)$ for the latent code $z$. \\
+
+For the spatial variables, we try different priors. The first one is equivalent to not putting a prior: we assume a uniform prior with approximate posterior distribution $q_\phi(u|x) = \delta_{f(x)}(u)$, where f(x) is the output of the encoder dedicated to $u$. This setup implies that the KL divergence on the spatial parameters is null, and that $u$ is a deterministic function of $x$.\\
+If we want to put a more sensible prior, there is a few things to consider. First, $u$ has a physical meaning, and acts directly on the image through the transformer, on the contrary to z. This means in particular that we cannot simply put a normal prior with mean 0 and variance 1, because that would mean that the average transformation is the identity and that the variability is arbitrary. For the latent code $z$, it did not matter because the neural network itself can take care of setting the scale to a sensible value. This means that we have to estimate some parameters of the prior during the optimization process. Secondly, we have to pay attention to the covariance structure of $u$. If we look at the approximate posterior distribution of $u$ in cases of a uniform prior, there are correlations between components (up to 30\% for the affine mapping). This is actually quite natural; for the affine correlations, the matrix with 6 cells has an inner structure in terms of rotation $\psi$, shearing $(S_x, S_y)$, and translation $(T_x, T_y)$:\\
+
+$M=
+  \left[ {\begin{array}{ccc}
+   a & b & c\\
+   d & e & f\\
+  \end{array} } \right]
+ = 
+  \left[ {\begin{array}{ccc}
+   S_x cos \psi & -S_x sin \psi & S_x T_x\\
+   S_y sin \psi & S_y cos \psi & S_y T_y\\
+  \end{array} } \right]$
+
+  Therefore, it might be better to put priors on those 5 interpretable variables than on the 6 cells of the matrix. A sensible prior in this case could be:\\
+  $u = (\psi, log S_x, log S_y, T_x, T_y) \sim N(\nu^u, Diag(\tau_1^u, \tau_2^u, \tau_3^u, \tau_4^u, \tau_5^u))$\\
+
+  The same problem arises for the thin plate splines. The 9 points of the grid we have been using previously are highly dependent. In the case of a rotation centered in the middle of the grid, all exterior points move together and are coupled in a non-linear fashion. This implies that using a gaussian prior (even with a dense covariance matrix) may fail to model the range of transformations. This is also a consequence of the assumption of independence between the class of a digit and its pose. If different priors were used on different classes, then using only a gaussian prior may be fine.\\
+
+Those observations lead us to consider different priors, with varying number of parameters to be estimated during the optimization process. If we denote $id$ as the identity transform regardless of the transformation (affine or TPS), we can have the following priors:\\
+$
+u \sim N(id, Diag(\tau_1^u, ..., \tau_S^u)), \text{ with } (\tau_1^u, ..., \tau_S^u) \text{estimated} \\
+u \sim N(\nu^u, Diag(\tau_1^u, ..., \tau_S^u)), \text{ with } \mu, (\tau_1^u, ..., \tau_S^u) \text{ estimated} \\
+u \sim N(\nu^u, \Sigma), \text{ with } \mu, \Sigma \text{ estimated}\\
+$
+
+An easy way to fit those kinds of prior within the deep learning framework is to put a standard normal prior on $u'$ and define $u$ as the set of units of a dense layer without a non-linear activation. This implies that $u$ can be written $u = W u' + b$ with $W$ a weight matrix and b a bias. Now given that $u'$ follows a standard normal, we have $u$ distributed as a normal $N(b, WW^T)$. This parametrization allows us to constraint $b$ (if we want to center the prior on the identity) and $W$, whose shape is going to determine the shape of the covariance. If we want to fit a diagonal covariance, we set $u'$ to have the same dimension as $u$ and constrain $W$ to be of the form $Diag(\tau_1, ..., \tau_S)$. If we unconstrain $W$, this is equivalent to fitting a dense covariance matrix. Another trick allowed by this reparametrization is to choose the dimension of $u'$ to be lower than that of $u$. This controls the maximum rank of the covariance matrix: $\text{rank}(\Sigma) = \text{rank}(WW^T) = \text{rank}(W) \leq min(dim(u), dim(u')) = dim(u') $. By controlling the rank of the covariance matrix, we can control the degrees of freedom independently of the number of parameters for the transformation.\\
+
+All those distributions can be reparametrized, which allows the autoencoder variational Bayes algorithm \cite{Kingma.aevb} to be used. 
 For example, with normal distributions as priors we can have the following parameters.\\
+
 $
 \text{Priors:}\\
 z \sim N(0, I)\\
-u \sim N(\nu^u, Diag(\tau_1^u, ..., \tau_S^u))\\
+u' \sim N(0, I)\\
 \text{Approximate posteriors:}\\
  z | x \sim N(\mu^z(x), Diag(\sigma_1^z(x), ..., \sigma_D^z(x))\\
- u | x \sim N(\mu^u(x), Diag(\sigma_1^u(x), ..., \sigma_S^u(x))\\
+ u' | x \sim N(\mu^u(x), Diag(\sigma_1^u(x), ..., \sigma_S^u(x))\\
  \text{Conditional:}\\
  x_{i, j} \sim Bernoulli(x'_{i, j})
 $\\
-Where all the functions of x are outputs of the encoder part of the network, and $x'$ is the output of the decoder, deterministic function of $z$ and $u$.
+Where all the functions of x are outputs of the encoder part of the network, and $x'$ is the output of the decoder, deterministic function of $z$ and $u'$.
 This yields the following KL-divergences, reconstruction error, and therefore lower bound:
 
 \begin{align}
 D_{KL}(q_\phi(z|x) || p(z)) = \frac{1}{2} \sum_{j=1}^D  -2 log (\sigma_j^z(x)) + (\mu^z(x))^2 + (\sigma_j^z(x))^2 - 1\\
-D_{KL}(q_\phi(u|x) || p(u)) = \frac{1}{2} \sum_{j=1}^S -2 log (\frac{\sigma_j^u(x)}{\tau_j^u}) + \frac{(\mu_j^u(x) - \nu_j^u)^2 + (\sigma_j^u(x))^2}{(\tau_j^u)^2} - 1\\
-\frac{1}{L} \sum_{l=1}^L log p_\theta(x^n | z_{l}^i) = \frac{1}{L} \sum_{l=1}^L \sum_{i, j} x_{i,j}^n log({x'}_{i, j}^{n, l}) + (1 - x_{i,j}^n) log(1 - {x'}_{i, j}^{n, l})\\
-\hat L(x^n, \theta, \phi) = -D_{KL}(q_\phi(z|x^n) || p(z)) - D_{KL}(q_\phi(u|x^n) || p(u)) + \frac{1}{L} \sum_{l=1}^L log p_\theta(x^n | z_{l}^i)
+D_{KL}(q_\phi(u'|x) || p(u')) = \frac{1}{2} \sum_{j=1}^D  -2 log (\sigma_j^u(x)) + (\mu^u(x))^2 + (\sigma_j^u(x))^2 - 1\\
+% D_{KL}(q_\phi(u|x) || p(u)) = \frac{1}{2} \sum_{j=1}^S -2 log (\frac{\sigma_j^u(x)}{\tau_j^u}) + \frac{(\mu_j^u(x) - \nu_j^u)^2 + (\sigma_j^u(x))^2}{(\tau_j^u)^2} - 1\\
+\frac{1}{L} \sum_{l=1}^L log p_\theta(x^n | z_{l}^i, u_{l}^{'i}) = \frac{1}{L} \sum_{l=1}^L \sum_{i, j} x_{i,j}^n log({x'}_{i, j}^{n, l}) + (1 - x_{i,j}^n) log(1 - {x'}_{i, j}^{n, l})\\
+\hat L(x^n, \theta, \phi) = -D_{KL}(q_\phi(z|x^n) || p(z)) - D_{KL}(q_\phi(u'|x^n) || p(u')) + \frac{1}{L} \sum_{l=1}^L log p_\theta(x^n | z_{l}^i, u_{l}^{'i})
 \end{align}
 
-\section{Experiments on MNIST}
+In all the experiments here, and as is done in \cite{Kingma.aevb}, we use $L=1$, and thus use a single draw from the approximate posterior per image to estimate the lower bound.
+
+\section{Study of the general purpose latent code $z$}
+
+In this section, we focus on the general purpose latent code and therefore do not put a prior on the spatial code $u$ (or equivalently, use a flat prior with a degenerate approximate posterior on it). This means that $u$ is a deterministic function of the image $x$. Also, since the focus here is not on modeling the distribution of the spatial code $u$, the digits are represented in their upright pose, which means that $u$ is set to the mean transformation over the training set. This allows different models which may have different internal representations of the digits to be compared.
+
 \subsection{Dimension of the latent code}
 \subsubsection{Reconstruction error}
 
-The main goal of those experiment is to study how the architectures behave on MNIST when the number of latent variables and spatial variables changes. First, let's see if there is an ideal number of general purpose latent variables (i.e. $z$) for the MNIST dataset to fully understand the value of our models. From \ref{numlatent}, the optimal number of latent variables can be estimated to be around 25. As claimed by Kingma \cite{Kingma.aevb}, there is little overfitting as the dimensionality of the latent code grows. For the other models, we counted all the latent variables together ($dim(u) + dim(z)$), and used 6 degrees of freedom for the affine transformer, and 18 ($=2\times 3^2$) degrees of freedom for the thin plate spline (TPS) transformer. Based on this experiment, custom models achieve better reconstruction. Thus, even though part of the latent code is constrained to contain purely spatial information, the transformation step allows the network to fit more precisely the input, ending up with a lower reconstruction error. This difference is mainly significant for the TPS-TVAE and the DTVAE.\\
+The main goal of those experiments is to study how the architectures behave on MNIST when the number of latent variables and spatial variables changes. First, let's see if there is an ideal number of general purpose latent variables (i.e. $z$) for the MNIST dataset to fully understand the value of our models. From \ref{numlatent}, the optimal number of latent variables can be estimated to be around 25. As claimed by Kingma \cite{Kingma.aevb}, there is little overfitting as the dimensionality of the latent code grows. For the other models, we counted all the latent variables together ($dim(u) + dim(z)$), and used 6 degrees of freedom for the affine transformer, and 18 ($=2\times 3^2$) degrees of freedom for the thin plate spline (TPS) transformer. Based on this experiment, custom models achieve better reconstruction. Thus, even though part of the latent code is constrained to contain purely spatial information, the transformation step allows the network to fit more precisely the input, ending up with a lower reconstruction error. This difference is mainly significant for the TPS-TVAE and the DTVAE.\\
 
 \begin{figure}[h]
 \centering
@@ -436,14 +473,15 @@ The main goal of those experiment is to study how the architectures behave on MN
 \label{numlatent}
 \end{figure}
 
-But this lower bound only gives information about the quality of the reconstruction and the appropriate number of the latent variables. What is important for us is whether or not this model can produce credible samples. We generate here samples from the three different models. Here, the focus is put on generating a new code $z$ and generating $x$ from $z$ (thanks to the decoder part of the network) and the average transformation observed on the training set for $u$. This means that we are not sampling the pose of the digit. We will discuss how to do that in a meaningful manner later. That is why, except for the VAE, all the samples are aligned in an upright direction.\\
+But this lower bound only gives information about the quality of the reconstruction and the appropriate number of the latent variables. What is also important for us is whether or not this model can produce credible samples.\\
 
+  \subsubsection{Generating new upright samples}
 
-\subsubsection{Discussion}
+We generate here samples from the three different models. Here, the focus is put on generating a new code $z$ and generating $x$ from $z$ (thanks to the decoder part of the network) and the average transformation observed on the training set for $u$. This means that we are not sampling the pose of the digit. We will discuss how to do that in a meaningful manner later. That is why, except for the VAE, all the samples are aligned in an upright direction.\\
 
-From figure \ref{generatedcomparison}, we can witness the previously mentioned drawbacks of the VAE: the blurriness on generated samples, as well as the decaying quality of samples when the number of latent variables grows. This shows in particular that a high likelihood does not imply nice generated images. As mentioned, the samples are in the upright direction for models which have a transformer layer, which means that the spatial regression part of each network is indeed working (as demonstrated in \cite{Siyu:vae}). We would like to point out the quality of the sample produced by the TVAE (middle column), which are sharp and whose quality is less affected by the number of latent variables.\\
+From figure \ref{generatedcomparison}, we can witness the previously mentioned drawbacks of the VAE: the blurriness on generated samples, as well as the decaying quality of samples when the number of latent variables grows. This shows in particular that a high likelihood does not imply well generated images. As mentioned, the samples are in the upright direction for models which have a transformer layer, which means that the spatial regression part of each network is indeed working (as demonstrated in \cite{Siyu:vae}). We would like to point out the quality of the samples produced by the TVAE (middle column), which are sharper and whose quality is less affected by the number of latent variables.\\
 
-\begin{figure}[H]
+\begin{figure}[H] 
 \centering
 \begin{minipage}{.33\textwidth}
 \begin{flushleft}
@@ -460,7 +498,7 @@ From figure \ref{generatedcomparison}, we can witness the previously mentioned d
 \end{tabular}
 \end{minipage}
 
-\caption{New samples generated by the models.Left: VAE. Right: TVAE with affine transformations. From top to bottom: respectively 10, 20 dimensions for the latent code $(z, u)$.\\ For each cell a latent code $z$ is drawn independently from the corresponding multivariate standard normal (For the TVAE, $u$ is set to the identity). Both the encoder and the decoder part comprise 2 densely connected hidden layers of 256 hidden units.}
+\caption{New samples generated by the models in their upright pose.Left: VAE. Right: TVAE with affine transformations. From top to bottom: respectively 10, 20 dimensions for the latent code $(z, u)$.\\ For each cell a latent code $z$ is drawn independently from the corresponding multivariate standard normal (For the TVAE, $u$ is set to the mean transformation over the training set). Both the encoder and the decoder part comprise 2 densely connected hidden layers of 256 hidden units.}
 \label{generatedcomparison}
 \end{figure}
 
@@ -483,13 +521,15 @@ From figure \ref{generatedcomparison}, we can witness the previously mentioned d
 \end{tabular}
 \end{minipage}
 
-\caption{New samples generated by the models.Left: TVAE with affine transformations. Right: DTVAE with affine transformations. From top to bottom: respectively 2, 10, 20 dimensions for the latent code $(z, u)$.\\ For each cell a latent code $z$ is drawn independently from the corresponding multivariate standard normal, except for the first line where the code varies continuously in 2 dimensions. $u$ is set to the identity. Both the encoder and the decoder part comprise 2 densely connected hidden layers of 256 hidden units, and the localization network (which predicts $q(u|x)$) is a single dense layer of 128 units.}
+\caption{New samples generated by the models in their upright pose ($u$ set to the mean transformation).Left: TVAE with affine transformations. Right: DTVAE with affine transformations. From top to bottom: respectively 2, 10, 20 dimensions for the latent code $(z, u)$.\\ For each cell a latent code $z$ is drawn independently from the corresponding multivariate standard normal, except for the first line where the code varies continuously in 2 dimensions. $u$ is set to the identity. Both the encoder and the decoder part comprise 2 densely connected hidden layers of 256 hidden units, and the localization network (which predicts $u$) is a single dense layer of 128 units.}
 \label{generatedcomparison2}
 \end{figure}
 
-  We designed the DTVAE in an attempt to uncouple spatial information from the rest of the variability in the image. It does not perform as well as the TVAE in terms of generating performances, and exhibits similar behavior to the VAE as the dimension grows. This helps us develop an intuition about why the TVAE produces such sharp samples. On the contrary to the DTVAE, the TVAE learns to regress an image on its upright version ($x$ on $y'$). This means that the part of the encoder which is not regressing the spatial parameters is in charge of suppressing the pose, and learns spatial invariance. Our interpretation is that it acts like an inner data augmentation, which gives a natural way to the network to regularize itself. As we will discuss in the "Further developments" section, it could mean that enhancing this part of the network with layers designed to better achieve spatial invariance could lead to a great improvement.\\
+  We designed the DTVAE in an attempt to uncouple spatial information from the rest of the variability in the image. It seems to perform as well as the TVAE in terms of generating performances.
 
-  By using the TVAE, without using a prior on the pose $u$. We showed that we can fulfill all the properties of a classic autoencoder, while being able to generate new upright samples of good quality.
+  % This helps us develop an intuition about why the TVAE produces such sharp samples. On the contrary to the DTVAE, the TVAE learns to regress an image on its upright version ($x$ on $y'$). This means that the part of the encoder which is not regressing the spatial parameters is in charge of suppressing the pose, and learns spatial invariance. Our interpretation is that it acts like an inner data augmentation, which gives a natural way to the network to regularize itself. As we will discuss in the "Further developments" section, it could mean that enhancing this part of the network with layers designed to better achieve spatial invariance could lead to a great improvement.\\
+
+  By using the TVAE, without using a prior on the pose $u$, we showed that we can fulfill all the properties of a classic autoencoder, while being able to generate new upright samples of better quality.
 
   \subsection{Latent code information}
     By the fixed machinery that we deployed, we know what the spatial variable $u$ contains, but did this reparametrization of the problem help disentangle the information in $z$?
@@ -520,34 +560,32 @@ From figure \ref{generatedcomparison}, we can witness the previously mentioned d
         \label{svmcompar}
       \end{table}
 
-      \begin{figure}[h]
-        \centering
-        \begin{minipage}{.5\textwidth}
-        \centering
-        \begin{tabular}{|@{}c@{}|}\hline
-        \includegraphics[scale=0.5]{dist_val_118.png}\\\hline
-        \includegraphics[scale=0.5]{dist_val_132.png}\\ \hline
-        \end{tabular}
-        \end{minipage}%
-        \begin{minipage}{.5\textwidth}
-        \centering
-        \begin{tabular}{|@{}c@{}|}\hline
-        \includegraphics[scale=0.5]{dist_val_126.png}\\\hline
-        \includegraphics[scale=0.5]{dist_val_138.png}\\ \hline
-        \end{tabular}
-        \end{minipage}%
-        \caption{Validation samples in a 2d-latent space.Top left: VAE.Top right: Affine TVAE, Top right: Affine TVAE. Bottom left: Affine DTVAE. Bottom right: TPS TVAE.}
-        \label{2dlatent}
-      \end{figure}
+      % \begin{figure}[h]
+      %   \centering
+      %   \begin{minipage}{.5\textwidth}
+      %   \centering
+      %   \begin{tabular}{|@{}c@{}|}\hline
+      %   \includegraphics[scale=0.5]{dist_val_118.png}\\\hline
+      %   \includegraphics[scale=0.5]{dist_val_132.png}\\ \hline
+      %   \end{tabular}
+      %   \end{minipage}%
+      %   \begin{minipage}{.5\textwidth}
+      %   \centering
+      %   \begin{tabular}{|@{}c@{}|}\hline
+      %   \includegraphics[scale=0.5]{dist_val_126.png}\\\hline
+      %   \includegraphics[scale=0.5]{dist_val_138.png}\\ \hline
+      %   \end{tabular}
+      %   \end{minipage}%
+      %   \caption{Validation samples in a 2d-latent space.Top left: VAE.Top right: Affine TVAE, Top right: Affine TVAE. Bottom left: Affine DTVAE. Bottom right: TPS TVAE.}
+      %   \label{2dlatent}
+      % \end{figure}
 
 
-      From this, it seems hard to conclude anything more than that a more problem-specific architecture yields better features and therefore a better classification. In figure \ref{2dlatent}, we compare the different architectures in terms of the visualization they can offer. In 2D, except maybe for the VAE, is seems hard to distinguish if one model offers more separability than the others. From a generation perspective, it is important to understand that when we sample from a standard normal and hope to generate a well-formed digit, we pick a point in this ellipsoid. \\
+      % From this, it seems hard to conclude anything more than that a more problem-specific architecture yields better features and therefore a better classification. In figure \ref{2dlatent}, we compare the different architectures in terms of the visualization they can offer. In 2D, except maybe for the VAE, is seems hard to distinguish if one model offers more separability than the others. From a generation perspective, it is important to understand that when we sample from a standard normal and hope to generate a well-formed digit, we pick a point in this ellipsoid. \\
 
-      This shows somewhat of a paradox in what we expect the model to be able to do. On the one hand, we would like the datasets to cover the ellipsoid, so that when we sample from the prior, we always get a credible sample. But on the other hand, we would like the latent code $z$ to be very informative (of the class for this experiment), so we'd rather have clear margins between the classes in the latent space. We believe that this paradox fundamentally comes from a model misspecification. As we are trying to  classify the class, we implicitly make the assumption that there is some degree of discreteness in the latent code which is not allowed by our model. Several workarounds have been considered for this. A first option is to assume that the labels are known at generation and training time and we would fit the whole model conditionally on the labels. A more ambitious option would be to allow a fraction of the latent code $z$ to be discrete. Such parametrization usually allows to recover the classes in such a simple dataset \cite{chen.infogan}. However, the variational autoencoder does not allow discrete latent code because of the differentiability assumption. To work around this issue, an easy and approximate solution would be to penalize part of the code with an $L_1$ norm. Another solution would be to use the Gumbel-Softmax reparametrization \cite{JangCatReparam} which continuously approximate the categorical distribution through a temperature parameter.
+\section{Study of the latent spatial variables}
 
-\subsection{Distribution over the latent spatial variables}
-
-Since the TVAE shows nice properties, we will focus on it for the rest of the paper. As the transformer layer \cite{Jaderberg.stn} permits, we can use affine transformations as well as thin plate splines to model the deformations in the image. We can see from figure \ref{generatedafftps} that at least visually, the TPS seems to offer slightly sharper samples on average.\\
+  Since the TVAE shows nice properties, we will focus on it for the rest of the paper. As the transformer layer \cite{Jaderberg.stn} permits, we can use affine transformations as well as thin plate splines to model the deformations in the image. We can see from figure \ref{generatedafftps} that at least visually, the TPS seems to offer slightly sharper samples on average.\\
 
 \begin{figure}[h]
 \centering
@@ -565,29 +603,13 @@ Since the TVAE shows nice properties, we will focus on it for the rest of the pa
 \includegraphics[scale=0.7]{manifold_39.jpg}\\\hline
 \end{tabular}
 \end{minipage}%
-\caption{New samples generated by the models.Left: TVAE with affine transformer. Right: TVAE with thin plate splines transformer. We use 30 dimensions for the latent code (left: $dim(z) = 24$, $dim(u) = 6$; right: $dim(z) = 12$, $dim(u) = 18$) .Each cell is drawn independently from the corresponding multivariate standard normal.}
+\caption{New samples generated by the models in the upright pose ($u$ set to the mean transformation).Left: TVAE with affine transformer. Right: TVAE with thin plate splines transformer. We use 30 dimensions for the latent code (left: $dim(z) = 24$, $dim(u) = 6$; right: $dim(z) = 12$, $dim(u) = 18$) .Each cell is drawn independently from the corresponding multivariate standard normal, while setting $u$ to its mean value on the training set (so that it behaves like the identity). No prior is put on $u$.}
 \label{generatedafftps}
 \end{figure}
 
-There is a few things to consider before putting sensible priors on those quantities. First, they have a physical meaning, and act directly on the image through the transformer, on the contrary to z. This means in particular that we cannot simply put a normal prior with mean 0 and variance 1, because that would mean that the average transformation is the identity and that the variability is arbitrary. For the latent code $z$, it did not matter because the neural network itself can take care of setting the scale to a sensible value. This means that we have to estimate some parameters of the prior during the optimization process. Secondly, we have to pay attention to the covariance structure of $u$. If we look at the approximate posterior distribution of $u$, there is correlations between components (up to 30\% for the affine mapping). This is actually quite natural; for the affine correlations, the matrix with 6 cells has an inner structure in terms of rotation $\psi$, shearing $(S_x, S_y)$, and translation $(T_x, T_y)$:\\
 
-$M=
-  \left[ {\begin{array}{ccc}
-   a & b & c\\
-   d & e & f\\
-  \end{array} } \right]
- = 
-  \left[ {\begin{array}{ccc}
-   S_x cos \psi & -S_x sin \psi & S_x T_x\\
-   S_y sin \psi & S_y cos \psi & S_y T_y\\
-  \end{array} } \right]$
 
-  Therefore, it might be better to put priors on those 5 interpretable variables than on the 6 cells of the matrix. A sensible prior in this case could be:\\
-  $u = (\psi, log S_x, log S_y, T_x, T_y) \sim N(\nu^u, Diag(\tau_1^u, \tau_2^u, \tau_3^u, \tau_4^u, \tau_5^u))$
-
-  The same problem arises for the thin plate splines. The 9 points of the grid we have been using previously share a lot of dependence. In the case of a rotation centered in the middle of the grid, all exterior points move together and are coupled in a non-linear fashion. This implies that using a gaussian prior (even with a dense covariance matrix) may fail to model the range of transformations.\\
-
-  In figure \ref{generatedwithpose}, we made a comparison of different priors on the affine and TPS version of the TVAE. The first conclusion we can draw is that centering the prior on the identity mapping yields poor results. There is co-adaptation between the values of $z$ and $u$, and the procedure seems to find a local optimum by internally representing the digit slightly zoomed in and sheared to fit almost all the space available. We don't have any intuition about this phenomenon yet. But because the expected posterior transformation is far from being the identity, the procedure overestimated the prior variance, leading the samples with the sampled pose to be not satisfactory. If the mean is fitted, a gaussian prior on the 6 degrees of freedom of the affine transformation yield digits that are mainly sheared in the horizontal direction.\\
+  From figure \ref{generatedwithpose} onward, we use a prior on $u$ during training. In this figure, we make a comparison of different priors on the affine version of the TVAE. The first conclusion we can draw is that centering the prior on the identity mapping yields poor results. The expected posterior transformation is far from being the identity, therefore the procedure overestimated the prior variance, leading the samples with the sampled pose to be not satisfactory. If the prior mean is estimated, the prior on the 6 degrees of freedom of the affine transformation yields digits that are mainly sheared in the horizontal direction.\\
 
   \begin{figure}[H]
   \centering
@@ -609,11 +631,11 @@ $M=
   \includegraphics[scale=1]{manifold_sig_62.jpg}\\ \hline
   \end{tabular}
   \end{minipage}%
-  \caption{Left: samples generated by a draw from the prior of the general latent code $z$ in their reference pose. Right: same samples than left transformed by a draw from the distribution on the spatial latent variable $u$. From top to bottom, different priors: normal prior with mean fixed to identity, fitted diagonal covariance on affine transformation with 6 d.o.f; normal prior with fitted mean, fitted diagonal covariance on affine transformation with 6 d.o.f; normal prior with fitted mean, fitted diagonal covariance on reparametrized affine transformation with 5 d.o.f. ; --to be added TPS transformation, fitted mean, fitted diagonal covariance, 18 dof.}
+  \caption{Left: samples generated by a draw from the prior of the general latent code $z$ in their reference pose ($u$ set to the identity). Right: same samples than left transformed by a draw from the distribution on the spatial latent variable $u$. From top to bottom, different priors on $u$: normal prior with mean set to identity, estimated diagonal covariance on affine transformation with 6 d.o.f; normal prior with estimated mean, estimated diagonal covariance on affine transformation with 6 d.o.f; normal prior with estimated mean, estimated diagonal covariance on reparametrized affine transformation with 5 d.o.f.}
   \label{generatedwithpose} 
   \end{figure}
 
-    Using the suggested prior on the reparametrized transformation with 5 degrees of freedom introduce a noticeable variation in rotation. We could argue that some numbers do not seem to be in a "natural" pose. Our interpretation is that even if we assumed that the pose (contained in $u$) and the class (contained in $z$) of the sample were independent, there is probably still dependence between the two. A visual way to understand this lies in figure \ref{generatedcomparison}. The long bar shared by the 7, the 1 and the 9 all have the same orientation. But the 1 is usually vertical in the dataset. This means that there is once again a co-adaptation between the general-purpose latent code $z$ and the pose $u$.\\
+    Using the suggested prior on the reparametrized transformation with 5 degrees of freedom introduces a noticeable variation in rotation. We could argue that some digits do not seem to be in a "natural" pose. Our interpretation is that it is an artifact of the independence assumption between the pose $u$ and the class of the digit (contained in $z$). A visual way to understand this lies in figure \ref{generatedcomparison}. The long bar shared by the 7, the 1 and the 9 all have the same orientation. But the 1 is usually vertical in the dataset. This means that there is once again a co-adaptation between the general-purpose latent code $z$ and the pose $u$, and that this coadaptation is not done independently of the class.\\
 
 
 
@@ -628,7 +650,7 @@ rank: 2\\
 \includegraphics[scale=1]{manifold_sig_47.jpg}\\ \hline
 rank: 4\\
 \includegraphics[scale=1]{manifold_sig_45.jpg}\\ \hline
-rank: 6 ($=dim(u')$)\\
+rank: 6 ($=dim(u)$)\\
 \includegraphics[scale=1]{manifold_sig_43.jpg}\\ \hline
 \end{tabular}
 \end{minipage}%
@@ -640,25 +662,21 @@ rank: 3\\
 \includegraphics[scale=1]{manifold_sig_50.jpg}\\ \hline
 rank: 9\\
 \includegraphics[scale=1]{manifold_sig_51.jpg}\\ \hline
-rank: 18 ($=dim(u')$)\\
+rank: 18 ($=dim(u)$)\\
 \includegraphics[scale=1]{manifold_sig_52.jpg}\\ \hline
 \end{tabular}
 \end{minipage}%
-\caption{Samples from different models with an estimated full normal prior.Left: Affine TVAE. Right:TPS TVAE.}
+\caption{Samples from different models with an estimated full normal prior.Left: Affine TVAE (6-parameter transformation). Right: TPS TVAE (18-parameter transformation).}
 \label{generatedfullprior} 
 \end{figure}
 
-
-
-    We also tried more flexible priors, fitting a full covariance matrix. A efficient way to do that is to put a standard normal prior on a spatial latent code $u$ and limk it to the actual parameters of the transformation $u'$ by learnable weights without any nonlinearity. If the weights between the two is denoted by $W$. We will have $u$ distributed as $N(b, WW^T)$, with a bias $b$. This means in particular that by controlling the dimension of $u$, we can control the maximum rank of the covariance of $u'$. Moreover, this implementation is extremely easy to implement by what the software offers. We show in figure  what this full covariance offers in terms of generation.\\
-
-  In both models, we can see that using a full covariance definitely increases the range of transformations allowed by the model. If we use the maximum rank, some samples seem to have extreme transformations that are not representative of the data. For a smaller dimension of $u$, we seem to achieve a good compromise between not too extreme transformations and a representatively broad variability in pose. Note that we could still develop more flexible priors by inserting a non-linear hidden layer between $u$ and $u'$, but it would of course be less interpretable and could only give us information about the relevant degree of freedom for the transformations.
+  In both models, we can see that using a full covariance definitely increases the range of transformations allowed by the model. If we use the maximum rank, some samples seem to have extreme transformations that are not representative of the data. For a smaller dimension of $u'$, we seem to achieve a compromise between not too extreme transformations and a representatively broad variability in pose. Note that we could still develop more flexible priors by inserting a non-linear hidden layer between $u'$ and $u$, but it would of course be less interpretable and could only give us information about the relevant degree of freedom for the transformations.
 
 \section{Optimization}
 \subsection{Quality of the variational approximation}
-  As discussed when we presented variational inference, the optimization of the lower bound does not offer a lot of guarantee that the approximate prior is actually close to the true prior. To experimentally check this, once the model fitted, we computed the marginal likelihood ($p(x)$) by Monte Carlo and compared it to the lower bound. As discussed, the difference between the two is the KL-divergence between the approximate posterior $q(z|x)$ and the true one $p(z|x)$.\\
+  As discussed when we presented variational inference, the optimization of the lower bound does not offer a lot of guarantee that the approximate posterior is actually close to the true posterior. To experimentally check this, once the model fitted, we computed the marginal likelihood ($p(x)$) by Monte Carlo and compared it to the lower bound. As discussed, the difference between the two is the KL-divergence between the approximate posterior $q(z|x)$ and the true one $p(z|x)$.\\
 
-  From Monte-Carlo sampling, experiments showed that the KL-divergence between the approximate and the true posterior is roughly equal to the KL-divergence between the approximate posterior and the prior, which is a quantity easily accessible and which we optimize during training. This is somewhat of a good compromise because without explicitly optimizing it, the approximate posterior is as close to the posterior as it is from the prior. But at the same time, we know from experience that the prior and the approximate posterior are very different (cf. figure \ref{2dlatent}) because if we sample from the approximate posterior, we would always get very good samples (because those would be reconstruction from the dataset).
+  From Monte-Carlo sampling, experiments showed that the KL-divergence between the approximate and the true posterior is roughly equal to the KL-divergence between the approximate posterior and the prior, which is a quantity easily accessible and which we optimize during training. This is somewhat of a good compromise because without explicitly optimizing it, the approximate posterior is as close to the posterior as it is from the prior. But at the same time, we know from experience that the prior and the approximate posterior are very different because if we sample from the approximate posterior, we would always get very good samples (because those would be reconstruction from the dataset).
 
 
 \subsection{Coadaptation within the network}
@@ -676,26 +694,38 @@ rank: 18 ($=dim(u')$)\\
   \includegraphics[scale=1]{manifold_bad_min.jpg}\\\hline
   \end{tabular}
   \end{minipage}%
-  \caption{Different outputs of the decoder before transformations. Left: example a promising local minimum. Left: example a poor local minimum.}
+  \caption{Different outputs of the decoder with transformation set to identity. Left: example a promising local minimum. Left: example of a poor local minimum.}
   \label{locmin}
   \end{figure}
 
-    Usually, models that achieve a good reconstruction produce pre-transformations samples like the left of figure \ref{locmin}. In this case, the digit takes generally the whole space available and is very thick. This is interesting because it means that the transformation is able to downsample the digit and make it thinner according to the input. The internal representation has therefore a higher definition than the input. It is also important to note that more informative priors or adapted weights initialization centered on the identity transformation usually help avoid such poor local minima.
+    Usually, models that achieve a good reconstruction produce pre-transformation samples like the left of figure \ref{locmin}. In this case, the digit takes generally the whole space available and is very thick. This is interesting because it means that the transformation is able to downsample the digit and make it thinner according to the input. The internal representation has therefore a higher definition than the input. It is also important to note that more informative priors or adapted weights initialization centered on the identity transformation usually help avoid such poor local minima.
+
+\section{Discussion}
+
+
+      We showed how the TVAE and DTVAE were able to produce a general purpose latent code $z$ which has better properties in terms of linear separability and reconstruction abilities. For those use cases, there is no need to add a prior distribution on the spatial latent code $u$, and we can simply determine it deterministically. \\
+
+      It is, however, important to note that the tasks of generation and reconstruction are opposed in this case. On the one hand, we would like the dataset to cover all the points in the latent space that are likely to be picked at generation time. That is to say, we would like the data to be scattered by the encoder in an ellipsoid centered on the origin in the latent space, so that when we sample from the prior, we always get a credible sample. But on the other hand, we would like the latent code $z$ to be very informative (e.g. of the class), so we would rather have clear margins between the classes in the latent space. We believe that this paradox fundamentally comes from a model misspecification. As we are trying to classify images, we implicitly make the assumption that there is some degree of discreteness in the latent code which is not allowed by our model. Several workarounds have been considered for this. A first option is to assume that the labels are known at generation and training time and we would fit the whole model conditionally on the labels. A more ambitious option would be to allow a fraction of the latent code $z$ to be discrete. Such parametrization usually allows to recover the classes in such a simple dataset \cite{chen.infogan}. However, the variational autoencoder does not allow discrete latent code because of the differentiability assumption. To work around this issue, an easy and approximate solution would be to penalize part of the code with an $L_1$ norm. Another solution would be to use the Gumbel-Softmax reparametrization \cite{JangCatReparam} which continuously approximate the categorical distribution through a temperature parameter.\\
+
+      We also showed what priors could be put on the spatial latent code. By constraining the covariance in different ways and over different parametrization of the transformation, we can produce decent digits with their pose. Based on our experiments, priors with diagonal covariance on affine transformations produce samples that seem credible. \\
+
+      Another issue linked to the lack of discreteness arises from those experiments. The fact that certain class have different range of transformation contradicts our independence assumption between the general latent code $z$ and the spatial latent code $u$. If we introduce discreteness in the model as we discussed earlier, either by a discrete code or by conditioning on the labels, we could define the transformation conditionally on the discrete code. For example, if different covariance matrices are estimated according to the class, generating a new sample could be done by 1. choosing (or sampling) the class of the digit to produce 2. sampling the latent code $z$ conditioned on the class, 3. sample the spatial code conditionally on the class.
+
 
 \section{Future Work}
 
-  As we previously discussed, further studies could be conducted on those models. First, to encode the general purpose latent code $z$, architectures specifically designed to produce invariance could be deployed such as Convolutionnal architectures \cite{lecun-gradientbased-learning-applied-1998} and Group-equivariant convolutional layers \cite{cohen.groupequi}. Second, another dataset should be used to confirm our conclusions. For the futur we considered CIFAR-10 \cite{cifar10} and eventually SVHN \cite{svhn} as good benchmark datasets. Moreover, another feature to model may be discreteness in the dataset, as it seemed to lack in our model. This discreteness can be accounted for by an approximation of the categorical distribution by a continuous distribution \cite{JangCatReparam}. Finally, if we witnessed that our model produces less blurry samples than the vanilla variational autoencoder, it did not eliminate the root of this blur, which fundamentally comes from the pixelwise distance in the loss, or said differently, from the conditional distribution of the image. To correct that two paths could be considered. Either we specify a more appropriate conditional distribution (e.g. a Markov Random field \cite{Geman:1984:SRG:2286442.2286617} -even though those are usually difficult to sample from-), or we can deploy an adversarial strategy that may be less statistically justified, but has been shown to work in Generative adversarial networks \cite{Goodfellow.gan}.
+  As we previously discussed, further studies could be conducted on those models. First, to encode the general purpose latent code $z$, architectures specifically designed to produce invariance could be deployed such as Convolutionnal architectures \cite{lecun-gradientbased-learning-applied-1998} and Group-equivariant convolutional layers \cite{cohen.groupequi}. Second, another dataset should be used to confirm our conclusions. For the future we considered CIFAR-10 \cite{cifar10} and eventually SVHN \cite{svhn} as good benchmark datasets. Moreover, another feature to model may be discreteness in the dataset, as it seemed to lack in our model. This discreteness can be accounted for by an approximation of the categorical distribution by a continuous distribution \cite{JangCatReparam}. Finally, if we witnessed that our model produces less blurry samples than the vanilla variational autoencoder, it did not eliminate the root of this blur, which fundamentally comes from the pixelwise distance in the loss, or said differently, from the conditional distribution of the image. To correct that two paths could be considered. Either we specify a more appropriate conditional distribution (e.g. a Markov Random field \cite{Geman:1984:SRG:2286442.2286617} -even though those are usually difficult to sample from-), or we can deploy an adversarial strategy that may be less statistically justified, but has been shown to work in Generative adversarial networks \cite{Goodfellow.gan}.
 
 
 \section*{Acknowledgments} 
 \addcontentsline{toc}{section}{Acknowledgments}
 
-  I would like to particularly thank Prof. Yali Amit for his precious advice and time, and more exactly for his ability to keep things simple when those neural networks allow the craziest things! I would also like to thank Siyu Song who very nicely got me up to speed with his work and allowed me to push it a little further. Let me thank also Yufei Feng and Jiajun Shen, with whom I had the opportunity to share my findings and who gave me feedback and help thanks to their experience, theoretical and practical knowledge of the field. Finally, I would like to thank Dr. Mei Wang for pushing her MS. students to do their best, so that they can be be proud of their accomplishments.
+  I would like to particularly thank Prof. Yali Amit for his precious advice and time, and more exactly for his ability to keep things simple when those neural networks allow the craziest things! I would also like to thank Siyu Song who very nicely got me up to speed with his work and allowed me to push it a little further. Let me thank also Yufei Feng and Jiajun Shen, with whom I had the opportunity to share my findings and who gave me feedback and help thanks to their experience, as well as their theoretical and practical knowledge of the field. Finally, I would like to thank Dr. Mei Wang for pushing her MS. students to do their best, so that they can be proud of their accomplishments.
 
 \section*{Conclusion}
 \addcontentsline{toc}{section}{Conclusion}
 
-  In sum, we showed how to handle spatial information in the variational autoencoder, how it helped achieve better reconstruction as well as better generate new samples. This has been made possible by the careful design of the TVAE and DTVAE which take advantage of this high-level information. Thanks to those new models, we can achieve better unsupervised learning, representation and denoising, while staying in a statistically relevant framework. This paper more generally shows how to encompass higher level information in existing models. Similar treatment could have been given to generative adversarial networks \cite{Goodfellow.gan} for example, or even different type of variability for different signals. 
+  In sum, we showed how to handle spatial information in the variational autoencoder, how it helped achieve better reconstruction as well as better generate new samples. This has been made possible by the careful design of the TVAE and DTVAE which take advantage of this high-level information. Thanks to those new models, we can achieve better unsupervised learning, representation and denoising, while staying in a statistically relevant framework. This paper more generally shows how to encompass higher level information in existing models. Similar treatment could have been given to generative adversarial networks \cite{Goodfellow.gan} for example, or even different types of variability for different signals.
 
 %----------------------------------------------------------------------------------------
 %   REFERENCE LIST
