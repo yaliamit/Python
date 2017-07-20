@@ -1,5 +1,0 @@
-
-Autoencoder:
-id, N-latent, Model, Cross entropy, reconstruction, sampling
-1,  2,        3*128, 134, ?, ?          
-2,  8, 
