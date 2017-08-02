@@ -8,7 +8,7 @@ for j in range(10):
     sd=' seed='+str(seed)+' '
     ss='python runber.py net=_pars/fncrc global_prob=[1.,-1.]'+sd+'fncrc_OUT'+str(j)
     os.system(ss)
-    ss='python runber.py net=_pars/fncrc global_prob=[1.,-1.]'+sd+'fncrc_OUT'+str(j)
+    ss='python runber.py net=_pars/fncrc global_prob=[1.,0.]'+sd+'fncrc_RR_OUT'+str(j)
     os.system(ss)
     ss='python runber.py net=_pars/fncrc global_prob=[1.,1.]'+sd+'fncrc_R_OUT'+str(j)
     os.system(ss)

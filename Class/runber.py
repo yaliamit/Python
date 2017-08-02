@@ -33,10 +33,10 @@ else:
         ss=commands.getoutput('scp amit@bernie.uchicago.edu:/ga/amit/Desktop/Dropbox/Python/Class/'+OUTNAME+' '+ lOUTNAME)
         print(ss)
     while (commands.getoutput('grep DONE ' + lOUTNAME)==''):
-        time.sleep(30)
+        time.sleep(10)
         commands.getoutput('scp amit@bernie.uchicago.edu:/ga/amit/Desktop/Dropbox/Python/Class/'+OUTNAME+' ' + lOUTNAME)
 
-    time.sleep(30)
+    time.sleep(5)
     pnn=commands.getoutput('grep NNN ' + lOUTNAME)
     pnnn=str.split(pnn,':')
     netname=str.strip(pnnn[1],' ,\')')
