@@ -15,4 +15,3 @@ for j in range(10):
     ss='python runber.py net=_pars/fncrc use_existing=True start=1 mult=1 mod_net=modf_net global_prob=[1.,-1.]'+sd+'fncrc_L'
     os.system(ss)
 
-    
