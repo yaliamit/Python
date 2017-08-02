@@ -1,1 +1,1 @@
-python start_class.py net=_pars/fncrc num_epochs=200 global_prob=[1.,0.] seed=94881 output=fncrc_RR_2c_OUT0>fncrc_RR_2c_OUT0.txt
+python start_class.py net=_pars/fncrc num_epochs=200 global_prob=[1.,1.] seed=94881 output=fncrc_R_2c_OUT0>fncrc_R_2c_OUT0.txt
