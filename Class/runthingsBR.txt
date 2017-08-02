@@ -1,1 +1,1 @@
-python start_class.py net=_pars/fncrc use_existing=True start=1 mult=2 mod_net=modf_net global_prob=[1.,-1.] output=fncrc_L_OUT>fncrc_L_OUT.txt
+python start_class.py net=_pars/fncrc global_prob=[1.,1.] output=fncrc_R_OUT>fncrc_R_OUT.txt
