@@ -1,1 +1,1 @@
-python start_class.py net=_pars/fncrc global_prob=[1.,-1.] seed=11915 output=fncrc_OUT1>fncrc_OUT1.txt
+python start_class.py net=_pars/fncrc global_prob=[1.,1.] seed=11915 output=fncrc_R_OUT1>fncrc_R_OUT1.txt
