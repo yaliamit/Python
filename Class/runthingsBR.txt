@@ -1,1 +1,1 @@
-python start_class.py net=_pars/fncrc use_existing=True start=1 mult=1 mod_net=modff_net seed=5555 eta_init=.01 eta_current=.01 global_prob=[1.,-1.] output=fncrc_LL_OUT>fncrc_LL_OUT.txt
+python start_class.py net=_pars/fncrc use_existing=True start=1 mult=1 mod_net=modf_net global_prob=[1.,-1.] output=fncrc_La_OUT>fncrc_La_OUT.txt
