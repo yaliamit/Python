@@ -1,29 +1,23 @@
-output_net:fnc
 seed:45239
-num_epochs:300
+num_epochs:50
 simple_augmentation:True
 mod_net:None
 edges:False
 start:0
 Mnist:cifar_10
-net:fn
-eta_schedule:(20,.05,100,.01)
-update:sgd
-batch_size:50
-eta_init:.1
+net:fnc
+update:adam
+batch_size:500
+eta_init:.001
 train:True
 mult:1
 num_train:50000
 agg:True
 adapt_eta:False
-hinge:2
-hinge_down:2
+hinge:1.
 TRAIN:True
-global_prob:(.5,.5)
+global_tinout:(.5,1.)
 name:input1
-name:conv1;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:lasagne.nonlinearity.sigmoid;parent:input1
-name:pool1;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:conv1
-name:newdens0;num_units:2000;non_linearity:lasagne.nonlinearity.sigmoid;parent:pool1
-name:newdens1;num_units:500;non_linearity:lasagne.nonlinearity.sigmoid;parent:newdens0
-name:drop1;drop:.2;parent:newdens1
-name:newdens2;num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:drop1;final:final
+name:conv1;num_filters:32;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:tanh;parent:input1
+name:newdens1;num_units:500;non_linearity:lasagne.nonlinearity.tanh;tinout:(.1,1.);parent:conv1
+name:newdens2;num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:newdens1;final:final

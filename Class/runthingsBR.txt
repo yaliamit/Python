@@ -1,1 +1,1 @@
-python start_class.py net=_pars/fncr global_prob=[1.,0.] NOT_TRAINABLE=[newdens1,] output=fncr_L_OUT>fncr_L_OUT.txt
+python start_class.py net=_pars/fncrc global_prob=[1.,-1.] output=fncrc_OUT>fncrc_OUT.txt
