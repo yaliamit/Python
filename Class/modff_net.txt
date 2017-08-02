@@ -1,0 +1,3 @@
+REMOVE:newdens2,
+NOT_TRAINABLE:conv1,newdens1,
+name:newdens2;num_units:10;non_linearity:linear;prob:(1.,-1.);parent:newdens1;final:final
