@@ -20,6 +20,6 @@ global_tinout:(.5,1.)
 name:input1
 name:conv1;num_filters:32;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:tanh;parent:input1
 name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:conv1
-name:drop1;drop:.5;parent:pool1
+name:drop1;drop:.7;parent:pool1
 name:newdens1;num_units:500;non_linearity:lasagne.nonlinearity.tanh;tinout:(.1,1.);parent:pool1
 name:newdens2;num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:newdens1;final:final
