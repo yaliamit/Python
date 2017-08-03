@@ -2,7 +2,7 @@ import os
 import sys
 import numpy as np
 
-for j in range(10):
+for j in np.arange(6,10,1):
 
     seed=np.random.randint(0,200000)
     sd=' seed='+str(seed)+' '
