@@ -35,18 +35,23 @@ def multiclass_hinge_loss_alt(predictions, targets, delta_up=1., delta_down=1., 
     corrects = predictions[targets.nonzero()]
     rest = theano.tensor.reshape(predictions[(1-targets).nonzero()],
                                  (-1, num_cls-1))
-    if (dep_fac>0):
-        relc=theano.tensor.nnet.relu(delta_up-corrects)
-        relr=dep_fac*theano.tensor.nnet.relu(delta_down+rest)/(num_cls-1)
-        # sftfac=1.
-        # relc=theano.tensor.nnet.softplus(sftfac*(delta_up-corrects))/sftfac
-        # relr=dep_fac*theano.tensor.nnet.softplus(sftfac*(delta_down+rest))/(sftfac*(num_cls-1))
+    if delta_down < 0:
+        relc=corrects
+        relr=dep_fac*rest/(num_cls-1)
         loss=theano.tensor.sum(relr,axis=1)+relc
     else:
-        #restm=theano.tensor.max(rest,axis=1)
-        restlse=(theano.tensor.log(theano.tensor.sum(theano.tensor.exp(-dep_fac*(rest-1.)),axis=1)/(num_cls-1))+1.)/(-dep_fac)
-        err=delta_up-corrects+restlse
-        loss=theano.tensor.nnet.relu(err)
+        if (dep_fac>0):
+            relc=theano.tensor.nnet.relu(delta_up-corrects)
+            relr=dep_fac*theano.tensor.nnet.relu(delta_down+rest)/(num_cls-1)
+            # sftfac=1.
+            # relc=theano.tensor.nnet.softplus(sftfac*(delta_up-corrects))/sftfac
+            # relr=dep_fac*theano.tensor.nnet.softplus(sftfac*(delta_down+rest))/(sftfac*(num_cls-1))
+            loss=theano.tensor.sum(relr,axis=1)+relc
+        else:
+            #restm=theano.tensor.max(rest,axis=1)
+            restlse=(theano.tensor.log(theano.tensor.sum(theano.tensor.exp(-dep_fac*(rest-1.)),axis=1)/(num_cls-1))+1.)/(-dep_fac)
+            err=delta_up-corrects+restlse
+            loss=theano.tensor.nnet.relu(err)
     return loss
 
 
