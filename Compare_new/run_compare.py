@@ -38,7 +38,7 @@ def multiclass_hinge_loss_alt(predictions, targets, delta_up=1., delta_down=1., 
     if delta_down < 0:
         relc=corrects
         relr=dep_fac*rest/(num_cls-1)
-        loss=theano.tensor.sum(relr,axis=1)+relc
+        loss=theano.tensor.sum(relr,axis=1)-relc
     else:
         if (dep_fac>0):
             relc=theano.tensor.nnet.relu(delta_up-corrects)
