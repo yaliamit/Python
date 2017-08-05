@@ -248,9 +248,11 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
                           dtype=theano.config.floatX)
 
             # Get gradients.
-            #layers=lasagne.layers.get_all_layers(network)
-            # for l in layers:
-            #        if ('dens' in l.name or 'conv' in l.name):
+            layers=lasagne.layers.get_all_layers(network)
+            for l in layers:
+                    if ('newdens1' in l.name):
+                        oo=lasagne.layers.get_output(l)
+                        gloss.append(T.grad(loss,oo))
             #            if (hasattr(l,'W')):
             #                gloss.append(T.grad(loss,l.W))
             #            if (hasattr(l,'R') and ('conv' in l.name or l.Rzero.shape[0]>1)):
