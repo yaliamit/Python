@@ -7,7 +7,7 @@ start:0
 Mnist:cifar_10
 net:fnc
 update:sgd
-batch_size:500
+batch_size:50
 eta_init:.005
 train:True
 mult:1

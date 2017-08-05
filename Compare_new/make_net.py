@@ -197,7 +197,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
             tinout=PARS['global_tinout']
         if ('prob' in l):
             prob=l['prob']
-        if ('force_global_prob' in PARS and 'prob' in l and l['prob'][1]>=0):
+        if ('force_global_prob' in PARS and 'prob' in l): # and l['prob'][1]>=0):
             prob=PARS['force_global_prob']
         prob=tuple([np.float32(i) for i in prob])
         tinout=tuple(np.float32(i) for i in tinout)
@@ -486,6 +486,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
             prs={}
             new_layers_pars=PARS['INSERT_LAYERS']
             prs['layers']=new_layers_pars
+            prs['force_global_prob']=PARS['force_global_prob']
             inlayer=new_layers_pars[0]['parent']
             for l in layers:
                  if l.name==inlayer:
