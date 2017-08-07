@@ -179,6 +179,7 @@ def get_nonlinearity(l,tinout):
 
 def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
 
+    r=np.random.RandomState()
     add_on=(input_layer is not None)
     network={}
     input_la=None
@@ -332,6 +333,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                         layer_list.append(lasagne.layers.DenseLayer(lay,num_units=num_units,nonlinearity=nonlin,
                                           W=layer_list[0].W, b=layer_list[0].b))
         elif 'newdens' in l['name']:
+
                 num_units=l['num_units']
                 if ('final' in l and num_class is not None):
                     num_units=num_class
@@ -351,11 +353,11 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                     else:
                         Wz=np.float32(np.random.rand(input_dim,num_units)<prob[0])
                         if (prob[1]>=0):
-                            Rz=np.float32(np.random.rand(input_dim,num_units)<prob[0])
+                            Rz=np.float32(r.uniform(0,1.,(input_dim,num_units))<prob[0])
                     std=gain*np.sqrt(6./(input_dim+num_units))
                     W=np.float32(np.random.uniform(-std,std,(input_dim,num_units)))*Wz
                     if (Rz.shape[0] > 1):
-                        R=np.float32(np.random.uniform(-std,std,(input_dim,num_units)))*Rz
+                        R=np.float32(r.uniform(-std,std,(input_dim,num_units)))*Rz
                     if (len(layer_list)==0):
                         layer_list.append(newdense.NewDenseLayer(lay,name=l['name'],num_units=num_units,
                                                                     W=W,#lasagne.init.GlorotUniform(gain=gain),

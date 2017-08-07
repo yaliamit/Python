@@ -164,7 +164,9 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
                 tout=f(inputs,targets)
         # Information on gradient magnitude
         acc += tout[1]; err += tout[0]
-
+        ## TEMP
+        #if (typ=='Train'):
+        #    print(np.array(tout[4]))
         pred.append(tout[2])
 
 

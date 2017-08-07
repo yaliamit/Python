@@ -254,7 +254,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             #         if ('newdens1' in l.name):
             #             oo=lasagne.layers.get_output(l)
             if (Train):
-                gloss.append(T.grad(loss,activation))
+                gloss.append(T.grad(loss,network.input_layer.W))
             #            if (hasattr(l,'W')):
             #                gloss.append(T.grad(loss,l.W))
             #            if (hasattr(l,'R') and ('conv' in l.name or l.Rzero.shape[0]>1)):
