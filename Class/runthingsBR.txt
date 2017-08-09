@@ -1,1 +1,1 @@
-python start_class.py net=_pars/fncrc hinge=1. use_existing=True eta_init=.001 eta_current=.001 batch_size=500 start=1 mult=1 mod_net=modf_net update=adam num_epochs=200 force_global_prob=[1.,1.] seed=94433 output=fncrc_R_2c_c_OUT0>fncrc_R_2c_c_OUT0.txt
+python start_class.py net=_pars/fncrc hinge=1. use_existing=True eta_init=.001 eta_current=.001 batch_size=500 start=1 mult=1 mod_net=modf_net update=adam num_epochs=200 force_global_prob=[1.,0.] seed=87964 output=fncrc_RR_2c_c_OUT1>fncrc_RR_2c_c_OUT1.txt
