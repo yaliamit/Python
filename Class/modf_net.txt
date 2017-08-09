@@ -1,4 +1,4 @@
 REMOVE:newdens1,newdens2,
 NOT_TRAINABLE:conv1,
 name:newdens1;tinout:(0.1,1.0);prob:(1.,-1.);non_linearity:lasagne.nonlinearity.tanh;tinout:(.1,1.);num_units:500;parent:drop1
-name:newdens2;num_units:10;non_linearity:linear;prob:(1.,-1.);parent:newdens1;final:final
+name:newdens2;num_units:10;non_linearity:softmax;prob:(1.,-1.);parent:newdens1;final:final

@@ -242,7 +242,8 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
                 if ('dep_fac' in NETPARS):
                     dep_fac=NETPARS['dep_fac']
                 aloss, relr, relc = multiclass_hinge_loss_alt(pred,target_var,delta_up=NETPARS['hinge'],delta_down=delta_down,dep_fac=dep_fac)
-
+                gloss.append(relr)
+                gloss.append(relc)
             loss = aloss.mean()
             loss=loss+spe
             acc = T.mean(T.eq(T.argmax(pred, axis=1), target_var),
@@ -255,8 +256,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             #             oo=lasagne.layers.get_output(l)
             if (Train):
                 gloss.append(T.grad(loss,network.input_layer.W))
-            gloss.append(relr)
-            gloss.append(relc)
+
             #            if (hasattr(l,'W')):
             #                gloss.append(T.grad(loss,l.W))
             #            if (hasattr(l,'R') and ('conv' in l.name or l.Rzero.shape[0]>1)):
