@@ -52,7 +52,7 @@ def multiclass_hinge_loss_alt(predictions, targets, delta_up=1., delta_down=1., 
             restlse=(theano.tensor.log(theano.tensor.sum(theano.tensor.exp(-dep_fac*(rest-1.)),axis=1)/(num_cls-1))+1.)/(-dep_fac)
             err=delta_up-corrects+restlse
             loss=theano.tensor.nnet.relu(err)
-    return loss
+    return loss,relr,relc
 
 
 
@@ -241,7 +241,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
                     delta_down=NETPARS['hinge_down']
                 if ('dep_fac' in NETPARS):
                     dep_fac=NETPARS['dep_fac']
-                aloss= multiclass_hinge_loss_alt(pred,target_var,delta_up=NETPARS['hinge'],delta_down=delta_down,dep_fac=dep_fac)
+                aloss, relr, relc = multiclass_hinge_loss_alt(pred,target_var,delta_up=NETPARS['hinge'],delta_down=delta_down,dep_fac=dep_fac)
 
             loss = aloss.mean()
             loss=loss+spe
@@ -255,6 +255,8 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             #             oo=lasagne.layers.get_output(l)
             if (Train):
                 gloss.append(T.grad(loss,network.input_layer.W))
+            gloss.append(relr)
+            gloss.append(relc)
             #            if (hasattr(l,'W')):
             #                gloss.append(T.grad(loss,l.W))
             #            if (hasattr(l,'R') and ('conv' in l.name or l.Rzero.shape[0]>1)):
