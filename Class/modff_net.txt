@@ -1,3 +1,4 @@
-REMOVE:newdens2,
-NOT_TRAINABLE:conv1,newdens1,
-name:dense2;num_units:10;non_linearity:linear;prob:(1.,-1.);parent:newdens1;final:final
+REMOVE:newdens1,newdens2,
+NOT_TRAINABLE:conv1,
+name:dense1;tinout:(0.1,1.0);non_linearity:linear;tinout:(.1,1.);num_units:500;parent:drop1
+name:dense2;num_units:10;non_linearity:linear;parent:dense1;final:final

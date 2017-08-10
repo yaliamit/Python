@@ -455,7 +455,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                             l.Rzero=np.float32(RR!=0)*np.float32(np.random.rand(RR.shape[0],RR.shape[1])<l.prob[0])
                        else:
                             l.Rzero=np.float32(np.zeros(RR.shape))
-                    if ('force_global_prob' in PARS and PARS['force_global_prob']==-1.):
+                    if ('force_global_prob' in PARS and PARS['force_global_prob'][1]==-1.):
                         l.R=np.float32(np.ones((1,1)))
                         l.Rzero=np.float32(np.ones((1,1)))
                     if ('global_prob' in PARS and PARS['global_prob'][1]==0):
