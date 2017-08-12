@@ -12,14 +12,10 @@ eta_init:.1
 train:True
 mult:1
 num_train:5000
-#NOT_TRAINABLE:newdens1,
 agg:True
 adapt_eta:False
 hinge:1.
 TRAIN:True
-global_tinout:(.5,1.)
-global_prob:(1.,0.)
 name:input1
-#name:dense0;num_units:2000;non_linearity:lasagne.nonlinearity.tanh;parent:input1
-name:newdens1;num_units:100;non_linearity:lasagne.nonlinearity.linear;tinout:(.1,1.);parent:input1
-name:newdens2;num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:newdens1;final:final
+name:newdens1;num_units:100;prob:(1.,0.);non_linearity:lasagne.nonlinearity.linear;parent:input1
+name:newdens2;num_units:10;prob:(1.,0.);non_linearity:lasagne.nonlinearity.linear;parent:newdens1;final:final
