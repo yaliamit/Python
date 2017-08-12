@@ -6,7 +6,7 @@ pfile='/fncr'
 nt=str(5000)
 update='sgd'
 mod_net='None'
-for j in np.arange(0,1,1):
+for j in np.arange(0,10,1):
 
     seed=np.random.randint(0,200000)
     sd=' seed='+str(seed)+' '
