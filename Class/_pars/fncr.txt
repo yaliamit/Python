@@ -15,7 +15,7 @@ num_train:5000
 agg:True
 adapt_eta:False
 hinge:1.
-hinge_down:-1.
+#hinge_down:-1.
 TRAIN:True
 name:input1
 name:newdens1;num_units:100;prob:(1.,0.);non_linearity:lasagne.nonlinearity.linear;parent:input1
