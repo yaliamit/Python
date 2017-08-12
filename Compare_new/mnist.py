@@ -38,7 +38,7 @@ def load_dataset(pad=0,nval=10000):
         # (Actually to range [0, 255/256], for compatibility to the version
         # provided at http://deeplearning.net/data/mnist/mnist.pkl.gz.)
 
-        return data / np.floatX(256)
+        return data / np.float32(256)
 
     def load_mnist_labels(filename):
         if not os.path.exists(filename):

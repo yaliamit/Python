@@ -303,6 +303,7 @@ def main_new(NETPARS):
             print("eta",eta.get_value())
             iterate_on_batches(train_fn,tX_train,ty_train,batch_size,typ='Train',network=network,pars=NETPARS,iter=epoch)
             out_te=iterate_on_batches(val_fn,tX_val,ty_val,batch_size,typ='Val',pars=NETPARS)
+            #iterate_on_batches(val_fn,X_train,y_train,batch_size,typ='Post-train',fac=False, agg=True, pars=None) #NETPARS['simple_augmentation'])
 
             if ('eta_schedule' in NETPARS):
                 sc=NETPARS['eta_schedule']

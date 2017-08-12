@@ -235,15 +235,21 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             if ('hinge' not in NETPARS or not NETPARS['hinge']):
                 aloss = lasagne.objectives.categorical_crossentropy(pred, target_var)
             else:
+
+
                 delta_down=1.
                 dep_fac=1.
                 if ('hinge_down' in NETPARS):
                     delta_down=NETPARS['hinge_down']
                 if ('dep_fac' in NETPARS):
                     dep_fac=NETPARS['dep_fac']
-                aloss, relr, relc = multiclass_hinge_loss_alt(pred,target_var,delta_up=NETPARS['hinge'],delta_down=delta_down,dep_fac=dep_fac)
-                gloss.append(relr)
-                gloss.append(relc)
+                if delta_down < 0:
+                        yy=theano.tensor.extra_ops.to_one_hot(target_var, pred.shape[1])
+                        aloss = T.sum(lasagne.objectives.squared_error(pred,yy),axis=1)
+                else:
+                    aloss, relr, relc = multiclass_hinge_loss_alt(pred,target_var,delta_up=NETPARS['hinge'],delta_down=delta_down,dep_fac=dep_fac)
+                #gloss.append(relr)
+                #gloss.append(relc)
             loss = aloss.mean()
             loss=loss+spe
             acc = T.mean(T.eq(T.argmax(pred, axis=1), target_var),
@@ -254,8 +260,8 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             # for l in layers:
             #         if ('newdens1' in l.name):
             #             oo=lasagne.layers.get_output(l)
-            if (Train):
-                gloss.append(T.grad(loss,network.input_layer.W))
+            #if (Train):
+             #   gloss.append(T.grad(loss,network.input_layer.W))
 
             #            if (hasattr(l,'W')):
             #                gloss.append(T.grad(loss,l.W))
