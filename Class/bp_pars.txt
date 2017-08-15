@@ -1,6 +1,6 @@
-num_hidden:200
+num_hidden:100
 Mnist:mnist
-num_train:500
+num_train:5000
 seed:542567
 train:True
 num_epochs:500
