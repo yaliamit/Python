@@ -236,16 +236,17 @@ def main_new(NETPARS):
 
         [O,H,cost,acc,D3,D2,U]=train_fn(X_train,y_train)
         e,v=np.linalg.eig(U)
-        en=np.sum(e>0)/np.float32(len(e))
-        print(n,cost,acc,en)
-
+        POSITIVITY[n]=np.sum(e>0)/np.float32(len(e))
+        print('OUT',cost,acc,en)
+        COST[n]=cost
+        ERR[n]=1-acc
     # Forward pass
 
         # regular_iter(X_train,y_train,ytr,nytr,W1,W2,R2,eta,n,COST,POSITIVITY,ERR)
         #
         if (np.mod(n,10)==0):
-            [tc,ta]=test_fn(X_val,y_val)
-            print('val',tc,ta)
+            #[tc,ta]=test_fn(X_val,y_val)
+            #print('val',tc,ta)
             sys.stdout.flush()
 
         #     Hv=np.dot(X_val,W1)
@@ -257,8 +258,10 @@ def main_new(NETPARS):
 
     return COST,ERR,POSITIVITY
 
+def  plot_OUT(s):
 
-
+    f=open(s)
+    bt=np.fromstring(commands.getoutput('grep OUT ' + s + '.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
 
 
 from manage_OUTPUT import process_args as pa
@@ -270,12 +273,14 @@ ptf(parms['net'],NETPARS,lname='layers', dump=False)
 
 COST,ERR,POSITIVITY=main_new(NETPARS)
 
-ss='out_R'+str(NETPARS['use_R'])+'_uR'+str(NETPARS['update_R'])+'_u1'+str(NETPARS['update_1'])+'.txt'
+print('DONE')
+sys.stdout.flush()
+#ss='out_R'+str(NETPARS['use_R'])+'_uR'+str(NETPARS['update_R'])+'_u1'+str(NETPARS['update_1'])+'.txt'
 
-OUT=np.vstack((COST,1-ERR,POSITIVITY.T))
-f=open(ss,'w')
-np.savetxt(f,OUT.T,fmt='%6.3f',delimiter=' ')
-f.close()
+#OUT=np.vstack((COST,1-ERR,POSITIVITY))
+#f=open(ss,'w')
+#np.savetxt(f,OUT.T,fmt='%6.3f',delimiter=' ')
+#f.close()
 if (NETPARS['plot']):
     import pylab as py
     py.plot(1-ERR)
