@@ -81,10 +81,10 @@ def setup_function(x,target_var,w1,w2,r2, NETPARS):
             v=r2
         else:
             v=w2
-        #U=T.dot(v.T,w2)
-        #e,v=Tn.eig(U)
+        U=T.dot(v.T,w2)
+        #e,v=Tn.eig((U+U.T)/2)
         #p0=0
-        #p0=T.sum(e.nonzero()).astype(theano.config.floatX)/T.shape(e)[0].astype(theano.config.floatX)
+        #p0=T.sum((e>0).astype(theano.config.floatX)) #/(T.shape(e)[0]).astype(theano.config.floatX)
         #cc=T.dot(T.dot(d3,U),d3.T)
         #p1=T.sum(T.diag(cc).nonzero())/num_train
         #dw2=T.zeros(w2.shape)
@@ -96,10 +96,10 @@ def setup_function(x,target_var,w1,w2,r2, NETPARS):
         if (NETPARS['update_R']):
             dr2=dw2
         updates=update_sgd([w1,w2,r2],[dw1,dw2,dr2],eta)
-        train=theano.function(inputs=[x,target_var],outputs=[o,h,cost,acc,d3,d2],
+        train_fn=theano.function(inputs=[x,target_var],outputs=[o,h,cost,acc,d3,d2,U],
         updates=updates,name="train")
-
-        return(train,eta)
+        test_fn=theano.function(inputs=[x,target_var],outputs=[cost,acc],updates=None)
+        return(train_fn,test_fn,eta)
 
     # Delta of W1
         if (NETPARS['update_1']):
@@ -229,18 +229,25 @@ def main_new(NETPARS):
     r2=theano.shared(R2)
     target_var = T.ivector('target')
 
-    train,eta=setup_function(input_var,target_var,w1,w2,r2,NETPARS)
+    train_fn,test_fn,eta=setup_function(input_var,target_var,w1,w2,r2,NETPARS)
 
     # Iterate
     for n in range(NETPARS['num_epochs']):
 
-        [O,H,cost,acc,D3,D2]=train(X_train,y_train)
-        print(cost,acc)
+        [O,H,cost,acc,D3,D2,U]=train_fn(X_train,y_train)
+        e,v=np.linalg.eig(U)
+        en=np.sum(e>0)/np.float32(len(e))
+        print(n,cost,acc,en)
+
     # Forward pass
 
         # regular_iter(X_train,y_train,ytr,nytr,W1,W2,R2,eta,n,COST,POSITIVITY,ERR)
         #
-        # if (np.mod(n,10)==0):
+        if (np.mod(n,10)==0):
+            [tc,ta]=test_fn(X_val,y_val)
+            print('val',tc,ta)
+            sys.stdout.flush()
+
         #     Hv=np.dot(X_val,W1)
         #     Ov=np.dot(Hv,W2)
         #     yvhat=np.argmax(Ov,axis=1)

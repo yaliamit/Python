@@ -1,4 +1,4 @@
-num_hidden:100
+num_hidden:200
 Mnist:mnist
 num_train:5000
 seed:542567
@@ -9,4 +9,4 @@ use_R:True
 update_1:True
 update_R:False
 cost:hinge
-plot:True
+plot:False
