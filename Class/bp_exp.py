@@ -5,6 +5,8 @@ import numpy as np
 import time
 import data
 import sys
+import theano.tensor as T
+import theano
 import untied_conv_mat
 import manage_OUTPUT
 
@@ -63,8 +65,18 @@ def main_new(NETPARS):
     for n in range(NETPARS['num_epochs']):
 
     # Forward pass
-        H=np.dot(X_train,W1)
-        O=np.dot(H,W2)
+        x=T.matrix()
+        w1=T.matrix()
+        w2=T.matrix()
+
+        h=T.dot(x,w1)
+        o=T.dot(h,w2)
+        #yh=T.argmax(,axis=1)
+        #err=T.mean(y_train!=yhat)
+        forward=theano.function(inputs=[x,w1,w2],output=[o])
+        0=forward(X_train,W1,W2)
+        #H=np.dot(X_train,W1)
+        #O=np.dot(H,W2)
     # Classification
         yhat=np.argmax(O,axis=1)
         ERR[n]=np.mean(y_train!=yhat)
