@@ -38,11 +38,11 @@ else:
         commands.getoutput('scp amit@bernie.uchicago.edu:/ga/amit/Desktop/Dropbox/Python/Class/'+OUTNAME+' ' + lOUTNAME)
 
     time.sleep(5)
-    pnn=commands.getoutput('grep NNN ' + lOUTNAME)
-    pnnn=str.split(pnn,':')
-    netname=str.strip(pnnn[1],' ,\')')
-
-    com='scp amit@bernie.uchicago.edu:/ga/amit/Desktop/Dropbox/Python/Class/'+netname+'.txt  _br/Amodels/.'
-    os.system(com)
+    # pnn=commands.getoutput('grep NNN ' + lOUTNAME)
+    # pnnn=str.split(pnn,':')
+    # netname=str.strip(pnnn[1],' ,\')')
+    #
+    # com='scp amit@bernie.uchicago.edu:/ga/amit/Desktop/Dropbox/Python/Class/'+netname+'.txt  _br/Amodels/.'
+    #os.system(com)
     #manage_OUTPUT.print_OUTPUT(outname+'-br')
 

@@ -221,7 +221,7 @@ def main_new(NETPARS):
     R2=np.float32(np.random.uniform(-std,std,(num_hidden,num_class)))
     COST=np.zeros(NETPARS['num_epochs'])
     ERR=np.zeros(NETPARS['num_epochs'])
-    POSITIVITY=np.zeros((NETPARS['num_epochs'],2))
+    POSITIVITY=np.zeros(NETPARS['num_epochs'])
 
     input_var=T.matrix('input')
     w1=theano.shared(W1)
