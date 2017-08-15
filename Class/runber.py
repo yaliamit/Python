@@ -10,7 +10,8 @@ l=len(sys.argv)
 outname=sys.argv[-1]
 OUTNAME=outname+'.txt'
 lOUTNAME=outname+'-br.txt'
-ss='python start_class.py '+' '.join(sys.argv[1:l-1]) + ' output='+outname+'>'+OUTNAME
+#ss='python start_class.py '+' '.join(sys.argv[1:l-1]) + ' output='+outname+'>'+OUTNAME
+ss='python ' + ' '.join(sys.argv[1:l-1]) + ' output='+outname+'>'+OUTNAME
 if 'loc' in outname:
     os.system(ss)
 else:
@@ -43,5 +44,5 @@ else:
 
     com='scp amit@bernie.uchicago.edu:/ga/amit/Desktop/Dropbox/Python/Class/'+netname+'.txt  _br/Amodels/.'
     os.system(com)
-    manage_OUTPUT.print_OUTPUT(outname+'-br')
+    #manage_OUTPUT.print_OUTPUT(outname+'-br')
 
