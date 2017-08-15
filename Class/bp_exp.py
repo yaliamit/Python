@@ -7,9 +7,39 @@ import data
 import sys
 import theano.tensor as T
 import theano
+import theano.tensor.nlinalg as Tn
+from collections import OrderedDict
 import untied_conv_mat
 import manage_OUTPUT
 
+def multiclass_hinge_loss_alt(predictions, targets, delta_up=1., delta_down=1., dep_fac=1.):
+
+    num_cls = predictions.shape[1]
+    if targets.ndim == predictions.ndim - 1:
+        targets = theano.tensor.extra_ops.to_one_hot(targets, num_cls)
+    elif targets.ndim != predictions.ndim:
+        raise TypeError('rank mismatch between targets and predictions')
+    corrects = predictions[targets.nonzero()]
+    rest = theano.tensor.reshape(predictions[(1-targets).nonzero()],
+                                 (-1, num_cls-1))
+    if delta_down < 0:
+        relc=corrects
+        relr=dep_fac*rest/(num_cls-1)
+        loss=theano.tensor.sum(relr,axis=1)-relc
+    else:
+        if (dep_fac>0):
+            relc=theano.tensor.nnet.relu(delta_up-corrects)
+            relr=dep_fac*theano.tensor.nnet.relu(delta_down+rest)/(num_cls-1)
+            loss=theano.tensor.sum(relr,axis=1)+relc
+    d3a=T.zeros(targets.shape)
+    d3a=T.set_subtensor(d3a[targets.nonzero()],relc)
+    d3a=-(d3a>0).astype(theano.config.floatX)
+    d3b=T.zeros(targets.shape)
+    d3b=T.set_subtensor(d3b[(1-targets).nonzero()],T.reshape(relr,(-1,)))
+    d3b=(d3b>0).astype(theano.config.floatX)/(num_cls.astype(theano.config.floatX)-1.)
+
+    d3=d3a+d3b
+    return loss,relr,relc, d3
 
 def get_confusion_matrix(pred,y):
         num_class=np.max(y)+1
@@ -22,61 +52,70 @@ def get_confusion_matrix(pred,y):
         return(conf_mat)
 
 
-def main_new(NETPARS):
-    # Load the dataset
+def update_sgd(pars, pards, eta):
 
-    np.random.seed(NETPARS['seed'])
 
-    print("seed",NETPARS['seed'])
-    print("Loading data...")
-    X_train, y_train, X_val, y_val, X_test, y_test=data.get_train(NETPARS)
-    num_class=len(np.unique(y_test))
-    num_train=X_train.shape[0]
-    num_test=X_test.shape[0]
-    num_val=X_val.shape[0]
-    ytr=np.zeros((y_train.shape[0],num_class))
-    ytr[np.arange(0,num_train,1),y_train]=1
-    ytr=ytr.astype(bool)
-    nytr=np.logical_not(ytr)
-    # yte=np.zeros((num_test,num_class))
-    # yte[np.arange(0,num_test,1),y_test]=1
-    # yv=np.zeros((num_val,num_class))
-    # yv[np.arange(0,num_val,1),y_val]=1
-    X_train=np.reshape(X_train,(X_train.shape[0],-1))
-    X_test=np.reshape(X_test,(X_test.shape[0],-1))
-    X_val=np.reshape(X_val,(X_val.shape[0],-1))
+    updates = OrderedDict()
 
-    # Prepare Theano variables for inputs and targets
+    for p,dp in zip(pars,pards):
+        updates[p]=p-eta*dp
 
-    num_inputs=X_train.shape[1]
-    num_hidden=NETPARS['num_hidden']
-    eta=NETPARS['eta']
+    return updates
 
-    std=np.sqrt(6./(num_inputs+num_hidden))
-    W1=np.float32(np.random.uniform(-std,std,(num_inputs,num_hidden)))
-    std=np.sqrt(6./(num_class+num_hidden))
-    W2=np.float32(np.random.uniform(-std,std,(num_hidden,num_class)))
-    R2=np.float32(np.random.uniform(-std,std,(num_hidden,num_class)))
-    COST=np.zeros(NETPARS['num_epochs'])
-    ERR=np.zeros(NETPARS['num_epochs'])
-    POSITIVITY=np.zeros((NETPARS['num_epochs'],2))
+def setup_function(x,target_var,w1,w2,r2, NETPARS):
 
-    # Iterate
-    for n in range(NETPARS['num_epochs']):
-
-    # Forward pass
-        x=T.matrix()
-        w1=T.matrix()
-        w2=T.matrix()
-
+        eta=theano.shared(np.float32(NETPARS['eta']))
+        num_train=x.shape[0].astype(theano.config.floatX)
         h=T.dot(x,w1)
         o=T.dot(h,w2)
-        #yh=T.argmax(,axis=1)
-        #err=T.mean(y_train!=yhat)
-        forward=theano.function(inputs=[x,w1,w2],output=[o])
-        0=forward(X_train,W1,W2)
-        #H=np.dot(X_train,W1)
-        #O=np.dot(H,W2)
+
+
+        acost, relr, relc, d3 = multiclass_hinge_loss_alt(o,target_var)
+
+        cost=acost.mean()
+        acc = T.mean(T.eq(T.argmax(o, axis=1), target_var),
+                              dtype=theano.config.floatX)
+
+
+        if (NETPARS['use_R']):
+            v=r2
+        else:
+            v=w2
+        #U=T.dot(v.T,w2)
+        #e,v=Tn.eig(U)
+        #p0=0
+        #p0=T.sum(e.nonzero()).astype(theano.config.floatX)/T.shape(e)[0].astype(theano.config.floatX)
+        #cc=T.dot(T.dot(d3,U),d3.T)
+        #p1=T.sum(T.diag(cc).nonzero())/num_train
+        #dw2=T.zeros(w2.shape)
+        dw2=T.mean(h.dimshuffle(0,1,'x')*d3.dimshuffle(0,'x',1),axis=0) #T.outer(h,d3))
+        d2=T.dot(d3,v.T)
+        #dw1=T.zeros(w1.shape)
+        dw1=T.mean(x.dimshuffle(0,1,'x')*d2.dimshuffle(0,'x',1),axis=0) #T.outer(x,d2))
+        #dr2=T.zeros(dw2.shape)
+        #if (NETPARS['update_R']):
+        #    dr2=dw2
+        updates=update_sgd([w1,w2],[dw1,dw2],eta)
+        train=theano.function(inputs=[x,target_var],outputs=[o,h,cost,acc,d3,d2],
+        updates=updates,name="train")
+
+        return(train,eta)
+
+    # Delta of W1
+        if (NETPARS['update_1']):
+
+            W1-=eta*DW1
+
+
+def regular_iter(X_train,y_train,ytr,nytr,W1,W2,R2,eta,n,COST,POSITIVITY,ERR):
+
+        num_inputs=W1.shape[0]
+        num_hidden=W1.shape[1]
+        num_train=X_train.shape[0]
+        num_class=len(np.unique(y_train))
+
+        H=np.dot(X_train,W1)
+        O=np.dot(H,W2)
     # Classification
         yhat=np.argmax(O,axis=1)
         ERR[n]=np.mean(y_train!=yhat)
@@ -140,12 +179,74 @@ def main_new(NETPARS):
                 DW1+=np.outer(x,D2[i])
             DW1=DW1/num_train
             W1-=eta*DW1
-        if (np.mod(n,10)==0):
-            Hv=np.dot(X_val,W1)
-            Ov=np.dot(Hv,W2)
-            yvhat=np.argmax(Ov,axis=1)
-            errv=np.mean(y_val!=yvhat)
-            print(n,1-errv)
+
+
+
+
+def main_new(NETPARS):
+    # Load the dataset
+
+    np.random.seed(NETPARS['seed'])
+
+    print("seed",NETPARS['seed'])
+    print("Loading data...")
+    X_train, y_train, X_val, y_val, X_test, y_test=data.get_train(NETPARS)
+    num_class=len(np.unique(y_test))
+    num_train=X_train.shape[0]
+    num_test=X_test.shape[0]
+    num_val=X_val.shape[0]
+    ytr=np.zeros((y_train.shape[0],num_class))
+    ytr[np.arange(0,num_train,1),y_train]=1
+    ytr=ytr.astype(bool)
+    nytr=np.logical_not(ytr)
+    # yte=np.zeros((num_test,num_class))
+    # yte[np.arange(0,num_test,1),y_test]=1
+    # yv=np.zeros((num_val,num_class))
+    # yv[np.arange(0,num_val,1),y_val]=1
+    X_train=np.reshape(X_train,(X_train.shape[0],-1))
+    X_test=np.reshape(X_test,(X_test.shape[0],-1))
+    X_val=np.reshape(X_val,(X_val.shape[0],-1))
+
+    # Prepare Theano variables for inputs and targets
+
+    num_inputs=X_train.shape[1]
+    num_hidden=NETPARS['num_hidden']
+    eta=NETPARS['eta']
+    #eta=NETPARS['eta']
+
+    std=np.sqrt(6./(num_inputs+num_hidden))
+    W1=np.float32(np.random.uniform(-std,std,(num_inputs,num_hidden)))
+    std=np.sqrt(6./(num_class+num_hidden))
+    W2=np.float32(np.random.uniform(-std,std,(num_hidden,num_class)))
+    R2=np.float32(np.random.uniform(-std,std,(num_hidden,num_class)))
+    COST=np.zeros(NETPARS['num_epochs'])
+    ERR=np.zeros(NETPARS['num_epochs'])
+    POSITIVITY=np.zeros((NETPARS['num_epochs'],2))
+
+    input_var=T.matrix('input')
+    w1=theano.shared(W1)
+    w2=theano.shared(W2)
+    r2=theano.shared(R2)
+    target_var = T.ivector('target')
+
+    train,eta=setup_function(input_var,target_var,w1,w2,r2,NETPARS)
+
+    # Iterate
+    for n in range(NETPARS['num_epochs']):
+
+        [O,H,cost,acc,D3,D2]=train(X_train,y_train)
+        print(cost,acc)
+    # Forward pass
+
+        # regular_iter(X_train,y_train,ytr,nytr,W1,W2,R2,eta,n,COST,POSITIVITY,ERR)
+        #
+        # if (np.mod(n,10)==0):
+        #     Hv=np.dot(X_val,W1)
+        #     Ov=np.dot(Hv,W2)
+        #     yvhat=np.argmax(Ov,axis=1)
+        #     errv=np.mean(y_val!=yvhat)
+        #     print(n,1-errv)
+
 
     return COST,ERR,POSITIVITY
 
@@ -160,19 +261,6 @@ from  parse_net_pars import parse_text_file as ptf
 NETPARS={}
 ptf(parms['net'],NETPARS,lname='layers', dump=False)
 
-#NETPARS={}
-# NETPARS['num_hidden']=200
-# NETPARS['Mnist']='mnist'
-# NETPARS['num_train']=5000
-# NETPARS['seed']=542567
-# NETPARS['train']=True
-# NETPARS['num_epochs']=500
-# NETPARS['eta']=.1
-# NETPARS['use_R']=False
-# NETPARS['update_1']=True
-# NETPARS['update_R']=False
-# NETPARS['cost']='hinge'
-# NETPARS['plot']=True
 COST,ERR,POSITIVITY=main_new(NETPARS)
 
 ss='out_R'+str(NETPARS['use_R'])+'_uR'+str(NETPARS['update_R'])+'_u1'+str(NETPARS['update_1'])+'.txt'

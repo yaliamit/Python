@@ -1,11 +1,11 @@
 num_hidden:200
 Mnist:mnist
-num_train:5000
+num_train:500
 seed:542567
 train:True
 num_epochs:500
 eta:.1
-use_R:False
+use_R:True
 update_1:True
 update_R:False
 cost:hinge
