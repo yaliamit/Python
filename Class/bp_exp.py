@@ -237,7 +237,7 @@ def main_new(NETPARS):
         [O,H,cost,acc,D3,D2,U]=train_fn(X_train,y_train)
         e,v=np.linalg.eig(U)
         POSITIVITY[n]=np.sum(e>0)/np.float32(len(e))
-        print('OUT',cost,acc,en)
+        print('OUT',cost,acc,POSITIVITY[n])
         COST[n]=cost
         ERR[n]=1-acc
     # Forward pass
