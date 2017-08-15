@@ -1,4 +1,4 @@
-num_hidden:200
+num_hidden:400
 Mnist:mnist
 num_train:5000
 seed:542567
