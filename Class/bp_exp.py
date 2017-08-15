@@ -92,10 +92,10 @@ def setup_function(x,target_var,w1,w2,r2, NETPARS):
         d2=T.dot(d3,v.T)
         #dw1=T.zeros(w1.shape)
         dw1=T.mean(x.dimshuffle(0,1,'x')*d2.dimshuffle(0,'x',1),axis=0) #T.outer(x,d2))
-        #dr2=T.zeros(dw2.shape)
-        #if (NETPARS['update_R']):
-        #    dr2=dw2
-        updates=update_sgd([w1,w2],[dw1,dw2],eta)
+        dr2=T.zeros(dw2.shape)
+        if (NETPARS['update_R']):
+            dr2=dw2
+        updates=update_sgd([w1,w2,r2],[dw1,dw2,dr2],eta)
         train=theano.function(inputs=[x,target_var],outputs=[o,h,cost,acc,d3,d2],
         updates=updates,name="train")
 
