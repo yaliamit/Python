@@ -89,6 +89,19 @@ def print_OUTPUT(name='OUTPUT'):
     #time.sleep(10)
     shutil.copyfile(name+'.txt',OO+'/'+name+'_'+str(t)+'.txt')
 
+
+def  plot_OUT(s):
+
+    import numpy as np
+    import commands
+    import pylab as py
+    py.ion()
+    aaa=commands.getoutput('grep ERR ' + s + '.txt | cut -d" " -f2-4')
+    bt=np.fromstring(aaa,sep='\n\t\t\t')
+    btt=bt.reshape((-1,3))
+    py.plot(btt)
+
+
 def plot_OUTPUT(name='OUTPUT',first=None,last=None):
     import commands
     import numpy as np

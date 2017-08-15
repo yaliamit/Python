@@ -9,6 +9,7 @@ import theano.tensor as T
 import theano
 import theano.tensor.nlinalg as Tn
 from collections import OrderedDict
+import pylab as py
 import untied_conv_mat
 import manage_OUTPUT
 
@@ -90,8 +91,9 @@ def setup_function(x,target_var,w1,w2,r2, NETPARS):
         #dw2=T.zeros(w2.shape)
         dw2=T.mean(h.dimshuffle(0,1,'x')*d3.dimshuffle(0,'x',1),axis=0) #T.outer(h,d3))
         d2=T.dot(d3,v.T)
-        #dw1=T.zeros(w1.shape)
-        dw1=T.mean(x.dimshuffle(0,1,'x')*d2.dimshuffle(0,'x',1),axis=0) #T.outer(x,d2))
+        dw1=T.zeros(w1.shape)
+        if (NETPARS['update_1']):
+            dw1=T.mean(x.dimshuffle(0,1,'x')*d2.dimshuffle(0,'x',1),axis=0) #T.outer(x,d2))
         dr2=T.zeros(dw2.shape)
         if (NETPARS['update_R']):
             dr2=dw2
@@ -101,10 +103,7 @@ def setup_function(x,target_var,w1,w2,r2, NETPARS):
         test_fn=theano.function(inputs=[x,target_var],outputs=[cost,acc],updates=None)
         return(train_fn,test_fn,eta)
 
-    # Delta of W1
-        if (NETPARS['update_1']):
 
-            W1-=eta*DW1
 
 
 def regular_iter(X_train,y_train,ytr,nytr,W1,W2,R2,eta,n,COST,POSITIVITY,ERR):
@@ -237,7 +236,7 @@ def main_new(NETPARS):
         [O,H,cost,acc,D3,D2,U]=train_fn(X_train,y_train)
         e,v=np.linalg.eig(U)
         POSITIVITY[n]=np.sum(e>0)/np.float32(len(e))
-        print('OUT',cost,acc,POSITIVITY[n])
+        print('ERR',cost,acc,POSITIVITY[n])
         COST[n]=cost
         ERR[n]=1-acc
     # Forward pass
@@ -258,10 +257,6 @@ def main_new(NETPARS):
 
     return COST,ERR,POSITIVITY
 
-def  plot_OUT(s):
-
-    f=open(s)
-    bt=np.fromstring(commands.getoutput('grep OUT ' + s + '.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
 
 
 from manage_OUTPUT import process_args as pa
@@ -270,6 +265,9 @@ parms=pa(sys.argv,parms)
 from  parse_net_pars import parse_text_file as ptf
 NETPARS={}
 ptf(parms['net'],NETPARS,lname='layers', dump=False)
+
+for key, value in parms.iteritems():
+        NETPARS[key]=parms[key]
 
 COST,ERR,POSITIVITY=main_new(NETPARS)
 
@@ -282,7 +280,7 @@ sys.stdout.flush()
 #np.savetxt(f,OUT.T,fmt='%6.3f',delimiter=' ')
 #f.close()
 if (NETPARS['plot']):
-    import pylab as py
+
     py.plot(1-ERR)
     py.plot(POSITIVITY)
     py.show()

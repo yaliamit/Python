@@ -1,1 +1,1 @@
-python bp_exp.py net=bp_pars output=bp_OUT>bp_OUT.txt
+python bp_exp.py net=bp_pars use_R=True update_R=False update_1=True output=bp_TFT_OUT>bp_TFT_OUT.txt
