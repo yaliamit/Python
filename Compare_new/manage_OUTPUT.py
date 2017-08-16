@@ -108,6 +108,9 @@ def plot_OUTPUT(name='OUTPUT',first=None,last=None):
     import pylab as py
     py.ion()
     havetrain=False
+    oo=commands.getoutput('grep Posi ' + name + '.txt  | cut -d" " -f2,3')
+    bp=np.fromstring(oo,sep='\n\t\t\t')
+    bp=bp.reshape((-1,2))
     bt=np.fromstring(commands.getoutput('grep Train ' + name + '.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
     bv=np.fromstring(commands.getoutput('grep Val ' + name + '.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
     ss='grep aggegate ' + name + '.txt'
@@ -126,6 +129,8 @@ def plot_OUTPUT(name='OUTPUT',first=None,last=None):
     if (first is not None and last is not None):
         bt=bt[first:last]
         bv=bv[first:last]
+        if (bp!=[]):
+            bp=bp[first:last]
         print(bv[-1],bt[-1])
     else:
         print(len(bt),bv[-1],bt[-1])
@@ -134,6 +139,7 @@ def plot_OUTPUT(name='OUTPUT',first=None,last=None):
             py.plot(len(bt)-2, atrain, 'bo', markersize=4)
     py.plot(bt,label='train')
     py.plot(bv,label='val')
-
+    if (bp!=[]):
+        py.plot(bp,label='Pos')
     py.legend(loc=4)
     #py.show()
