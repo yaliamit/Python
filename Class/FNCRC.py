@@ -7,7 +7,7 @@ nt=str(5000)
 update='adam'
 mod_net=''
 ne=str(500)
-for j in np.arange(0,5,1):
+for j in np.arange(1,5,1):
 
     seed=np.random.randint(0,200000)
     sd=' seed='+str(seed)+' '
