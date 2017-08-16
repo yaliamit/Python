@@ -1,1 +1,1 @@
-python bp_exp.py net=bp_pars use_R=False update_R=False update_1=True output=bp_FFT_OUT>bp_FFT_OUT.txt
+python net=_pars/fncrc hinge=1. num_train=5000 use_existing=True eta_init=.1 eta_current=.1 batch_size=5000 start=1 mult=1 mod_net=modf_net update=sgd num_epochs=500 force_global_prob=[1.,-1.] seed=149781 output=f_OUT0>f_OUT0.txt

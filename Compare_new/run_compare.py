@@ -225,8 +225,8 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             spe=spe/nspe
             spen.append(spe)
         if (Train):
-            #pred = lasagne.layers.get_output(network)
-            pred, activation = lasagne.layers.get_output([network,network.input_layer])
+            pred = lasagne.layers.get_output(network)
+            #pred, activation = lasagne.layers.get_output([network,network.input_layer])
         else:
             pred = lasagne.layers.get_output(network, deterministic=True)
         gloss=[]
@@ -260,8 +260,8 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             # for l in layers:
             #         if ('newdens1' in l.name):
             #             oo=lasagne.layers.get_output(l)
-            #if (Train):
-             #   gloss.append(T.grad(loss,network.input_layer.W))
+            if (Train):
+               gloss.append(T.grad(loss,pred))
 
             #            if (hasattr(l,'W')):
             #                gloss.append(T.grad(loss,l.W))

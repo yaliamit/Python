@@ -11,7 +11,7 @@ batch_size:500
 eta_init:.001
 train:True
 mult:1
-num_train:50000
+num_train:5000
 agg:True
 adapt_eta:False
 hinge:1.
@@ -22,5 +22,5 @@ name:input1
 name:conv1;num_filters:32;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:tanh;parent:input1
 name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:conv1
 name:drop1;drop:.5;parent:pool1
-name:newdens1;num_units:500;non_linearity:tanh;tinout:(.1,1.);parent:drop1
-name:newdens2;num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:newdens1;final:final
+name:newdens1;num_units:500;non_linearity:tanh;prob:(1.,-1.);tinout:(.1,1.);parent:drop1
+name:newdens2;num_units:10;prob:(1.,-1.);non_linearity:lasagne.nonlinearity.linear;parent:newdens1;final:final
