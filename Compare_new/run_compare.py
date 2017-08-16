@@ -255,18 +255,17 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             acc = T.mean(T.eq(T.argmax(pred, axis=1), target_var),
                           dtype=theano.config.floatX)
 
-            # Get gradients.
-            #layers=lasagne.layers.get_all_layers(network)
-            # for l in layers:
-            #         if ('newdens1' in l.name):
-            #             oo=lasagne.layers.get_output(l)
             if (Train):
                gloss.append(T.grad(loss,pred))
+            # Get gradients.
+            layers=lasagne.layers.get_all_layers(network)
+            for l in layers:
+
 
             #            if (hasattr(l,'W')):
             #                gloss.append(T.grad(loss,l.W))
-            #            if (hasattr(l,'R') and ('conv' in l.name or l.Rzero.shape[0]>1)):
-            #                gloss.append(T.grad(loss,l.R))
+                if (hasattr(l,'R') and ('conv' in l.name or l.Rzero.shape[0]>1)):
+                    gloss.append(T.grad(loss,l.R))
 
             # Instead of randomly dropping inputs drop updates on some subsets of weights.
             # This is a more severe drop because it doesn't update this subset at all in that step.
