@@ -170,7 +170,7 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
         pred.append(tout[2])
 
     df=[]
-    if (len(tout)==5):
+    if (typ=='Train'):
         df=tout[4]
     if (fac):
         pred0=np.concatenate(pred)
