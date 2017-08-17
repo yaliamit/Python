@@ -258,7 +258,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             if (Train):
                gloss.append(T.grad(loss,pred))
             # Get gradients.
-            layers=lasagne.layers.get_all_layers(network)
+            #layers=lasagne.layers.get_all_layers(network)
             #for l in layers:
 
 
