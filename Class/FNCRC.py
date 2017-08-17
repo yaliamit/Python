@@ -6,7 +6,7 @@ pfile='/fncrc'
 nt=str(5000)
 update='sgd'
 mod_net='modf_net'
-eta=str(.1)
+eta=str(1)
 ne=str(500)
 for j in np.arange(2,3,1):
 
