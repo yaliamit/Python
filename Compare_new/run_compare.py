@@ -239,6 +239,8 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
 
                 delta_down=1.
                 dep_fac=1.
+                delta_up=NETPARS['hinge']
+                delta_down=delta_up
                 if ('hinge_down' in NETPARS):
                     delta_down=NETPARS['hinge_down']
                 if ('dep_fac' in NETPARS):
@@ -247,7 +249,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
                         yy=theano.tensor.extra_ops.to_one_hot(target_var, pred.shape[1])
                         aloss = T.sum(lasagne.objectives.squared_error(pred,yy),axis=1)
                 else:
-                    aloss, relr, relc = multiclass_hinge_loss_alt(pred,target_var,delta_up=NETPARS['hinge'],delta_down=delta_down,dep_fac=dep_fac)
+                    aloss, relr, relc = multiclass_hinge_loss_alt(pred,target_var,delta_up=delta_up,delta_down=delta_down,dep_fac=dep_fac)
                 #gloss.append(relr)
                 #gloss.append(relc)
             loss = aloss.mean()
