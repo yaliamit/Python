@@ -17,8 +17,8 @@ mult:1
 num_train:50000
 agg:True
 adapt_eta:False
-hinge:2
-hinge_down:2
+hinge:1
+hinge_down:1
 TRAIN:True
 name:input1
 name:conv1;tinout:(.1,1);num_filters:32;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:tanh;parent:input1
