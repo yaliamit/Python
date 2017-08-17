@@ -8,7 +8,7 @@ update='adam'
 mod_net='modff_net'
 eta=str(.001)
 ne=str(500)
-for j in np.arange(1,3,1):
+for j in np.arange(3,10,1):
 
     seed=np.random.randint(0,200000)
     sd=' seed='+str(seed)+' '
