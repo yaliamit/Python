@@ -4,11 +4,11 @@ import numpy as np
 
 pfile='/fncrc'
 nt=str(5000)
-update='sgd'
+update='adam'
 mod_net='modf_net'
-eta=str(1)
+eta=str(.001)
 ne=str(500)
-for j in np.arange(2,3,1):
+for j in np.arange(0,3,1):
 
     seed=np.random.randint(0,200000)
     sd=' seed='+str(seed)+' '
