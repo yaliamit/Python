@@ -8,7 +8,7 @@ update='adam'
 mod_net='modf_net'
 eta=str(.001)
 ne=str(500)
-for j in np.arange(0,3,1):
+for j in np.arange(1,3,1):
 
     seed=np.random.randint(0,200000)
     sd=' seed='+str(seed)+' '
@@ -27,6 +27,6 @@ for j in np.arange(0,3,1):
     #ss='python runber.py start_class.py net=_pars'+pfile+' hinge=1. num_train='+nt+' use_existing=True eta_init=.001 ' \
     #   'eta_current=.001 batch_size=5000 NOT_TRAINABLE=[newdens1,] mod_net=modf_net start=1 mult=1 update+'+update+' num_epochs='+ne+ \
     #   ' force_global_prob=[1.,-1.]'+sd+'f_RRR_OUT'+str(j)
-    os.system(ss)
+    #os.system(ss)
 
 
