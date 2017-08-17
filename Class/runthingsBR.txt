@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pogR_tanh eta_init=.001 output=pogR_OUT>pogR_OUT.txt
+python start_class.py net=_pars/pogR_tanh force_global_prob=[.5,0.] eta_init=.001 output=pogRR_OUT>pogRR_OUT.txt
