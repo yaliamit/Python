@@ -170,8 +170,8 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
         pred.append(tout[2])
 
     df=[]
-    if (typ=='Train'):
-        df=tout[4]
+    # if (typ=='Train'):
+    #     df=tout[4]
     if (fac):
         pred0=np.concatenate(pred)
         pred1=np.reshape(pred0,(fac,pred0.shape[0]/fac)+pred0.shape[1:])
@@ -305,14 +305,14 @@ def main_new(NETPARS):
             print("eta",eta.get_value())
             out_tr=iterate_on_batches(train_fn,tX_train,ty_train,batch_size,typ='Train',network=network,pars=NETPARS,iter=epoch)
             # Get eigenvalues
-            if (hasattr(network,'R') and 'force_global_prob' in NETPARS and NETPARS['force_global_prob'][1]>=0):
-                RR=np.array(network.R.eval())
-                WW=np.array(network.W.eval())
-                UU=np.dot(RR.T,WW)
-                d=out_tr[4]
-                e,v=np.linalg.eig((UU+UU.T)/2)
-                CC=np.sum(np.dot(d,UU)*d,axis=1)
-                print('Positivity',np.float32(np.sum(e>0))/len(e),np.mean(CC>0))
+            # if (hasattr(network,'R') and 'force_global_prob' in NETPARS and NETPARS['force_global_prob'][1]>=0):
+            #     RR=np.array(network.R.eval())
+            #     WW=np.array(network.W.eval())
+            #     UU=np.dot(RR.T,WW)
+            #     d=out_tr[4]
+            #     e,v=np.linalg.eig((UU+UU.T)/2)
+            #     CC=np.sum(np.dot(d,UU)*d,axis=1)
+            #     print('Positivity',np.float32(np.sum(e>0))/len(e),np.mean(CC>0))
 
             out_te=iterate_on_batches(val_fn,tX_val,ty_val,batch_size,typ='Val',pars=NETPARS)
             #iterate_on_batches(val_fn,X_train,y_train,batch_size,typ='Post-train',fac=False, agg=True, pars=None) #NETPARS['simple_augmentation'])

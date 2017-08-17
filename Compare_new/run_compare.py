@@ -255,8 +255,8 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             acc = T.mean(T.eq(T.argmax(pred, axis=1), target_var),
                           dtype=theano.config.floatX)
 
-            if (Train):
-               gloss.append(T.grad(loss,pred))
+            # if (Train):
+            #    gloss.append(T.grad(loss,pred))
             # Get gradients.
             #layers=lasagne.layers.get_all_layers(network)
             #for l in layers:

@@ -1,7 +1,7 @@
 XXX: pogR_tanh
 output_net:fnc
 seed:45239
-num_epochs:400
+num_epochs:100
 simple_augmentation:True
 mod_net:None
 edges:False
