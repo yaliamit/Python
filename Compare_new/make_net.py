@@ -148,6 +148,15 @@ class sftlayer(lasagne.layers.Layer):
     def get_output_shape_for(self, input_shape):
         return (input_shape)
 
+class ScaledLin(object):
+
+    def __init__(self, scale):
+        self.scale = scale
+
+
+    def __call__(self, x):
+        return x * self.scale
+
 def extra_pars(network,l):
     if ('pad' in l):
             network.pad=l['pad']
@@ -155,7 +164,7 @@ def extra_pars(network,l):
             network.stride=l['stride']
     return (network)
 
-def get_nonlinearity(l,tinout):
+def get_nonlinearity(l,tinout,scale=1.):
 
     s1=l['non_linearity']
     if ('rectify' in s1):
@@ -173,6 +182,10 @@ def get_nonlinearity(l,tinout):
         f=lasagne.nonlinearities.ScaledTanH(scale_in=scale_in,scale_out=scale_out)
     elif ('softmax' in s1):
         f=lasagne.nonlinearities.softmax
+    elif ('Lin'):
+        if ('scale' in l):
+            scale=l['scale']
+        f=ScaledLin(scale=scale)
     else:
         f=lasagne.nonlinearities.linear
     return(f)
@@ -194,18 +207,21 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
         if ('global_prob' in PARS):
             prob=PARS['global_prob']
         tinout=(1.,1.)
+        scale=1.
         if ('global_tinout' in PARS):
             tinout=PARS['global_tinout']
         if ('prob' in l):
             prob=l['prob']
         if ('force_global_prob' in PARS and 'prob' in l): # and l['prob'][1]>=0):
             prob=PARS['force_global_prob']
+        if ('scale' in l):
+            scale=l['scale']
         prob=tuple([np.float32(i) for i in prob])
         tinout=tuple(np.float32(i) for i in tinout)
         #prob.shape=(1,2)
         nonlin=lasagne.nonlinearities.identity
         if 'non_linearity' in l:
-            nonlin=get_nonlinearity(l,tinout)
+            nonlin=get_nonlinearity(l,tinout,scale)
         if ('parent' in l):
             ip=l['parent']
             if (type(ip)==list):
@@ -584,6 +600,8 @@ def make_file_from_params(network,NETPARS):
             elif ('conv' in l.name):
                 if (hasattr(l.nonlinearity,'func_name')):
                     sfunc=l.nonlinearity.func_name
+                elif (hasattr(l.nonlinearity,'scale')):
+                    sfunc='Lin'+';scale:'+str(l.nonlinearity.scale)
                 else:
                     sfunc='tanh'+';tinout:('+str(l.nonlinearity.scale_in)+\
                           ','+str(l.nonlinearity.scale_out)+')'
@@ -596,6 +614,8 @@ def make_file_from_params(network,NETPARS):
             elif ('sparse' in l.name):
                 if (hasattr(l.nonlinearity,'func_name')):
                     sfunc=l.nonlinearity.func_name
+                elif (hasattr(l.nonlinearity,'scale')):
+                    sfunc='Lin'+';scale:'+str(l.nonlinearity.scale)
                 else:
                     sfunc='tanh'+';tinout:('+str(l.nonlinearity.scale_in)+\
                           ','+str(l.nonlinearity.scale_out)+')'
@@ -625,6 +645,8 @@ def make_file_from_params(network,NETPARS):
             elif ('dens' in l.name):
                 if (hasattr(l.nonlinearity,'func_name')):
                     sfunc=l.nonlinearity.func_name
+                elif (hasattr(l.nonlinearity,'scale')):
+                    sfunc='Lin'+';scale:'+str(l.nonlinearity.scale)
                 else:
                     sfunc='tanh'+';tinout:('+str(l.nonlinearity.scale_in)+\
                           ','+str(l.nonlinearity.scale_out)+')'
