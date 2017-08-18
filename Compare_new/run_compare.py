@@ -257,12 +257,15 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             acc = T.mean(T.eq(T.argmax(pred, axis=1), target_var),
                           dtype=theano.config.floatX)
 
-            # if (Train):
+            if (Train):
             #    gloss.append(T.grad(loss,pred))
             # Get gradients.
-            #layers=lasagne.layers.get_all_layers(network)
-            #for l in layers:
-
+                layers=lasagne.layers.get_all_layers(network)
+                for l in layers:
+                        if ('pool' in l.name):
+                            out=lasagne.layers.get_output(l)
+                            gloss.append(T.std(out))
+                            gloss.append(T.max(out))
 
             #            if (hasattr(l,'W')):
             #                gloss.append(T.grad(loss,l.W))
