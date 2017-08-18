@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pogR_lin force_global_prob=[1.,-1.] batch_size=100 num_train=50000 eta_init=.001 update=adam hinge=1 num_epochs=500 output=apogl_OUT>apogl_OUT.txt
+python start_class.py net=_pars/pogR_tanh force_global_prob=[1.,-1.] batch_size=100 num_train=50000 eta_init=.001 update=adam hinge=1 num_epochs=500 output=apog_OUT>apog_OUT.txt
