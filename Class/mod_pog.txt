@@ -1,3 +1,4 @@
 REMOVE:convR2,pool2,convR3,pool3,newdens0,newdens2,
 NOT_TRAINABLE:conv1,
-name:newdensf;num_units:10;non_linearity:linear;prob:(1.,-1.);parent:pool1;final:final
+name:drop1;drop:.5;parent:pool1
+name:newdensf;num_units:10;non_linearity:linear;prob:(1.,-1.);parent:drop1;final:final
