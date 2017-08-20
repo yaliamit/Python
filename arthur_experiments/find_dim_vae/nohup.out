@@ -1,0 +1,4295 @@
+Using gpu device 1: GeForce GTX 1080 (CNMeM is disabled, cuDNN 5110)
+/phddata/avive/.conda/envs/env_perso/lib/python3.6/site-packages/theano/sandbox/cuda/__init__.py:600: UserWarning: Your cuDNN version is more recent than the one Theano officially supports. If you see any problems, try updating Theano or downgrading cuDNN to version 5.
+  warnings.warn(warn)
+Loading data...
+Building model for 16 128 ... 0 0
+Compiling functions ...
+Starting training...
+Epoch 1 of 50 took 3.545s
+  training loss:		158.253784
+  validation loss:		123.131126
+  validation CE:		105.61
+Epoch 2 of 50 took 3.594s
+  training loss:		128.386108
+  validation loss:		115.340028
+  validation CE:		95.82
+Epoch 3 of 50 took 3.272s
+  training loss:		122.849207
+  validation loss:		113.218707
+  validation CE:		91.89
+Epoch 4 of 50 took 3.363s
+  training loss:		120.156894
+  validation loss:		110.193075
+  validation CE:		88.37
+Epoch 5 of 50 took 3.305s
+  training loss:		118.313020
+  validation loss:		108.899566
+  validation CE:		87.85
+Epoch 6 of 50 took 3.441s
+  training loss:		117.257057
+  validation loss:		109.658948
+  validation CE:		86.91
+Epoch 7 of 50 took 3.584s
+  training loss:		116.475789
+  validation loss:		116.428949
+  validation CE:		93.08
+Epoch 8 of 50 took 3.702s
+  training loss:		115.850443
+  validation loss:		104.689340
+  validation CE:		82.73
+Epoch 9 of 50 took 3.381s
+  training loss:		115.227927
+  validation loss:		105.680255
+  validation CE:		83.65
+Epoch 10 of 50 took 3.255s
+  training loss:		114.962363
+  validation loss:		106.483711
+  validation CE:		84.28
+Epoch 11 of 50 took 3.521s
+  training loss:		114.627812
+  validation loss:		105.480333
+  validation CE:		83.23
+Epoch 12 of 50 took 3.686s
+  training loss:		114.422562
+  validation loss:		105.121096
+  validation CE:		82.79
+Epoch 13 of 50 took 3.755s
+  training loss:		114.206152
+  validation loss:		107.025319
+  validation CE:		84.81
+Epoch 14 of 50 took 3.597s
+  training loss:		113.846686
+  validation loss:		108.231987
+  validation CE:		85.54
+Epoch 15 of 50 took 3.817s
+  training loss:		113.736189
+  validation loss:		107.586044
+  validation CE:		84.86
+Epoch 16 of 50 took 3.665s
+  training loss:		113.543020
+  validation loss:		105.819138
+  validation CE:		84.25
+Epoch 17 of 50 took 3.705s
+  training loss:		113.350096
+  validation loss:		105.878738
+  validation CE:		82.78
+Epoch 18 of 50 took 3.568s
+  training loss:		113.247670
+  validation loss:		105.761702
+  validation CE:		82.61
+Epoch 19 of 50 took 3.845s
+  training loss:		113.057703
+  validation loss:		102.786419
+  validation CE:		80.40
+Epoch 20 of 50 took 3.787s
+  training loss:		112.876849
+  validation loss:		103.539586
+  validation CE:		80.91
+Epoch 21 of 50 took 3.462s
+  training loss:		112.881589
+  validation loss:		104.128647
+  validation CE:		81.32
+Epoch 22 of 50 took 3.810s
+  training loss:		112.695435
+  validation loss:		105.721724
+  validation CE:		82.81
+Epoch 23 of 50 took 3.585s
+  training loss:		112.614376
+  validation loss:		103.289439
+  validation CE:		80.84
+Epoch 24 of 50 took 3.357s
+  training loss:		112.482762
+  validation loss:		104.151567
+  validation CE:		81.24
+Epoch 25 of 50 took 3.610s
+  training loss:		112.397968
+  validation loss:		105.689239
+  validation CE:		82.94
+Epoch 26 of 50 took 3.541s
+  training loss:		112.347044
+  validation loss:		103.729037
+  validation CE:		81.26
+Epoch 27 of 50 took 3.447s
+  training loss:		112.249458
+  validation loss:		103.872858
+  validation CE:		81.23
+Epoch 28 of 50 took 3.813s
+  training loss:		112.029959
+  validation loss:		102.950102
+  validation CE:		80.10
+Epoch 29 of 50 took 4.113s
+  training loss:		112.150402
+  validation loss:		104.183146
+  validation CE:		81.41
+Epoch 30 of 50 took 3.419s
+  training loss:		111.972617
+  validation loss:		105.553676
+  validation CE:		82.68
+Epoch 31 of 50 took 3.453s
+  training loss:		111.998755
+  validation loss:		103.770171
+  validation CE:		81.23
+Epoch 32 of 50 took 3.667s
+  training loss:		111.969808
+  validation loss:		107.413881
+  validation CE:		84.44
+Epoch 33 of 50 took 3.398s
+  training loss:		111.857975
+  validation loss:		106.687645
+  validation CE:		83.56
+Epoch 34 of 50 took 3.457s
+  training loss:		111.824450
+  validation loss:		103.700236
+  validation CE:		80.67
+Epoch 35 of 50 took 3.490s
+  training loss:		111.758231
+  validation loss:		102.549986
+  validation CE:		79.84
+Epoch 36 of 50 took 3.923s
+  training loss:		111.684538
+  validation loss:		105.613888
+  validation CE:		82.31
+Epoch 37 of 50 took 3.771s
+  training loss:		111.549016
+  validation loss:		104.403598
+  validation CE:		81.86
+Epoch 38 of 50 took 3.625s
+  training loss:		111.636926
+  validation loss:		102.990629
+  validation CE:		80.11
+Epoch 39 of 50 took 3.681s
+  training loss:		111.509552
+  validation loss:		104.044997
+  validation CE:		81.18
+Epoch 40 of 50 took 3.726s
+  training loss:		111.518567
+  validation loss:		104.271744
+  validation CE:		81.12
+Epoch 41 of 50 took 3.563s
+  training loss:		111.422905
+  validation loss:		102.719490
+  validation CE:		80.31
+Epoch 42 of 50 took 3.485s
+  training loss:		111.476242
+  validation loss:		102.489818
+  validation CE:		79.98
+Epoch 43 of 50 took 3.678s
+  training loss:		111.404174
+  validation loss:		105.580779
+  validation CE:		82.86
+Epoch 44 of 50 took 3.565s
+  training loss:		111.336299
+  validation loss:		102.194838
+  validation CE:		79.95
+Epoch 45 of 50 took 3.741s
+  training loss:		111.365432
+  validation loss:		104.339619
+  validation CE:		81.90
+Epoch 46 of 50 took 3.739s
+  training loss:		111.253833
+  validation loss:		107.040213
+  validation CE:		83.64
+Epoch 47 of 50 took 3.961s
+  training loss:		111.246147
+  validation loss:		102.192552
+  validation CE:		79.65
+Epoch 48 of 50 took 3.868s
+  training loss:		111.215470
+  validation loss:		103.339019
+  validation CE:		80.20
+Epoch 49 of 50 took 3.684s
+  training loss:		111.154450
+  validation loss:		101.828456
+  validation CE:		78.88
+Epoch 50 of 50 took 3.589s
+  training loss:		111.133426
+  validation loss:		104.595627
+  validation CE:		81.48
+best for this turn: 78.8791329193
+Building model for 16 256 ... 0 1
+Compiling functions ...
+Starting training...
+Epoch 1 of 50 took 5.723s
+  training loss:		152.691244
+  validation loss:		118.477738
+  validation CE:		97.91
+Epoch 2 of 50 took 5.351s
+  training loss:		124.001714
+  validation loss:		115.121076
+  validation CE:		93.53
+Epoch 3 of 50 took 5.383s
+  training loss:		118.945603
+  validation loss:		111.396331
+  validation CE:		89.65
+Epoch 4 of 50 took 6.164s
+  training loss:		116.707134
+  validation loss:		110.045110
+  validation CE:		87.82
+Epoch 5 of 50 took 5.620s
+  training loss:		115.464920
+  validation loss:		106.550788
+  validation CE:		84.41
+Epoch 6 of 50 took 5.518s
+  training loss:		114.547255
+  validation loss:		104.817381
+  validation CE:		82.71
+Epoch 7 of 50 took 5.870s
+  training loss:		113.836953
+  validation loss:		107.736185
+  validation CE:		85.92
+Epoch 8 of 50 took 6.679s
+  training loss:		113.260468
+  validation loss:		103.789390
+  validation CE:		81.24
+Epoch 9 of 50 took 6.844s
+  training loss:		112.862792
+  validation loss:		104.422886
+  validation CE:		82.39
+Epoch 10 of 50 took 7.555s
+  training loss:		112.373868
+  validation loss:		103.154419
+  validation CE:		81.11
+Epoch 11 of 50 took 6.762s
+  training loss:		112.080687
+  validation loss:		104.421312
+  validation CE:		81.73
+Epoch 12 of 50 took 5.874s
+  training loss:		111.710479
+  validation loss:		102.828530
+  validation CE:		80.22
+Epoch 13 of 50 took 6.354s
+  training loss:		111.519620
+  validation loss:		105.032544
+  validation CE:		83.34
+Epoch 14 of 50 took 6.347s
+  training loss:		111.245571
+  validation loss:		101.625174
+  validation CE:		79.23
+Epoch 15 of 50 took 6.359s
+  training loss:		111.022996
+  validation loss:		103.830800
+  validation CE:		81.28
+Epoch 16 of 50 took 7.008s
+  training loss:		110.815484
+  validation loss:		102.714029
+  validation CE:		79.93
+Epoch 17 of 50 took 7.343s
+  training loss:		110.725682
+  validation loss:		102.290955
+  validation CE:		79.56
+Epoch 18 of 50 took 6.770s
+  training loss:		110.580751
+  validation loss:		102.705444
+  validation CE:		79.70
+Epoch 19 of 50 took 6.892s
+  training loss:		110.415585
+  validation loss:		103.797555
+  validation CE:		80.85
+Epoch 20 of 50 took 7.364s
+  training loss:		110.374979
+  validation loss:		104.391295
+  validation CE:		81.58
+Epoch 21 of 50 took 6.947s
+  training loss:		110.284312
+  validation loss:		102.748863
+  validation CE:		79.73
+Epoch 22 of 50 took 7.250s
+  training loss:		110.042834
+  validation loss:		101.996722
+  validation CE:		79.23
+Epoch 23 of 50 took 6.777s
+  training loss:		109.978202
+  validation loss:		102.811116
+  validation CE:		79.77
+Epoch 24 of 50 took 7.129s
+  training loss:		109.925289
+  validation loss:		101.742100
+  validation CE:		78.93
+Epoch 25 of 50 took 7.350s
+  training loss:		109.779013
+  validation loss:		102.640150
+  validation CE:		79.93
+Epoch 26 of 50 took 6.688s
+  training loss:		109.710078
+  validation loss:		101.110612
+  validation CE:		78.66
+Epoch 27 of 50 took 6.697s
+  training loss:		109.617938
+  validation loss:		103.631621
+  validation CE:		80.65
+Epoch 28 of 50 took 6.894s
+  training loss:		109.581979
+  validation loss:		101.898385
+  validation CE:		79.03
+Epoch 29 of 50 took 7.286s
+  training loss:		109.421702
+  validation loss:		102.166331
+  validation CE:		79.17
+Epoch 30 of 50 took 7.131s
+  training loss:		109.419027
+  validation loss:		101.354451
+  validation CE:		78.12
+Epoch 31 of 50 took 6.909s
+  training loss:		109.388243
+  validation loss:		99.570735
+  validation CE:		76.98
+Epoch 32 of 50 took 6.873s
+  training loss:		109.265630
+  validation loss:		101.042052
+  validation CE:		77.97
+Epoch 33 of 50 took 7.591s
+  training loss:		109.235689
+  validation loss:		101.304125
+  validation CE:		78.20
+Epoch 34 of 50 took 6.614s
+  training loss:		109.159521
+  validation loss:		102.377834
+  validation CE:		79.24
+Epoch 35 of 50 took 6.114s
+  training loss:		109.188522
+  validation loss:		99.902865
+  validation CE:		77.55
+Epoch 36 of 50 took 6.252s
+  training loss:		109.120167
+  validation loss:		102.617351
+  validation CE:		79.57
+Epoch 37 of 50 took 6.022s
+  training loss:		109.011583
+  validation loss:		99.817354
+  validation CE:		77.39
+Epoch 38 of 50 took 7.079s
+  training loss:		108.893702
+  validation loss:		101.521374
+  validation CE:		78.40
+Epoch 39 of 50 took 6.989s
+  training loss:		108.930758
+  validation loss:		99.972637
+  validation CE:		77.09
+Epoch 40 of 50 took 6.570s
+  training loss:		108.864127
+  validation loss:		101.379166
+  validation CE:		78.36
+Epoch 41 of 50 took 6.446s
+  training loss:		108.832882
+  validation loss:		101.130720
+  validation CE:		78.28
+Epoch 42 of 50 took 7.508s
+  training loss:		108.918262
+  validation loss:		99.972384
+  validation CE:		76.92
+Epoch 43 of 50 took 6.757s
+  training loss:		108.765290
+  validation loss:		102.347393
+  validation CE:		79.44
+Epoch 44 of 50 took 6.608s
+  training loss:		108.756354
+  validation loss:		102.942390
+  validation CE:		80.19
+Epoch 45 of 50 took 6.706s
+  training loss:		108.836686
+  validation loss:		101.371636
+  validation CE:		78.25
+Epoch 46 of 50 took 7.106s
+  training loss:		108.615126
+  validation loss:		100.717638
+  validation CE:		77.70
+Epoch 47 of 50 took 7.183s
+  training loss:		108.659687
+  validation loss:		103.073719
+  validation CE:		80.61
+Epoch 48 of 50 took 6.996s
+  training loss:		108.537080
+  validation loss:		102.528709
+  validation CE:		79.50
+Epoch 49 of 50 took 6.866s
+  training loss:		108.616730
+  validation loss:		101.486653
+  validation CE:		78.20
+Epoch 50 of 50 took 6.670s
+  training loss:		108.535972
+  validation loss:		99.963359
+  validation CE:		77.02
+best for this turn: 76.9218347168
+Building model for 16 512 ... 0 2
+Compiling functions ...
+Starting training...
+Epoch 1 of 50 took 7.631s
+  training loss:		157.776808
+  validation loss:		119.135607
+  validation CE:		98.99
+Epoch 2 of 50 took 7.557s
+  training loss:		122.882306
+  validation loss:		114.138452
+  validation CE:		91.77
+Epoch 3 of 50 took 6.918s
+  training loss:		117.814604
+  validation loss:		106.373122
+  validation CE:		84.90
+Epoch 4 of 50 took 6.949s
+  training loss:		115.518919
+  validation loss:		106.645131
+  validation CE:		84.13
+Epoch 5 of 50 took 7.059s
+  training loss:		114.144370
+  validation loss:		106.716124
+  validation CE:		84.90
+Epoch 6 of 50 took 6.777s
+  training loss:		113.188825
+  validation loss:		105.055001
+  validation CE:		82.73
+Epoch 7 of 50 took 7.632s
+  training loss:		112.305409
+  validation loss:		106.365905
+  validation CE:		84.15
+Epoch 8 of 50 took 7.695s
+  training loss:		111.660947
+  validation loss:		107.938412
+  validation CE:		85.70
+Epoch 9 of 50 took 7.638s
+  training loss:		111.166501
+  validation loss:		104.671591
+  validation CE:		81.65
+Epoch 10 of 50 took 7.696s
+  training loss:		110.775286
+  validation loss:		102.136336
+  validation CE:		79.36
+Epoch 11 of 50 took 7.902s
+  training loss:		110.383011
+  validation loss:		100.983149
+  validation CE:		78.64
+Epoch 12 of 50 took 7.678s
+  training loss:		110.098180
+  validation loss:		104.504486
+  validation CE:		81.56
+Epoch 13 of 50 took 8.153s
+  training loss:		109.809138
+  validation loss:		103.073867
+  validation CE:		79.89
+Epoch 14 of 50 took 7.783s
+  training loss:		109.597414
+  validation loss:		102.711819
+  validation CE:		80.28
+Epoch 15 of 50 took 7.355s
+  training loss:		109.305914
+  validation loss:		102.400127
+  validation CE:		79.57
+Epoch 16 of 50 took 7.781s
+  training loss:		109.167584
+  validation loss:		101.155617
+  validation CE:		78.48
+Epoch 17 of 50 took 7.857s
+  training loss:		108.969592
+  validation loss:		99.988166
+  validation CE:		77.26
+Epoch 18 of 50 took 7.530s
+  training loss:		108.880380
+  validation loss:		100.844644
+  validation CE:		78.56
+Epoch 19 of 50 took 7.896s
+  training loss:		108.613296
+  validation loss:		100.327466
+  validation CE:		77.86
+Epoch 20 of 50 took 8.022s
+  training loss:		108.641354
+  validation loss:		101.943543
+  validation CE:		78.64
+Epoch 21 of 50 took 7.684s
+  training loss:		108.441636
+  validation loss:		100.855462
+  validation CE:		78.07
+Epoch 22 of 50 took 7.696s
+  training loss:		108.312062
+  validation loss:		103.920701
+  validation CE:		80.43
+Epoch 23 of 50 took 7.539s
+  training loss:		108.269198
+  validation loss:		100.807217
+  validation CE:		77.43
+Epoch 24 of 50 took 7.892s
+  training loss:		108.008826
+  validation loss:		103.058694
+  validation CE:		80.02
+Epoch 25 of 50 took 7.690s
+  training loss:		108.087651
+  validation loss:		102.777077
+  validation CE:		79.68
+Epoch 26 of 50 took 7.640s
+  training loss:		108.010956
+  validation loss:		101.368757
+  validation CE:		78.23
+Epoch 27 of 50 took 7.728s
+  training loss:		107.969071
+  validation loss:		101.919926
+  validation CE:		78.58
+Epoch 28 of 50 took 7.757s
+  training loss:		107.791099
+  validation loss:		101.572160
+  validation CE:		78.53
+Epoch 29 of 50 took 7.564s
+  training loss:		107.814038
+  validation loss:		102.734666
+  validation CE:		79.34
+Epoch 30 of 50 took 7.470s
+  training loss:		107.605355
+  validation loss:		99.929692
+  validation CE:		77.20
+Epoch 31 of 50 took 7.913s
+  training loss:		107.716745
+  validation loss:		100.650362
+  validation CE:		77.88
+Epoch 32 of 50 took 7.652s
+  training loss:		107.638320
+  validation loss:		100.674815
+  validation CE:		77.91
+Epoch 33 of 50 took 7.820s
+  training loss:		107.533303
+  validation loss:		103.131759
+  validation CE:		79.81
+Epoch 34 of 50 took 8.049s
+  training loss:		107.464715
+  validation loss:		99.543639
+  validation CE:		76.84
+Epoch 35 of 50 took 8.491s
+  training loss:		107.468487
+  validation loss:		102.242751
+  validation CE:		79.03
+Epoch 36 of 50 took 8.320s
+  training loss:		107.440000
+  validation loss:		101.962629
+  validation CE:		78.59
+Epoch 37 of 50 took 7.651s
+  training loss:		107.337907
+  validation loss:		103.078034
+  validation CE:		79.78
+Epoch 38 of 50 took 8.248s
+  training loss:		107.283100
+  validation loss:		103.245545
+  validation CE:		79.69
+Epoch 39 of 50 took 8.423s
+  training loss:		107.219047
+  validation loss:		101.996773
+  validation CE:		78.37
+Epoch 40 of 50 took 8.013s
+  training loss:		107.121040
+  validation loss:		101.199898
+  validation CE:		78.47
+Epoch 41 of 50 took 7.473s
+  training loss:		107.122604
+  validation loss:		104.066060
+  validation CE:		81.14
+Epoch 42 of 50 took 7.789s
+  training loss:		107.127024
+  validation loss:		101.160008
+  validation CE:		77.98
+Epoch 43 of 50 took 8.270s
+  training loss:		107.114878
+  validation loss:		102.025924
+  validation CE:		78.59
+Epoch 44 of 50 took 7.626s
+  training loss:		107.039114
+  validation loss:		102.420974
+  validation CE:		78.78
+Epoch 45 of 50 took 7.584s
+  training loss:		106.944028
+  validation loss:		101.360092
+  validation CE:		78.65
+Epoch 46 of 50 took 8.250s
+  training loss:		106.934630
+  validation loss:		100.960924
+  validation CE:		78.01
+Epoch 47 of 50 took 8.278s
+  training loss:		106.954200
+  validation loss:		102.313880
+  validation CE:		78.41
+Epoch 48 of 50 took 7.285s
+  training loss:		106.892047
+  validation loss:		101.218020
+  validation CE:		77.89
+Epoch 49 of 50 took 7.500s
+  training loss:		106.907640
+  validation loss:		100.225107
+  validation CE:		77.03
+Epoch 50 of 50 took 8.450s
+  training loss:		106.805299
+  validation loss:		100.569420
+  validation CE:		77.32
+best for this turn: 76.8395361328
+Building model for 20 128 ... 1 0
+Compiling functions ...
+Starting training...
+Epoch 1 of 50 took 3.954s
+  training loss:		158.974889
+  validation loss:		125.354559
+  validation CE:		106.08
+Epoch 2 of 50 took 3.442s
+  training loss:		128.408873
+  validation loss:		115.776799
+  validation CE:		94.12
+Epoch 3 of 50 took 3.757s
+  training loss:		122.244778
+  validation loss:		111.657726
+  validation CE:		89.25
+Epoch 4 of 50 took 3.803s
+  training loss:		119.329728
+  validation loss:		109.390223
+  validation CE:		87.12
+Epoch 5 of 50 took 3.703s
+  training loss:		117.820816
+  validation loss:		109.218288
+  validation CE:		86.34
+Epoch 6 of 50 took 4.117s
+  training loss:		116.788835
+  validation loss:		106.798862
+  validation CE:		83.68
+Epoch 7 of 50 took 4.268s
+  training loss:		115.989284
+  validation loss:		106.487490
+  validation CE:		82.98
+Epoch 8 of 50 took 4.024s
+  training loss:		115.366244
+  validation loss:		109.908362
+  validation CE:		86.85
+Epoch 9 of 50 took 3.824s
+  training loss:		114.918102
+  validation loss:		105.759383
+  validation CE:		82.82
+Epoch 10 of 50 took 3.715s
+  training loss:		114.561821
+  validation loss:		108.554625
+  validation CE:		85.74
+Epoch 11 of 50 took 3.425s
+  training loss:		114.202050
+  validation loss:		103.959976
+  validation CE:		80.40
+Epoch 12 of 50 took 3.797s
+  training loss:		113.774178
+  validation loss:		109.195477
+  validation CE:		86.00
+Epoch 13 of 50 took 3.778s
+  training loss:		113.651861
+  validation loss:		103.433590
+  validation CE:		80.20
+Epoch 14 of 50 took 3.866s
+  training loss:		113.432671
+  validation loss:		104.732762
+  validation CE:		81.32
+Epoch 15 of 50 took 3.982s
+  training loss:		113.272539
+  validation loss:		104.086992
+  validation CE:		80.29
+Epoch 16 of 50 took 3.941s
+  training loss:		113.047102
+  validation loss:		107.737870
+  validation CE:		83.45
+Epoch 17 of 50 took 3.895s
+  training loss:		113.045484
+  validation loss:		105.795908
+  validation CE:		82.11
+Epoch 18 of 50 took 3.725s
+  training loss:		112.883065
+  validation loss:		105.003657
+  validation CE:		81.71
+Epoch 19 of 50 took 3.625s
+  training loss:		112.734787
+  validation loss:		105.981451
+  validation CE:		82.38
+Epoch 20 of 50 took 3.545s
+  training loss:		112.588678
+  validation loss:		103.572375
+  validation CE:		79.62
+Epoch 21 of 50 took 3.931s
+  training loss:		112.469178
+  validation loss:		105.667094
+  validation CE:		82.26
+Epoch 22 of 50 took 4.170s
+  training loss:		112.352034
+  validation loss:		104.217729
+  validation CE:		80.24
+Epoch 23 of 50 took 4.173s
+  training loss:		112.375116
+  validation loss:		105.719359
+  validation CE:		81.65
+Epoch 24 of 50 took 3.841s
+  training loss:		112.263140
+  validation loss:		102.552587
+  validation CE:		78.74
+Epoch 25 of 50 took 3.559s
+  training loss:		112.176483
+  validation loss:		101.861523
+  validation CE:		78.23
+Epoch 26 of 50 took 3.498s
+  training loss:		112.108036
+  validation loss:		104.181715
+  validation CE:		80.68
+Epoch 27 of 50 took 3.550s
+  training loss:		112.073889
+  validation loss:		103.781257
+  validation CE:		79.92
+Epoch 28 of 50 took 3.433s
+  training loss:		111.897122
+  validation loss:		103.069077
+  validation CE:		79.16
+Epoch 29 of 50 took 3.740s
+  training loss:		111.922210
+  validation loss:		104.734934
+  validation CE:		80.66
+Epoch 30 of 50 took 3.830s
+  training loss:		111.843464
+  validation loss:		104.801679
+  validation CE:		80.69
+Epoch 31 of 50 took 4.350s
+  training loss:		111.831675
+  validation loss:		104.483555
+  validation CE:		80.83
+Epoch 32 of 50 took 3.695s
+  training loss:		111.620595
+  validation loss:		104.573978
+  validation CE:		81.10
+Epoch 33 of 50 took 3.788s
+  training loss:		111.707389
+  validation loss:		103.043171
+  validation CE:		79.80
+Epoch 34 of 50 took 3.486s
+  training loss:		111.642047
+  validation loss:		104.687431
+  validation CE:		80.80
+Epoch 35 of 50 took 3.372s
+  training loss:		111.540518
+  validation loss:		103.658248
+  validation CE:		80.04
+Epoch 36 of 50 took 3.249s
+  training loss:		111.588458
+  validation loss:		103.287133
+  validation CE:		79.07
+Epoch 37 of 50 took 3.736s
+  training loss:		111.568766
+  validation loss:		102.405245
+  validation CE:		78.93
+Epoch 38 of 50 took 3.699s
+  training loss:		111.457391
+  validation loss:		102.134831
+  validation CE:		78.69
+Epoch 39 of 50 took 4.093s
+  training loss:		111.435721
+  validation loss:		103.111789
+  validation CE:		79.32
+Epoch 40 of 50 took 3.802s
+  training loss:		111.335271
+  validation loss:		102.618441
+  validation CE:		78.92
+Epoch 41 of 50 took 3.645s
+  training loss:		111.379181
+  validation loss:		102.239492
+  validation CE:		78.49
+Epoch 42 of 50 took 3.621s
+  training loss:		111.306726
+  validation loss:		101.403309
+  validation CE:		78.09
+Epoch 43 of 50 took 3.533s
+  training loss:		111.266393
+  validation loss:		103.236232
+  validation CE:		79.36
+Epoch 44 of 50 took 3.474s
+  training loss:		111.208731
+  validation loss:		102.689554
+  validation CE:		79.10
+Epoch 45 of 50 took 3.768s
+  training loss:		111.326818
+  validation loss:		103.619268
+  validation CE:		79.75
+Epoch 46 of 50 took 3.699s
+  training loss:		111.239138
+  validation loss:		103.154570
+  validation CE:		79.87
+Epoch 47 of 50 took 3.958s
+  training loss:		111.209828
+  validation loss:		103.681799
+  validation CE:		79.74
+Epoch 48 of 50 took 3.963s
+  training loss:		111.093213
+  validation loss:		101.098933
+  validation CE:		78.02
+Epoch 49 of 50 took 3.973s
+  training loss:		111.156759
+  validation loss:		103.775482
+  validation CE:		80.34
+Epoch 50 of 50 took 3.761s
+  training loss:		111.126685
+  validation loss:		101.763782
+  validation CE:		78.10
+best for this turn: 78.0247609711
+Building model for 20 256 ... 1 1
+Compiling functions ...
+Starting training...
+Epoch 1 of 50 took 3.893s
+  training loss:		153.884911
+  validation loss:		119.149503
+  validation CE:		98.62
+Epoch 2 of 50 took 4.250s
+  training loss:		124.431169
+  validation loss:		115.600884
+  validation CE:		93.47
+Epoch 3 of 50 took 4.346s
+  training loss:		118.953004
+  validation loss:		107.663753
+  validation CE:		84.68
+Epoch 4 of 50 took 4.299s
+  training loss:		116.477153
+  validation loss:		107.496649
+  validation CE:		83.33
+Epoch 5 of 50 took 4.233s
+  training loss:		115.056430
+  validation loss:		105.441888
+  validation CE:		81.71
+Epoch 6 of 50 took 4.347s
+  training loss:		114.185534
+  validation loss:		104.130517
+  validation CE:		80.66
+Epoch 7 of 50 took 4.186s
+  training loss:		113.334489
+  validation loss:		105.953910
+  validation CE:		82.10
+Epoch 8 of 50 took 4.389s
+  training loss:		113.001646
+  validation loss:		104.381891
+  validation CE:		80.75
+Epoch 9 of 50 took 4.245s
+  training loss:		112.477035
+  validation loss:		105.639521
+  validation CE:		82.39
+Epoch 10 of 50 took 4.785s
+  training loss:		112.047158
+  validation loss:		106.929561
+  validation CE:		82.83
+Epoch 11 of 50 took 4.077s
+  training loss:		111.830178
+  validation loss:		112.212169
+  validation CE:		87.56
+Epoch 12 of 50 took 4.142s
+  training loss:		111.430461
+  validation loss:		103.438208
+  validation CE:		79.89
+Epoch 13 of 50 took 4.185s
+  training loss:		111.340999
+  validation loss:		102.056982
+  validation CE:		78.31
+Epoch 14 of 50 took 4.117s
+  training loss:		111.026908
+  validation loss:		103.533082
+  validation CE:		79.50
+Epoch 15 of 50 took 4.166s
+  training loss:		110.771211
+  validation loss:		102.395955
+  validation CE:		78.21
+Epoch 16 of 50 took 4.069s
+  training loss:		110.657917
+  validation loss:		101.287295
+  validation CE:		77.99
+Epoch 17 of 50 took 4.233s
+  training loss:		110.416990
+  validation loss:		101.061683
+  validation CE:		77.27
+Epoch 18 of 50 took 4.173s
+  training loss:		110.339802
+  validation loss:		105.310065
+  validation CE:		81.37
+Epoch 19 of 50 took 4.364s
+  training loss:		110.170632
+  validation loss:		102.044530
+  validation CE:		78.86
+Epoch 20 of 50 took 4.120s
+  training loss:		110.021774
+  validation loss:		101.520401
+  validation CE:		78.07
+Epoch 21 of 50 took 3.981s
+  training loss:		110.004721
+  validation loss:		102.285415
+  validation CE:		78.52
+Epoch 22 of 50 took 4.009s
+  training loss:		109.835363
+  validation loss:		103.015091
+  validation CE:		78.81
+Epoch 23 of 50 took 4.282s
+  training loss:		109.808598
+  validation loss:		103.419255
+  validation CE:		79.06
+Epoch 24 of 50 took 4.295s
+  training loss:		109.716819
+  validation loss:		101.488258
+  validation CE:		77.88
+Epoch 25 of 50 took 4.261s
+  training loss:		109.535001
+  validation loss:		101.102283
+  validation CE:		77.82
+Epoch 26 of 50 took 4.155s
+  training loss:		109.449942
+  validation loss:		102.219129
+  validation CE:		78.86
+Epoch 27 of 50 took 4.332s
+  training loss:		109.487293
+  validation loss:		101.802961
+  validation CE:		78.01
+Epoch 28 of 50 took 4.079s
+  training loss:		109.471771
+  validation loss:		102.713530
+  validation CE:		78.95
+Epoch 29 of 50 took 3.923s
+  training loss:		109.389446
+  validation loss:		101.988110
+  validation CE:		78.02
+Epoch 30 of 50 took 4.626s
+  training loss:		109.242216
+  validation loss:		102.410969
+  validation CE:		78.63
+Epoch 31 of 50 took 4.443s
+  training loss:		109.341300
+  validation loss:		100.689080
+  validation CE:		76.90
+Epoch 32 of 50 took 4.423s
+  training loss:		109.194904
+  validation loss:		102.583427
+  validation CE:		78.46
+Epoch 33 of 50 took 4.253s
+  training loss:		109.156773
+  validation loss:		101.333748
+  validation CE:		78.16
+Epoch 34 of 50 took 4.164s
+  training loss:		109.126060
+  validation loss:		102.571239
+  validation CE:		78.64
+Epoch 35 of 50 took 3.999s
+  training loss:		108.989515
+  validation loss:		101.293070
+  validation CE:		77.46
+Epoch 36 of 50 took 4.017s
+  training loss:		108.994918
+  validation loss:		105.825071
+  validation CE:		81.68
+Epoch 37 of 50 took 4.113s
+  training loss:		108.993843
+  validation loss:		101.085227
+  validation CE:		77.19
+Epoch 38 of 50 took 4.223s
+  training loss:		108.878953
+  validation loss:		101.458545
+  validation CE:		77.75
+Epoch 39 of 50 took 4.427s
+  training loss:		108.934858
+  validation loss:		99.995893
+  validation CE:		75.77
+Epoch 40 of 50 took 4.252s
+  training loss:		108.744272
+  validation loss:		103.543728
+  validation CE:		79.75
+Epoch 41 of 50 took 4.073s
+  training loss:		108.820524
+  validation loss:		101.243605
+  validation CE:		77.93
+Epoch 42 of 50 took 3.795s
+  training loss:		108.760956
+  validation loss:		100.609289
+  validation CE:		76.77
+Epoch 43 of 50 took 3.852s
+  training loss:		108.810523
+  validation loss:		100.523532
+  validation CE:		76.67
+Epoch 44 of 50 took 4.010s
+  training loss:		108.729914
+  validation loss:		100.010733
+  validation CE:		76.37
+Epoch 45 of 50 took 4.305s
+  training loss:		108.688193
+  validation loss:		99.607241
+  validation CE:		75.89
+Epoch 46 of 50 took 4.480s
+  training loss:		108.643628
+  validation loss:		99.821994
+  validation CE:		76.11
+Epoch 47 of 50 took 4.051s
+  training loss:		108.642204
+  validation loss:		100.300872
+  validation CE:		76.51
+Epoch 48 of 50 took 4.139s
+  training loss:		108.666939
+  validation loss:		100.346377
+  validation CE:		76.41
+Epoch 49 of 50 took 4.133s
+  training loss:		108.636366
+  validation loss:		98.890750
+  validation CE:		75.51
+Epoch 50 of 50 took 4.177s
+  training loss:		108.556897
+  validation loss:		100.945799
+  validation CE:		77.02
+best for this turn: 75.5135366058
+Building model for 20 512 ... 1 2
+Compiling functions ...
+Starting training...
+Epoch 1 of 50 took 9.028s
+  training loss:		182.180737
+  validation loss:		117.440718
+  validation CE:		97.90
+Epoch 2 of 50 took 8.884s
+  training loss:		123.458663
+  validation loss:		110.186331
+  validation CE:		86.00
+Epoch 3 of 50 took 8.895s
+  training loss:		117.905151
+  validation loss:		108.554058
+  validation CE:		86.07
+Epoch 4 of 50 took 8.913s
+  training loss:		115.577059
+  validation loss:		105.289090
+  validation CE:		82.97
+Epoch 5 of 50 took 8.606s
+  training loss:		114.088528
+  validation loss:		104.745149
+  validation CE:		81.04
+Epoch 6 of 50 took 8.816s
+  training loss:		113.375736
+  validation loss:		102.384098
+  validation CE:		78.86
+Epoch 7 of 50 took 8.349s
+  training loss:		112.454427
+  validation loss:		107.723033
+  validation CE:		84.01
+Epoch 8 of 50 took 8.273s
+  training loss:		112.033762
+  validation loss:		103.861985
+  validation CE:		79.74
+Epoch 9 of 50 took 8.691s
+  training loss:		111.440446
+  validation loss:		103.567816
+  validation CE:		79.31
+Epoch 10 of 50 took 9.132s
+  training loss:		111.065478
+  validation loss:		103.168167
+  validation CE:		78.69
+Epoch 11 of 50 took 8.826s
+  training loss:		110.793122
+  validation loss:		102.165432
+  validation CE:		78.37
+Epoch 12 of 50 took 8.835s
+  training loss:		110.489192
+  validation loss:		103.175629
+  validation CE:		79.31
+Epoch 13 of 50 took 8.432s
+  training loss:		110.262929
+  validation loss:		100.711501
+  validation CE:		76.65
+Epoch 14 of 50 took 8.554s
+  training loss:		109.860976
+  validation loss:		102.548615
+  validation CE:		78.07
+Epoch 15 of 50 took 8.322s
+  training loss:		109.872933
+  validation loss:		103.825861
+  validation CE:		79.47
+Epoch 16 of 50 took 8.729s
+  training loss:		109.594117
+  validation loss:		104.922151
+  validation CE:		80.21
+Epoch 17 of 50 took 8.069s
+  training loss:		109.527475
+  validation loss:		104.815507
+  validation CE:		80.24
+Epoch 18 of 50 took 8.818s
+  training loss:		109.362972
+  validation loss:		100.163851
+  validation CE:		75.69
+Epoch 19 of 50 took 9.072s
+  training loss:		109.260120
+  validation loss:		100.958419
+  validation CE:		76.57
+Epoch 20 of 50 took 8.696s
+  training loss:		109.135962
+  validation loss:		100.662305
+  validation CE:		76.68
+Epoch 21 of 50 took 8.702s
+  training loss:		108.968216
+  validation loss:		102.332226
+  validation CE:		78.48
+Epoch 22 of 50 took 9.170s
+  training loss:		108.808388
+  validation loss:		100.414264
+  validation CE:		75.91
+Epoch 23 of 50 took 9.080s
+  training loss:		108.685843
+  validation loss:		101.060588
+  validation CE:		75.96
+Epoch 24 of 50 took 9.274s
+  training loss:		108.737209
+  validation loss:		98.822189
+  validation CE:		74.33
+Epoch 25 of 50 took 9.458s
+  training loss:		108.532891
+  validation loss:		99.881217
+  validation CE:		75.34
+Epoch 26 of 50 took 8.924s
+  training loss:		108.561210
+  validation loss:		101.498844
+  validation CE:		76.72
+Epoch 27 of 50 took 9.174s
+  training loss:		108.463137
+  validation loss:		101.725226
+  validation CE:		76.26
+Epoch 28 of 50 took 9.449s
+  training loss:		108.260930
+  validation loss:		101.512055
+  validation CE:		77.00
+Epoch 29 of 50 took 8.456s
+  training loss:		108.410427
+  validation loss:		100.042181
+  validation CE:		75.88
+Epoch 30 of 50 took 8.747s
+  training loss:		108.271544
+  validation loss:		101.264933
+  validation CE:		77.37
+Epoch 31 of 50 took 8.972s
+  training loss:		108.152572
+  validation loss:		101.088188
+  validation CE:		76.23
+Epoch 32 of 50 took 8.818s
+  training loss:		108.054785
+  validation loss:		100.680149
+  validation CE:		75.87
+Epoch 33 of 50 took 8.522s
+  training loss:		108.055598
+  validation loss:		99.853998
+  validation CE:		75.48
+Epoch 34 of 50 took 8.638s
+  training loss:		108.057080
+  validation loss:		104.838023
+  validation CE:		80.39
+Epoch 35 of 50 took 8.808s
+  training loss:		107.903042
+  validation loss:		99.090564
+  validation CE:		74.50
+Epoch 36 of 50 took 8.709s
+  training loss:		107.882061
+  validation loss:		99.625689
+  validation CE:		75.34
+Epoch 37 of 50 took 8.985s
+  training loss:		107.921512
+  validation loss:		98.857068
+  validation CE:		74.60
+Epoch 38 of 50 took 8.801s
+  training loss:		107.840643
+  validation loss:		99.242185
+  validation CE:		74.70
+Epoch 39 of 50 took 8.516s
+  training loss:		107.790026
+  validation loss:		102.626013
+  validation CE:		77.17
+Epoch 40 of 50 took 8.562s
+  training loss:		107.794694
+  validation loss:		99.585245
+  validation CE:		74.54
+Epoch 41 of 50 took 8.460s
+  training loss:		107.648557
+  validation loss:		102.376818
+  validation CE:		76.65
+Epoch 42 of 50 took 8.548s
+  training loss:		107.735072
+  validation loss:		100.249024
+  validation CE:		75.85
+Epoch 43 of 50 took 8.114s
+  training loss:		107.580217
+  validation loss:		99.401542
+  validation CE:		74.72
+Epoch 44 of 50 took 8.598s
+  training loss:		107.584049
+  validation loss:		100.215252
+  validation CE:		75.69
+Epoch 45 of 50 took 8.301s
+  training loss:		107.628255
+  validation loss:		99.325965
+  validation CE:		74.98
+Epoch 46 of 50 took 8.613s
+  training loss:		107.510659
+  validation loss:		99.468369
+  validation CE:		75.27
+Epoch 47 of 50 took 8.300s
+  training loss:		107.424050
+  validation loss:		99.543222
+  validation CE:		75.20
+Epoch 48 of 50 took 8.566s
+  training loss:		107.408608
+  validation loss:		102.694241
+  validation CE:		76.74
+Epoch 49 of 50 took 8.526s
+  training loss:		107.412358
+  validation loss:		97.512186
+  validation CE:		73.46
+Epoch 50 of 50 took 8.703s
+  training loss:		107.337066
+  validation loss:		99.356167
+  validation CE:		75.38
+best for this turn: 73.4586670303
+Building model for 24 128 ... 2 0
+Compiling functions ...
+Starting training...
+Epoch 1 of 50 took 1.431s
+  training loss:		159.504862
+  validation loss:		124.315556
+  validation CE:		104.53
+Epoch 2 of 50 took 1.425s
+  training loss:		128.713957
+  validation loss:		112.751314
+  validation CE:		91.70
+Epoch 3 of 50 took 1.425s
+  training loss:		122.368527
+  validation loss:		110.024053
+  validation CE:		88.38
+Epoch 4 of 50 took 1.438s
+  training loss:		119.568582
+  validation loss:		109.199262
+  validation CE:		86.70
+Epoch 5 of 50 took 1.421s
+  training loss:		117.916420
+  validation loss:		107.896271
+  validation CE:		85.30
+Epoch 6 of 50 took 1.421s
+  training loss:		116.841404
+  validation loss:		107.327282
+  validation CE:		84.34
+Epoch 7 of 50 took 1.426s
+  training loss:		116.141160
+  validation loss:		106.282389
+  validation CE:		83.76
+Epoch 8 of 50 took 1.428s
+  training loss:		115.606141
+  validation loss:		106.469825
+  validation CE:		83.26
+Epoch 9 of 50 took 1.422s
+  training loss:		115.153411
+  validation loss:		104.612947
+  validation CE:		81.39
+Epoch 10 of 50 took 1.419s
+  training loss:		114.671636
+  validation loss:		104.788256
+  validation CE:		81.14
+Epoch 11 of 50 took 1.422s
+  training loss:		114.439950
+  validation loss:		104.225943
+  validation CE:		80.89
+Epoch 12 of 50 took 1.433s
+  training loss:		114.241062
+  validation loss:		106.670280
+  validation CE:		82.30
+Epoch 13 of 50 took 1.426s
+  training loss:		113.949377
+  validation loss:		106.263760
+  validation CE:		82.58
+Epoch 14 of 50 took 1.572s
+  training loss:		113.817861
+  validation loss:		106.581729
+  validation CE:		82.78
+Epoch 15 of 50 took 1.397s
+  training loss:		113.535351
+  validation loss:		103.728482
+  validation CE:		80.32
+Epoch 16 of 50 took 1.397s
+  training loss:		113.390129
+  validation loss:		106.909121
+  validation CE:		83.61
+Epoch 17 of 50 took 1.400s
+  training loss:		113.140576
+  validation loss:		105.895554
+  validation CE:		81.95
+Epoch 18 of 50 took 1.405s
+  training loss:		113.158839
+  validation loss:		103.688190
+  validation CE:		80.10
+Epoch 19 of 50 took 1.411s
+  training loss:		113.062791
+  validation loss:		103.790663
+  validation CE:		80.27
+Epoch 20 of 50 took 1.404s
+  training loss:		112.831292
+  validation loss:		103.870093
+  validation CE:		80.28
+Epoch 21 of 50 took 1.400s
+  training loss:		112.763795
+  validation loss:		108.521277
+  validation CE:		84.35
+Epoch 22 of 50 took 1.402s
+  training loss:		112.541240
+  validation loss:		104.985148
+  validation CE:		80.82
+Epoch 23 of 50 took 1.407s
+  training loss:		112.637712
+  validation loss:		102.596504
+  validation CE:		78.83
+Epoch 24 of 50 took 1.391s
+  training loss:		112.426543
+  validation loss:		102.383432
+  validation CE:		79.28
+Epoch 25 of 50 took 1.394s
+  training loss:		112.516841
+  validation loss:		104.698600
+  validation CE:		80.88
+Epoch 26 of 50 took 1.397s
+  training loss:		112.415783
+  validation loss:		103.132430
+  validation CE:		79.49
+Epoch 27 of 50 took 1.393s
+  training loss:		112.219751
+  validation loss:		104.107198
+  validation CE:		80.34
+Epoch 28 of 50 took 1.398s
+  training loss:		112.190490
+  validation loss:		109.158104
+  validation CE:		85.18
+Epoch 29 of 50 took 1.393s
+  training loss:		112.142475
+  validation loss:		103.080275
+  validation CE:		79.37
+Epoch 30 of 50 took 1.395s
+  training loss:		112.118260
+  validation loss:		104.067811
+  validation CE:		80.36
+Epoch 31 of 50 took 1.397s
+  training loss:		111.956345
+  validation loss:		103.433433
+  validation CE:		79.64
+Epoch 32 of 50 took 1.394s
+  training loss:		111.872346
+  validation loss:		101.694874
+  validation CE:		78.21
+Epoch 33 of 50 took 1.393s
+  training loss:		111.864385
+  validation loss:		100.231263
+  validation CE:		77.30
+Epoch 34 of 50 took 1.398s
+  training loss:		111.873028
+  validation loss:		103.349504
+  validation CE:		79.36
+Epoch 35 of 50 took 1.398s
+  training loss:		111.928329
+  validation loss:		102.840259
+  validation CE:		79.11
+Epoch 36 of 50 took 1.398s
+  training loss:		111.771471
+  validation loss:		103.779055
+  validation CE:		79.69
+Epoch 37 of 50 took 1.402s
+  training loss:		111.769389
+  validation loss:		103.115979
+  validation CE:		79.08
+Epoch 38 of 50 took 1.396s
+  training loss:		111.644439
+  validation loss:		103.857856
+  validation CE:		80.61
+Epoch 39 of 50 took 1.396s
+  training loss:		111.699838
+  validation loss:		104.268481
+  validation CE:		80.50
+Epoch 40 of 50 took 1.397s
+  training loss:		111.587953
+  validation loss:		102.564147
+  validation CE:		78.81
+Epoch 41 of 50 took 1.401s
+  training loss:		111.728245
+  validation loss:		104.698283
+  validation CE:		80.60
+Epoch 42 of 50 took 1.405s
+  training loss:		111.546997
+  validation loss:		103.616999
+  validation CE:		80.05
+Epoch 43 of 50 took 1.401s
+  training loss:		111.583516
+  validation loss:		102.776133
+  validation CE:		78.61
+Epoch 44 of 50 took 1.397s
+  training loss:		111.440251
+  validation loss:		102.848591
+  validation CE:		79.22
+Epoch 45 of 50 took 1.396s
+  training loss:		111.473511
+  validation loss:		102.491785
+  validation CE:		78.39
+Epoch 46 of 50 took 1.400s
+  training loss:		111.351222
+  validation loss:		103.173651
+  validation CE:		79.20
+Epoch 47 of 50 took 1.399s
+  training loss:		111.371269
+  validation loss:		104.019970
+  validation CE:		79.59
+Epoch 48 of 50 took 1.402s
+  training loss:		111.351107
+  validation loss:		101.702119
+  validation CE:		78.45
+Epoch 49 of 50 took 1.398s
+  training loss:		111.314323
+  validation loss:		103.452551
+  validation CE:		79.59
+Epoch 50 of 50 took 1.396s
+  training loss:		111.216780
+  validation loss:		103.137230
+  validation CE:		79.11
+best for this turn: 77.2954475403
+Building model for 24 256 ... 2 1
+Compiling functions ...
+Starting training...
+Epoch 1 of 50 took 4.993s
+  training loss:		155.818219
+  validation loss:		123.895168
+  validation CE:		102.41
+Epoch 2 of 50 took 5.046s
+  training loss:		125.773600
+  validation loss:		112.597075
+  validation CE:		89.70
+Epoch 3 of 50 took 4.822s
+  training loss:		119.715104
+  validation loss:		111.603445
+  validation CE:		87.78
+Epoch 4 of 50 took 5.184s
+  training loss:		117.102057
+  validation loss:		105.623963
+  validation CE:		83.24
+Epoch 5 of 50 took 4.831s
+  training loss:		115.572637
+  validation loss:		107.091420
+  validation CE:		85.02
+Epoch 6 of 50 took 4.962s
+  training loss:		114.440596
+  validation loss:		106.250132
+  validation CE:		82.71
+Epoch 7 of 50 took 5.055s
+  training loss:		113.948298
+  validation loss:		104.369121
+  validation CE:		80.75
+Epoch 8 of 50 took 5.006s
+  training loss:		113.241810
+  validation loss:		103.604789
+  validation CE:		80.28
+Epoch 9 of 50 took 5.002s
+  training loss:		112.868057
+  validation loss:		104.002064
+  validation CE:		80.22
+Epoch 10 of 50 took 4.907s
+  training loss:		112.333754
+  validation loss:		106.644358
+  validation CE:		82.43
+Epoch 11 of 50 took 5.231s
+  training loss:		112.058446
+  validation loss:		102.917776
+  validation CE:		79.06
+Epoch 12 of 50 took 4.781s
+  training loss:		111.822896
+  validation loss:		101.281717
+  validation CE:		77.55
+Epoch 13 of 50 took 4.656s
+  training loss:		111.520446
+  validation loss:		102.943562
+  validation CE:		78.68
+Epoch 14 of 50 took 4.938s
+  training loss:		111.243226
+  validation loss:		100.941892
+  validation CE:		77.48
+Epoch 15 of 50 took 4.986s
+  training loss:		111.195489
+  validation loss:		99.747537
+  validation CE:		75.91
+Epoch 16 of 50 took 5.011s
+  training loss:		110.868207
+  validation loss:		106.382608
+  validation CE:		82.09
+Epoch 17 of 50 took 4.998s
+  training loss:		110.851838
+  validation loss:		99.216877
+  validation CE:		75.25
+Epoch 18 of 50 took 5.172s
+  training loss:		110.594667
+  validation loss:		101.558687
+  validation CE:		77.19
+Epoch 19 of 50 took 4.885s
+  training loss:		110.578383
+  validation loss:		100.993717
+  validation CE:		76.28
+Epoch 20 of 50 took 5.256s
+  training loss:		110.386894
+  validation loss:		100.962039
+  validation CE:		77.14
+Epoch 21 of 50 took 4.694s
+  training loss:		110.306695
+  validation loss:		101.409984
+  validation CE:		77.14
+Epoch 22 of 50 took 4.784s
+  training loss:		110.182379
+  validation loss:		102.242691
+  validation CE:		77.47
+Epoch 23 of 50 took 4.956s
+  training loss:		110.100569
+  validation loss:		102.224510
+  validation CE:		78.13
+Epoch 24 of 50 took 4.830s
+  training loss:		110.040998
+  validation loss:		108.372344
+  validation CE:		83.36
+Epoch 25 of 50 took 4.738s
+  training loss:		109.906645
+  validation loss:		100.907667
+  validation CE:		77.29
+Epoch 26 of 50 took 4.532s
+  training loss:		109.907400
+  validation loss:		99.910542
+  validation CE:		75.63
+Epoch 27 of 50 took 4.542s
+  training loss:		109.915123
+  validation loss:		102.483829
+  validation CE:		78.26
+Epoch 28 of 50 took 4.831s
+  training loss:		109.847470
+  validation loss:		103.546887
+  validation CE:		78.66
+Epoch 29 of 50 took 4.553s
+  training loss:		109.739921
+  validation loss:		100.827145
+  validation CE:		76.46
+Epoch 30 of 50 took 5.087s
+  training loss:		109.641834
+  validation loss:		103.222040
+  validation CE:		78.48
+Epoch 31 of 50 took 5.049s
+  training loss:		109.563786
+  validation loss:		101.096096
+  validation CE:		76.95
+Epoch 32 of 50 took 5.200s
+  training loss:		109.544682
+  validation loss:		101.307613
+  validation CE:		76.87
+Epoch 33 of 50 took 5.023s
+  training loss:		109.562890
+  validation loss:		102.293177
+  validation CE:		77.93
+Epoch 34 of 50 took 5.047s
+  training loss:		109.490574
+  validation loss:		99.924169
+  validation CE:		75.65
+Epoch 35 of 50 took 5.122s
+  training loss:		109.468358
+  validation loss:		102.744033
+  validation CE:		77.93
+Epoch 36 of 50 took 5.043s
+  training loss:		109.400685
+  validation loss:		100.259402
+  validation CE:		76.14
+Epoch 37 of 50 took 4.988s
+  training loss:		109.312493
+  validation loss:		99.556010
+  validation CE:		75.81
+Epoch 38 of 50 took 4.966s
+  training loss:		109.257208
+  validation loss:		102.499281
+  validation CE:		77.80
+Epoch 39 of 50 took 4.938s
+  training loss:		109.318541
+  validation loss:		101.214539
+  validation CE:		76.83
+Epoch 40 of 50 took 5.002s
+  training loss:		109.228067
+  validation loss:		101.617284
+  validation CE:		77.15
+Epoch 41 of 50 took 5.195s
+  training loss:		109.281936
+  validation loss:		101.214729
+  validation CE:		76.87
+Epoch 42 of 50 took 5.115s
+  training loss:		109.074864
+  validation loss:		102.011112
+  validation CE:		77.93
+Epoch 43 of 50 took 5.025s
+  training loss:		108.995310
+  validation loss:		99.443024
+  validation CE:		75.00
+Epoch 44 of 50 took 4.966s
+  training loss:		109.094319
+  validation loss:		103.830574
+  validation CE:		79.07
+Epoch 45 of 50 took 4.542s
+  training loss:		109.080190
+  validation loss:		100.646532
+  validation CE:		76.59
+Epoch 46 of 50 took 5.131s
+  training loss:		109.048313
+  validation loss:		99.497928
+  validation CE:		75.75
+Epoch 47 of 50 took 4.643s
+  training loss:		108.983020
+  validation loss:		101.266657
+  validation CE:		77.14
+Epoch 48 of 50 took 5.300s
+  training loss:		109.006743
+  validation loss:		101.937140
+  validation CE:		77.43
+Epoch 49 of 50 took 4.735s
+  training loss:		108.995483
+  validation loss:		100.703421
+  validation CE:		76.26
+Epoch 50 of 50 took 4.768s
+  training loss:		109.038249
+  validation loss:		101.154156
+  validation CE:		76.85
+best for this turn: 75.002988739
+Building model for 24 512 ... 2 2
+Compiling functions ...
+Starting training...
+Epoch 1 of 50 took 8.516s
+  training loss:		157.225813
+  validation loss:		120.250713
+  validation CE:		97.62
+Epoch 2 of 50 took 8.605s
+  training loss:		123.458411
+  validation loss:		110.041979
+  validation CE:		86.45
+Epoch 3 of 50 took 8.469s
+  training loss:		117.942387
+  validation loss:		107.399920
+  validation CE:		83.41
+Epoch 4 of 50 took 8.571s
+  training loss:		115.511958
+  validation loss:		105.350986
+  validation CE:		81.64
+Epoch 5 of 50 took 9.058s
+  training loss:		114.102020
+  validation loss:		108.655918
+  validation CE:		83.52
+Epoch 6 of 50 took 8.910s
+  training loss:		113.245833
+  validation loss:		103.069591
+  validation CE:		79.26
+Epoch 7 of 50 took 8.489s
+  training loss:		112.439321
+  validation loss:		106.463787
+  validation CE:		82.99
+Epoch 8 of 50 took 8.407s
+  training loss:		111.876052
+  validation loss:		102.665392
+  validation CE:		78.35
+Epoch 9 of 50 took 8.353s
+  training loss:		111.450995
+  validation loss:		104.736949
+  validation CE:		80.35
+Epoch 10 of 50 took 8.575s
+  training loss:		110.986825
+  validation loss:		102.895773
+  validation CE:		78.47
+Epoch 11 of 50 took 8.613s
+  training loss:		110.661506
+  validation loss:		101.789447
+  validation CE:		78.02
+Epoch 12 of 50 took 8.804s
+  training loss:		110.410715
+  validation loss:		101.838218
+  validation CE:		77.55
+Epoch 13 of 50 took 8.953s
+  training loss:		110.051887
+  validation loss:		101.197424
+  validation CE:		76.35
+Epoch 14 of 50 took 8.648s
+  training loss:		109.943608
+  validation loss:		101.141106
+  validation CE:		76.82
+Epoch 15 of 50 took 8.463s
+  training loss:		109.590094
+  validation loss:		100.411810
+  validation CE:		77.09
+Epoch 16 of 50 took 8.383s
+  training loss:		109.571478
+  validation loss:		100.518062
+  validation CE:		76.29
+Epoch 17 of 50 took 8.778s
+  training loss:		109.337940
+  validation loss:		102.014568
+  validation CE:		77.39
+Epoch 18 of 50 took 8.500s
+  training loss:		109.273520
+  validation loss:		102.821764
+  validation CE:		78.42
+Epoch 19 of 50 took 8.811s
+  training loss:		109.066235
+  validation loss:		100.803127
+  validation CE:		76.99
+Epoch 20 of 50 took 8.852s
+  training loss:		109.036331
+  validation loss:		103.489378
+  validation CE:		79.23
+Epoch 21 of 50 took 8.990s
+  training loss:		108.915893
+  validation loss:		102.533712
+  validation CE:		77.65
+Epoch 22 of 50 took 9.085s
+  training loss:		108.691957
+  validation loss:		102.572457
+  validation CE:		79.06
+Epoch 23 of 50 took 9.087s
+  training loss:		108.626544
+  validation loss:		99.985643
+  validation CE:		75.34
+Epoch 24 of 50 took 8.128s
+  training loss:		108.557860
+  validation loss:		100.943969
+  validation CE:		76.26
+Epoch 25 of 50 took 8.725s
+  training loss:		108.591172
+  validation loss:		100.858540
+  validation CE:		75.59
+Epoch 26 of 50 took 8.751s
+  training loss:		108.448647
+  validation loss:		100.087190
+  validation CE:		76.08
+Epoch 27 of 50 took 8.764s
+  training loss:		108.312706
+  validation loss:		100.355867
+  validation CE:		76.07
+Epoch 28 of 50 took 8.786s
+  training loss:		108.217206
+  validation loss:		103.917272
+  validation CE:		79.46
+Epoch 29 of 50 took 8.883s
+  training loss:		108.326092
+  validation loss:		101.374484
+  validation CE:		76.93
+Epoch 30 of 50 took 8.944s
+  training loss:		108.222703
+  validation loss:		100.602178
+  validation CE:		76.43
+Epoch 31 of 50 took 9.158s
+  training loss:		108.158811
+  validation loss:		103.643560
+  validation CE:		78.44
+Epoch 32 of 50 took 8.833s
+  training loss:		108.042222
+  validation loss:		102.859898
+  validation CE:		78.76
+Epoch 33 of 50 took 8.851s
+  training loss:		107.963147
+  validation loss:		98.474220
+  validation CE:		74.50
+Epoch 34 of 50 took 9.103s
+  training loss:		107.984714
+  validation loss:		101.942496
+  validation CE:		77.04
+Epoch 35 of 50 took 8.813s
+  training loss:		107.893818
+  validation loss:		98.771635
+  validation CE:		74.60
+Epoch 36 of 50 took 8.893s
+  training loss:		107.880103
+  validation loss:		99.873198
+  validation CE:		75.72
+Epoch 37 of 50 took 8.863s
+  training loss:		107.830036
+  validation loss:		101.358362
+  validation CE:		76.74
+Epoch 38 of 50 took 8.818s
+  training loss:		107.908368
+  validation loss:		99.201237
+  validation CE:		75.07
+Epoch 39 of 50 took 9.204s
+  training loss:		107.736798
+  validation loss:		99.001020
+  validation CE:		75.25
+Epoch 40 of 50 took 8.898s
+  training loss:		107.674508
+  validation loss:		99.485105
+  validation CE:		74.82
+Epoch 41 of 50 took 8.893s
+  training loss:		107.662946
+  validation loss:		100.233574
+  validation CE:		75.87
+Epoch 42 of 50 took 8.947s
+  training loss:		107.688605
+  validation loss:		102.027715
+  validation CE:		77.58
+Epoch 43 of 50 took 8.553s
+  training loss:		107.662455
+  validation loss:		100.670611
+  validation CE:		76.04
+Epoch 44 of 50 took 9.177s
+  training loss:		107.558197
+  validation loss:		103.839462
+  validation CE:		79.20
+Epoch 45 of 50 took 9.069s
+  training loss:		107.569341
+  validation loss:		100.660447
+  validation CE:		75.92
+Epoch 46 of 50 took 8.710s
+  training loss:		107.534283
+  validation loss:		98.358744
+  validation CE:		74.29
+Epoch 47 of 50 took 8.980s
+  training loss:		107.555245
+  validation loss:		99.622235
+  validation CE:		75.18
+Epoch 48 of 50 took 9.181s
+  training loss:		107.447377
+  validation loss:		98.763695
+  validation CE:		74.88
+Epoch 49 of 50 took 8.500s
+  training loss:		107.508714
+  validation loss:		99.237809
+  validation CE:		74.80
+Epoch 50 of 50 took 8.386s
+  training loss:		107.461086
+  validation loss:		97.752516
+  validation CE:		73.72
+best for this turn: 73.7246746063
+Building model for 28 128 ... 3 0
+Compiling functions ...
+Starting training...
+Epoch 1 of 50 took 1.482s
+  training loss:		160.618494
+  validation loss:		127.046031
+  validation CE:		106.26
+Epoch 2 of 50 took 1.397s
+  training loss:		129.991286
+  validation loss:		116.502381
+  validation CE:		94.56
+Epoch 3 of 50 took 1.407s
+  training loss:		122.981819
+  validation loss:		112.649431
+  validation CE:		90.41
+Epoch 4 of 50 took 1.404s
+  training loss:		119.943610
+  validation loss:		108.926148
+  validation CE:		87.28
+Epoch 5 of 50 took 1.454s
+  training loss:		118.188410
+  validation loss:		106.302923
+  validation CE:		84.21
+Epoch 6 of 50 took 1.446s
+  training loss:		117.007680
+  validation loss:		106.554451
+  validation CE:		83.46
+Epoch 7 of 50 took 1.396s
+  training loss:		116.012430
+  validation loss:		106.173617
+  validation CE:		83.06
+Epoch 8 of 50 took 1.397s
+  training loss:		115.490364
+  validation loss:		107.485673
+  validation CE:		83.65
+Epoch 9 of 50 took 1.401s
+  training loss:		114.967898
+  validation loss:		107.837650
+  validation CE:		83.41
+Epoch 10 of 50 took 1.396s
+  training loss:		114.571430
+  validation loss:		106.104388
+  validation CE:		81.83
+Epoch 11 of 50 took 1.396s
+  training loss:		114.299368
+  validation loss:		104.414371
+  validation CE:		80.73
+Epoch 12 of 50 took 1.394s
+  training loss:		113.891209
+  validation loss:		104.408425
+  validation CE:		81.08
+Epoch 13 of 50 took 1.405s
+  training loss:		113.654803
+  validation loss:		106.277324
+  validation CE:		82.32
+Epoch 14 of 50 took 1.394s
+  training loss:		113.518139
+  validation loss:		104.596563
+  validation CE:		80.62
+Epoch 15 of 50 took 1.394s
+  training loss:		113.194348
+  validation loss:		103.680431
+  validation CE:		80.69
+Epoch 16 of 50 took 1.393s
+  training loss:		113.146178
+  validation loss:		103.500831
+  validation CE:		79.83
+Epoch 17 of 50 took 1.398s
+  training loss:		113.002016
+  validation loss:		104.805812
+  validation CE:		81.21
+Epoch 18 of 50 took 1.396s
+  training loss:		112.920726
+  validation loss:		102.365994
+  validation CE:		79.14
+Epoch 19 of 50 took 1.449s
+  training loss:		112.792188
+  validation loss:		104.010079
+  validation CE:		80.72
+Epoch 20 of 50 took 1.436s
+  training loss:		112.607953
+  validation loss:		106.265108
+  validation CE:		81.72
+Epoch 21 of 50 took 1.404s
+  training loss:		112.487909
+  validation loss:		103.796983
+  validation CE:		79.89
+Epoch 22 of 50 took 1.396s
+  training loss:		112.468943
+  validation loss:		102.704472
+  validation CE:		78.44
+Epoch 23 of 50 took 1.392s
+  training loss:		112.408019
+  validation loss:		102.041564
+  validation CE:		78.91
+Epoch 24 of 50 took 1.399s
+  training loss:		112.336813
+  validation loss:		105.293108
+  validation CE:		81.01
+Epoch 25 of 50 took 1.394s
+  training loss:		112.181690
+  validation loss:		102.790682
+  validation CE:		78.29
+Epoch 26 of 50 took 1.402s
+  training loss:		112.146667
+  validation loss:		105.962879
+  validation CE:		82.29
+Epoch 27 of 50 took 1.409s
+  training loss:		112.064018
+  validation loss:		105.137608
+  validation CE:		81.03
+Epoch 28 of 50 took 1.400s
+  training loss:		112.016188
+  validation loss:		106.565850
+  validation CE:		82.33
+Epoch 29 of 50 took 1.391s
+  training loss:		112.100775
+  validation loss:		103.359160
+  validation CE:		79.50
+Epoch 30 of 50 took 1.397s
+  training loss:		111.888718
+  validation loss:		101.500111
+  validation CE:		77.72
+Epoch 31 of 50 took 1.401s
+  training loss:		111.783116
+  validation loss:		104.464986
+  validation CE:		81.39
+Epoch 32 of 50 took 1.392s
+  training loss:		111.744195
+  validation loss:		102.137472
+  validation CE:		78.16
+Epoch 33 of 50 took 1.452s
+  training loss:		111.882481
+  validation loss:		103.716493
+  validation CE:		79.67
+Epoch 34 of 50 took 1.452s
+  training loss:		111.758567
+  validation loss:		103.389397
+  validation CE:		79.59
+Epoch 35 of 50 took 1.407s
+  training loss:		111.626014
+  validation loss:		102.520735
+  validation CE:		78.97
+Epoch 36 of 50 took 1.400s
+  training loss:		111.732526
+  validation loss:		102.916414
+  validation CE:		78.94
+Epoch 37 of 50 took 1.395s
+  training loss:		111.554514
+  validation loss:		101.743827
+  validation CE:		77.75
+Epoch 38 of 50 took 1.403s
+  training loss:		111.515552
+  validation loss:		102.792712
+  validation CE:		78.80
+Epoch 39 of 50 took 1.393s
+  training loss:		111.391345
+  validation loss:		103.708677
+  validation CE:		79.70
+Epoch 40 of 50 took 1.398s
+  training loss:		111.356168
+  validation loss:		103.184836
+  validation CE:		79.76
+Epoch 41 of 50 took 1.413s
+  training loss:		111.364120
+  validation loss:		103.176393
+  validation CE:		79.16
+Epoch 42 of 50 took 1.437s
+  training loss:		111.383382
+  validation loss:		103.993661
+  validation CE:		80.31
+Epoch 43 of 50 took 1.400s
+  training loss:		111.300782
+  validation loss:		102.495027
+  validation CE:		78.84
+Epoch 44 of 50 took 1.398s
+  training loss:		111.330267
+  validation loss:		105.094730
+  validation CE:		80.98
+Epoch 45 of 50 took 1.409s
+  training loss:		111.326967
+  validation loss:		103.510516
+  validation CE:		79.46
+Epoch 46 of 50 took 1.404s
+  training loss:		111.203106
+  validation loss:		102.463043
+  validation CE:		78.32
+Epoch 47 of 50 took 1.458s
+  training loss:		111.217745
+  validation loss:		104.188322
+  validation CE:		79.99
+Epoch 48 of 50 took 1.444s
+  training loss:		111.112888
+  validation loss:		103.178773
+  validation CE:		79.30
+Epoch 49 of 50 took 1.401s
+  training loss:		111.188173
+  validation loss:		103.282909
+  validation CE:		79.52
+Epoch 50 of 50 took 1.397s
+  training loss:		111.104878
+  validation loss:		104.243230
+  validation CE:		79.55
+best for this turn: 77.71723526
+Building model for 28 256 ... 3 1
+Compiling functions ...
+Starting training...
+Epoch 1 of 50 took 5.602s
+  training loss:		156.100222
+  validation loss:		121.109250
+  validation CE:		100.25
+Epoch 2 of 50 took 5.558s
+  training loss:		125.271340
+  validation loss:		112.220487
+  validation CE:		89.98
+Epoch 3 of 50 took 5.511s
+  training loss:		119.297849
+  validation loss:		107.367734
+  validation CE:		83.99
+Epoch 4 of 50 took 5.669s
+  training loss:		116.887645
+  validation loss:		105.529175
+  validation CE:		81.63
+Epoch 5 of 50 took 5.505s
+  training loss:		115.456765
+  validation loss:		104.230572
+  validation CE:		80.71
+Epoch 6 of 50 took 5.726s
+  training loss:		114.540278
+  validation loss:		104.409134
+  validation CE:		81.15
+Epoch 7 of 50 took 5.219s
+  training loss:		113.855014
+  validation loss:		103.225588
+  validation CE:		79.55
+Epoch 8 of 50 took 5.322s
+  training loss:		113.246180
+  validation loss:		105.149281
+  validation CE:		81.30
+Epoch 9 of 50 took 5.508s
+  training loss:		112.918662
+  validation loss:		104.845183
+  validation CE:		80.01
+Epoch 10 of 50 took 5.313s
+  training loss:		112.602641
+  validation loss:		104.473616
+  validation CE:		79.48
+Epoch 11 of 50 took 5.521s
+  training loss:		112.255178
+  validation loss:		104.250607
+  validation CE:		80.08
+Epoch 12 of 50 took 5.501s
+  training loss:		111.948722
+  validation loss:		104.870400
+  validation CE:		81.09
+Epoch 13 of 50 took 5.530s
+  training loss:		111.709609
+  validation loss:		102.715321
+  validation CE:		78.73
+Epoch 14 of 50 took 5.478s
+  training loss:		111.569027
+  validation loss:		102.808068
+  validation CE:		78.77
+Epoch 15 of 50 took 5.586s
+  training loss:		111.309283
+  validation loss:		103.689755
+  validation CE:		78.98
+Epoch 16 of 50 took 5.198s
+  training loss:		111.167243
+  validation loss:		102.738391
+  validation CE:		78.78
+Epoch 17 of 50 took 5.592s
+  training loss:		111.007429
+  validation loss:		102.045336
+  validation CE:		78.09
+Epoch 18 of 50 took 5.435s
+  training loss:		110.868817
+  validation loss:		101.897713
+  validation CE:		77.86
+Epoch 19 of 50 took 5.743s
+  training loss:		110.836187
+  validation loss:		100.967560
+  validation CE:		76.67
+Epoch 20 of 50 took 5.637s
+  training loss:		110.591260
+  validation loss:		101.578583
+  validation CE:		77.74
+Epoch 21 of 50 took 5.276s
+  training loss:		110.456332
+  validation loss:		100.374899
+  validation CE:		76.35
+Epoch 22 of 50 took 5.409s
+  training loss:		110.380917
+  validation loss:		103.247084
+  validation CE:		78.37
+Epoch 23 of 50 took 5.742s
+  training loss:		110.439914
+  validation loss:		100.963863
+  validation CE:		77.09
+Epoch 24 of 50 took 5.276s
+  training loss:		110.303715
+  validation loss:		101.274087
+  validation CE:		76.98
+Epoch 25 of 50 took 5.701s
+  training loss:		110.252622
+  validation loss:		100.975118
+  validation CE:		76.62
+Epoch 26 of 50 took 5.331s
+  training loss:		110.151946
+  validation loss:		100.948495
+  validation CE:		77.14
+Epoch 27 of 50 took 5.387s
+  training loss:		109.986863
+  validation loss:		99.077532
+  validation CE:		75.07
+Epoch 28 of 50 took 5.055s
+  training loss:		109.952394
+  validation loss:		104.008472
+  validation CE:		79.40
+Epoch 29 of 50 took 5.294s
+  training loss:		109.981997
+  validation loss:		100.472504
+  validation CE:		76.76
+Epoch 30 of 50 took 5.300s
+  training loss:		109.828448
+  validation loss:		100.609371
+  validation CE:		76.57
+Epoch 31 of 50 took 5.563s
+  training loss:		109.774378
+  validation loss:		101.616881
+  validation CE:		77.24
+Epoch 32 of 50 took 5.279s
+  training loss:		109.755577
+  validation loss:		101.444653
+  validation CE:		77.65
+Epoch 33 of 50 took 5.352s
+  training loss:		109.711821
+  validation loss:		104.801191
+  validation CE:		79.34
+Epoch 34 of 50 took 5.473s
+  training loss:		109.659265
+  validation loss:		102.313466
+  validation CE:		77.54
+Epoch 35 of 50 took 5.418s
+  training loss:		109.675280
+  validation loss:		101.667844
+  validation CE:		77.15
+Epoch 36 of 50 took 5.327s
+  training loss:		109.625880
+  validation loss:		100.808051
+  validation CE:		76.21
+Epoch 37 of 50 took 5.314s
+  training loss:		109.487111
+  validation loss:		99.705439
+  validation CE:		75.53
+Epoch 38 of 50 took 5.140s
+  training loss:		109.513904
+  validation loss:		99.922228
+  validation CE:		75.86
+Epoch 39 of 50 took 5.232s
+  training loss:		109.471799
+  validation loss:		101.923960
+  validation CE:		77.31
+Epoch 40 of 50 took 4.874s
+  training loss:		109.445147
+  validation loss:		105.612959
+  validation CE:		80.64
+Epoch 41 of 50 took 5.069s
+  training loss:		109.491513
+  validation loss:		99.200736
+  validation CE:		75.01
+Epoch 42 of 50 took 5.235s
+  training loss:		109.402052
+  validation loss:		99.154671
+  validation CE:		74.98
+Epoch 43 of 50 took 5.328s
+  training loss:		109.313652
+  validation loss:		100.795194
+  validation CE:		76.62
+Epoch 44 of 50 took 5.042s
+  training loss:		109.291176
+  validation loss:		102.801779
+  validation CE:		78.46
+Epoch 45 of 50 took 4.952s
+  training loss:		109.288669
+  validation loss:		100.022604
+  validation CE:		75.82
+Epoch 46 of 50 took 5.350s
+  training loss:		109.234434
+  validation loss:		101.266324
+  validation CE:		76.76
+Epoch 47 of 50 took 4.854s
+  training loss:		109.283955
+  validation loss:		100.665525
+  validation CE:		76.28
+Epoch 48 of 50 took 5.295s
+  training loss:		109.291060
+  validation loss:		102.160408
+  validation CE:		77.81
+Epoch 49 of 50 took 4.657s
+  training loss:		109.228485
+  validation loss:		100.517644
+  validation CE:		76.33
+Epoch 50 of 50 took 4.503s
+  training loss:		109.210008
+  validation loss:		101.126210
+  validation CE:		77.33
+best for this turn: 74.9812249756
+Building model for 28 512 ... 3 2
+Compiling functions ...
+Starting training...
+Epoch 1 of 50 took 8.962s
+  training loss:		153.560592
+  validation loss:		118.973130
+  validation CE:		96.16
+Epoch 2 of 50 took 8.770s
+  training loss:		123.148108
+  validation loss:		112.768295
+  validation CE:		89.50
+Epoch 3 of 50 took 9.070s
+  training loss:		117.676368
+  validation loss:		106.948317
+  validation CE:		83.31
+Epoch 4 of 50 took 9.140s
+  training loss:		115.526005
+  validation loss:		104.976159
+  validation CE:		80.69
+Epoch 5 of 50 took 9.176s
+  training loss:		114.170784
+  validation loss:		103.978425
+  validation CE:		80.74
+Epoch 6 of 50 took 9.261s
+  training loss:		113.295287
+  validation loss:		102.760950
+  validation CE:		78.92
+Epoch 7 of 50 took 8.913s
+  training loss:		112.704891
+  validation loss:		103.509832
+  validation CE:		79.39
+Epoch 8 of 50 took 8.857s
+  training loss:		112.170082
+  validation loss:		103.650233
+  validation CE:		79.04
+Epoch 9 of 50 took 8.972s
+  training loss:		111.727525
+  validation loss:		102.486168
+  validation CE:		78.73
+Epoch 10 of 50 took 8.900s
+  training loss:		111.260429
+  validation loss:		102.306006
+  validation CE:		78.56
+Epoch 11 of 50 took 9.055s
+  training loss:		110.854830
+  validation loss:		102.362395
+  validation CE:		78.34
+Epoch 12 of 50 took 8.590s
+  training loss:		110.640624
+  validation loss:		103.556505
+  validation CE:		78.47
+Epoch 13 of 50 took 8.751s
+  training loss:		110.390447
+  validation loss:		103.312583
+  validation CE:		78.33
+Epoch 14 of 50 took 8.646s
+  training loss:		110.204169
+  validation loss:		101.863652
+  validation CE:		77.57
+Epoch 15 of 50 took 8.714s
+  training loss:		110.048253
+  validation loss:		102.432756
+  validation CE:		77.48
+Epoch 16 of 50 took 9.056s
+  training loss:		109.801530
+  validation loss:		102.079622
+  validation CE:		77.67
+Epoch 17 of 50 took 8.808s
+  training loss:		109.695580
+  validation loss:		104.416444
+  validation CE:		79.43
+Epoch 18 of 50 took 8.878s
+  training loss:		109.531619
+  validation loss:		101.540212
+  validation CE:		76.83
+Epoch 19 of 50 took 9.441s
+  training loss:		109.401284
+  validation loss:		102.212729
+  validation CE:		77.66
+Epoch 20 of 50 took 8.895s
+  training loss:		109.370089
+  validation loss:		100.768358
+  validation CE:		76.39
+Epoch 21 of 50 took 9.289s
+  training loss:		109.224223
+  validation loss:		101.119571
+  validation CE:		76.59
+Epoch 22 of 50 took 9.500s
+  training loss:		109.166037
+  validation loss:		101.802341
+  validation CE:		76.78
+Epoch 23 of 50 took 9.084s
+  training loss:		108.983566
+  validation loss:		100.154212
+  validation CE:		75.62
+Epoch 24 of 50 took 9.478s
+  training loss:		108.947918
+  validation loss:		102.963866
+  validation CE:		78.07
+Epoch 25 of 50 took 9.360s
+  training loss:		108.851794
+  validation loss:		100.223311
+  validation CE:		75.60
+Epoch 26 of 50 took 9.581s
+  training loss:		108.723488
+  validation loss:		98.961757
+  validation CE:		74.27
+Epoch 27 of 50 took 9.310s
+  training loss:		108.750720
+  validation loss:		101.517433
+  validation CE:		77.34
+Epoch 28 of 50 took 9.229s
+  training loss:		108.618213
+  validation loss:		103.091805
+  validation CE:		78.26
+Epoch 29 of 50 took 9.818s
+  training loss:		108.705688
+  validation loss:		104.638524
+  validation CE:		79.30
+Epoch 30 of 50 took 9.614s
+  training loss:		108.566485
+  validation loss:		100.540359
+  validation CE:		75.95
+Epoch 31 of 50 took 9.480s
+  training loss:		108.518045
+  validation loss:		99.742655
+  validation CE:		75.16
+Epoch 32 of 50 took 9.709s
+  training loss:		108.470760
+  validation loss:		100.689217
+  validation CE:		75.98
+Epoch 33 of 50 took 9.374s
+  training loss:		108.355755
+  validation loss:		99.641402
+  validation CE:		75.08
+Epoch 34 of 50 took 9.218s
+  training loss:		108.220281
+  validation loss:		101.309441
+  validation CE:		76.11
+Epoch 35 of 50 took 9.827s
+  training loss:		108.279100
+  validation loss:		101.527155
+  validation CE:		76.89
+Epoch 36 of 50 took 10.098s
+  training loss:		108.222725
+  validation loss:		101.518720
+  validation CE:		76.96
+Epoch 37 of 50 took 9.538s
+  training loss:		108.210369
+  validation loss:		100.881540
+  validation CE:		75.88
+Epoch 38 of 50 took 9.107s
+  training loss:		108.175673
+  validation loss:		99.186381
+  validation CE:		74.51
+Epoch 39 of 50 took 9.114s
+  training loss:		108.068351
+  validation loss:		98.102537
+  validation CE:		73.81
+Epoch 40 of 50 took 9.161s
+  training loss:		108.054189
+  validation loss:		100.066461
+  validation CE:		75.46
+Epoch 41 of 50 took 9.313s
+  training loss:		108.011116
+  validation loss:		100.094570
+  validation CE:		75.38
+Epoch 42 of 50 took 9.480s
+  training loss:		107.993768
+  validation loss:		101.653213
+  validation CE:		76.36
+Epoch 43 of 50 took 9.619s
+  training loss:		107.889701
+  validation loss:		99.502551
+  validation CE:		74.49
+Epoch 44 of 50 took 9.419s
+  training loss:		107.879887
+  validation loss:		101.346449
+  validation CE:		76.65
+Epoch 45 of 50 took 9.228s
+  training loss:		107.888547
+  validation loss:		98.300338
+  validation CE:		73.53
+Epoch 46 of 50 took 9.189s
+  training loss:		107.762481
+  validation loss:		101.137543
+  validation CE:		76.60
+Epoch 47 of 50 took 9.619s
+  training loss:		107.799214
+  validation loss:		98.140748
+  validation CE:		74.02
+Epoch 48 of 50 took 8.761s
+  training loss:		107.738092
+  validation loss:		101.067831
+  validation CE:		75.91
+Epoch 49 of 50 took 8.755s
+  training loss:		107.650446
+  validation loss:		100.030148
+  validation CE:		75.42
+Epoch 50 of 50 took 9.938s
+  training loss:		107.769150
+  validation loss:		99.111673
+  validation CE:		74.31
+best for this turn: 73.5259750748
+Building model for 32 128 ... 4 0
+Compiling functions ...
+Starting training...
+Epoch 1 of 50 took 1.497s
+  training loss:		162.700576
+  validation loss:		133.683852
+  validation CE:		112.74
+Epoch 2 of 50 took 1.384s
+  training loss:		130.182633
+  validation loss:		114.832771
+  validation CE:		93.40
+Epoch 3 of 50 took 1.374s
+  training loss:		122.528480
+  validation loss:		113.248813
+  validation CE:		90.82
+Epoch 4 of 50 took 1.398s
+  training loss:		119.241118
+  validation loss:		107.512154
+  validation CE:		84.58
+Epoch 5 of 50 took 1.386s
+  training loss:		117.459676
+  validation loss:		106.518992
+  validation CE:		84.23
+Epoch 6 of 50 took 1.378s
+  training loss:		116.283980
+  validation loss:		106.118705
+  validation CE:		83.15
+Epoch 7 of 50 took 1.373s
+  training loss:		115.618770
+  validation loss:		104.970037
+  validation CE:		81.73
+Epoch 8 of 50 took 1.373s
+  training loss:		115.083584
+  validation loss:		105.602032
+  validation CE:		82.45
+Epoch 9 of 50 took 1.369s
+  training loss:		114.561348
+  validation loss:		106.074161
+  validation CE:		82.03
+Epoch 10 of 50 took 1.375s
+  training loss:		114.332186
+  validation loss:		106.623438
+  validation CE:		82.81
+Epoch 11 of 50 took 1.374s
+  training loss:		114.094268
+  validation loss:		108.382013
+  validation CE:		84.35
+Epoch 12 of 50 took 1.376s
+  training loss:		113.873194
+  validation loss:		106.847581
+  validation CE:		83.47
+Epoch 13 of 50 took 1.379s
+  training loss:		113.644623
+  validation loss:		106.546519
+  validation CE:		82.40
+Epoch 14 of 50 took 1.377s
+  training loss:		113.398947
+  validation loss:		107.233734
+  validation CE:		83.17
+Epoch 15 of 50 took 1.372s
+  training loss:		113.279048
+  validation loss:		105.612749
+  validation CE:		81.38
+Epoch 16 of 50 took 1.374s
+  training loss:		113.086670
+  validation loss:		106.824823
+  validation CE:		82.95
+Epoch 17 of 50 took 1.373s
+  training loss:		112.985523
+  validation loss:		103.361756
+  validation CE:		79.50
+Epoch 18 of 50 took 1.378s
+  training loss:		112.939024
+  validation loss:		103.474851
+  validation CE:		80.05
+Epoch 19 of 50 took 1.382s
+  training loss:		112.754700
+  validation loss:		105.440677
+  validation CE:		82.10
+Epoch 20 of 50 took 1.378s
+  training loss:		112.636169
+  validation loss:		106.267109
+  validation CE:		82.19
+Epoch 21 of 50 took 1.376s
+  training loss:		112.629406
+  validation loss:		104.232678
+  validation CE:		80.59
+Epoch 22 of 50 took 1.371s
+  training loss:		112.445363
+  validation loss:		102.311119
+  validation CE:		78.88
+Epoch 23 of 50 took 1.374s
+  training loss:		112.502254
+  validation loss:		102.639499
+  validation CE:		79.09
+Epoch 24 of 50 took 1.375s
+  training loss:		112.360197
+  validation loss:		103.003462
+  validation CE:		78.82
+Epoch 25 of 50 took 1.375s
+  training loss:		112.312762
+  validation loss:		104.072743
+  validation CE:		80.48
+Epoch 26 of 50 took 1.376s
+  training loss:		112.179576
+  validation loss:		101.189205
+  validation CE:		77.56
+Epoch 27 of 50 took 1.382s
+  training loss:		112.173247
+  validation loss:		102.594384
+  validation CE:		79.16
+Epoch 28 of 50 took 1.374s
+  training loss:		112.093036
+  validation loss:		106.294237
+  validation CE:		82.11
+Epoch 29 of 50 took 1.373s
+  training loss:		112.068350
+  validation loss:		106.082793
+  validation CE:		82.21
+Epoch 30 of 50 took 1.374s
+  training loss:		112.010028
+  validation loss:		103.035156
+  validation CE:		79.25
+Epoch 31 of 50 took 1.373s
+  training loss:		111.894269
+  validation loss:		103.988526
+  validation CE:		80.56
+Epoch 32 of 50 took 1.378s
+  training loss:		111.924387
+  validation loss:		102.194075
+  validation CE:		78.79
+Epoch 33 of 50 took 1.374s
+  training loss:		111.902695
+  validation loss:		101.863928
+  validation CE:		78.54
+Epoch 34 of 50 took 1.381s
+  training loss:		111.740912
+  validation loss:		102.476050
+  validation CE:		78.94
+Epoch 35 of 50 took 1.379s
+  training loss:		111.763413
+  validation loss:		105.643030
+  validation CE:		81.90
+Epoch 36 of 50 took 1.380s
+  training loss:		111.727161
+  validation loss:		102.845482
+  validation CE:		78.81
+Epoch 37 of 50 took 1.381s
+  training loss:		111.644997
+  validation loss:		104.944059
+  validation CE:		81.07
+Epoch 38 of 50 took 1.384s
+  training loss:		111.646328
+  validation loss:		103.445470
+  validation CE:		79.82
+Epoch 39 of 50 took 1.381s
+  training loss:		111.543459
+  validation loss:		104.556270
+  validation CE:		80.54
+Epoch 40 of 50 took 1.381s
+  training loss:		111.552111
+  validation loss:		101.810569
+  validation CE:		77.94
+Epoch 41 of 50 took 1.376s
+  training loss:		111.601093
+  validation loss:		105.163136
+  validation CE:		81.34
+Epoch 42 of 50 took 1.373s
+  training loss:		111.612060
+  validation loss:		102.480513
+  validation CE:		78.47
+Epoch 43 of 50 took 1.553s
+  training loss:		111.492189
+  validation loss:		100.918920
+  validation CE:		77.40
+Epoch 44 of 50 took 1.370s
+  training loss:		111.428387
+  validation loss:		101.568101
+  validation CE:		78.48
+Epoch 45 of 50 took 1.370s
+  training loss:		111.377298
+  validation loss:		102.049666
+  validation CE:		77.81
+Epoch 46 of 50 took 1.367s
+  training loss:		111.408441
+  validation loss:		104.035516
+  validation CE:		80.52
+Epoch 47 of 50 took 1.366s
+  training loss:		111.437427
+  validation loss:		103.641029
+  validation CE:		79.56
+Epoch 48 of 50 took 1.366s
+  training loss:		111.414794
+  validation loss:		102.519447
+  validation CE:		78.54
+Epoch 49 of 50 took 1.361s
+  training loss:		111.412965
+  validation loss:		103.707637
+  validation CE:		79.89
+Epoch 50 of 50 took 1.365s
+  training loss:		111.287220
+  validation loss:		102.229915
+  validation CE:		78.52
+best for this turn: 77.3992255402
+Building model for 32 256 ... 4 1
+Compiling functions ...
+Starting training...
+Epoch 1 of 50 took 5.828s
+  training loss:		156.097197
+  validation loss:		121.144792
+  validation CE:		99.04
+Epoch 2 of 50 took 5.770s
+  training loss:		125.658955
+  validation loss:		110.511351
+  validation CE:		88.26
+Epoch 3 of 50 took 5.606s
+  training loss:		119.649186
+  validation loss:		111.380858
+  validation CE:		87.93
+Epoch 4 of 50 took 5.162s
+  training loss:		117.262427
+  validation loss:		106.534893
+  validation CE:		83.49
+Epoch 5 of 50 took 5.401s
+  training loss:		115.808603
+  validation loss:		106.568875
+  validation CE:		82.47
+Epoch 6 of 50 took 5.879s
+  training loss:		114.855425
+  validation loss:		105.391614
+  validation CE:		82.07
+Epoch 7 of 50 took 5.413s
+  training loss:		114.153407
+  validation loss:		103.070767
+  validation CE:		79.21
+Epoch 8 of 50 took 5.551s
+  training loss:		113.588208
+  validation loss:		103.474816
+  validation CE:		79.70
+Epoch 9 of 50 took 6.112s
+  training loss:		113.141438
+  validation loss:		102.330762
+  validation CE:		78.72
+Epoch 10 of 50 took 6.101s
+  training loss:		112.658202
+  validation loss:		104.860540
+  validation CE:		80.76
+Epoch 11 of 50 took 5.850s
+  training loss:		112.367386
+  validation loss:		103.320957
+  validation CE:		80.04
+Epoch 12 of 50 took 5.591s
+  training loss:		112.147044
+  validation loss:		104.202710
+  validation CE:		79.22
+Epoch 13 of 50 took 5.943s
+  training loss:		111.923206
+  validation loss:		102.244463
+  validation CE:		78.26
+Epoch 14 of 50 took 5.889s
+  training loss:		111.650644
+  validation loss:		102.965699
+  validation CE:		78.72
+Epoch 15 of 50 took 5.831s
+  training loss:		111.456958
+  validation loss:		101.753825
+  validation CE:		77.46
+Epoch 16 of 50 took 5.732s
+  training loss:		111.315857
+  validation loss:		102.605160
+  validation CE:		78.78
+Epoch 17 of 50 took 5.900s
+  training loss:		111.010567
+  validation loss:		101.924799
+  validation CE:		77.54
+Epoch 18 of 50 took 5.835s
+  training loss:		110.863743
+  validation loss:		100.922654
+  validation CE:		77.05
+Epoch 19 of 50 took 5.655s
+  training loss:		110.793644
+  validation loss:		101.331765
+  validation CE:		77.00
+Epoch 20 of 50 took 5.699s
+  training loss:		110.687449
+  validation loss:		100.719888
+  validation CE:		76.50
+Epoch 21 of 50 took 5.979s
+  training loss:		110.592158
+  validation loss:		101.118520
+  validation CE:		76.90
+Epoch 22 of 50 took 5.930s
+  training loss:		110.533999
+  validation loss:		101.261556
+  validation CE:		76.30
+Epoch 23 of 50 took 5.899s
+  training loss:		110.404139
+  validation loss:		102.570742
+  validation CE:		78.09
+Epoch 24 of 50 took 5.716s
+  training loss:		110.384217
+  validation loss:		104.628796
+  validation CE:		80.34
+Epoch 25 of 50 took 5.613s
+  training loss:		110.183046
+  validation loss:		102.468525
+  validation CE:		77.83
+Epoch 26 of 50 took 5.936s
+  training loss:		110.049840
+  validation loss:		99.425336
+  validation CE:		74.65
+Epoch 27 of 50 took 5.740s
+  training loss:		110.041697
+  validation loss:		101.667675
+  validation CE:		76.40
+Epoch 28 of 50 took 5.725s
+  training loss:		110.055055
+  validation loss:		105.579837
+  validation CE:		81.68
+Epoch 29 of 50 took 5.447s
+  training loss:		109.925747
+  validation loss:		101.668546
+  validation CE:		77.52
+Epoch 30 of 50 took 6.020s
+  training loss:		109.766171
+  validation loss:		101.656970
+  validation CE:		77.16
+Epoch 31 of 50 took 5.246s
+  training loss:		109.952568
+  validation loss:		101.990841
+  validation CE:		77.38
+Epoch 32 of 50 took 5.328s
+  training loss:		109.823518
+  validation loss:		100.686510
+  validation CE:		76.40
+Epoch 33 of 50 took 5.759s
+  training loss:		109.730626
+  validation loss:		99.516490
+  validation CE:		75.40
+Epoch 34 of 50 took 6.010s
+  training loss:		109.587795
+  validation loss:		102.244497
+  validation CE:		77.46
+Epoch 35 of 50 took 5.916s
+  training loss:		109.530062
+  validation loss:		105.126629
+  validation CE:		80.38
+Epoch 36 of 50 took 5.148s
+  training loss:		109.453655
+  validation loss:		99.547079
+  validation CE:		75.51
+Epoch 37 of 50 took 5.519s
+  training loss:		109.456850
+  validation loss:		101.930280
+  validation CE:		77.56
+Epoch 38 of 50 took 5.753s
+  training loss:		109.472882
+  validation loss:		100.719381
+  validation CE:		76.48
+Epoch 39 of 50 took 6.032s
+  training loss:		109.406505
+  validation loss:		101.121958
+  validation CE:		76.82
+Epoch 40 of 50 took 5.824s
+  training loss:		109.511680
+  validation loss:		102.609499
+  validation CE:		78.14
+Epoch 41 of 50 took 6.008s
+  training loss:		109.335546
+  validation loss:		99.460911
+  validation CE:		74.73
+Epoch 42 of 50 took 6.016s
+  training loss:		109.384937
+  validation loss:		101.494019
+  validation CE:		76.62
+Epoch 43 of 50 took 5.988s
+  training loss:		109.240847
+  validation loss:		99.814428
+  validation CE:		75.30
+Epoch 44 of 50 took 6.284s
+  training loss:		109.213560
+  validation loss:		101.236526
+  validation CE:		76.92
+Epoch 45 of 50 took 6.003s
+  training loss:		109.218253
+  validation loss:		100.804550
+  validation CE:		76.39
+Epoch 46 of 50 took 6.167s
+  training loss:		109.221396
+  validation loss:		100.951324
+  validation CE:		76.50
+Epoch 47 of 50 took 5.694s
+  training loss:		109.156407
+  validation loss:		100.185456
+  validation CE:		75.60
+Epoch 48 of 50 took 5.846s
+  training loss:		109.153140
+  validation loss:		99.309903
+  validation CE:		75.19
+Epoch 49 of 50 took 5.723s
+  training loss:		109.081402
+  validation loss:		99.620370
+  validation CE:		75.28
+Epoch 50 of 50 took 5.978s
+  training loss:		109.128614
+  validation loss:		101.406152
+  validation CE:		76.89
+best for this turn: 74.649596405
+Building model for 32 512 ... 4 2
+Compiling functions ...
+Starting training...
+Epoch 1 of 50 took 8.590s
+  training loss:		153.531971
+  validation loss:		121.119311
+  validation CE:		98.97
+Epoch 2 of 50 took 8.877s
+  training loss:		123.746259
+  validation loss:		110.916796
+  validation CE:		88.13
+Epoch 3 of 50 took 8.479s
+  training loss:		118.258071
+  validation loss:		105.451388
+  validation CE:		82.58
+Epoch 4 of 50 took 8.548s
+  training loss:		115.917670
+  validation loss:		105.297018
+  validation CE:		82.05
+Epoch 5 of 50 took 8.721s
+  training loss:		114.498648
+  validation loss:		105.472922
+  validation CE:		81.30
+Epoch 6 of 50 took 8.446s
+  training loss:		113.441936
+  validation loss:		104.759068
+  validation CE:		79.93
+Epoch 7 of 50 took 8.734s
+  training loss:		112.772477
+  validation loss:		105.899596
+  validation CE:		81.33
+Epoch 8 of 50 took 8.938s
+  training loss:		112.167336
+  validation loss:		104.966247
+  validation CE:		81.08
+Epoch 9 of 50 took 8.930s
+  training loss:		111.685604
+  validation loss:		105.228094
+  validation CE:		80.73
+Epoch 10 of 50 took 8.294s
+  training loss:		111.341340
+  validation loss:		102.825303
+  validation CE:		78.93
+Epoch 11 of 50 took 8.417s
+  training loss:		111.084662
+  validation loss:		101.354756
+  validation CE:		77.37
+Epoch 12 of 50 took 8.367s
+  training loss:		110.708388
+  validation loss:		102.334826
+  validation CE:		78.33
+Epoch 13 of 50 took 7.669s
+  training loss:		110.416457
+  validation loss:		103.082866
+  validation CE:		79.22
+Epoch 14 of 50 took 8.138s
+  training loss:		110.162802
+  validation loss:		100.331034
+  validation CE:		76.67
+Epoch 15 of 50 took 8.602s
+  training loss:		110.104721
+  validation loss:		101.269094
+  validation CE:		77.18
+Epoch 16 of 50 took 8.062s
+  training loss:		109.814217
+  validation loss:		102.321254
+  validation CE:		77.65
+Epoch 17 of 50 took 8.101s
+  training loss:		109.733588
+  validation loss:		102.076119
+  validation CE:		77.58
+Epoch 18 of 50 took 7.905s
+  training loss:		109.592457
+  validation loss:		101.683521
+  validation CE:		77.82
+Epoch 19 of 50 took 8.093s
+  training loss:		109.473461
+  validation loss:		103.343458
+  validation CE:		79.22
+Epoch 20 of 50 took 8.462s
+  training loss:		109.371277
+  validation loss:		101.638400
+  validation CE:		77.55
+Epoch 21 of 50 took 8.421s
+  training loss:		109.242352
+  validation loss:		101.843669
+  validation CE:		77.86
+Epoch 22 of 50 took 8.982s
+  training loss:		109.222369
+  validation loss:		98.927938
+  validation CE:		74.47
+Epoch 23 of 50 took 8.561s
+  training loss:		109.073130
+  validation loss:		100.545221
+  validation CE:		76.46
+Epoch 24 of 50 took 8.961s
+  training loss:		108.965752
+  validation loss:		100.692868
+  validation CE:		76.35
+Epoch 25 of 50 took 8.620s
+  training loss:		108.862729
+  validation loss:		99.137169
+  validation CE:		74.97
+Epoch 26 of 50 took 9.022s
+  training loss:		108.838177
+  validation loss:		100.041860
+  validation CE:		75.24
+Epoch 27 of 50 took 9.124s
+  training loss:		108.736759
+  validation loss:		101.354738
+  validation CE:		77.24
+Epoch 28 of 50 took 8.621s
+  training loss:		108.662831
+  validation loss:		102.048756
+  validation CE:		77.34
+Epoch 29 of 50 took 8.634s
+  training loss:		108.626061
+  validation loss:		105.214654
+  validation CE:		80.97
+Epoch 30 of 50 took 8.610s
+  training loss:		108.596033
+  validation loss:		99.822594
+  validation CE:		75.58
+Epoch 31 of 50 took 8.169s
+  training loss:		108.317996
+  validation loss:		100.386952
+  validation CE:		75.97
+Epoch 32 of 50 took 8.604s
+  training loss:		108.437014
+  validation loss:		100.201696
+  validation CE:		75.22
+Epoch 33 of 50 took 8.120s
+  training loss:		108.227970
+  validation loss:		102.039149
+  validation CE:		77.65
+Epoch 34 of 50 took 8.962s
+  training loss:		108.307687
+  validation loss:		100.710687
+  validation CE:		76.78
+Epoch 35 of 50 took 8.598s
+  training loss:		108.260466
+  validation loss:		99.481422
+  validation CE:		75.19
+Epoch 36 of 50 took 8.822s
+  training loss:		108.186282
+  validation loss:		99.272797
+  validation CE:		75.13
+Epoch 37 of 50 took 8.514s
+  training loss:		108.177194
+  validation loss:		101.193761
+  validation CE:		76.91
+Epoch 38 of 50 took 8.056s
+  training loss:		108.089189
+  validation loss:		101.568648
+  validation CE:		76.70
+Epoch 39 of 50 took 8.454s
+  training loss:		108.051753
+  validation loss:		99.761387
+  validation CE:		75.18
+Epoch 40 of 50 took 8.261s
+  training loss:		108.021923
+  validation loss:		101.340052
+  validation CE:		76.65
+Epoch 41 of 50 took 8.618s
+  training loss:		108.008280
+  validation loss:		100.363470
+  validation CE:		76.27
+Epoch 42 of 50 took 8.293s
+  training loss:		107.893819
+  validation loss:		100.010311
+  validation CE:		75.52
+Epoch 43 of 50 took 8.732s
+  training loss:		107.921047
+  validation loss:		103.168104
+  validation CE:		78.48
+Epoch 44 of 50 took 8.399s
+  training loss:		107.851083
+  validation loss:		101.958743
+  validation CE:		77.16
+Epoch 45 of 50 took 8.651s
+  training loss:		107.840224
+  validation loss:		99.198300
+  validation CE:		74.89
+Epoch 46 of 50 took 8.912s
+  training loss:		107.852862
+  validation loss:		98.917276
+  validation CE:		74.24
+Epoch 47 of 50 took 9.069s
+  training loss:		107.727067
+  validation loss:		101.444564
+  validation CE:		76.84
+Epoch 48 of 50 took 9.186s
+  training loss:		107.740075
+  validation loss:		99.775850
+  validation CE:		75.45
+Epoch 49 of 50 took 8.232s
+  training loss:		107.672166
+  validation loss:		99.358871
+  validation CE:		74.91
+Epoch 50 of 50 took 8.584s
+  training loss:		107.612295
+  validation loss:		99.369983
+  validation CE:		75.02
+best for this turn: 74.2393772888
+Building model for 48 128 ... 5 0
+Compiling functions ...
+Starting training...
+Epoch 1 of 50 took 3.834s
+  training loss:		164.285707
+  validation loss:		133.248068
+  validation CE:		110.87
+Epoch 2 of 50 took 3.968s
+  training loss:		132.045877
+  validation loss:		118.406914
+  validation CE:		96.16
+Epoch 3 of 50 took 3.641s
+  training loss:		123.600166
+  validation loss:		112.814352
+  validation CE:		91.12
+Epoch 4 of 50 took 3.949s
+  training loss:		120.135714
+  validation loss:		109.019448
+  validation CE:		87.36
+Epoch 5 of 50 took 3.640s
+  training loss:		118.404831
+  validation loss:		108.793677
+  validation CE:		86.49
+Epoch 6 of 50 took 3.815s
+  training loss:		117.121946
+  validation loss:		107.198179
+  validation CE:		84.13
+Epoch 7 of 50 took 3.999s
+  training loss:		116.521737
+  validation loss:		108.620545
+  validation CE:		85.11
+Epoch 8 of 50 took 3.621s
+  training loss:		116.037307
+  validation loss:		107.436517
+  validation CE:		84.87
+Epoch 9 of 50 took 4.041s
+  training loss:		115.526028
+  validation loss:		104.129182
+  validation CE:		81.03
+Epoch 10 of 50 took 3.591s
+  training loss:		115.049461
+  validation loss:		104.149850
+  validation CE:		80.57
+Epoch 11 of 50 took 3.811s
+  training loss:		114.714512
+  validation loss:		104.271354
+  validation CE:		81.41
+Epoch 12 of 50 took 3.858s
+  training loss:		114.675984
+  validation loss:		106.442512
+  validation CE:		82.61
+Epoch 13 of 50 took 4.119s
+  training loss:		114.237796
+  validation loss:		105.695648
+  validation CE:		82.41
+Epoch 14 of 50 took 4.240s
+  training loss:		114.226903
+  validation loss:		106.453741
+  validation CE:		82.38
+Epoch 15 of 50 took 3.736s
+  training loss:		114.008479
+  validation loss:		105.956842
+  validation CE:		82.22
+Epoch 16 of 50 took 3.730s
+  training loss:		113.912572
+  validation loss:		104.691745
+  validation CE:		80.93
+Epoch 17 of 50 took 3.472s
+  training loss:		113.761723
+  validation loss:		104.326489
+  validation CE:		80.92
+Epoch 18 of 50 took 3.635s
+  training loss:		113.629506
+  validation loss:		102.636483
+  validation CE:		79.24
+Epoch 19 of 50 took 3.739s
+  training loss:		113.468605
+  validation loss:		104.620434
+  validation CE:		80.58
+Epoch 20 of 50 took 3.310s
+  training loss:		113.526566
+  validation loss:		104.806852
+  validation CE:		81.12
+Epoch 21 of 50 took 3.357s
+  training loss:		113.260071
+  validation loss:		104.808211
+  validation CE:		80.76
+Epoch 22 of 50 took 3.340s
+  training loss:		113.240742
+  validation loss:		104.193735
+  validation CE:		79.92
+Epoch 23 of 50 took 3.434s
+  training loss:		113.069475
+  validation loss:		103.765386
+  validation CE:		80.28
+Epoch 24 of 50 took 3.510s
+  training loss:		113.189953
+  validation loss:		105.420703
+  validation CE:		80.95
+Epoch 25 of 50 took 4.023s
+  training loss:		113.037516
+  validation loss:		104.083063
+  validation CE:		80.93
+Epoch 26 of 50 took 3.461s
+  training loss:		112.833346
+  validation loss:		103.765359
+  validation CE:		79.21
+Epoch 27 of 50 took 3.684s
+  training loss:		112.936294
+  validation loss:		103.360476
+  validation CE:		79.94
+Epoch 28 of 50 took 3.874s
+  training loss:		112.814502
+  validation loss:		104.847277
+  validation CE:		81.11
+Epoch 29 of 50 took 3.745s
+  training loss:		112.783040
+  validation loss:		108.042092
+  validation CE:		84.87
+Epoch 30 of 50 took 3.920s
+  training loss:		112.784582
+  validation loss:		101.648622
+  validation CE:		78.29
+Epoch 31 of 50 took 4.047s
+  training loss:		112.666092
+  validation loss:		104.215024
+  validation CE:		81.02
+Epoch 32 of 50 took 3.724s
+  training loss:		112.581522
+  validation loss:		103.262855
+  validation CE:		79.33
+Epoch 33 of 50 took 3.432s
+  training loss:		112.589402
+  validation loss:		104.416706
+  validation CE:		80.89
+Epoch 34 of 50 took 3.380s
+  training loss:		112.530515
+  validation loss:		105.130332
+  validation CE:		80.78
+Epoch 35 of 50 took 3.338s
+  training loss:		112.417048
+  validation loss:		103.949293
+  validation CE:		79.93
+Epoch 36 of 50 took 3.416s
+  training loss:		112.505732
+  validation loss:		103.417350
+  validation CE:		79.67
+Epoch 37 of 50 took 3.513s
+  training loss:		112.399081
+  validation loss:		106.081071
+  validation CE:		81.34
+Epoch 38 of 50 took 3.684s
+  training loss:		112.342443
+  validation loss:		103.353230
+  validation CE:		79.25
+Epoch 39 of 50 took 3.125s
+  training loss:		112.453253
+  validation loss:		105.294690
+  validation CE:		81.48
+Epoch 40 of 50 took 3.322s
+  training loss:		112.255284
+  validation loss:		102.749696
+  validation CE:		79.36
+Epoch 41 of 50 took 3.553s
+  training loss:		112.202170
+  validation loss:		103.484619
+  validation CE:		79.27
+Epoch 42 of 50 took 3.196s
+  training loss:		112.290461
+  validation loss:		102.998239
+  validation CE:		79.51
+Epoch 43 of 50 took 3.210s
+  training loss:		112.114429
+  validation loss:		102.727555
+  validation CE:		78.80
+Epoch 44 of 50 took 3.465s
+  training loss:		112.180702
+  validation loss:		102.498832
+  validation CE:		78.80
+Epoch 45 of 50 took 3.632s
+  training loss:		112.106978
+  validation loss:		105.432605
+  validation CE:		81.26
+Epoch 46 of 50 took 3.477s
+  training loss:		112.032263
+  validation loss:		103.563587
+  validation CE:		79.32
+Epoch 47 of 50 took 3.836s
+  training loss:		112.088821
+  validation loss:		104.129525
+  validation CE:		80.19
+Epoch 48 of 50 took 3.514s
+  training loss:		112.113353
+  validation loss:		103.912562
+  validation CE:		80.46
+Epoch 49 of 50 took 3.834s
+  training loss:		112.014423
+  validation loss:		101.986118
+  validation CE:		78.02
+Epoch 50 of 50 took 3.594s
+  training loss:		112.107379
+  validation loss:		102.409994
+  validation CE:		78.47
+best for this turn: 78.0237071991
+Building model for 48 256 ... 5 1
+Compiling functions ...
+Starting training...
+Epoch 1 of 50 took 5.037s
+  training loss:		158.872419
+  validation loss:		124.260383
+  validation CE:		102.69
+Epoch 2 of 50 took 4.787s
+  training loss:		127.568448
+  validation loss:		114.810925
+  validation CE:		91.63
+Epoch 3 of 50 took 5.143s
+  training loss:		120.417718
+  validation loss:		106.792574
+  validation CE:		84.18
+Epoch 4 of 50 took 5.562s
+  training loss:		117.694139
+  validation loss:		109.776966
+  validation CE:		86.81
+Epoch 5 of 50 took 5.119s
+  training loss:		116.195437
+  validation loss:		105.628372
+  validation CE:		81.65
+Epoch 6 of 50 took 5.359s
+  training loss:		115.392431
+  validation loss:		109.354886
+  validation CE:		84.51
+Epoch 7 of 50 took 5.029s
+  training loss:		114.644381
+  validation loss:		104.306632
+  validation CE:		80.63
+Epoch 8 of 50 took 5.049s
+  training loss:		114.149351
+  validation loss:		103.957564
+  validation CE:		80.07
+Epoch 9 of 50 took 4.919s
+  training loss:		113.581549
+  validation loss:		103.588878
+  validation CE:		79.15
+Epoch 10 of 50 took 4.989s
+  training loss:		113.258786
+  validation loss:		103.648003
+  validation CE:		78.99
+Epoch 11 of 50 took 4.711s
+  training loss:		112.974913
+  validation loss:		106.027617
+  validation CE:		80.76
+Epoch 12 of 50 took 4.872s
+  training loss:		112.845271
+  validation loss:		104.624839
+  validation CE:		80.59
+Epoch 13 of 50 took 4.862s
+  training loss:		112.501649
+  validation loss:		103.447282
+  validation CE:		79.31
+Epoch 14 of 50 took 5.047s
+  training loss:		112.285169
+  validation loss:		102.405799
+  validation CE:		77.82
+Epoch 15 of 50 took 5.248s
+  training loss:		112.122114
+  validation loss:		103.368377
+  validation CE:		78.75
+Epoch 16 of 50 took 5.359s
+  training loss:		111.928110
+  validation loss:		103.677631
+  validation CE:		78.87
+Epoch 17 of 50 took 4.547s
+  training loss:		111.886302
+  validation loss:		101.410224
+  validation CE:		76.94
+Epoch 18 of 50 took 4.784s
+  training loss:		111.570990
+  validation loss:		102.377407
+  validation CE:		77.80
+Epoch 19 of 50 took 4.772s
+  training loss:		111.525078
+  validation loss:		100.720263
+  validation CE:		76.39
+Epoch 20 of 50 took 5.009s
+  training loss:		111.472850
+  validation loss:		101.618092
+  validation CE:		77.09
+Epoch 21 of 50 took 4.920s
+  training loss:		111.295068
+  validation loss:		102.257392
+  validation CE:		77.54
+Epoch 22 of 50 took 4.850s
+  training loss:		111.179696
+  validation loss:		104.909694
+  validation CE:		79.83
+Epoch 23 of 50 took 5.184s
+  training loss:		111.066238
+  validation loss:		100.534701
+  validation CE:		76.71
+Epoch 24 of 50 took 5.327s
+  training loss:		111.025051
+  validation loss:		100.624748
+  validation CE:		75.97
+Epoch 25 of 50 took 4.952s
+  training loss:		110.915622
+  validation loss:		101.624193
+  validation CE:		76.70
+Epoch 26 of 50 took 5.126s
+  training loss:		110.834558
+  validation loss:		101.169020
+  validation CE:		76.62
+Epoch 27 of 50 took 5.215s
+  training loss:		110.732123
+  validation loss:		102.938579
+  validation CE:		78.39
+Epoch 28 of 50 took 4.629s
+  training loss:		110.730350
+  validation loss:		102.453607
+  validation CE:		78.28
+Epoch 29 of 50 took 5.085s
+  training loss:		110.659461
+  validation loss:		101.571930
+  validation CE:		77.11
+Epoch 30 of 50 took 5.028s
+  training loss:		110.506116
+  validation loss:		100.913546
+  validation CE:		76.07
+Epoch 31 of 50 took 4.920s
+  training loss:		110.585303
+  validation loss:		100.917868
+  validation CE:		76.10
+Epoch 32 of 50 took 5.207s
+  training loss:		110.414906
+  validation loss:		100.973815
+  validation CE:		76.27
+Epoch 33 of 50 took 4.864s
+  training loss:		110.455060
+  validation loss:		102.172112
+  validation CE:		77.83
+Epoch 34 of 50 took 5.175s
+  training loss:		110.320481
+  validation loss:		106.037426
+  validation CE:		80.64
+Epoch 35 of 50 took 5.249s
+  training loss:		110.242855
+  validation loss:		102.651922
+  validation CE:		77.69
+Epoch 36 of 50 took 5.247s
+  training loss:		110.316682
+  validation loss:		101.190655
+  validation CE:		76.55
+Epoch 37 of 50 took 5.524s
+  training loss:		110.201715
+  validation loss:		100.319545
+  validation CE:		75.49
+Epoch 38 of 50 took 5.189s
+  training loss:		110.210536
+  validation loss:		102.774099
+  validation CE:		77.18
+Epoch 39 of 50 took 5.157s
+  training loss:		110.217204
+  validation loss:		102.081016
+  validation CE:		77.85
+Epoch 40 of 50 took 4.968s
+  training loss:		110.222348
+  validation loss:		100.338538
+  validation CE:		76.06
+Epoch 41 of 50 took 4.723s
+  training loss:		109.957036
+  validation loss:		102.043502
+  validation CE:		77.52
+Epoch 42 of 50 took 4.957s
+  training loss:		110.056359
+  validation loss:		103.321201
+  validation CE:		78.05
+Epoch 43 of 50 took 4.868s
+  training loss:		110.060141
+  validation loss:		100.338061
+  validation CE:		76.16
+Epoch 44 of 50 took 4.821s
+  training loss:		109.961524
+  validation loss:		101.450590
+  validation CE:		76.88
+Epoch 45 of 50 took 4.817s
+  training loss:		109.944969
+  validation loss:		100.202982
+  validation CE:		75.97
+Epoch 46 of 50 took 5.143s
+  training loss:		109.956821
+  validation loss:		101.232664
+  validation CE:		76.25
+Epoch 47 of 50 took 5.116s
+  training loss:		109.953591
+  validation loss:		101.397468
+  validation CE:		76.24
+Epoch 48 of 50 took 4.711s
+  training loss:		109.925668
+  validation loss:		101.032009
+  validation CE:		76.32
+Epoch 49 of 50 took 5.311s
+  training loss:		109.859824
+  validation loss:		99.830934
+  validation CE:		75.23
+Epoch 50 of 50 took 5.516s
+  training loss:		109.813714
+  validation loss:		100.361851
+  validation CE:		75.18
+best for this turn: 75.1786105347
+Building model for 48 512 ... 5 2
+Compiling functions ...
+Starting training...
+Epoch 1 of 50 took 8.013s
+  training loss:		154.706988
+  validation loss:		121.934677
+  validation CE:		100.19
+Epoch 2 of 50 took 7.361s
+  training loss:		124.559652
+  validation loss:		108.202842
+  validation CE:		85.60
+Epoch 3 of 50 took 7.646s
+  training loss:		118.633853
+  validation loss:		108.621690
+  validation CE:		86.01
+Epoch 4 of 50 took 7.024s
+  training loss:		116.336692
+  validation loss:		105.595036
+  validation CE:		81.42
+Epoch 5 of 50 took 7.889s
+  training loss:		114.816668
+  validation loss:		103.236021
+  validation CE:		80.06
+Epoch 6 of 50 took 7.699s
+  training loss:		114.002045
+  validation loss:		104.117466
+  validation CE:		80.42
+Epoch 7 of 50 took 7.640s
+  training loss:		113.273956
+  validation loss:		102.882135
+  validation CE:		79.03
+Epoch 8 of 50 took 7.493s
+  training loss:		112.541300
+  validation loss:		104.948484
+  validation CE:		80.69
+Epoch 9 of 50 took 7.706s
+  training loss:		112.049072
+  validation loss:		101.714550
+  validation CE:		78.01
+Epoch 10 of 50 took 8.030s
+  training loss:		111.741114
+  validation loss:		105.440312
+  validation CE:		81.46
+Epoch 11 of 50 took 7.256s
+  training loss:		111.443070
+  validation loss:		104.231834
+  validation CE:		79.33
+Epoch 12 of 50 took 7.607s
+  training loss:		110.981449
+  validation loss:		101.117478
+  validation CE:		77.12
+Epoch 13 of 50 took 7.655s
+  training loss:		110.808144
+  validation loss:		101.084041
+  validation CE:		77.07
+Epoch 14 of 50 took 8.019s
+  training loss:		110.569572
+  validation loss:		102.330317
+  validation CE:		77.85
+Epoch 15 of 50 took 7.813s
+  training loss:		110.412048
+  validation loss:		102.271932
+  validation CE:		78.10
+Epoch 16 of 50 took 7.638s
+  training loss:		110.297385
+  validation loss:		102.761570
+  validation CE:		78.50
+Epoch 17 of 50 took 8.011s
+  training loss:		110.079473
+  validation loss:		103.206225
+  validation CE:		78.25
+Epoch 18 of 50 took 7.798s
+  training loss:		109.971108
+  validation loss:		100.804355
+  validation CE:		75.97
+Epoch 19 of 50 took 7.724s
+  training loss:		109.707641
+  validation loss:		99.985773
+  validation CE:		76.18
+Epoch 20 of 50 took 8.175s
+  training loss:		109.621547
+  validation loss:		102.495359
+  validation CE:		77.54
+Epoch 21 of 50 took 7.571s
+  training loss:		109.463752
+  validation loss:		101.690711
+  validation CE:		77.28
+Epoch 22 of 50 took 7.771s
+  training loss:		109.575280
+  validation loss:		99.761989
+  validation CE:		75.38
+Epoch 23 of 50 took 7.983s
+  training loss:		109.337452
+  validation loss:		102.538369
+  validation CE:		77.34
+Epoch 24 of 50 took 8.073s
+  training loss:		109.334603
+  validation loss:		100.866281
+  validation CE:		76.40
+Epoch 25 of 50 took 7.626s
+  training loss:		109.249406
+  validation loss:		101.970141
+  validation CE:		76.58
+Epoch 26 of 50 took 7.749s
+  training loss:		108.998410
+  validation loss:		101.190152
+  validation CE:		76.85
+Epoch 27 of 50 took 7.968s
+  training loss:		109.003654
+  validation loss:		99.360072
+  validation CE:		74.94
+Epoch 28 of 50 took 7.730s
+  training loss:		109.036354
+  validation loss:		100.465574
+  validation CE:		75.56
+Epoch 29 of 50 took 7.682s
+  training loss:		108.959236
+  validation loss:		101.179990
+  validation CE:		76.85
+Epoch 30 of 50 took 7.602s
+  training loss:		108.916188
+  validation loss:		100.765202
+  validation CE:		76.93
+Epoch 31 of 50 took 7.908s
+  training loss:		108.754603
+  validation loss:		101.794062
+  validation CE:		76.43
+Epoch 32 of 50 took 7.697s
+  training loss:		108.792120
+  validation loss:		100.732247
+  validation CE:		76.21
+Epoch 33 of 50 took 7.674s
+  training loss:		108.795505
+  validation loss:		99.305802
+  validation CE:		74.74
+Epoch 34 of 50 took 7.933s
+  training loss:		108.694424
+  validation loss:		101.005137
+  validation CE:		76.60
+Epoch 35 of 50 took 7.850s
+  training loss:		108.614391
+  validation loss:		100.209031
+  validation CE:		75.65
+Epoch 36 of 50 took 8.089s
+  training loss:		108.557338
+  validation loss:		98.956410
+  validation CE:		74.56
+Epoch 37 of 50 took 7.816s
+  training loss:		108.459661
+  validation loss:		101.269382
+  validation CE:		76.92
+Epoch 38 of 50 took 7.384s
+  training loss:		108.583589
+  validation loss:		100.039845
+  validation CE:		75.63
+Epoch 39 of 50 took 7.712s
+  training loss:		108.442776
+  validation loss:		100.144520
+  validation CE:		75.81
+Epoch 40 of 50 took 7.721s
+  training loss:		108.425705
+  validation loss:		100.325367
+  validation CE:		75.51
+Epoch 41 of 50 took 7.947s
+  training loss:		108.387562
+  validation loss:		101.532947
+  validation CE:		77.80
+Epoch 42 of 50 took 7.724s
+  training loss:		108.382640
+  validation loss:		99.047892
+  validation CE:		74.55
+Epoch 43 of 50 took 7.880s
+  training loss:		108.389345
+  validation loss:		102.250029
+  validation CE:		76.91
+Epoch 44 of 50 took 7.428s
+  training loss:		108.217926
+  validation loss:		100.336388
+  validation CE:		75.77
+Epoch 45 of 50 took 7.533s
+  training loss:		108.219252
+  validation loss:		98.729078
+  validation CE:		74.03
+Epoch 46 of 50 took 7.773s
+  training loss:		108.308937
+  validation loss:		101.005827
+  validation CE:		75.99
+Epoch 47 of 50 took 7.798s
+  training loss:		108.291038
+  validation loss:		98.650631
+  validation CE:		74.64
+Epoch 48 of 50 took 8.066s
+  training loss:		108.187291
+  validation loss:		101.163111
+  validation CE:		76.12
+Epoch 49 of 50 took 7.849s
+  training loss:		108.145301
+  validation loss:		98.567673
+  validation CE:		74.05
+Epoch 50 of 50 took 7.711s
+  training loss:		108.230230
+  validation loss:		102.775574
+  validation CE:		77.90
+best for this turn: 74.0269456482
+Building model for 64 128 ... 6 0
+Compiling functions ...
+Starting training...
+Epoch 1 of 50 took 3.212s
+  training loss:		167.259248
+  validation loss:		134.686775
+  validation CE:		114.42
+Epoch 2 of 50 took 3.178s
+  training loss:		134.162604
+  validation loss:		117.883539
+  validation CE:		96.92
+Epoch 3 of 50 took 3.222s
+  training loss:		124.524142
+  validation loss:		113.534515
+  validation CE:		91.38
+Epoch 4 of 50 took 3.306s
+  training loss:		120.539451
+  validation loss:		110.307839
+  validation CE:		87.92
+Epoch 5 of 50 took 3.333s
+  training loss:		118.565967
+  validation loss:		110.996897
+  validation CE:		88.06
+Epoch 6 of 50 took 3.276s
+  training loss:		117.502670
+  validation loss:		106.686596
+  validation CE:		84.12
+Epoch 7 of 50 took 3.229s
+  training loss:		116.539793
+  validation loss:		106.339659
+  validation CE:		83.75
+Epoch 8 of 50 took 3.436s
+  training loss:		115.859182
+  validation loss:		108.383433
+  validation CE:		84.44
+Epoch 9 of 50 took 3.418s
+  training loss:		115.503234
+  validation loss:		106.583170
+  validation CE:		82.96
+Epoch 10 of 50 took 3.336s
+  training loss:		115.131362
+  validation loss:		107.427628
+  validation CE:		84.11
+Epoch 11 of 50 took 3.164s
+  training loss:		114.800809
+  validation loss:		106.733971
+  validation CE:		82.87
+Epoch 12 of 50 took 3.002s
+  training loss:		114.629739
+  validation loss:		105.697013
+  validation CE:		81.42
+Epoch 13 of 50 took 2.769s
+  training loss:		114.387062
+  validation loss:		108.237736
+  validation CE:		83.43
+Epoch 14 of 50 took 3.230s
+  training loss:		114.202365
+  validation loss:		104.055719
+  validation CE:		80.89
+Epoch 15 of 50 took 3.181s
+  training loss:		114.049118
+  validation loss:		102.011541
+  validation CE:		78.99
+Epoch 16 of 50 took 3.330s
+  training loss:		113.864495
+  validation loss:		108.252277
+  validation CE:		84.18
+Epoch 17 of 50 took 3.221s
+  training loss:		113.941554
+  validation loss:		106.158971
+  validation CE:		81.96
+Epoch 18 of 50 took 3.088s
+  training loss:		113.713961
+  validation loss:		104.146026
+  validation CE:		80.12
+Epoch 19 of 50 took 3.403s
+  training loss:		113.652314
+  validation loss:		105.568595
+  validation CE:		81.47
+Epoch 20 of 50 took 3.067s
+  training loss:		113.545926
+  validation loss:		104.759543
+  validation CE:		80.56
+Epoch 21 of 50 took 3.242s
+  training loss:		113.407960
+  validation loss:		103.394385
+  validation CE:		79.78
+Epoch 22 of 50 took 3.304s
+  training loss:		113.331062
+  validation loss:		104.831234
+  validation CE:		81.16
+Epoch 23 of 50 took 3.542s
+  training loss:		113.256494
+  validation loss:		104.402524
+  validation CE:		80.64
+Epoch 24 of 50 took 3.485s
+  training loss:		113.194700
+  validation loss:		107.574877
+  validation CE:		83.71
+Epoch 25 of 50 took 3.333s
+  training loss:		113.082121
+  validation loss:		104.880643
+  validation CE:		80.87
+Epoch 26 of 50 took 3.512s
+  training loss:		113.061868
+  validation loss:		105.301865
+  validation CE:		81.03
+Epoch 27 of 50 took 3.317s
+  training loss:		113.027320
+  validation loss:		106.803184
+  validation CE:		82.35
+Epoch 28 of 50 took 3.310s
+  training loss:		112.992879
+  validation loss:		103.816847
+  validation CE:		80.04
+Epoch 29 of 50 took 3.387s
+  training loss:		112.816800
+  validation loss:		105.579787
+  validation CE:		81.31
+Epoch 30 of 50 took 3.219s
+  training loss:		112.830175
+  validation loss:		104.159910
+  validation CE:		80.65
+Epoch 31 of 50 took 3.226s
+  training loss:		112.776959
+  validation loss:		102.659884
+  validation CE:		79.03
+Epoch 32 of 50 took 3.113s
+  training loss:		112.827288
+  validation loss:		103.029019
+  validation CE:		79.46
+Epoch 33 of 50 took 3.177s
+  training loss:		112.666626
+  validation loss:		103.920198
+  validation CE:		80.79
+Epoch 34 of 50 took 3.150s
+  training loss:		112.639511
+  validation loss:		103.485392
+  validation CE:		79.94
+Epoch 35 of 50 took 3.104s
+  training loss:		112.665493
+  validation loss:		104.953753
+  validation CE:		81.28
+Epoch 36 of 50 took 3.149s
+  training loss:		112.562658
+  validation loss:		104.226657
+  validation CE:		80.45
+Epoch 37 of 50 took 2.976s
+  training loss:		112.529571
+  validation loss:		104.892537
+  validation CE:		80.47
+Epoch 38 of 50 took 3.269s
+  training loss:		112.520089
+  validation loss:		101.822457
+  validation CE:		78.40
+Epoch 39 of 50 took 3.411s
+  training loss:		112.495832
+  validation loss:		103.904856
+  validation CE:		80.29
+Epoch 40 of 50 took 3.377s
+  training loss:		112.467108
+  validation loss:		104.795844
+  validation CE:		81.76
+Epoch 41 of 50 took 3.237s
+  training loss:		112.504607
+  validation loss:		103.003379
+  validation CE:		78.90
+Epoch 42 of 50 took 3.277s
+  training loss:		112.492551
+  validation loss:		106.596867
+  validation CE:		82.43
+Epoch 43 of 50 took 3.377s
+  training loss:		112.443409
+  validation loss:		103.438229
+  validation CE:		79.71
+Epoch 44 of 50 took 3.493s
+  training loss:		112.399399
+  validation loss:		103.972410
+  validation CE:		79.75
+Epoch 45 of 50 took 3.418s
+  training loss:		112.435336
+  validation loss:		101.776177
+  validation CE:		78.27
+Epoch 46 of 50 took 3.249s
+  training loss:		112.262556
+  validation loss:		107.731080
+  validation CE:		83.41
+Epoch 47 of 50 took 3.553s
+  training loss:		112.367084
+  validation loss:		105.877749
+  validation CE:		81.45
+Epoch 48 of 50 took 3.244s
+  training loss:		112.291595
+  validation loss:		102.882581
+  validation CE:		79.14
+Epoch 49 of 50 took 3.378s
+  training loss:		112.179769
+  validation loss:		102.707638
+  validation CE:		78.49
+Epoch 50 of 50 took 3.733s
+  training loss:		112.194839
+  validation loss:		104.986650
+  validation CE:		81.24
+best for this turn: 78.2742644501
+Building model for 64 256 ... 6 1
+Compiling functions ...
+Starting training...
+Epoch 1 of 50 took 5.026s
+  training loss:		160.102522
+  validation loss:		126.675395
+  validation CE:		105.42
+Epoch 2 of 50 took 5.180s
+  training loss:		128.552877
+  validation loss:		124.294502
+  validation CE:		100.87
+Epoch 3 of 50 took 5.167s
+  training loss:		121.024487
+  validation loss:		107.687670
+  validation CE:		85.24
+Epoch 4 of 50 took 5.171s
+  training loss:		118.070319
+  validation loss:		108.765644
+  validation CE:		85.14
+Epoch 5 of 50 took 4.881s
+  training loss:		116.502350
+  validation loss:		107.101006
+  validation CE:		83.77
+Epoch 6 of 50 took 4.924s
+  training loss:		115.439669
+  validation loss:		104.266480
+  validation CE:		81.43
+Epoch 7 of 50 took 5.204s
+  training loss:		114.666261
+  validation loss:		105.369218
+  validation CE:		81.15
+Epoch 8 of 50 took 4.810s
+  training loss:		114.229505
+  validation loss:		107.767677
+  validation CE:		84.26
+Epoch 9 of 50 took 4.689s
+  training loss:		113.645143
+  validation loss:		104.095692
+  validation CE:		81.29
+Epoch 10 of 50 took 5.301s
+  training loss:		113.212280
+  validation loss:		103.699182
+  validation CE:		79.69
+Epoch 11 of 50 took 5.123s
+  training loss:		112.938768
+  validation loss:		102.993769
+  validation CE:		79.02
+Epoch 12 of 50 took 5.210s
+  training loss:		112.606420
+  validation loss:		104.737702
+  validation CE:		80.47
+Epoch 13 of 50 took 5.247s
+  training loss:		112.378665
+  validation loss:		104.539120
+  validation CE:		80.51
+Epoch 14 of 50 took 4.786s
+  training loss:		112.145862
+  validation loss:		103.869558
+  validation CE:		80.07
+Epoch 15 of 50 took 5.088s
+  training loss:		111.990970
+  validation loss:		105.742073
+  validation CE:		81.45
+Epoch 16 of 50 took 5.128s
+  training loss:		111.814258
+  validation loss:		102.411646
+  validation CE:		78.43
+Epoch 17 of 50 took 4.833s
+  training loss:		111.629126
+  validation loss:		103.573712
+  validation CE:		79.10
+Epoch 18 of 50 took 5.319s
+  training loss:		111.447089
+  validation loss:		106.225817
+  validation CE:		82.30
+Epoch 19 of 50 took 4.887s
+  training loss:		111.481363
+  validation loss:		107.011295
+  validation CE:		83.27
+Epoch 20 of 50 took 4.838s
+  training loss:		111.266771
+  validation loss:		103.727939
+  validation CE:		79.43
+Epoch 21 of 50 took 5.293s
+  training loss:		111.297621
+  validation loss:		100.523300
+  validation CE:		76.93
+Epoch 22 of 50 took 5.047s
+  training loss:		111.138290
+  validation loss:		103.301314
+  validation CE:		79.27
+Epoch 23 of 50 took 5.328s
+  training loss:		111.095101
+  validation loss:		102.532818
+  validation CE:		78.75
+Epoch 24 of 50 took 5.347s
+  training loss:		110.871346
+  validation loss:		102.621050
+  validation CE:		78.38
+Epoch 25 of 50 took 5.305s
+  training loss:		110.894566
+  validation loss:		102.615017
+  validation CE:		78.61
+Epoch 26 of 50 took 5.728s
+  training loss:		110.788059
+  validation loss:		104.942579
+  validation CE:		81.01
+Epoch 27 of 50 took 5.129s
+  training loss:		110.786239
+  validation loss:		102.567624
+  validation CE:		79.29
+Epoch 28 of 50 took 5.117s
+  training loss:		110.750873
+  validation loss:		102.981754
+  validation CE:		78.92
+Epoch 29 of 50 took 5.494s
+  training loss:		110.602316
+  validation loss:		102.655273
+  validation CE:		78.99
+Epoch 30 of 50 took 4.842s
+  training loss:		110.578073
+  validation loss:		101.959520
+  validation CE:		78.22
+Epoch 31 of 50 took 4.704s
+  training loss:		110.558512
+  validation loss:		100.772414
+  validation CE:		76.74
+Epoch 32 of 50 took 4.872s
+  training loss:		110.452219
+  validation loss:		102.005663
+  validation CE:		77.28
+Epoch 33 of 50 took 4.764s
+  training loss:		110.395577
+  validation loss:		102.418235
+  validation CE:		78.29
+Epoch 34 of 50 took 5.324s
+  training loss:		110.310619
+  validation loss:		101.513354
+  validation CE:		77.52
+Epoch 35 of 50 took 5.424s
+  training loss:		110.247104
+  validation loss:		102.423200
+  validation CE:		78.14
+Epoch 36 of 50 took 4.383s
+  training loss:		110.340334
+  validation loss:		101.374918
+  validation CE:		77.13
+Epoch 37 of 50 took 4.951s
+  training loss:		110.232292
+  validation loss:		103.892979
+  validation CE:		79.82
+Epoch 38 of 50 took 5.509s
+  training loss:		110.279366
+  validation loss:		102.907335
+  validation CE:		78.32
+Epoch 39 of 50 took 4.989s
+  training loss:		110.285544
+  validation loss:		101.159064
+  validation CE:		77.36
+Epoch 40 of 50 took 4.552s
+  training loss:		110.155066
+  validation loss:		100.665510
+  validation CE:		76.83
+Epoch 41 of 50 took 5.130s
+  training loss:		110.188290
+  validation loss:		102.216842
+  validation CE:		77.78
+Epoch 42 of 50 took 5.217s
+  training loss:		110.192047
+  validation loss:		101.151473
+  validation CE:		77.42
+Epoch 43 of 50 took 4.805s
+  training loss:		110.080594
+  validation loss:		102.752667
+  validation CE:		78.39
+Epoch 44 of 50 took 4.981s
+  training loss:		109.997110
+  validation loss:		100.008945
+  validation CE:		76.47
+Epoch 45 of 50 took 4.621s
+  training loss:		109.927906
+  validation loss:		99.901080
+  validation CE:		76.42
+Epoch 46 of 50 took 5.306s
+  training loss:		110.026766
+  validation loss:		101.336227
+  validation CE:		77.33
+Epoch 47 of 50 took 5.135s
+  training loss:		110.045308
+  validation loss:		103.171938
+  validation CE:		78.79
+Epoch 48 of 50 took 4.972s
+  training loss:		109.949548
+  validation loss:		101.053740
+  validation CE:		77.22
+Epoch 49 of 50 took 5.293s
+  training loss:		109.997801
+  validation loss:		100.769241
+  validation CE:		76.80
+Epoch 50 of 50 took 4.924s
+  training loss:		109.899471
+  validation loss:		101.518997
+  validation CE:		77.28
+best for this turn: 76.4211977386
+Building model for 64 512 ... 6 2
+Compiling functions ...
+Starting training...
+Epoch 1 of 50 took 8.904s
+  training loss:		157.051186
+  validation loss:		122.370667
+  validation CE:		102.11
+Epoch 2 of 50 took 8.831s
+  training loss:		126.178145
+  validation loss:		110.118002
+  validation CE:		86.92
+Epoch 3 of 50 took 8.250s
+  training loss:		119.623231
+  validation loss:		109.399007
+  validation CE:		86.31
+Epoch 4 of 50 took 8.626s
+  training loss:		116.848834
+  validation loss:		105.386187
+  validation CE:		81.64
+Epoch 5 of 50 took 8.366s
+  training loss:		115.357939
+  validation loss:		107.106312
+  validation CE:		82.63
+Epoch 6 of 50 took 8.464s
+  training loss:		114.365497
+  validation loss:		103.396895
+  validation CE:		79.95
+Epoch 7 of 50 took 8.590s
+  training loss:		113.713760
+  validation loss:		105.205879
+  validation CE:		81.00
+Epoch 8 of 50 took 8.479s
+  training loss:		113.058435
+  validation loss:		103.399938
+  validation CE:		79.10
+Epoch 9 of 50 took 8.607s
+  training loss:		112.627610
+  validation loss:		102.960772
+  validation CE:		79.26
+Epoch 10 of 50 took 9.111s
+  training loss:		112.163093
+  validation loss:		101.530074
+  validation CE:		77.25
+Epoch 11 of 50 took 8.730s
+  training loss:		112.008941
+  validation loss:		101.668178
+  validation CE:		78.73
+Epoch 12 of 50 took 9.080s
+  training loss:		111.697402
+  validation loss:		106.243576
+  validation CE:		81.11
+Epoch 13 of 50 took 8.890s
+  training loss:		111.423056
+  validation loss:		102.222662
+  validation CE:		77.82
+Epoch 14 of 50 took 8.770s
+  training loss:		111.081586
+  validation loss:		103.986388
+  validation CE:		78.95
+Epoch 15 of 50 took 8.116s
+  training loss:		110.927356
+  validation loss:		103.209442
+  validation CE:		79.16
+Epoch 16 of 50 took 8.664s
+  training loss:		110.766552
+  validation loss:		99.999772
+  validation CE:		76.58
+Epoch 17 of 50 took 8.413s
+  training loss:		110.604019
+  validation loss:		101.330131
+  validation CE:		76.82
+Epoch 18 of 50 took 8.850s
+  training loss:		110.578620
+  validation loss:		101.850435
+  validation CE:		77.58
+Epoch 19 of 50 took 8.872s
+  training loss:		110.307697
+  validation loss:		102.151304
+  validation CE:		78.31
+Epoch 20 of 50 took 9.263s
+  training loss:		110.364244
+  validation loss:		102.274781
+  validation CE:		78.03
+Epoch 21 of 50 took 8.594s
+  training loss:		110.070902
+  validation loss:		102.039293
+  validation CE:		77.26
+Epoch 22 of 50 took 9.017s
+  training loss:		110.009663
+  validation loss:		101.188130
+  validation CE:		76.83
+Epoch 23 of 50 took 8.815s
+  training loss:		109.961495
+  validation loss:		103.661394
+  validation CE:		78.59
+Epoch 24 of 50 took 8.938s
+  training loss:		109.886264
+  validation loss:		100.903631
+  validation CE:		76.22
+Epoch 25 of 50 took 8.824s
+  training loss:		109.853250
+  validation loss:		100.829209
+  validation CE:		76.04
+Epoch 26 of 50 took 8.936s
+  training loss:		109.776863
+  validation loss:		100.340706
+  validation CE:		75.88
+Epoch 27 of 50 took 8.957s
+  training loss:		109.708880
+  validation loss:		102.573051
+  validation CE:		78.14
+Epoch 28 of 50 took 9.041s
+  training loss:		109.599447
+  validation loss:		100.537534
+  validation CE:		76.66
+Epoch 29 of 50 took 8.360s
+  training loss:		109.553377
+  validation loss:		99.056446
+  validation CE:		74.86
+Epoch 30 of 50 took 8.659s
+  training loss:		109.493119
+  validation loss:		101.367724
+  validation CE:		76.51
+Epoch 31 of 50 took 8.065s
+  training loss:		109.326826
+  validation loss:		101.605135
+  validation CE:		77.78
+Epoch 32 of 50 took 8.572s
+  training loss:		109.469507
+  validation loss:		100.465004
+  validation CE:		76.70
+Epoch 33 of 50 took 9.018s
+  training loss:		109.223505
+  validation loss:		101.004623
+  validation CE:		76.44
+Epoch 34 of 50 took 8.516s
+  training loss:		109.253694
+  validation loss:		101.225538
+  validation CE:		76.23
+Epoch 35 of 50 took 8.278s
+  training loss:		109.289745
+  validation loss:		100.303647
+  validation CE:		76.14
+Epoch 36 of 50 took 8.788s
+  training loss:		109.059369
+  validation loss:		101.459191
+  validation CE:		77.51
+Epoch 37 of 50 took 8.025s
+  training loss:		109.074858
+  validation loss:		101.528062
+  validation CE:		77.13
+Epoch 38 of 50 took 8.932s
+  training loss:		109.113102
+  validation loss:		99.096220
+  validation CE:		74.72
+Epoch 39 of 50 took 8.294s
+  training loss:		109.074746
+  validation loss:		101.703339
+  validation CE:		76.85
+Epoch 40 of 50 took 7.851s
+  training loss:		109.006351
+  validation loss:		102.537726
+  validation CE:		77.92
+Epoch 41 of 50 took 7.929s
+  training loss:		108.928093
+  validation loss:		102.141573
+  validation CE:		77.43
+Epoch 42 of 50 took 7.906s
+  training loss:		108.940950
+  validation loss:		100.818406
+  validation CE:		76.29
+Epoch 43 of 50 took 8.014s
+  training loss:		108.870835
+  validation loss:		99.543496
+  validation CE:		75.20
+Epoch 44 of 50 took 7.827s
+  training loss:		108.914042
+  validation loss:		101.514219
+  validation CE:		77.31
+Epoch 45 of 50 took 7.690s
+  training loss:		108.725353
+  validation loss:		98.735943
+  validation CE:		74.40
+Epoch 46 of 50 took 8.245s
+  training loss:		108.796545
+  validation loss:		101.692357
+  validation CE:		76.90
+Epoch 47 of 50 took 8.279s
+  training loss:		108.652400
+  validation loss:		99.636927
+  validation CE:		75.28
+Epoch 48 of 50 took 8.167s
+  training loss:		108.656718
+  validation loss:		102.918493
+  validation CE:		78.53
+Epoch 49 of 50 took 8.124s
+  training loss:		108.649666
+  validation loss:		100.912927
+  validation CE:		76.71
+Epoch 50 of 50 took 7.986s
+  training loss:		108.616404
+  validation loss:		99.758219
+  validation CE:		75.61
+best for this turn: 74.4008829498
+[[ 78.87913292  76.92183472  76.83953613]
+ [ 78.02476097  75.51353661  73.45866703]
+ [ 77.29544754  75.00298874  73.72467461]
+ [ 77.71723526  74.98122498  73.52597507]
+ [ 77.39922554  74.64959641  74.23937729]
+ [ 78.0237072   75.17861053  74.02694565]
+ [ 78.27426445  76.42119774  74.40088295]]
