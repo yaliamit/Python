@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pogR_lin hinge=1. num_train=50000 eta_init=0.001 eta_current=0.001 batch_size=100 num_epochs=200 update=adam force_global_prob=[1.,-1.] seed=73827 output=pog_OUT5>pog_OUT5.txt
+python start_class.py net=_pars/pogR_lin hinge=1. num_train=50000 use_existing=True eta_init=0.001 eta_current=0.001 batch_size=100 start=1 mult=1 mod_net=mod_pog update=adam num_epochs=200 force_global_prob=[1.,-1.] eta_schedule=[100.,.0005] seed=73827 output=apog_OUT5>apog_OUT5.txt
