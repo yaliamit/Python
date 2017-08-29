@@ -8,8 +8,8 @@ edges:False
 start:0
 Mnist:cifar_10
 net:fn
-eta_schedule:(100,.0005)
-update:nestorov
+#eta_schedule:(100,.0005)
+update:adam
 batch_size:100
 eta_init:.0005
 train:True
