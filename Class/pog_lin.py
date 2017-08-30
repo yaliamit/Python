@@ -6,9 +6,9 @@ pfile='/pogR_lin'
 nt=str(50000)
 update='adam'
 eta=str(.001)
-ne=str(200)
+ne=str(10)
 use_existing='True'
-for j in np.arange(0,10,1):
+for j in np.arange(0,1,1):
 
     seed=np.random.randint(0,200000)
     sd=' seed='+str(seed)+' '
@@ -16,11 +16,11 @@ for j in np.arange(0,10,1):
         ' eta_current='+eta+' batch_size=100 num_epochs='+ne+' update='+update+ \
         ' force_global_prob=[1.,-1.]'+sd+'pog_OUT'+str(j)
     os.system(ss)
-    ss='python runber.py start_class.py net=_pars'+pfile+' hinge=1. num_train='+nt+' use_existing='+use_existing+' eta_init='+eta+ \
+    ss='python runber.py start_class.py net=_pars'+pfile+' output_net=junk hinge=1. num_train='+nt+' use_existing='+use_existing+' eta_init='+eta+ \
        ' eta_current='+eta+' batch_size=100 start=1 mult=1 mod_net=mod_pog update='+update+' num_epochs='+ne+\
        ' force_global_prob=[1.,-1.] eta_schedule=[100.,.0005]'+sd+'apog_OUT'+str(j)
     os.system(ss)
-    ss='python runber.py start_class.py net=_pars'+pfile+' hinge=1. num_train='+nt+' use_existing='+use_existing+' eta_init='+eta+ \
+    ss='python runber.py start_class.py net=_pars'+pfile+' output_net=junk hinge=1. num_train='+nt+' use_existing='+use_existing+' eta_init='+eta+ \
        ' eta_current='+eta+' batch_size=5000 start=1 mult=1 mod_net=mod_pog_direct update='+update+' num_epochs='+ne+\
        ' force_global_prob=[1.,-1] eta_schedule=[100.,.0005]'+sd+'dapog_OUT'+str(j)
     os.system(ss)
