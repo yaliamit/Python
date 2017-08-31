@@ -212,7 +212,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
             tinout=PARS['global_tinout']
         if ('prob' in l):
             prob=l['prob']
-        if ('force_global_prob' in PARS and 'prob' in l): # and l['prob'][1]>=0):
+        if ('force_global_prob' in PARS and 'prob' in l and l['prob'][1]>=0):
             prob=PARS['force_global_prob']
         if ('scale' in l):
             scale=l['scale']
