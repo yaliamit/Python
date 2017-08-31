@@ -1,4 +1,3 @@
 REMOVE:newdensp,newdensf,
-#NOT_TRAINABLE:conv1,
-name:newdensp;tinout:(0.1,1.0);non_linearity:tanh;prob:(1.,1.);num_units:500;parent:drop3
+name:newdensp;tinout:(0.1,1.0);non_linearity:tanh;prob:(1.,1.);num_units:500;parent:drop1
 name:newdensf;num_units:10;non_linearity:linear;prob:(1.,1.);parent:newdensp;final:final
