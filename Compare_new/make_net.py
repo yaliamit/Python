@@ -472,7 +472,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                     # Rzero's shape was determined in the setup of the network above.
                     if l.Rzero.shape[0] > 1:
                        # Using R should be zeroed in places input R is 0.
-                       if l.prob[1]>=0:
+                       if l.prob[1]>0:
                             l.Rzero=np.float32(RR!=0)*np.float32(np.random.rand(RR.shape[0],RR.shape[1])<l.prob[0])
                        else:
                             l.Rzero=np.float32(np.zeros(RR.shape))
