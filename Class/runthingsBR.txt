@@ -1,1 +1,1 @@
-python start_class.py net=_pars/spfncrc use_existing=True num_epochs=10 start=2 mult=3 output=spf_OUT>spf_OUT.txt
+python start_class.py net=_pars/spfncrc use_existing=True num_epochs=10 start=2 mult=3 force_global_prob=[1.,1.] mod_net=mod_net output=spf_OUT>spf_OUT.txt
