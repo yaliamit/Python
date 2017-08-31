@@ -125,9 +125,10 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
                 #std=np.sqrt(6./(input_dim+num_units))
                 nn=l.W.shape.eval()
                 std=np.sqrt(6./((nn[0]+nn[1])*nn[2]*nn[3]))
-                #W = theano.shared(SP[t])
+                #Use existing W.
+                W = theano.shared(SP[t])
                 # Make W a random matrix with zeros where the original W had zeros.
-                W=theano.shared((np.float32(np.random.uniform(-std,std,(input_dim,num_units))))*(SP[t]>0))
+                #W=theano.shared((np.float32(np.random.uniform(-std,std,(input_dim,num_units))))*(SP[t]>0))
                 t+=1
                 # Also separate R
                 if 'R' in l.name:
