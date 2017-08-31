@@ -110,13 +110,14 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
         elif 'newdens' in l.name:
             lpars=lasagne.layers.get_all_param_values(l)
             #Rz, Wz are not preserved so no need to do them correctly, only when reading in the network.
-            # Put in a random initial R with the correct sparsity.
+            # Put in a random initial R  and W with the correct sparsity.
             input_dim=lpars[-1].shape[0]
             num_units=lpars[-1].shape[1]
             std=np.sqrt(6./(input_dim+num_units))
             R=theano.shared((np.float32(np.random.uniform(-std,std,(input_dim,num_units))))*(lpars[-1]>0))
+            W=theano.shared((np.float32(np.random.uniform(-std,std,(input_dim,num_units))))*(lpars[-2]>0))
             layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=l.num_units,prob=l.prob,
-                                            nonlinearity=l.nonlinearity,W=lpars[-2],R=R, b=None, name=l.name))
+                                            nonlinearity=l.nonlinearity,W=W,R=R, b=None, name=l.name))
         elif 'conv' in l.name:
             if 'sparsify' in NETPARS and l.name in NETPARS['sparsify']:
                 num_units=SP[t].shape[1]

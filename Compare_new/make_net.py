@@ -367,12 +367,16 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                         if (prob[1]>=0):
                             Rz=np.float32(np.ones((input_dim,num_units)))
                     else:
+                        # Sparsification of W through Wz
                         Wz=np.float32(np.random.rand(input_dim,num_units)<prob[0])
                         if (prob[1]>=0):
+                            # Sparsification of R if R will be used.
                             Rz=np.float32(r.uniform(0,1.,(input_dim,num_units))<prob[0])
+                    # Initialize W
                     std=gain*np.sqrt(6./(input_dim+num_units))
                     W=np.float32(np.random.uniform(-std,std,(input_dim,num_units)))*Wz
                     if (Rz.shape[0] > 1):
+                        # Initialize R
                         R=np.float32(r.uniform(-std,std,(input_dim,num_units)))*Rz
                     if (len(layer_list)==0):
                         layer_list.append(newdense.NewDenseLayer(lay,name=l['name'],num_units=num_units,
@@ -465,13 +469,16 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                     RR=np.array(l.R.eval())
                     # Get the zeroed out connections from the W==0 array - and zero out some more if required ??
                     l.Wzero=np.float32(WW!=0)*np.float32(np.random.rand(WW.shape[0],WW.shape[1])<l.prob[0])
-
+                    # Rzero's shape was determined in the setup of the network above.
                     if l.Rzero.shape[0] > 1:
-                       if l.prob[1]>0:
+                       # Using R should be zeroed in places input R is 0.
+                       if l.prob[1]>=0:
                             l.Rzero=np.float32(RR!=0)*np.float32(np.random.rand(RR.shape[0],RR.shape[1])<l.prob[0])
                        else:
                             l.Rzero=np.float32(np.zeros(RR.shape))
+                    # Non R setup.
                     if ('force_global_prob' in PARS and PARS['force_global_prob'][1]==-1.):
+                        # Force R and Rzero to be 0 dim
                         l.R=np.float32(np.ones((1,1)))
                         l.Rzero=np.float32(np.ones((1,1)))
                     if ('global_prob' in PARS and PARS['global_prob'][1]==0):
