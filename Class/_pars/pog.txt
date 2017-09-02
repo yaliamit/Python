@@ -21,10 +21,10 @@ adapt_eta:False
 TRAIN:True
 global_tinout:(1.,1.)
 name:input1
-name:conv1;num_filters:32;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:tanh;tinout:(.5,2.4);parent:input1
+name:conv1;num_filters:32;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:rectify;parent:input1
 name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:conv1
 name:batch0;parent:pool1
-name:conv2;num_filters:64;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:tanh;parent:batch0
+name:conv2;num_filters:64;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:rectify;parent:batch0
 name:pool2;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv2
 name:batch1;parent:pool2
 name:conv3;num_filters:64;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:rectify;parent:batch1
