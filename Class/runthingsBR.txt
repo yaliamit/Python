@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pog_tanh num_epochs=300 Mnist=cifar_10 num_train=50000 hinge=1 output=pogth_OUT>pogth_OUT.txt
+python start_class.py net=_pars/pog_tanh num_epochs=300 Mnist=cifar_10 num_train=50000 output=pogt_OUT>pogt_OUT.txt
