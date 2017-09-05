@@ -1,1 +1,0 @@
-python start_class.py net=fncrc output=fncrc_100_OUT>fncrc_100_OUT.txt

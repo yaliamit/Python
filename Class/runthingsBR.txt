@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pog_tanh num_epochs=300 Mnist=cifar_10 num_train=50000 output=pogt_OUT>pogt_OUT.txt
+python start_class.py net=_pars/fncrc seed=2830 num_epochs=25 force_global_prob=[1.,1.] output=f_OUT>f_OUT.txt
