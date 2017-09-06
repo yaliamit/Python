@@ -7,7 +7,7 @@ start:0
 Mnist:cifar_10
 net:fnc
 update:adam
-batch_size:100
+batch_size:500
 eta_init:.001
 train:True
 mult:1
