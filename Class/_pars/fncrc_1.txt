@@ -1,26 +1,27 @@
 output_net:_pars/fncrc_1
+train:True
+prev_epochs:200
+eta_current:0.0010000000475
 seed:45239
 num_epochs:200
 simple_augmentation:True
-global_prob:(1.0, -1.0)
 mod_net:None
+edges:False
 start:0
-TRAIN:True
 Mnist:cifar_10
 net:_pars/fncrc_0
-Classes:None
 update:adam
 batch_size:100
 use_existing:False
 eta_init:0.001
-train:True
+Classes:None
 mult:1
 num_train:5000
 agg:True
 adapt_eta:False
 hinge:1.0
 global_tinout:(0.5, 1.0)
-edges:False
+TRAIN:True
 name:input1
 name:conv1;num_filters:32;pad:(2, 2);filter_size:(5, 5);stride:(1, 1);non_linearity:tanh;tinout:(0.5,1.0);parent:input1
 name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:conv1
