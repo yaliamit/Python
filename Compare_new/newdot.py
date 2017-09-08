@@ -72,10 +72,9 @@ class NewDotOp(theano.Op):
             if (Rzer.data.shape[0] == 1):
                 xgrad = T.dot(gz, y.T)
             else:
-                xgrad = T.tanh(T.dot(gz, R.T))
-                #
-                #xgrad = T.dot(gz, R.T)
+                xgrad = T.dot(gz, R.T)
 
+            xgrad=T.tanh(xgrad)
             # Gradient of weights - input*deltas^t - zero'd out for those that don't exist.
             yygrad = T.dot(x.T,gz)
             zzgrad=yygrad
