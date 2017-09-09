@@ -1,1 +1,1 @@
-python start_class.py net=_pars/fncrc num_epochs=1000 force_global_prob=[.5,0.] output=f_RR5_OUT>f_RR5_OUT.txt
+python start_class.py net=_pars/fncrc num_epochs=1000 force_global_prob=[.5,.5] output=f_R5a_OUT>f_R5a_OUT.txt
