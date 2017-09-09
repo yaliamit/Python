@@ -74,7 +74,7 @@ class NewDotOp(theano.Op):
             else:
                 xgrad = T.dot(gz, R.T)
 
-            #xgrad=T.tanh(xgrad)
+            xgrad=T.tanh(xgrad)
             # Gradient of weights - input*deltas^t - zero'd out for those that don't exist.
             yygrad = T.dot(x.T,gz)
             zzgrad=yygrad
