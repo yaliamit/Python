@@ -219,8 +219,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             nspe=0
             for p in params:
                 if ('dens' in p.name):
-                    #spe+=T.mean(T.abs_(p))*reg_p
-                    spe+=T.sum(p*p)*reg_p
+                    spe+=T.sum(T.abs(p))*reg_p
                     nspe+=p.size
             spe=spe/nspe
             spen.append(spe)
