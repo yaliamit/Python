@@ -1,0 +1,14 @@
+seed:541264
+num_epochs:20
+Mnist:mnist
+num_hidden:32
+eta:.1
+#tanh:(1.,1.)
+train:True
+num_train:50000
+batch_size:500
+use_R:True
+update_R:True
+update_1:True
+plot:False
+update:sgd
