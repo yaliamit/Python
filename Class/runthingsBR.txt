@@ -1,1 +1,1 @@
-python start_class.py net=_pars/fncrc num_epochs=1000 seed=516433 num_train=50000 reg_param_weights=10. output=f50K_RR_W10_OUT>f50K_RR_W10_OUT.txt
+python start_class.py net=_pars/fncrc num_epochs=1000 seed=516433 num_train=50000 reg_param_weights=1. output=f50K_RR_W10_OUT>f50K_RR_W10_OUT.txt
