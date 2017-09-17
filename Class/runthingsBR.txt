@@ -1,1 +1,1 @@
-python start_class.py net=_pars/fncrc seed=147278 num_epochs=2 force_global_prob=[1.,1.] output=f_OUT>f_OUT.txt
+python start_class.py net=_pars/fncrc seed=147278 train=False use_existing=True start=1 mult=2 sparsify=[conv1,] write_sparse=True output=spf_OUT2>spf_OUT2.txt
