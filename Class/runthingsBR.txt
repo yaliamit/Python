@@ -1,1 +1,1 @@
-python start_class.py net=_pars/spfncrc seed=27922 use_existing=True num_epochs=300 start=2 mult=3 force_global=[1.,1.] reg_param_weights=100 output=spf_R_OUT5>spf_R_OUT5.txt
+python start_class.py net=_pars/fncrc seed=163148 num_epochs=2 force_global_prob=[1.,1.] output=f_OUT>f_OUT.txt
