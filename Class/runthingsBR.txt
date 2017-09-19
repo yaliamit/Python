@@ -1,1 +1,1 @@
-python start_class.py net=_pars/spfncrc seed=147278 use_existing=True num_epochs=300 start=2 mult=3 force_global=[1.,1.] reg_param_weights=1000 output=spf_R_OUT2>spf_R_OUT2.txt
+python bp_exp.py output=net=bp_pars>net=bp_pars.txt
