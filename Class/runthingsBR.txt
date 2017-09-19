@@ -1,1 +1,1 @@
-python bp_exp.py net=bp_pars output=bp_OUT>bp_OUT.txt
+python bp_exp.py output=net=bp_pars>net=bp_pars.txt
