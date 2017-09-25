@@ -1,1 +1,1 @@
-python bp_exp.py net=bp_pars output=bp_OUT>bp_OUT.txt
+python start_class.py net=_pars/pogR_lin hinge=1. num_train=50000 eta_init=0.001 eta_current=0.001 batch_size=100 num_epochs=200 update=adam force_global_prob=[1.,-1.] seed=78532 output=pog_OUT0>pog_OUT0.txt

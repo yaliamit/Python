@@ -68,9 +68,10 @@ def update_sgd(pars, pards, eta):
 
     return updates
 
-def setup_function(x,target_var,w1,r1,w2,r2,fw1,fw2, NETPARS):
+def setup_function(x,target_var,w1,r1,fw1,w2,r2,fw2,eta, NETPARS,train=True):
 
-        eta=theano.shared(np.float32(NETPARS['eta']))
+
+
         num_train=x.shape[0].astype(theano.config.floatX)
         # Hidden layer
         h=T.dot(x,w1)
@@ -84,7 +85,10 @@ def setup_function(x,target_var,w1,r1,w2,r2,fw1,fw2, NETPARS):
         cost=acost.mean()
         ans=T.argmax(o,axis=1)
         num_cls = o.shape[1]
-        O=theano.tensor.extra_ops.to_one_hot(ans, num_cls)
+        if (train):
+            O=theano.tensor.extra_ops.to_one_hot(target_var, num_cls)
+        else:
+            O=theano.tensor.extra_ops.to_one_hot(target_var, num_cls)
         #d3=-theano.tensor.extra_ops.to_one_hot(target_var,num_cls)
         acc = T.mean(T.eq(ans, target_var),
                               dtype=theano.config.floatX)
@@ -113,13 +117,16 @@ def setup_function(x,target_var,w1,r1,w2,r2,fw1,fw2, NETPARS):
         fh=T.dot(O,fw2.T)
         if ('tanh' in NETPARS):
             fh=T.nnet.sigmoid(fh)
+        #dfw2=T.zeros(w2.shape)
         dfw2=T.mean(h.dimshuffle(0,1,'x')*O.dimshuffle(0,'x',1),axis=0)
         fx=T.dot(fh,fw1.T)
+        #fx=T.dot(O,fw1.T)
         if ('tanh' in NETPARS):
             fx=T.nnet.sigmoid(fx)
         fx=(1.*fx+0.*x)
         # Update W1
         dfw1=T.mean(x.dimshuffle(0,1,'x')*fh.dimshuffle(0,'x',1),axis=0)
+        #dfw1=T.mean(x.dimshuffle(0,1,'x')*O.dimshuffle(0,'x',1),axis=0)
 
 
         dr1=T.zeros(dw1.shape)
@@ -129,13 +136,15 @@ def setup_function(x,target_var,w1,r1,w2,r2,fw1,fw2, NETPARS):
             dr2=dw2
             dr1=dw1
         if (NETPARS['update']=='sgd'):
-            updates=update_sgd([w1,r1,w2,r2],[dw1,dr1,dw2,dr2],eta)
+            updates=update_sgd([w1,r1,fw1,w2,r2,fw2],[dw1,dr1,dfw1,dw2,dr2,dfw2],eta)
         else:
             updates=adamloc([dw1,dr1,dfw1,dw2,dr2,dfw2],[w1,r1,fw1,w2,r2,fw2],learning_rate=eta)
-        train_fn=theano.function(inputs=[x,target_var],outputs=[o,h,cost,acc,d3,d2,U,fx],
-        updates=updates,name="train")
-        test_fn=theano.function(inputs=[x,target_var],outputs=[cost,acc,fx],updates=None)
-        return(train_fn,test_fn,eta)
+        if (train):
+            fn=theano.function(inputs=[x,target_var],outputs=[o,h,cost,acc,d3,d2,U,fx],
+                updates=updates,name="train")
+        else:
+            fn=theano.function(inputs=[x,target_var],outputs=[cost,acc,fx],updates=None)
+        return(fn)
 
 
 
@@ -173,6 +182,8 @@ def main_new(NETPARS):
     std=np.sqrt(6./(num_inputs+num_hidden))
     W1=np.float32(np.random.uniform(-std,std,(num_inputs,num_hidden)))
     fW1=np.float32(np.random.uniform(-std,std,(num_inputs,num_hidden)))
+    #fW1=np.float32(np.random.uniform(-std,std,(num_inputs,num_class)))
+
     R1=np.float32(np.random.uniform(-std,std,(num_inputs,num_hidden)))
     std=np.sqrt(6./(num_class+num_hidden))
     W2=np.float32(np.random.uniform(-std,std,(num_hidden,num_class)))
@@ -190,8 +201,9 @@ def main_new(NETPARS):
     fw2=theano.shared(fW2)
     r2=theano.shared(R2)
     target_var = T.ivector('target')
-
-    train_fn,test_fn,eta=setup_function(input_var,target_var,w1,r1,fw1,w2,r2,fw2,NETPARS)
+    eta=theano.shared(np.float32(NETPARS['eta']))
+    train_fn=setup_function(input_var,target_var,w1,r1,fw1,w2,r2,fw2,eta,NETPARS,train=True)
+    test_fn=setup_function(input_var,target_var,w1,r1,fw1,w2,r2,fw2,eta,NETPARS,train=False)
 
     # Iterate
     BX=[]
