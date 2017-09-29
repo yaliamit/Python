@@ -73,7 +73,7 @@ class NewDotOp(theano.Op):
             else:
                 xgrad = T.dot(gz, R.T)
                 if (OD.data[0]>1):
-                    xx=T.reshape(xgrad,OD)
+                    xx=T.reshape(xgrad,tuple((0,)+OD))
                     xxs=xx
                     xgrad=xx
             #xgrad=T.tanh(xgrad)
