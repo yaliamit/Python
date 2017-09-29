@@ -101,8 +101,8 @@ class NewDotOp(theano.Op):
                 zgrad = theano.tensor.basic.patternbroadcast(zgrad, R.broadcastable)
         Wz=theano.gradient.grad_undefined(self,3,Wzer)
         Rz=theano.gradient.grad_undefined(self,4,Rzer)
-
-        return xgrad, ygrad, zgrad, Wz, Rz
+        ODz=theano.gradient.grad_undefined(self,4,OD)
+        return xgrad, ygrad, zgrad, Wz, Rz, ODz
 
 
 newdot = NewDotOp()
