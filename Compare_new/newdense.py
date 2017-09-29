@@ -60,7 +60,7 @@ class NewDenseLayer(Layer):
     """
     def __init__(self, incoming, num_units, W=init.GlorotUniform(), R=init.GlorotUniform(),
                  Wzero=init.Uniform(range=(0.,1.)),Rzero=init.Uniform(range=(0.,1.)),
-                 b=init.Constant(0.), prob=(.5,.5),
+                 b=init.Constant(0.), prob=(.5,.5), origdim=(1,1),
                  nonlinearity=nonlinearities.rectify,
                  **kwargs):
         super(NewDenseLayer, self).__init__(incoming, **kwargs)
@@ -82,6 +82,7 @@ class NewDenseLayer(Layer):
         #self.Rzero=self.add_param(Rzero,(num_inputs,num_units),name="Rzero", trainable=False)
         self.Wzero=Wzero
         self.Rzero=Rzero
+        self.origdim=origdim
         if (self.prob[1]==0.):
             self.Rzero=self.Rzero<0
         #self.Wzero=(self.Wzero<self.prob[0]) #*(self.W>0)
@@ -104,7 +105,7 @@ class NewDenseLayer(Layer):
             # if the input has more than two dimensions, flatten it into a
             # batch of feature vectors.
             input = input.flatten(2)
-        activation = newdot.newdot(input, self.W,self.R, self.prob, self.Wzero, self.Rzero)
+        activation = newdot.newdot(input, self.W,self.R, self.prob, self.Wzero, self.Rzero, self.origdim)
         if self.b is not None:
             activation = activation + self.b.dimshuffle('x', 0)
         return self.nonlinearity(activation)

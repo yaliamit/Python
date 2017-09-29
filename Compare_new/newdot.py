@@ -18,7 +18,7 @@ class NewDotOp(theano.Op):
     def make_node(self, *inputs):
         inputs = list(map(theano.tensor.basic.as_tensor_variable, inputs))
         i_broadcastables = [input.type.broadcastable for input in inputs]
-        bx, by, br, bp, byz, brz = i_broadcastables
+        bx, by, br, bp, byz, brz, brd = i_broadcastables
         if len(by) == 2:  # y is a matrix
             bz = bx[:-1] + by[-1:]
         elif len(by) == 1:  # y is vector
@@ -29,11 +29,11 @@ class NewDotOp(theano.Op):
 
         i_dtypes = [input.type.dtype for input in inputs[0:3]]
         outputs = [theano.tensor.basic.tensor(scal.upcast(*i_dtypes), bz)]
-        return theano.Apply(self, inputs[0:3]+inputs[4:6], outputs)
+        return theano.Apply(self, inputs[0:3]+inputs[4:7], outputs)
         #return theano.Apply(self, inputs, outputs)
 
     def perform(self, node, inp, out):
-        x, y, R, Wzer, Rzer = inp
+        x, y, R, Wzer, Rzer, OD = inp
         u, = out
 
         # the asarray is here because dot between two vectors
@@ -43,7 +43,7 @@ class NewDotOp(theano.Op):
 
     def grad(self, inp, grads):
 
-        x, y, R, Wzer, Rzer = inp
+        x, y, R, Wzer, Rzer, OD = inp
         gz, = grads
         xdim, ydim, gdim = x.type.ndim, y.type.ndim, gz.type.ndim
 
@@ -66,14 +66,16 @@ class NewDotOp(theano.Op):
             ygrad = T.dot(x.T, gz)
 
 
-
         # x is matrix, y is matrix, grad is matrix
         elif xdim == ydim == 2:
             if (Rzer.data.shape[0] == 1):
                 xgrad = T.dot(gz, y.T)
             else:
                 xgrad = T.dot(gz, R.T)
-
+                if (OD[0]>1):
+                    xx=T.reshape(xgrad,OD)
+                    xxs=xx
+                    xgrad=xx
             #xgrad=T.tanh(xgrad)
             # Gradient of weights - input*deltas^t - zero'd out for those that don't exist.
             yygrad = T.dot(x.T,gz)
