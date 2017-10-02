@@ -511,7 +511,8 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
             prs={}
             new_layers_pars=PARS['INSERT_LAYERS']
             prs['layers']=new_layers_pars
-            prs['force_global_prob']=PARS['force_global_prob']
+            if ('force_global_prob' in PARS):
+                prs['force_global_prob']=PARS['force_global_prob']
             inlayer=new_layers_pars[0]['parent']
             for l in layers:
                  if l.name==inlayer:
