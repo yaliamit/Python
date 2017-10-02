@@ -1,3 +1,4 @@
+XXX: pogR_Lin;scale:.2
 output_net:fnc
 seed:45239
 num_epochs:100
@@ -7,26 +8,24 @@ edges:False
 start:0
 Mnist:cifar_10
 net:fn
-#eta_schedule:(100.,.0001)
+#eta_schedule:(100,.0005)
 update:adam
-batch_size:5000
-eta_init:.001
+batch_size:100
+eta_init:.0005
 train:True
 mult:1
-num_train:5000
+num_train:50000
 agg:True
 adapt_eta:False
 hinge:1
-#hing_down:2
+hinge_down:1
 TRAIN:True
-global_tinout:(.5,1.)
 name:input1
-name:conv1;num_filters:32;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:tanh;parent:input1
+name:conv1;tinout:(.1,1);num_filters:32;filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:tanh;tinout:(.5,1.);parent:input1
 name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:conv1
-name:conv2;num_filters:64;filter_size:(5,5);pad:(2,2);stride:(1, 1);scale:.2;non_linearity:Lin;parent:pool1
+name:conv2;tinout:(.1,1);num_filters:64;prob:(.5,.5);filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:Lin;scale:.2;parent:pool1
 name:pool2;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv2
-name:conv3;num_filters:64;filter_size:(5,5);pad:(2,2);stride:(1, 1);scale:.2;non_linearity:Lin;parent:pool2
+name:conv3;tinout:(.1,1);num_filters:64;prob:(.5,.5);filter_size:(5,5);pad:(2,2);stride:(1, 1);non_linearity:Lin;scale:.2;parent:pool2
 name:pool3;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv3
-name:drop3;drop:.5;parent:pool3
-name:dense0;num_units:128;non_linearity:Lin;scale:.2;tinout:(.1,1.);parent:drop3
-name:dense2;num_units:10;non_linearity:linear;parent:dense0;final:final
+name:newdens0;tinout:(.1,1);num_units:128;prob:(.5,.5);non_linearity:Lin;scale:.2;parent:pool3
+name:newdens2;num_units:10;prob:(.5,.5);non_linearity:lasagne.nonlinearity.linear;parent:newdens0;final:final
