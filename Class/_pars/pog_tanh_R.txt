@@ -25,7 +25,7 @@ name:input1
 name:conv1;num_filters:32;filter_size:(5,5);pad:(2,2);prob:(1.,0.);stride:(1, 1);non_linearity:tanh;parent:input1
 name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:conv1
 name:conv2R;num_filters:64;filter_size:(5,5);pad:(2,2);prob:(1.,0.);stride:(1, 1);non_linearity:tanh;parent:pool1
-name:pool2;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv2
+name:pool2;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv2R
 name:conv3R;num_filters:64;filter_size:(5,5);pad:(2,2);prob:(1.,0.);stride:(1, 1);non_linearity:tanh;parent:pool2
 name:pool3;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv3R
 name:drop3;drop:.5;parent:pool3
