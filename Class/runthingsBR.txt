@@ -1,1 +1,1 @@
-python start_class.py net=_pars/pog_tanh_R force_global_prob=[1.,0.] hinge=1. Mnist=cifar_100 update=sgd eta_init=1 num_epochs=400 output=pogRh_OUT>pogRh_OUT.txt
+python start_class.py net=_pars/pog_tanh_R force_global_prob=[1.,0.] hinge=1. Mnist=cifar_100 update=sgd eta_init=1 num_epochs=400 dep_fac=10. output=pogRh_OUT>pogRh_OUT.txt
