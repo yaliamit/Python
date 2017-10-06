@@ -73,9 +73,9 @@ class NewDotOp(theano.Op):
             else:
                 xgrad = T.dot(gz, R.T)
                 if (OD.data[0]>1):
-                    xx=T.reshape(xgrad,tuple((0,)+OD))
-                    xxs=xx
-                    xgrad=xx
+                    xx=T.reshape(xgrad,tuple(([0],)+OD))
+                    xxs=T.nnet.conv2d(xx,T.ones((OD.data[1],5,5)))
+                    xgrad=xxs
             #xgrad=T.tanh(xgrad)
             # Gradient of weights - input*deltas^t - zero'd out for those that don't exist.
             yygrad = T.dot(x.T,gz)

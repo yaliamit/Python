@@ -122,6 +122,7 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
             if 'sparsify' in NETPARS and l.name in NETPARS['sparsify']:
                 num_units=SP[t].shape[1]
                 input_dim=SP[t].shape[0]
+                dims=l.input_shape[1:]
                 #std=np.sqrt(6./(input_dim+num_units))
                 nn=l.W.shape.eval()
                 std=np.sqrt(6./((nn[0]+nn[1])*nn[2]*nn[3]))
@@ -136,11 +137,11 @@ def apply_get_matrix(network,GET_CONV, NETPARS):
                     R=theano.shared((np.float32(np.random.uniform(-std,std,(input_dim,num_units))))*(SP[t]>0))
                     t=t+1
                     layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=num_units,prob=l.prob,
-                                            W=W,R=R, b=None,nonlinearity=l.nonlinearity,name='newdens'+str(t)))
+                                            W=W,R=R, b=None,nonlinearity=l.nonlinearity,origdim=dims,name='newdens'+str(t)))
             # JUst sparse no R, error updates are propagated with W.
                 else:
                     layer_list.append(newdense.NewDenseLayer(layer_list[-1],num_units=num_units,
-                                            W=W, b=None,Rzero=np.float32(np.ones((1,1))), prob=(1.,-1.),nonlinearity=l.nonlinearity,name='newdens'+str(t)))
+                                            W=W, b=None,Rzero=np.float32(np.ones((1,1))),origdim=dims, prob=(1.,-1.),nonlinearity=l.nonlinearity,name='newdens'+str(t)))
                 # Reshape for subsequent pooling
                 shp=l.output_shape[1:]
                 layer_list.append(lasagne.layers.reshape(layer_list[-1],([0],)+shp,name='reshape'+str(t)))
