@@ -1,1 +1,1 @@
-python start_class.py net=_pars/fncrc seed=13305 train=False use_existing=True start=1 mult=2 sparsify=[conv1,] write_sparse=True output=spf_OUT1>spf_OUT1.txt
+python start_class.py net=_pars/spfncrc update=sgd eta_init=.1 eta_current=.1 seed=13305 use_existing=True num_epochs=1000 start=2 mult=3 force_global=[.5,1.] output=spf_R_OUT1>spf_R_OUT1.txt
