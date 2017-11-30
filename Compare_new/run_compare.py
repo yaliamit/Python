@@ -281,6 +281,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
                       dtype=theano.config.floatX)
 
         eta=None
+        # Used to track indices of classes being updatd.
         tclasses=None
         if (Train):
             eta = theano.shared(np.array(NETPARS['eta_init'], dtype=theano.config.floatX))

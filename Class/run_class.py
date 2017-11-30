@@ -272,6 +272,7 @@ def main_new(NETPARS):
     step=T.iscalar()
 
     if (NETPARS['train']):
+        # tclasses binary vector indicating which classes are being updated.
         train_fn,eta, tclasses=run_compare.setup_function(network,NETPARS,input_var,target_var,Train=True)
 
     val_fn,dummy, tdummy=run_compare.setup_function(network,NETPARS,input_var,target_var,Train=False)
@@ -293,6 +294,8 @@ def main_new(NETPARS):
         for epoch in range(NETPARS['num_epochs']):
             if ('num_class' in NETPARS and np.mod(epoch,NETPARS['num_class']['class_epoch'])==0):
                 icl=update_class_list(NETPARS,icl,network,tclasses)
+                # if sub not there, all data can get into batch but only connections to 'Classes' get updated
+                # based on the tclasses index.
                 if ('sub' in NETPARS['num_class']):
                     iterate_on_batches(val_fn,X_train,y_train,batch_size,typ='ValTrain',pars=NETPARS)
                     yind=np.in1d(y_train,NETPARS['Classes'])
