@@ -1,1 +1,1 @@
-python start_class.py net=_pars/simp output=simp5K>simp5K.txt
+python start_class.py net=_pars/simp num_train=50000 output=simp50K>simp50K.txt
