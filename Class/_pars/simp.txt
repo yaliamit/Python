@@ -13,14 +13,14 @@ batch_size:500
 eta_init:.001
 train:True
 mult:1
-num_train:5000
+num_train:50000
 agg:True
 adapt_eta:False
-#hinge:2
+hinge:1
 #hing_down:2
 TRAIN:True
 global_tinout:(1.,1.)
 name:input1
-#name:conv1;num_filters:2;filter_size:(3,3);pad:(2,2);stride:(1, 1);non_linearity:rectify;parent:input1
-#name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:conv1
-name:dense2;num_units:10;non_linearity:softmax;parent:input1;final:final
+name:conv1;num_filters:4;filter_size:(3,3);pad:(2,2);stride:(1, 1);non_linearity:rectify;parent:input1
+name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:conv1
+name:dense2;num_units:10;non_linearity:linear;parent:pool1;final:final
