@@ -106,7 +106,7 @@ def plot_OUTPUT(name='OUTPUT',first=None,last=None):
     import commands
     import numpy as np
     import pylab as py
-    #py.ion()
+    py.ion()
     havetrain=False
     oo=commands.getoutput('grep Posi ' + name + '.txt  | cut -d" " -f2,3')
     bp=[]
@@ -143,4 +143,4 @@ def plot_OUTPUT(name='OUTPUT',first=None,last=None):
     if (bp!=[]):
         py.plot(bp,label='Pos')
     py.legend(loc=4)
-    py.show(block=True)
+    py.show()
