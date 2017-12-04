@@ -1,1 +1,1 @@
-python source/start_class.py net=_pars/fncrc hinge_down=100 num_epochs=1000 output=OUT>OUT.txt
+python source/start_class.py net=_pars/fncrc hinge_down=100. num_epochs=1000 output=OUT_dm100_R>OUT_dm100_R.txt
