@@ -1,10 +1,12 @@
-import parse_net_pars
-import run_class
 import os
-import numpy as np
 import sys
+
+import numpy as np
+
 import manage_OUTPUT
-import lasagne
+import parse_net_pars
+from source import run_class
+
 parms={}
 parms['net']='igor2_maxout'
 parms['output_net']=None
@@ -125,7 +127,7 @@ for i,ne in enumerate(nets):
     parse_net_pars.dump_pars(NETPARS)
 
             #print '\n'
-    [NETPARS,out]=run_class.main_new(NETPARS)
+    [NETPARS,out]= run_class.main_new(NETPARS)
 
     many=False
 

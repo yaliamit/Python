@@ -1,15 +1,17 @@
 from __future__ import print_function
 
-import make_net
+import sys
+import time
+
+import lasagne
 import numpy as np
 import theano
-import theano.typed_list
 import theano.tensor as T
-import time
-import lasagne
-import run_compare
+import theano.typed_list
+
 import data
-import sys
+import make_net
+import run_compare
 import untied_conv_mat
 
 def get_confusion_matrix(pred,y):
@@ -354,8 +356,8 @@ def main_new(NETPARS):
             np.save(NETPARS['output_net'],params)
 
     if ('write_sparse' in NETPARS and NETPARS['write_sparse']):
-            GET_CONV=untied_conv_mat.get_matrix_func(network,input_var,NETPARS)
-            untied_conv_mat.apply_get_matrix(network,GET_CONV,NETPARS)
+            GET_CONV= untied_conv_mat.get_matrix_func(network, input_var, NETPARS)
+            untied_conv_mat.apply_get_matrix(network, GET_CONV, NETPARS)
     # After training, we compute and print the test error
     fac=0
     if (type(NETPARS['simple_augmentation']) is int):

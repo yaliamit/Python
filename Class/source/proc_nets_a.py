@@ -1,16 +1,18 @@
+import sys
+
+import lasagne
 import numpy as np
 import pylab as py
-import sys
-import manage_OUTPUT
-from scipy import linalg
-import data
-import parse_net_pars
-import make_net
-import lasagne
-import run_compare
-import theano.tensor as T
 import theano
-import run_class
+import theano.tensor as T
+from scipy import linalg
+
+import data
+import make_net
+import manage_OUTPUT
+import parse_net_pars
+import run_compare
+from source import run_class
 
 parms={}
 parms=manage_OUTPUT.process_args(sys.argv,parms)
@@ -67,7 +69,7 @@ out_func=make_func(layers[parms['layer_number']],input_var)
 out=out_func(X_train[0:100])
 batch_size=NETPARS['batch_size']
 val_fn,dummy=run_compare.setup_function(network,NETPARS,input_var,target_var,Train=False)
-out_test=run_class.iterate_on_batches(val_fn,X_test,y_test,batch_size,typ='Test',agg=True,fac=False,pars=NETPARS)
+out_test= run_class.iterate_on_batches(val_fn, X_test, y_test, batch_size, typ='Test', agg=True, fac=False, pars=NETPARS)
 
 t=0
 for i,l in enumerate(layers):
@@ -80,7 +82,7 @@ out_func=make_func(layers[parms['layer_number']],input_var)
 
 outR=out_func(X_train[0:100])
 val_fn,dummy=run_compare.setup_function(network,NETPARS,input_var,target_var,Train=False)
-out_test=run_class.iterate_on_batches(val_fn,X_test,y_test,batch_size,typ='Test',agg=True,fac=False,pars=NETPARS)
+out_test= run_class.iterate_on_batches(val_fn, X_test, y_test, batch_size, typ='Test', agg=True, fac=False, pars=NETPARS)
 print('done')
 
 

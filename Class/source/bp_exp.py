@@ -1,21 +1,17 @@
 from __future__ import print_function
 
-import make_net
-import numpy as np
-import time
-import data
 import sys
-import theano.tensor as T
-import theano
-import theano.tensor.nlinalg as Tn
 from collections import OrderedDict
+
+import numpy as np
 import pylab as py
-from run_class import iterate_minibatches_new
+import theano
+import theano.tensor as T
+import theano.tensor.nlinalg as Tn
+
+import data
 from run_compare import adamloc
-import untied_conv_mat
-import manage_OUTPUT
-
-
+from source.run_class import iterate_minibatches_new
 
 
 def multiclass_hinge_loss_alt(predictions, targets, delta_up=1., delta_down=1., dep_fac=1.):
