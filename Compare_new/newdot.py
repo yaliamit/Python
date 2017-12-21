@@ -78,14 +78,15 @@ class NewDotOp(theano.Op):
                     xgrad=xxs
             #xgrad=T.tanh(xgrad)
             # Gradient of weights - input*deltas^t - zero'd out for those that don't exist.
-            #yygrad = T.dot(x.T,gz)
-            yygrad=T.dot(T.nnet.relu(x.T),gz)
-            #zzgrad=yygrad
-            zzgrad=T.dot(x.T,T.nnet.relu(gz))
+            yygrad = T.dot(x.T,gz)
+            #yygrad=T.dot(T.nnet.relu(x.T),gz)
+            zzgrad=yygrad
+
             ygrad=yygrad*Wzer
             if (Rzer.data.shape[0] == 1):
                 zgrad=theano.gradient.grad_undefined(self,2,R)
             else:
+                #zzgrad=T.dot(x.T,T.nnet.relu(gz))
                 zgrad=zzgrad*Rzer
 
 
