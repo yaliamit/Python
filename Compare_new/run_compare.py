@@ -44,7 +44,7 @@ def multiclass_hinge_loss_alt(predictions, targets, delta_up=1., delta_down=1., 
             #relc=theano.tensor.nnet.relu(delta_up-corrects)
             #relr=dep_fac*theano.tensor.nnet.relu(delta_down+rest)/(num_cls-1)
             relc=corrects.clip(-delta_down,delta_up)
-            relr=dep_fac*rest.clip(-delta_down,delat_up)/(num_cls-1)
+            relr=dep_fac*rest.clip(-delta_down,delta_up)/(num_cls-1)
             # sftfac=1.
             # relc=theano.tensor.nnet.softplus(sftfac*(delta_up-corrects))/sftfac
             # relr=dep_fac*theano.tensor.nnet.softplus(sftfac*(delta_down+rest))/(sftfac*(num_cls-1))
