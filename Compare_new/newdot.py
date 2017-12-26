@@ -78,7 +78,8 @@ class NewDotOp(theano.Op):
                     xgrad=xxs
             #xgrad=T.tanh(xgrad)
             # Gradient of weights - input*deltas^t - zero'd out for those that don't exist.
-            yygrad = T.dot(x.T,gz)
+            yygrad=T.dot(x.T,gz.clip(-1.,1.))
+            #yygrad = T.dot(x.T,gz)
             #yygrad=T.dot(T.nnet.relu(x.T),gz)
             zzgrad=yygrad
 
@@ -104,7 +105,7 @@ class NewDotOp(theano.Op):
                 zgrad = theano.tensor.basic.patternbroadcast(zgrad, R.broadcastable)
         Wz=theano.gradient.grad_undefined(self,3,Wzer)
         Rz=theano.gradient.grad_undefined(self,4,Rzer)
-        ODz=theano.gradient.grad_undefined(self,4,OD)
+        ODz=theano.gradient.grad_undefined(self,5,OD)
         return xgrad, ygrad, zgrad, Wz, Rz, ODz
 
 
