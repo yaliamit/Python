@@ -42,7 +42,7 @@ def set_all_param_values_loc(layer, values, **tags):
 
 
 
-def rect_sym(x):
+def rect_sym(x,scale_in=.5):
     """Rectify activation function :math:`\\varphi(x) = \\max(0, x)`
     Parameters
     ----------
@@ -53,7 +53,7 @@ def rect_sym(x):
     floatX
         The output of the rectify function applied to the activation.
     """
-    y=theano.tensor.nnet.relu(x+1)-1
+    y=theano.tensor.nnet.relu(scale_in*x+1)-1
     z=-theano.tensor.nnet.relu(-y+1)+1
     return z
 
@@ -179,7 +179,8 @@ def get_nonlinearity(l,tinout,scale=1.):
         if ('tinout' in l):
             scale_in=l['tinout'][0]
             scale_out=l['tinout'][1]
-        f=lasagne.nonlinearities.ScaledTanH(scale_in=scale_in,scale_out=scale_out)
+        #f=lasagne.nonlinearities.ScaledTanH(scale_in=scale_in,scale_out=scale_out)
+        f=make_net.rect_sym
     elif ('softmax' in s1):
         f=lasagne.nonlinearities.softmax
     elif ('Lin'):
