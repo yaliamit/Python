@@ -1,1 +1,1 @@
-python source/start_class.py net=_pars/spfncrc seed= update=sgd eta_init=.1 eta_current=.1 use_existing=True num_epochs=1000 start=2 mult=3 force_global_prob=[1.,0.] output=spf_RR_OUT1>spf_RR_OUT1.txt
+python source/start_class.py net=_pars/fncrc seed=27156 num_epochs=2 force_global_prob=[1.,1.] output=f_OUT>f_OUT.txt
