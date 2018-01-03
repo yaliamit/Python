@@ -1,1 +1,1 @@
-python source/start_class.py net=_pars/fncrc num_epochs=1000 force_global_prob=[1.,-1.] hinge=False output=f_S_OUT>f_S_OUT.txt
+python source/start_class.py net=_pars/fncrc num_epochs=1000 Mnist=cifar100 force_global_prob=[1.,-1.] hinge=False output=f_S_OUT>f_S_OUT.txt
