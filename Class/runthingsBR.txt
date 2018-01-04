@@ -1,1 +1,1 @@
-python source/start_class.py net=_pars/fncrc num_epochs=1000 force_global_prob=[1.,-1.] update=sgd eta_init=.1 delta_down=2. delta_up=2. dep_fac=10. output=f_R_OUT>f_R_OUT.txt
+python source/start_class.py net=_pars/fncrc num_epochs=1000 force_global_prob=[1.,-1.] update=sgd eta_init=.1 delta_down=2. delta_up=2. dep_fac=10. output=f_E_OUT>f_E_OUT.txt
