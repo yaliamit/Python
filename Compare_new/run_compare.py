@@ -47,11 +47,11 @@ def multiclass_hinge_loss_alt(predictions, targets, delta_up=1., delta_down=1., 
             #relc=delta_up-corrects.clip(-delta_down,delta_up)
             #relr=dep_fac*(delta_down+rest.clip(-delta_down,delta_up))/(num_cls-1)
             relc=delta_up-corrects.clip(-10,delta_up)
-            relr=dep_fac*(delta_down+rest.clip(-delta_down,10))/(num_cls-1)
+            relr=delta_down+rest.clip(-delta_down,10)
             # sftfac=1.
             # relc=theano.tensor.nnet.softplus(sftfac*(delta_up-corrects))/sftfac
             # relr=dep_fac*theano.tensor.nnet.softplus(sftfac*(delta_down+rest))/(sftfac*(num_cls-1))
-            loss=theano.tensor.sum(relr,axis=1)+relc
+            loss=theano.tensor.sum(relr,axis=1)+dep_fac*relc/(num_cls-1)
         else:
             #restm=theano.tensor.max(rest,axis=1)
             restlse=(theano.tensor.log(theano.tensor.sum(theano.tensor.exp(-dep_fac*(rest-1.)),axis=1)/(num_cls-1))+1.)/(-dep_fac)
@@ -254,8 +254,8 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
                         aloss = T.sum(lasagne.objectives.squared_error(pred,yy),axis=1)
                 else:
                     aloss, relr, relc = multiclass_hinge_loss_alt(pred,target_var,delta_up=delta_up,delta_down=delta_down,dep_fac=dep_fac)
-                #gloss.append(relr)
-                #gloss.append(relc)
+                gloss.append(relr)
+                gloss.append(relc)
             loss = aloss.mean()
             loss=loss+spe
             acc = T.mean(T.eq(T.argmax(pred, axis=1), target_var),
