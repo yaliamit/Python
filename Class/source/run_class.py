@@ -176,7 +176,7 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
     if (typ=='Train'):
          for i in range(4,len(tout)):
              df.append(np.float32(tout[i]))
-
+    print("MAX:",max(tout[5]))
     if (fac):
         pred0=np.concatenate(pred)
         pred1=np.reshape(pred0,(fac,pred0.shape[0]/fac)+pred0.shape[1:])
@@ -312,7 +312,7 @@ def main_new(NETPARS):
             start_time = time.time()
             print("eta",eta.get_value())
             out_tr=iterate_on_batches(train_fn,tX_train,ty_train,batch_size,typ='Train',network=network,pars=NETPARS,iter=epoch)
-            print(out_tr[4])
+            #print(out_tr[4])
             # Get eigenvalues
             # if (hasattr(network,'R') and 'force_global_prob' in NETPARS and NETPARS['force_global_prob'][1]>=0):
             #     RR=np.array(network.R.eval())
