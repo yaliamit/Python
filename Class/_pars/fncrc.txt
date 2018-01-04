@@ -23,5 +23,5 @@ name:conv1;num_filters:32;filter_size:(5,5);pad:(2,2);stride:(1, 1);tinout:(.5,1
 name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:conv1
 name:drop1;drop:.8;parent:pool1
 name:newdensp;num_units:500;non_linearity:tanh;prob:(1.,0.);tinout:(.1,1.);parent:drop1
-name:drop2;drop:.5;parent:newdensp
+name:drop2;drop:.1;parent:newdensp
 name:newdensf;num_units:10;prob:(1.,0.);non_linearity:lasagne.nonlinearity.linear;parent:drop2;final:final
