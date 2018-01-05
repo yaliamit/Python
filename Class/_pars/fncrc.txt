@@ -13,6 +13,7 @@ train:True
 mult:1
 num_train:50000
 agg:True
+dep_fac=10.
 adapt_eta:False
 hinge:1.
 TRAIN:True
