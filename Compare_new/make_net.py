@@ -643,8 +643,8 @@ def make_file_from_params(network,NETPARS):
                 s='name:'+l.name+';pool_size:'+str(l.pool_size)
             elif ('drop' in l.name):
                 # Regular drop layer.
-                if (p is None):
-                    p=l.p
+                #if (p is None):
+                p=l.p
                 s='name:'+l.name+';drop:'+str(p)
             elif ('pool' in l.name):
                 if (hasattr(l,'mode')):
