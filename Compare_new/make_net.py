@@ -603,6 +603,7 @@ def make_file_from_params(network,NETPARS):
     layers=lasagne.layers.get_all_layers(network)
     p=None
     for l in layers:
+
         if (l.name is not None and type(l) is not SclLayer):
             if ('input' in l.name):
                 s='name:'+l.name
@@ -643,9 +644,10 @@ def make_file_from_params(network,NETPARS):
                 s='name:'+l.name+';pool_size:'+str(l.pool_size)
             elif ('drop' in l.name):
                 # Regular drop layer.
-                #if (p is None):
-                p=l.p
+                if (p is None):
+                    p=l.p
                 s='name:'+l.name+';drop:'+str(p)
+                p=None
             elif ('pool' in l.name):
                 if (hasattr(l,'mode')):
                     s='name:'+l.name+';pool_size:'+str(l.pool_size)+';stride:'+str(l.stride)+';pad:'+str(l.pad)+';mode:'+str(l.mode)
