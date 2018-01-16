@@ -1,1 +1,1 @@
-python source/start_class.py net=_pars/fncrc batch_size=2000 eta_init=.5 eta_current=.5 update=sgd output=OUT>OUT.txt
+python source/start_class.py net=_pars/fncrc batch_size=2000 eta_init=.5 eta_current=.5 num_epochs=1000 update=sgd output=OUT>OUT.txt
