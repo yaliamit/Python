@@ -184,7 +184,6 @@ def adamloc(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
         v_prev = theano.shared(np.zeros(value.shape, dtype=value.dtype),broadcastable=param.broadcastable)
 
         m_t = beta1*m_prev + (one-beta1)*g_t
-        #v_t = beta2*v_prev + (one-beta2)*g_t**2
         v_t= beta2*v_prev + (one-beta2)*g_t*g_t
 
         step = a_t*m_t/(T.sqrt(v_t) + epsilon)
