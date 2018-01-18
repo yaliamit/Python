@@ -1,1 +1,1 @@
-python source/start_class.py net=_pars/fncrc batch_size=500 update=adam eta_init=.001 eta_current=.001 dep_fac=1. num_epochs=1000 update=sgd force_global_prob=[1.,1.] output=OUT5_10_a>OUT5_10_a.txt
+python source/start_class.py net=_pars/fncrc batch_size=500 update=adam eta_init=.001 eta_current=.001 dep_fac=1. num_epochs=1000 update=sgd force_global_prob=[1.,-1.] output=OUT5_10_a>OUT5_10_a.txt
