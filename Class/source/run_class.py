@@ -176,7 +176,7 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
     if (typ=='Train'):
          for i in range(4,len(tout)):
              df.append(np.float32(tout[i]))
-    print("MAX:",max(tout[5]))
+    #print("MAX:",max(tout[5]))
     if (fac):
         pred0=np.concatenate(pred)
         pred1=np.reshape(pred0,(fac,pred0.shape[0]/fac)+pred0.shape[1:])
