@@ -1,1 +1,1 @@
-python source/start_class.py net=_pars/fncrc batch_size=500 update=adam eta_init=.1 eta_current=.1 num_epochs=1000 dep_fac=1. force_global_prob=[1.,-1.] hinge=False output=OUT5_SM>OUT5_SM.txt
+python source/start_class.py net=_pars/fncrc batch_size=500 update=adam eta_init=.1 eta_current=.1 num_epochs=1000 dep_fac=1. force_global_prob=[1.,-1.] output=OUT5_10>OUT5_10.txt
