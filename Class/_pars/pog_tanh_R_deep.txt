@@ -16,7 +16,7 @@ mult:1
 num_train:50000
 agg:True
 adapt_eta:False
-hinge:1
+hinge:1.
 #hing_down:2
 TRAIN:True
 global_prob:(1.,1.)
