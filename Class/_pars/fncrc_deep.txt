@@ -5,7 +5,7 @@ mod_net:None
 edges:False
 start:0
 Mnist:cifar_100
-net:fnc
+net:fncccc
 update:sgd
 batch_size:500
 eta_init:.001
