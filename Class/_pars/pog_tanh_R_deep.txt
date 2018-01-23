@@ -33,6 +33,6 @@ name:drop2;drop:.8;parent:pool2
 name:conv3R;num_filters:64;prob:(1.,0.);filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:drop2
 name:conv3aR;num_filters:64;prob:(1.,0.);filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:conv3R
 name:pool3;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv3aR
-name:drop3;drop:.5;parent:pool3
+name:drop3;drop:.7;parent:pool3
 name:newdensp;num_units:500;prob:(1.,0.);non_linearity:tanh;tinout:(.1,1.);parent:drop3
 name:newdensf;num_units:10;prob:(1.,0.);non_linearity:softmax;parent:newdensp;final:final
