@@ -1,1 +1,1 @@
-python source/start_class.py seed=107057 net=_pars/pog_tanh_R_deep batch_size=500 eta_init=.1 eta_current=.1 num_epochs=2000 dep_fac=10. force_global_prob=[1.,0.] output=OUT5_RR_1>OUT5_RR_1.txt
+python source/start_class.py seed=126760 net=_pars/pog_tanh_R_deep batch_size=500 eta_init=.1 eta_current=.1 num_epochs=2000 dep_fac=10. force_global_prob=[1.,-1.] hinge=False output=OUT5_SM1>OUT5_SM1.txt
