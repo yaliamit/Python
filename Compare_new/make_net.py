@@ -193,7 +193,9 @@ def get_nonlinearity(l,tinout,scale=1.):
 
 def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
 
-    Winit_fac=.001
+    Winit_fac=1.
+    if ('Winit_fac' in PARS):
+        Winit_fac=PARS['Winit_fac']
     r=np.random.RandomState()
     add_on=(input_layer is not None)
     network={}
