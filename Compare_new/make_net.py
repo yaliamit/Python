@@ -193,6 +193,7 @@ def get_nonlinearity(l,tinout,scale=1.):
 
 def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
 
+    Winit_fac=.001
     r=np.random.RandomState()
     add_on=(input_layer is not None)
     network={}
@@ -286,7 +287,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                                 W=lasagne.init.GlorotUniform(),name=l['name'])
                         else:
                             convp=Conv2dLayerR.Conv2DLayerR(lay, num_filters=l['num_filters'], filter_size=filter_size,
-                                nonlinearity=nonlin,W=lasagne.init.GlorotUniform(gain=gain),
+                                nonlinearity=nonlin,W=lasagne.init.GlorotUniform(gain=Winit_fac*gain),
                                 R=lasagne.init.GlorotUniform(gain=gain),prob=prob,name=l['name'], b=None)
                     else:
                         if ('R' not in l['name']):
@@ -375,7 +376,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                             Rz=np.float32(r.uniform(0,1.,(input_dim,num_units))<prob[0])
                     # Initialize W
                     std=gain*np.sqrt(6./(input_dim+num_units))
-                    W=np.float32(np.random.uniform(-std,std,(input_dim,num_units)))*Wz
+                    W=np.float32(np.random.uniform(-Winit_fac*std,Winit_fac*std,(input_dim,num_units)))*Wz
                     if (Rz.shape[0] > 1):
                         # Initialize R
                         R=np.float32(r.uniform(-std,std,(input_dim,num_units)))*Rz
