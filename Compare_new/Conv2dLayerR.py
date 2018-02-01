@@ -70,23 +70,30 @@ class BaseConvLayerR(Layer):
             self.pad = as_tuple(pad, n, int)
 
         self.W = self.add_param(W, self.get_W_shape(), name="W")
-        self.R = self.add_param(R, self.get_W_shape(), name="R")
+
         self.prob=prob
 
         self.Wzer=self.add_param(Wzer,self.get_W_shape(),name="Wzero", trainable=False)
-        self.Rzer=self.add_param(Rzer,self.get_W_shape(),name="Rzero", trainable=False)
+        self.W=self.W*self.Wzer
+        if (self.prob[1]<0):
+            self.R=np.zeros((2,2))
+            #self.Wzer=T.zeros((2,2))
+            self.Rzer=T.zeros((2,2))
+            self.R = self.add_param(R, (2,2), name="R", trainable=False)
+            self.Rzer=self.add_param(Rzer,(2,2),name="Rzero", trainable=False)
+        else:
+            self.R = self.add_param(R, self.get_W_shape(), name="R")
+            self.Rzer=self.add_param(Rzer,self.get_W_shape(),name="Rzero", trainable=False)
+
         self.Wzer=self.Wzer<self.prob[0]
         self.Rzer=self.Rzer<self.prob[0]
-        self.W=self.W*self.Wzer
+
         self.R=self.R*self.Rzer
         #self.prob[1]=0 no gradient on R
 
         if (self.prob[1]==0.):
             self.Rzer=self.Rzer<0
-        elif (self.prob[1]<0):
-            self.R=T.zeros((2,2))
-            self.Wzer=T.zeros((2,2))
-            self.Rzer=T.zeros((2,2))
+
 
 
         if b is None:
