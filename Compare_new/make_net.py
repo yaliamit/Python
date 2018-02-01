@@ -40,22 +40,31 @@ def set_all_param_values_loc(layer, values, **tags):
                              "set has shape %r" %
                              (p.get_value().shape, v.shape))
 
+class rect_sym(object):
 
+    def __init__(self, scalein=.5,scaleout=1.):
+        self.scalein=scalein
+        self.sceleout=scaleout
 
-def rect_sym(x,scale_in=.5):
-    """Rectify activation function :math:`\\varphi(x) = \\max(0, x)`
-    Parameters
-    ----------
-    x : floatX
-        The activation (the summed, weighted input of a neuron).
-    Returns
-    -------
-    floatX
-        The output of the rectify function applied to the activation.
-    """
-    y=theano.tensor.nnet.relu(scale_in*x+1)-1
-    z=-theano.tensor.nnet.relu(-y+1)+1
-    return z
+    def __call__(self,x):
+        y=theano.tensor.nnet.relu(x*input+1)-1
+        z=-theano.tensor.nnet.relu(-y+1)+1
+        return z
+
+# def rect_sym(x,scale_in=.5):
+#     """Rectify activation function :math:`\\varphi(x) = \\max(0, x)`
+#     Parameters
+#     ----------
+#     x : floatX
+#         The activation (the summed, weighted input of a neuron).
+#     Returns
+#     -------
+#     floatX
+#         The output of the rectify function applied to the activation.
+#     """
+#     y=theano.tensor.nnet.relu(scale_in*x+1)-1
+#     z=-theano.tensor.nnet.relu(-y+1)+1
+#     return z
 
 
 class Trunc_Normal(lasagne.init.Initializer):
@@ -180,7 +189,7 @@ def get_nonlinearity(l,tinout,scale=1.):
             scale_in=l['tinout'][0]
             scale_out=l['tinout'][1]
         #if=lasagne.nonlinearities.ScaledTanH(scale_in=scale_in,scale_out=scale_out)
-        f=make_net.rect_sym
+        f=make_net.rect_sym(scalein=scale_in,scaleout=scale_out)
     elif ('softmax' in s1):
         f=lasagne.nonlinearities.softmax
     elif ('Lin' in s1):
