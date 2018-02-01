@@ -83,6 +83,10 @@ class BaseConvLayerR(Layer):
 
         if (self.prob[1]==0.):
             self.Rzer=self.Rzer<0
+        elif (self.prob[1]<0):
+            self.R=T.zeros((2,2))
+            self.Wzer=T.zeros((2,2))
+            self.Rzer=T.zeros((2,2))
 
 
         if b is None:
