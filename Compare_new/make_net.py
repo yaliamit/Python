@@ -44,11 +44,11 @@ class rect_sym(object):
 
     def __init__(self, scalein=.5,scaleout=1.):
         self.scalein=scalein
-        self.sceleout=scaleout
+        self.scaleout=scaleout
 
     def __call__(self,x):
-        y=theano.tensor.nnet.relu(x*input+1)-1
-        z=-theano.tensor.nnet.relu(-y+1)+1
+        y=theano.tensor.nnet.relu(x*self.scalein+1)-1
+        z=-self.scaleout*theano.tensor.nnet.relu(0,-y+1)+1
         return z
 
 # def rect_sym(x,scale_in=.5):
@@ -189,7 +189,7 @@ def get_nonlinearity(l,tinout,scale=1.):
             scale_in=l['tinout'][0]
             scale_out=l['tinout'][1]
         #if=lasagne.nonlinearities.ScaledTanH(scale_in=scale_in,scale_out=scale_out)
-        f=make_net.rect_sym(scalein=scale_in,scaleout=scale_out)
+        f=rect_sym(scalein=scale_in,scaleout=scale_out)
     elif ('softmax' in s1):
         f=lasagne.nonlinearities.softmax
     elif ('Lin' in s1):
