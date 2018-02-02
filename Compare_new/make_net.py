@@ -227,6 +227,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
             prob=l['prob']
         if ('force_global_prob' in PARS and 'prob' in l and l['prob'][1]>=0):
             prob=PARS['force_global_prob']
+
         if ('scale' in l):
             scale=l['scale']
         prob=tuple([np.float32(i) for i in prob])
@@ -366,6 +367,9 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                 num_units=l['num_units']
                 if ('final' in l and num_class is not None):
                     num_units=num_class
+                    if ('prob' in l):
+                        #l['prob'][0]=1
+                        prob=(1.,prob[1])
                 gain=1.
                 if ('gain' in l):
                      gain=l['gain']
