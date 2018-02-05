@@ -113,6 +113,10 @@ def plot_OUTPUT(name='OUTPUT',first=None,last=None):
     #bp=np.fromstring(oo,sep='\n\t\t\t')
     #bp=bp.reshape((-1,2))
     bt=np.fromstring(commands.getoutput('grep Train ' + name + '.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
+    loss=np.fromstring(commands.getoutput('grep Train ' + name + '.txt | grep loss | cut -d":" -f2'),sep='\n\t\t\t')
+    fig=py.figure(2)
+    py.plot(loss)
+    py.figure(1)
     bv=np.fromstring(commands.getoutput('grep Val ' + name + '.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
     ss='grep aggegate ' + name + '.txt'
     if (len(commands.getoutput(ss))):
