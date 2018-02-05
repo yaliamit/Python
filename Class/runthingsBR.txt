@@ -1,1 +1,1 @@
-python source/start_class.py Winit_fac=1. seed=182569 net=_pars/pog_tanh_R_deep batch_size=500 update=sgd eta_init=5 eta_current=5 num_epochs=2000 dep_fac=10. force_global_prob=[.8,1.] output=OUT5_RT_1>OUT5_RT_1.txt
+python source/start_class.py Winit_fac=1. seed=159598 net=_pars/pog_tanh_R_deep batch_size=500 update=sgd eta_init=5 eta_current=5 num_epochs=2000 dep_fac=10. force_global_prob=[.8,1.] output=OUT5_RT_1>OUT5_RT_1.txt
