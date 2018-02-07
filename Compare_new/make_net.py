@@ -386,7 +386,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                     W=np.float32(np.random.uniform(-Winit_fac*std,Winit_fac*std,(input_dim,num_units)))*Wz
                     if (Rz.shape[0] > 1):
                         # Initialize R
-                        R=np.float32(r.uniform(-std,std,(input_dim,num_units)))*Rz
+                        R=np.float32(np.random.uniform(-std,std,(input_dim,num_units)))*Rz
                     if (len(layer_list)==0):
                         layer_list.append(newdense.NewDenseLayer(lay,name=l['name'],num_units=num_units,
                                                                     W=W,#lasagne.init.GlorotUniform(gain=gain),
