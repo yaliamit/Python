@@ -7,7 +7,7 @@ edges:False
 start:0
 Mnist:cifar_100
 net:fn
-#eta_schedule:(100.,.0001)
+eta_schedule:(100.,.01)
 update:sgd
 batch_size:500
 eta_init:.1
