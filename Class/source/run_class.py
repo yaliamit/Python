@@ -166,9 +166,9 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
                 tout=f(inputs,targets)
         # Information on gradient magnitude
         acc += tout[1]; err += tout[0]
-        if (typ=='Train'):
-            for i in np.arange(4,len(tout),1):
-                print('median step',np.median(tout[i]),'90 perc',np.percentile(tout[i],90))
+        # if (typ=='Train'):
+        #     for i in np.arange(4,len(tout),1):
+        #         print('median step',np.median(tout[i]),'90 perc',np.percentile(tout[i],90))
         ## TEMP
         #if (typ=='Train'):
         #    print(np.array(tout[4]))
