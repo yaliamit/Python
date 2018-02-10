@@ -196,7 +196,7 @@ def adamloc(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
         updates[param] = param - step
         p+=1
     updates[t_prev] = t
-    return updates #, STEPS
+    return updates
 
 # Setup the theano function that computes the loss from the network output
 def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='class'):
@@ -295,7 +295,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             if ('update' in NETPARS):
                 if (NETPARS['update']=='adam'):
                     print('Using adam to update timestep')
-                    updates, STEPS=adamloc(loss, params, learning_rate=eta, beta1=0.9,beta2=0.999,epsilon=1e-08, classes=tclasses)
+                    updates=adamloc(loss, params, learning_rate=eta, beta1=0.9,beta2=0.999,epsilon=1e-08, classes=tclasses)
                 elif (NETPARS['update']=='nestorov'):
                     print('Using Nestorov momentum')
                     updates = lasagne.updates.nesterov_momentum(loss, params, learning_rate=eta, momentum=0.9)
