@@ -74,6 +74,7 @@ class BaseConvLayerR(Layer):
         self.prob=prob
 
         self.Wzer=self.add_param(Wzer,self.get_W_shape(),name="Wzero", trainable=False)
+        self.Wzer=self.Wzer<self.prob[0]
         self.W=self.W*self.Wzer
         if (self.prob[1]<0):
             self.R=np.zeros((2,2))
@@ -85,9 +86,7 @@ class BaseConvLayerR(Layer):
             self.R = self.add_param(R, self.get_W_shape(), name="R")
             self.Rzer=self.add_param(Rzer,self.get_W_shape(),name="Rzero", trainable=False)
 
-        self.Wzer=self.Wzer<self.prob[0]
         self.Rzer=self.Rzer<self.prob[0]
-
         self.R=self.R*self.Rzer
         #self.prob[1]=0 no gradient on R
 
