@@ -187,7 +187,7 @@ def adamloc(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
         m_t = beta1*m_prev + (one-beta1)*g_t
         v_t= beta2*v_prev + (one-beta2)*g_t*g_t
         STEPS.append(a_t/T.sqrt(v_t)+epsilon)
-        step = a_t*m_t/(T.sqrt(v_t) + epsilon)
+        step = a_t/(T.sqrt(v_t) + epsilon)
         updates[m_prev] = m_t
         updates[v_prev] = v_t
         if (classes is not None and value.shape[1]==100):
