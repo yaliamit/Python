@@ -175,7 +175,7 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
          for i in np.arange(4,len(tout),1):
                  aa=np.ma.masked_invalid(tout[i])
                  tt=tout[i][~aa.mask]
-                 print(i,': median:',np.median(tt),': high perc:',np.percentile(tt,90))
+                 print('par ',i,': median:',np.median(tt),': high perc:',np.percentile(tt,90))
     df=[]
     ## Network stats...
     if (typ=='Train'):
