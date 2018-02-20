@@ -10,7 +10,7 @@ l=len(sys.argv)
 outname=sys.argv[-1]
 OUTNAME=outname+'.txt'
 lOUTNAME=outname+'-dp.txt'
-ss='python start_class.py '+' '.join(sys.argv[1:l-1]) + ' output='+outname+'>'+OUTNAME
+ss='python '+' '.join(sys.argv[1:l-1]) + ' output='+outname+'>'+OUTNAME
 if 'loc' in outname:
     os.system(ss)
 else:
