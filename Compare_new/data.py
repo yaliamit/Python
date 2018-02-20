@@ -8,7 +8,7 @@ import cifar
 import scipy.ndimage
 import pylab as py
 import matplotlib.colors as col
-import amitgroup as ag
+#import amitgroup as ag
 
 
 
@@ -332,11 +332,11 @@ def get_train(NETPARS):
 def get_edges(X):
 
     Xe=np.zeros((X.shape[0],24,X.shape[2],X.shape[3]),dtype=np.floatX)
-    for i in range(X.shape[1]):
-        XX=np.float64(X[:,i,:,:])
-        Xee=np.floatX(ag.features.bedges(XX,minimum_contrast=.05))
-        Xee=Xee.transpose(0,3,1,2)
-        Xe[:,i*8:(i+1)*8,:,:]=Xee
+    # for i in range(X.shape[1]):
+    #     XX=np.float64(X[:,i,:,:])
+    #     Xee=np.floatX(ag.features.bedges(XX,minimum_contrast=.05))
+    #     Xee=Xee.transpose(0,3,1,2)
+    #     Xe[:,i*8:(i+1)*8,:,:]=Xee
     return(Xe)
 
 def create_paired_data_set(NETPARS,X,y,num,cls=[],reps=1):
