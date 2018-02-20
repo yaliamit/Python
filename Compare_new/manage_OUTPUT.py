@@ -102,7 +102,7 @@ def  plot_OUT(s):
     py.plot(btt)
 
 
-def plot_OUTPUT(name='OUTPUT',first=None,last=None):
+def plot_OUTPUT(name='OUTPUT',code='',first=None,last=None):
     import commands
     import numpy as np
     import pylab as py
@@ -142,9 +142,10 @@ def plot_OUTPUT(name='OUTPUT',first=None,last=None):
         if (havetrain>0):
             py.plot(len(bt)-2, atest, 'go', markersize=4)
             py.plot(len(bt)-2, atrain, 'bo', markersize=4)
-    py.plot(bt,label='train')
-    py.plot(bv,label='val')
+    py.plot(bt,label='train '+code)
+    py.plot(bv,label='val '+code)
     if (bp!=[]):
         py.plot(bp,label='Pos')
     py.legend(loc=4)
+    
     py.show()
