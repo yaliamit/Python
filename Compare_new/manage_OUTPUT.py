@@ -147,5 +147,5 @@ def plot_OUTPUT(name='OUTPUT',code='',first=None,last=None):
     if (bp!=[]):
         py.plot(bp,label='Pos')
     py.legend(loc=4)
-    
+
     py.show()
