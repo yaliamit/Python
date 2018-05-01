@@ -6,9 +6,9 @@ adapt_eta:False
 update:adam
 batch_size:500
 #eta_schedule:(100,.01)
-eta_init:0.0001
+eta_init:0.0005
 train:True
-num_epochs:20
+num_epochs:100
 net:base
 seed:12345
 reg_param:0
