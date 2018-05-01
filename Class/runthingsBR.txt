@@ -1,1 +1,1 @@
-python source/start_class.py seed= net=_pars/cif10 output=OUT_cif>OUT_cif.txt
+python source/start_class.py seed= num_train=10000 net=_pars/cif10 output=OUT>OUT.txt
