@@ -1,1 +1,1 @@
-python source/start_class.py seed= net=_pars/cif10orig output=OUT_cifb>OUT_cifb.txt
+python source/start_class.py seed= net=_pars/cif10orig output=OUT_cifc>OUT_cifc.txt
