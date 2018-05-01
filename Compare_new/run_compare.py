@@ -176,7 +176,7 @@ def adamloc(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
     a_t = learning_rate*T.sqrt(one-beta2**t)/(one-beta1**t)
     lastp=len(params)-1
     p=0
-    STEPS=[]
+    #STEPS=[]
     for param, g_t in zip(params, all_grads):
         value = param.get_value(borrow=True)
         tens=True
@@ -186,7 +186,7 @@ def adamloc(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
 
         m_t = beta1*m_prev + (one-beta1)*g_t
         v_t= beta2*v_prev + (one-beta2)*g_t*g_t
-        STEPS.append(a_t/T.sqrt(v_t)+epsilon)
+        #STEPS.append(a_t/T.sqrt(v_t)+epsilon)
         step = a_t*m_t/(T.sqrt(v_t) + epsilon)
         updates[m_prev] = m_t
         updates[v_prev] = v_t
@@ -196,7 +196,7 @@ def adamloc(loss_or_grads, params, learning_rate=0.001, beta1=0.9,
         updates[param] = param - step
         p+=1
     updates[t_prev] = t
-    return updates, STEPS
+    return updates #, STEPS
 
 # Setup the theano function that computes the loss from the network output
 def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='class'):
@@ -286,7 +286,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
         eta=None
         # Used to track indices of classes being updatd.
         tclasses=None
-        STEPS=[]
+        #STEPS=[]
         if (Train):
             eta = theano.shared(np.array(NETPARS['eta_init'], dtype=theano.config.floatX))
             if ('num_class' in NETPARS and 'sub' not in NETPARS['num_class']):
@@ -295,7 +295,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             if ('update' in NETPARS):
                 if (NETPARS['update']=='adam'):
                     print('Using adam to update timestep')
-                    updates, STEPS=adamloc(loss, params, learning_rate=eta, beta1=0.9,beta2=0.999,epsilon=1e-08, classes=tclasses)
+                    updates=adamloc(loss, params, learning_rate=eta, beta1=0.9,beta2=0.999,epsilon=1e-08, classes=tclasses)
                 elif (NETPARS['update']=='nestorov'):
                     print('Using Nestorov momentum')
                     updates = lasagne.updates.nesterov_momentum(loss, params, learning_rate=eta, momentum=0.9)
@@ -316,7 +316,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
         if ('reg_param_weights' in NETPARS and Train):
             train_fn = theano.function([input_var,target_var], [loss, acc, pred,nspe]+spen, updates=updates)
         else:
-            train_fn = theano.function([input_var,target_var], [loss, acc, pred, aloss]+STEPS, updates=updates)
+            train_fn = theano.function([input_var,target_var], [loss, acc, pred, aloss], updates=updates)
             #train_fn = theano.function(inp, [loss, acc], updates=updates)
 
 
