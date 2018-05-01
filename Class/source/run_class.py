@@ -234,7 +234,7 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
 def main_new(NETPARS):
     # Load the dataset
 
-    np.random.seed(np.float64(NETPARS['seed']))
+    np.random.seed(np.int64(NETPARS['seed']))
     batch_size=NETPARS['batch_size']
     print("seed",NETPARS['seed'])
     print("Loading data...")
