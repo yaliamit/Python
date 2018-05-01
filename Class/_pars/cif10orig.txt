@@ -23,5 +23,5 @@ name:conv2;num_filters:64;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linear
 #name:conv2a;num_filters:64;filter_size:(1, 1);stride:(1, 1);non_linearity:rectify;parent:conv2
 name:pool2;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:conv2
 name:drop2;drop:0.5;parent:pool2
-name:dense4;num_units:1024;non_linearity:rectify;parent:drop2
+name:dense4;num_units:256;non_linearity:rectify;parent:drop2
 name:newdens;num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:dense4;final:final
