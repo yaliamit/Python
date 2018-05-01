@@ -6,7 +6,7 @@ adapt_eta:False
 update:adam
 batch_size:500
 #eta_schedule:(100,.01)
-eta_init:0.01
+eta_init:0.001
 train:True
 num_epochs:100
 net:base
@@ -23,5 +23,5 @@ name:conv2;num_filters:64;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linear
 #name:conv2a;num_filters:64;filter_size:(1, 1);stride:(1, 1);non_linearity:sigmoid;parent:conv2
 name:pool2;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:conv2
 name:drop2;drop:0.;parent:pool2
-name:dense4;num_units:256;non_linearity:sigmoid;parent:drop2
-name:newdens;num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:dense4;final:final
+name:dense1;num_units:256;non_linearity:sigmoid;parent:drop2
+name:dense2;num_units:10;non_linearity:lasagne.nonlinearity.linear;parent:dense4;final:final
