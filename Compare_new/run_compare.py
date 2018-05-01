@@ -295,7 +295,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             if ('update' in NETPARS):
                 if (NETPARS['update']=='adam'):
                     print('Using adam to update timestep')
-                    updates=adamloc(loss, params, learning_rate=eta, beta1=0.9,beta2=0.999,epsilon=1e-08, classes=tclasses)
+                    updates=lasagne.updates.adam(loss, params, learning_rate=eta, beta1=0.9,beta2=0.999,epsilon=1e-08)
                 elif (NETPARS['update']=='nestorov'):
                     print('Using Nestorov momentum')
                     updates = lasagne.updates.nesterov_momentum(loss, params, learning_rate=eta, momentum=0.9)
