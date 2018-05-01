@@ -10,7 +10,7 @@ eta_init:0.001
 train:True
 num_epochs:600
 net:base
-seed:12345
+seed:12345.
 reg_param:0
 Mnist:cifar_10
 global_drop:0.5
