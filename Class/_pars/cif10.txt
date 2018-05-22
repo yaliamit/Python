@@ -22,6 +22,6 @@ name:pool1;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:conv1a
 name:conv2;num_filters:64;pad:(1, 1);filter_size:(3, 3);stride:(1, 1);non_linearity:rectify;parent:pool1
 name:conv2a;num_filters:64;filter_size:(3, 3);stride:(1, 1);non_linearity:rectify;parent:conv2
 name:pool2;pool_size:(2, 2);stride:(2, 2);pad:(0, 0);mode:max;parent:conv2a
-name:drop2;drop:0.5;parent:pool2
+name:drop2;drop:0.;parent:pool2
 name:dense1;num_units:256;non_linearity:rectify;parent:drop2
 name:dense2;num_units:10;non_linearity:lasagne.nonlinearity.softmax;parent:dense1;final:final
