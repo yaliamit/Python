@@ -681,15 +681,15 @@ typedef npy_uint64 __pyx_t_5numpy_uint64_t;
 /* "../../../../../../anaconda/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":739
  * #ctypedef npy_uint128    uint128_t
  * 
- * ctypedef npy_floatX    floatX_t             # <<<<<<<<<<<<<<
+ * ctypedef npy_float    float32_t             # <<<<<<<<<<<<<<
  * ctypedef npy_float64    float64_t
  * #ctypedef npy_float80    float80_t
  */
-typedef npy_floatX __pyx_t_5numpy_floatX_t;
+typedef npy_float __pyx_t_5numpy_floatX_t;
 
 /* "../../../../../../anaconda/lib/python2.7/site-packages/Cython/Includes/numpy/__init__.pxd":740
  * 
- * ctypedef npy_floatX    floatX_t
+ * ctypedef npy_float    float32_t
  * ctypedef npy_float64    float64_t             # <<<<<<<<<<<<<<
  * #ctypedef npy_float80    float80_t
  * #ctypedef npy_float128   float128_t
@@ -1704,7 +1704,7 @@ static void __pyx_memoryview_slice_assign_scalar(__Pyx_memviewslice *, int, size
 static void __pyx_memoryview__slice_assign_scalar(char *, Py_ssize_t *, Py_ssize_t *, int, size_t, void *); /*proto*/
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_9amitgroup_8features_8features_DTYPE_t = { "DTYPE_t", NULL, sizeof(__pyx_t_9amitgroup_8features_8features_DTYPE_t), { 0 }, 0, 'R', 0, 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_uint8_t = { "uint8_t", NULL, sizeof(__pyx_t_5numpy_uint8_t), { 0 }, 0, IS_UNSIGNED(__pyx_t_5numpy_uint8_t) ? 'U' : 'I', IS_UNSIGNED(__pyx_t_5numpy_uint8_t), 0 };
-static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_floatX_t = { "floatX_t", NULL, sizeof(__pyx_t_5numpy_floatX_t), { 0 }, 0, 'R', 0, 0 };
+static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_floatX_t = { "float_t", NULL, sizeof(__pyx_t_5numpy_floatX_t), { 0 }, 0, 'R', 0, 0 };
 #define __Pyx_MODULE_NAME "amitgroup.features.features"
 int __pyx_module_is_main_amitgroup__features__features = 0;
 
@@ -3713,7 +3713,7 @@ static PyObject *__pyx_pf_9amitgroup_8features_8features_2change_saturation_c(CY
         __Pyx_GOTREF(__pyx_t_26);
         __Pyx_DECREF(__pyx_t_29); __pyx_t_29 = 0;
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_36 = __pyx_PyFloat_AsFloat(__pyx_t_26); if (unlikely((__pyx_t_36 == (npy_floatX)-1) && PyErr_Occurred())) __PYX_ERR(0, 123, __pyx_L1_error)
+        __pyx_t_36 = __pyx_PyFloat_AsFloat(__pyx_t_26); if (unlikely((__pyx_t_36 == (npy_float)-1) && PyErr_Occurred())) __PYX_ERR(0, 123, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_26); __pyx_t_26 = 0;
         __pyx_t_37 = 1;
         if (__pyx_t_37 < 0) __pyx_t_37 += __pyx_pybuffernd_uu.diminfo[0].shape;
