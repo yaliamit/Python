@@ -1,1 +1,1 @@
-python source/start_class.py seed= Mnist=mnist net=_pars/cif10 output=OUT_mnist10>OUT_mnist10.txt
+python source/start_class.py seed= net=_pars/cif10orig Mnist=mnist output=OUT_cif10orig>OUT_cif10orig.txt
