@@ -299,7 +299,7 @@ def main_new(NETPARS):
     curr_sched=0
     if (NETPARS['train'] and NETPARS['num_epochs']>0):
         icl=0
-        print("Starting training...","Training set size:",X_train.shape[0])
+        print("Starting training...","Training set size:",X_train.shape[0],np.max(X_train[0]))
         mod_eta=True
         #if NETPARS['update']!='adam':
         #    mod_eta=True
