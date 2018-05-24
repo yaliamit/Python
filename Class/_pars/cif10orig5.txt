@@ -1,5 +1,5 @@
 num_train:50000
-num_val=10000
+num_val:10000
 simple_augmentation:True
 agg:True
 mod_net:None
