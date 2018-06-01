@@ -1,1 +1,1 @@
-python source/start_class.py net=_pars/fncrc_deep output=OUT_res>OUT_res.txt
+python source/start_class.py output=net=_pars/fncrc_deep>net=_pars/fncrc_deep.txt
