@@ -1,1 +1,1 @@
-python source/start_class.py net=_pars/fncrc_deep force_global_prob=[1.,-1.] eta_init=.1 output=OUT_res>OUT_res.txt
+python source/start_class.py net=_pars/fncrc_deep num_epochs=1000 output=OUT_res>OUT_res.txt

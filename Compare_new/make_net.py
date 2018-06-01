@@ -240,7 +240,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                 elif ('concatsum' in l['name']):
                     for i,lay in enumerate(input_la):
                         layer_list=[network[ipl][i] for ipl in ip]
-                        input_la[i]=lasagne.layers.ElemwiseMergeLayer(layer_list,T.add,name='merge')
+                        input_la[i]=lasagne.layers.ElemwiseMergeLayer(layer_list,T.add,name=l['name'])
             elif (not add_on):
                 input_la=network[ip]
         if (type(input_la) is not list):
@@ -676,11 +676,13 @@ def make_file_from_params(network,NETPARS):
                     s=s+';prob:'+str(l.prob)
             elif ('global_average' in l.name):
                 s='name:'+l.name
+            elif ('concatsum' in l.name):
+                s='name:'+l.name
             elif ('merge' in l.name):
                 s=None
                 continue
             if (not 'input' in l.name and not 'noise' in l.name):
-                if (hasattr(l,'input_layer') and 'merge' not in l.input_layer.name):
+                if (hasattr(l,'input_layer') and 'merge' not in l.input_layer.name and 'concatsum' not in l.input_layer.name):
                     if (l.input_layer.name is not None):
                         s=s+';parent:'+l.input_layer.name
                 elif ('drop' in l.name):
@@ -689,20 +691,28 @@ def make_file_from_params(network,NETPARS):
                     lin=l
                     # This is simply a layer merging a bunch of same networks working
                     # on transformed images.
-                    if l.input_layer.name=='merge_auto':
-                        s=s+';parent:'+l.input_layer.input_layers[0].name
-                        # Fix the line for the incoming layer
-                        ss[-1]=ss[-1]+';merge:max' # TODO: Should adapt to merge function
-                    else:
-                        if 'merge' in l.input_layer.name:
+                    if (hasattr(l,'input_layer')):
+                        if l.input_layer.name=='merge_auto':
+                            s=s+';parent:'+l.input_layer.input_layers[0].name
+                            # Fix the line for the incoming layer
+                            ss[-1]=ss[-1]+';merge:max' # TODO: Should adapt to merge function
+                        elif 'merge' in l.input_layer.name:
                             lin=l.input_layer
-                        s=s+';parent:['
-                        for i,ll in enumerate(lin.input_layers):
-                            if (i==0):
-                                s=s+ll.name
+                            s=s+';parent:['
+                            for i,ll in enumerate(lin.input_layers):
+                                if (i==0):
+                                    s=s+ll.name
+                                else:
+                                    s=s+','+ll.name
+                            s=s+']'
+                    elif 'concatsum' in l.name:
+                        s = s + ';parent:['
+                        for i, ll in enumerate(lin.input_layers):
+                            if (i == 0):
+                                s = s + ll.name
                             else:
-                                s=s+','+ll.name
-                        s=s+']'
+                                s = s + ',' + ll.name
+                        s = s + ']'
             if (s is not None):
                 ss.append(s)
 
