@@ -1,1 +1,1 @@
-python source/start_class.py net=_pars/fncrc_deep num_epochs=1000 output=OUT_res_nc>OUT_res_nc.txt
+python source/start_class.py net=_pars/fncrc_deep num_epochs=1000 force_global_prob=[1.,-1.] output=OUT_res_nc>OUT_res_nc.txt
