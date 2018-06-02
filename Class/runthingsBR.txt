@@ -1,1 +1,1 @@
-python source/start_class.py net=_pars/fncrc_deep num_epochs=1000 eta_init=.1 hinge=1. force_global_prob=[1.,1.] output=OUT_R_dp2>OUT_R_dp2.txt
+python source/start_class.py net=_pars/fncrc_deep num_epochs=1000 eta_init=.1 hinge=1. force_global_prob=[1.,0.] output=OUT_RR_dp2>OUT_RR_dp2.txt
