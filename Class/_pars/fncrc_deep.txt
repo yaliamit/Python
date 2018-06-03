@@ -17,6 +17,7 @@ agg:True
 dep_fac:1.
 adapt_eta:False
 TRAIN:True
+hinge:1.
 global_tinout:(.5,1.)
 global_prob:(1.,1.)
 name:input1
