@@ -35,9 +35,10 @@ name:pool2;parent:concatsum2;pool_size:(3,3);stride:(2,2);pad:(1,1);mode:max
 name:conv3;parent:pool2;filter_size:(3,3);tinout:(0.5,1.0);pad:(1,1);num_filters:128;non_linearity:rectify;stride:(1,1)
 name:conv3a;parent:conv3;stride:(1,1);filter_size:(3,3);pad:(1,1);num_filters:128;non_linearity:tanh;tinout:(0.5,1.0);prob:(1.0,0.0)
 name:concatsum3;parent:[conv3,conv3a]
-name:conv3b;parent:concatsum3;filter_size:(3,3);tinout:(0.5,1.0);pad:(1,1);num_filters:128;non_linearity:rectify;stride:(1,1)
-name:conv3c;parent:conv3b;stride:(1,1);filter_size:(3,3);pad:(1,1);num_filters:128;non_linearity:tanh;tinout:(0.5,1.0);prob:(1.0,0.0)
-name:concatsum3c;parent:[conv3b,conv3c]
-drop:0.8;name:drop1;parent:concatsum3c
+name:pool3;parent:concatsum3;pool_size:(2,2);stride:(2,2);mode:max
+name:conv4a;parent:pool3;filter_size:(3,3);tinout:(0.5,1.0);pad:(1,1);num_filters:128;non_linearity:rectify;stride:(1,1)
+name:conv4b;parent:conv4a;stride:(1,1);filter_size:(3,3);pad:(1,1);num_filters:128;non_linearity:tanh;tinout:(0.5,1.0);prob:(1.0,0.0)
+name:concatsum4;parent:[conv4a,conv4b]
+drop:0.8;name:drop1;parent:concatsum4
 name:newdensp;parent:drop1;tinout:(0.1,1.0);non_linearity:tanh;num_units:500;prob:(1.0,0.0)
 name:newdensf;parent:newdensp;prob:(1.0,0.0);non_linearity:softmax;num_units:10;final:final
