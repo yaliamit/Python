@@ -1,0 +1,45 @@
+seed:45239
+num_epochs:200
+simple_augmentation:True
+mod_net:None
+edges:False
+start:0
+Mnist:cifar_10
+net:fnc
+update:sgd
+batch_size:500
+eta_init:.001
+train:True
+mult:1
+num_train:50000
+eta_schedule:(100.,.01,120,.001)
+agg:True
+dep_fac:1.
+adapt_eta:False
+TRAIN:True
+hinge:1.
+global_tinout:(.5,1.)
+global_prob:(1.,1.)
+name:input1
+name:conv;num_filters:16;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:input1
+name:conv0;num_filters:16;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:conv
+name:conv0a;prob:(1.,0.);num_filters:16;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(2.,1.);non_linearity:linear;parent:conv0
+name:concatsum0a;parent:[conv0,conv0a]
+name:conv0b;num_filters:16;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:concatsum0a
+name:conv0c;prob:(1.,0.);num_filters:16;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(2.,1.);non_linearity:linear;parent:conv0b
+name:concatsum0c;parent:[conv0b,conv0c]
+name:convp0;num_filters:16;filter_size:(2,2);stride:(2,2);non_linearity:linear;parent:concatsum0c
+#name:pool0;pool_size:(2, 2);stride:(2, 2);mode:max;parent:concatsum0c
+name:conv1;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:convp0
+name:conv1a;prob:(1.,0.);num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(2.,1.);non_linearity:linear;parent:conv1
+name:concatsum1;parent:[conv1,conv1a]
+name:pool1;pool_size:(2, 2);stride:(2, 2);mode:max;parent:concatsum1
+#name:drop1;drop:.5;parent:pool1
+name:conv2;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:pool1
+name:conv2a;prob:(1.,0.);num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(2.,1.);non_linearity:linear;parent:conv2
+name:concatsum2;parent:[conv2,conv2a]
+name:pool2;pool_size:(2, 2);stride:(2, 2);mode:average_inc_pad;parent:concatsum2
+name:drop2;drop:.5;parent:pool2
+name:newdensp;num_units:500;non_linearity:rectify;prob:(1.,0.);tinout:(2.,1.);parent:drop2
+#name:drop2;drop:0.3;parent:newdensp
+name:newdensf;num_units:10;prob:(1.,0.);non_linearity:lasagne.nonlinearity.linear;parent:newdensp;final:final
