@@ -22,19 +22,19 @@ global_tinout:(.5,1.)
 global_prob:(1.,1.)
 name:input1
 name:conv0;num_filters:16;filter_size:(3,3);pad:(2,2);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:input1
-name:conv0a;prob:(1.,0.);num_filters:16;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(1.,1.);non_linearity:tanh;parent:conv0
+name:conv0a;prob:(1.,0.);num_filters:16;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(2.,1.);non_linearity:tanh;parent:conv0
 name:concatsum0;parent:[conv0,conv0a]
 #name:pool0;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:concatsum0
 name:conv1;num_filters:32;filter_size:(3,3);pad:(2,2);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:concatsum0
-name:conv1a;prob:(1.,0.);num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(1.,1.);non_linearity:tanh;parent:conv1
+name:conv1a;prob:(1.,0.);num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(2.,1.);non_linearity:tanh;parent:conv1
 name:concatsum1;parent:[conv1,conv1a]
 name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:concatsum1
 name:drop1;drop:.5;parent:pool1
 name:conv2;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:drop1
-name:conv2a;prob:(1.,0.);num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(1.,1.);non_linearity:tanh;parent:conv2
+name:conv2a;prob:(1.,0.);num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(2.,1.);non_linearity:tanh;parent:conv2
 name:concatsum2;parent:[conv2,conv2a]
 name:pool2;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:concatsum2
 name:drop2;drop:.8;parent:pool2
-name:newdensp;num_units:500;non_linearity:tanh;prob:(1.,0.);tinout:(1.,1.);parent:drop2
+name:newdensp;num_units:500;non_linearity:tanh;prob:(1.,0.);tinout:(2.,1.);parent:drop2
 #name:drop2;drop:0.3;parent:newdensp
 name:newdensf;num_units:10;prob:(1.,0.);non_linearity:lasagne.nonlinearity.linear;parent:newdensp;final:final
