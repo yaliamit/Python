@@ -24,13 +24,13 @@ name:input1
 name:conv1;num_filters:16;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:input1
 name:pool1;pool_size:(2, 2);stride:(2, 2);mode:max;parent:conv1
 name:conv2R;prob:(1.,0.);num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:pool1
-name:conv2Ra;prob:(1.,0.);num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:linear;parent:conv2R
+name:conv2aR;prob:(1.,0.);num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:linear;parent:conv2R
 name:concatsum1;parent:[conv2R,conv2aR]
 name:conv3R;prob:(1.,0.);num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:concatsum1
-name:conv3Ra;prob:(1.,0.);num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:linear;parent:conv3R
+name:conv3aR;prob:(1.,0.);num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:linear;parent:conv3R
 name:concatsum2;parent:[conv3R,conv3aR]
 name:conv4R;prob:(1.,0.);num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:concatsum2
-name:conv4Ra;prob:(1.,0.);num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:linear;parent:conv4R
+name:conv4aR;prob:(1.,0.);num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:linear;parent:conv4R
 name:concatsum3;parent:[conv4R,conv4aR]
 name:pool2;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:concatsum3
 name:conv5R;num_filters:128;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:pool2
