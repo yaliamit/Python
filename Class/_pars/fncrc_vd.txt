@@ -41,5 +41,5 @@ name:conv6;num_filters:128;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,
 name:conv6a;prob:(1.,0.);num_filters:128;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:linear;parent:conv6
 name:concatsum5;parent:[conv6,conv6a]
 name:drop6;drop:.5;parent:concatsum5
-name:newdensp;num_units:256;non_linearity:rectify;prob:(1.,0.);tinout:(.1,1.);parent:drop6
+name:newdensp;num_units:256;non_linearity:rect;prob:(1.,0.);tinout:(.1,1.);parent:drop6
 name:newdensf;num_units:10;prob:(1.,0.);non_linearity:lasagne.nonlinearity.linear;parent:newdensp;final:final
