@@ -178,8 +178,8 @@ def get_nonlinearity(l,tinout,scale=1.):
         if ('tinout' in l):
             scale_in=l['tinout'][0]
             scale_out=l['tinout'][1]
-        #f=lasagne.nonlinearities.ScaledTanH(scale_in=scale_in,scale_out=scale_out)
-        f=make_net.rect_sym #_scaled(scale_in=scale_in)
+        f=lasagne.nonlinearities.ScaledTanH(scale_in=scale_in,scale_out=scale_out)
+        #f=make_net.rect_sym #_scaled(scale_in=scale_in)
     elif ('rect_sym' in s1):
         f=rect_sym
     elif ('softmax' in s1):
