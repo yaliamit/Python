@@ -33,8 +33,8 @@ name:conv1;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1
 name:conv1a;prob:(1.,0.);num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(2.,1.);non_linearity:tanh;parent:conv1
 name:concatsum1;parent:[conv1,conv1a]
 name:pool1;pool_size:(2, 2);stride:(2, 2);mode:max;parent:concatsum1
-name:drop1;drop:.5;parent:pool1
-name:conv2;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:drop1
+#name:drop1;drop:.5;parent:pool1
+name:conv2;num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:pool1
 name:conv2a;prob:(1.,0.);num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(2.,1.);non_linearity:tanh;parent:conv2
 name:concatsum2;parent:[conv2,conv2a]
 name:pool2;pool_size:(2, 2);stride:(2, 2);mode:average_inc_pad;parent:concatsum2
