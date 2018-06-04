@@ -23,7 +23,8 @@ global_prob:(1.,1.)
 name:input1
 name:conv1;num_filters:16;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:input1
 name:pool1;pool_size:(2, 2);stride:(2, 2);mode:max;parent:conv1
-name:conv2;prob:(1.,0.);num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:pool1
+name:drop1;drop:.5;parent:pool1
+name:conv2;prob:(1.,0.);num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:drop1
 name:conv2a;prob:(1.,0.);num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:linear;parent:conv2
 name:concatsum1;parent:[conv2,conv2a]
 name:conv3;prob:(1.,0.);num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:concatsum1
@@ -33,13 +34,14 @@ name:conv4;prob:(1.,0.);num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1)
 name:conv4a;prob:(1.,0.);num_filters:64;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:linear;parent:conv4
 name:concatsum3;parent:[conv4,conv4a]
 name:pool2;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:max;parent:concatsum3
-name:conv5;num_filters:128;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:pool2
+name:drop2;drop:.5;parent:pool2
+name:conv5;num_filters:128;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:drop2
 name:conv5a;prob:(1.,0.);num_filters:128;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:linear;parent:conv5
 name:concatsum4;parent:[conv5,conv5a]
 name:conv6;num_filters:128;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:rectify;parent:concatsum4
 name:conv6a;prob:(1.,0.);num_filters:128;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:linear;parent:conv6
 name:concatsum5;parent:[conv6,conv6a]
-name:drop1;drop:.5;parent:concatsum5
-name:newdensp;num_units:256;non_linearity:tanh;prob:(1.,0.);tinout:(.1,1.);parent:drop1
+name:drop6;drop:.5;parent:concatsum5
+name:newdensp;num_units:256;non_linearity:tanh;prob:(1.,0.);tinout:(.1,1.);parent:drop6
 #name:drop2;drop:0.3;parent:newdensp
 name:newdensf;num_units:10;prob:(1.,0.);non_linearity:lasagne.nonlinearity.linear;parent:newdensp;final:final
