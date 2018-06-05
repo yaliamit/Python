@@ -24,5 +24,8 @@ name:input1
 name:conv0;parent:input1;filter_size:(3,3);tinout:(0.5,1.0);pad:(1,1);num_filters:16;non_linearity:rectify;stride:(1,1)
 name:conv0a;parent:conv0;stride:(1,1);filter_size:(3,3);pad:(1,1);num_filters:16;non_linearity:tanh;tinout:(0.5,1.0);prob:(1.0,0.0)
 name:concatsum0;parent:[conv0,conv0a]
-name:densep;parent:concatsum0;tinout:(0.1,1.0);non_linearity:tanh;num_units:500;prob:(1.0,0.0)
+name:conv1;parent:concatsum0;filter_size:(3,3);tinout:(0.5,1.0);pad:(1,1);num_filters:32;non_linearity:rectify;stride:(1,1)
+name:conv1a;parent:conv1;stride:(1,1);filter_size:(3,3);pad:(1,1);num_filters:32;non_linearity:tanh;tinout:(0.5,1.0);prob:(1.0,0.0)
+name:concatsum1;parent:[conv1,conv1a]
+name:densep;parent:concatsum1;tinout:(0.1,1.0);non_linearity:tanh;num_units:500;prob:(1.0,0.0)
 name:densef;parent:densep;prob:(1.0,0.0);non_linearity:softmax;num_units:10;final:final
