@@ -290,7 +290,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                         if ('R' not in l['name']):
                             convp=lasagne.layers.Conv2DLayer(lay, num_filters=l['num_filters'], filter_size=filter_size,
                                 nonlinearity=nonlin,b=None,
-                                W=lasagne.init.GlorotUniform(),name=l['name'])
+                                W=lasagne.init.GlorotUniform(gain=Winit_fac*gain),name=l['name'])
                         else:
                             convp=Conv2dLayerR.Conv2DLayerR(lay, num_filters=l['num_filters'], filter_size=filter_size,
                                 nonlinearity=nonlin,W=lasagne.init.GlorotUniform(gain=Winit_fac*gain),
@@ -351,7 +351,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                     num_units=num_class
                 for lay in input_la:
                     if (len(layer_list)==0):
-                        layer_list.append(lasagne.layers.DenseLayer(lay,name=l['name'],num_units=num_units,W=lasagne.init.GlorotUniform(gain=gain),
+                        layer_list.append(lasagne.layers.DenseLayer(lay,name=l['name'],num_units=num_units,W=lasagne.init.GlorotUniform(gain=gain*Winit_fac),
                                                                     b=None, nonlinearity=nonlin))
                     else:
                         layer_list.append(lasagne.layers.DenseLayer(lay,num_units=num_units,nonlinearity=nonlin,
