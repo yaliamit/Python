@@ -37,4 +37,4 @@ name:conv3aR;parent:conv3R;stride:(1,1);filter_size:(3,3);pad:(1,1);num_filters:
 name:concatsum3;parent:[conv3R,conv3aR]
 name:drop1;drop:.8;parent:concatsum3
 name:newdensp;parent:drop1;tinout:(0.1,1.0);non_linearity:tanh;num_units:500;prob:(1.0,0.0)
-name:newdensf;parent:newdensep;prob:(1.0,0.0);non_linearity:softmax;num_units:10;final:final
+name:newdensf;parent:newdensp;prob:(1.0,0.0);non_linearity:softmax;num_units:10;final:final
