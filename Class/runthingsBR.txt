@@ -1,1 +1,1 @@
-python source/start_class.py Winit_fac=1. seed=3057 net=_pars/fncrc_deep_tryR hinge=1. batch_size=500 update=sgd eta_init=.08 eta_current=.08 num_epochs=1000 dep_fac=1. Mnist=cifar_100 force_global_prob=[1.,1.] output=OUT_R_1>OUT_R_1.txt
+python source/start_class.py Winit_fac=1. seed=3057 net=_pars/fncrc_deep_tryR hinge=1. batch_size=500 update=sgd eta_init=.08 eta_current=.08 num_epochs=1000 dep_fac=1. Mnist=cifar_100 force_global_prob=[1.,0.] output=OUT_R_1>OUT_R_1.txt
