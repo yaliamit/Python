@@ -35,6 +35,5 @@ name:conv3aR;num_filters:64;prob:(1.,0.);filter_size:(3,3);pad:(1,1);stride:(1, 
 #name:conv3bR;num_filters:64;prob:(1.,0.);filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:[conv3aR,conv3R]
 name:pool3;pool_size:(3, 3);stride:(2, 2);pad:(1, 1);mode:average_inc_pad;parent:conv3aR
 name:drop3;drop:.8;parent:pool3
-name:newdensp;num_units:500;prob:(1.,0.);non_linearity:tanh;tinout:(.5,1.);parent:pool3
-#name:drop3;drop:.5;parent:newdensp
+name:newdensp;num_units:500;prob:(1.,0.);non_linearity:tanh;tinout:(.5,1.);parent:drop3
 name:newdensf;num_units:10;prob:(1.,0.);non_linearity:softmax;parent:newdensp;final:final
