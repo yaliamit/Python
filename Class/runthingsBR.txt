@@ -1,1 +1,1 @@
-python source/start_class.py seed=30517 net=_pars/pog_tanh_R_deeper batch_size=500 update=sgd eta_init=.1 eta_current=.1 num_epochs=1000 dep_fac=10. force_global_prob=[1.,-1.] Mnist=cifar_100 hinge=1. Winit_fac=.0001 output=OUTad_1>OUTad_1.txt
+python source/start_class.py Winit_fac=.001 seed=30517 net=_pars/pog_tanh_R_deeper hinge=1. batch_size=500 update=sgd eta_init=.1 eta_current=.1 num_epochs=2000 dep_fac=10. Mnist=cifar_100 force_global_prob=[1.,1.] output=OUTpd_R_1>OUTpd_R_1.txt
