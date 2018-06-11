@@ -10,7 +10,7 @@ import os
 import make_net
 import data
 from theano.tensor.shared_randomstreams import RandomStreams
-
+from lasagne.regularization import regularize_layer_params_weighted, l2, l1
 from collections import OrderedDict
 
 classes=None
@@ -221,13 +221,16 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             spen.append(spe)
         elif ('reg_param_weights' in NETPARS and NETPARS['reg_param_weights']>0):
             reg_p = NETPARS['reg_param_weights']
-            nspe=0
-            for p in params:
-                if (True): #'dens' in p.name):
-                    spe+=T.sum(p*p)*reg_p
-                    nspe+=p.size
-            #spe=spe#/nspe
+            #nspe=0
+            spe=lasagne.regularization.regularize_network_params(network,l2)*reg_p
+            # for p in params:
+            #     if ('dens' in p.name or 'conv' in p.name):
+            #         spe+=lasagne.regularization.l2(p*reg_p)
+            #         #spe+=T.sum(T.sum(p*p,axis=1)*reg_p)
+            #         nspe+=p.size
+            # #spe=spe#/nspe
             spen.append(spe)
+
         if (Train):
             pred = lasagne.layers.get_output(network)
             #pred, activation = lasagne.layers.get_output([network,network.input_layer])
@@ -313,10 +316,10 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             updates=None
         #XX=T.grad(loss,input_var)
 
-        #if ('reg_param_weights' in NETPARS and Train):
-        #    train_fn = theano.function([input_var,target_var], [loss, acc, pred,nspe]+spen, updates=updates)
-        #else:
-        train_fn = theano.function([input_var,target_var], [loss, acc, pred, aloss], updates=updates)
+        if ('reg_param_weights' in NETPARS and Train):
+            train_fn = theano.function([input_var,target_var], [loss, acc, pred, spe], updates=updates)
+        else:
+            train_fn = theano.function([input_var,target_var], [loss, acc, pred, aloss], updates=updates)
             #train_fn = theano.function(inp, [loss, acc], updates=updates)
 
 

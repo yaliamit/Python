@@ -166,28 +166,15 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
                 tout=f(inputs,targets)
         # Information on gradient magnitude
         acc += tout[1]; err += tout[0]
-
+        #if (typ=='Train'):
+        #     print('L2',tout[3])
         ## TEMP
         #if (typ=='Train'):
         #    print(np.array(tout[4]))
         pred.append(tout[2])
-    prs=np.zeros((len(tout)-4,2))
-    if (typ=='Train'):
-         for i in range(len(prs)):
-                 aa=np.ma.masked_invalid(tout[i+4])
-                 tt=tout[i+4][~aa.mask]
-                 prs[i,0]=np.median(tt)
-                 prs[i,1]=np.percentile(tt,90)
-                 prs[i,0]=prs[i,0]/prs[0,0]
-                 prs[i,1]=prs[i,1]/prs[0,1]
-         for i,p in enumerate(prs):
-            print('par ',i,': median:',p[0],': high perc:',p[1])
+
     df=[]
-    ## Network stats...
-    if (typ=='Train'):
-         for i in range(4,len(tout)):
-             df.append(np.float32(tout[i]))
-    #print("MAX:",max(tout[5]))
+
     if (fac):
         pred0=np.concatenate(pred)
         pred1=np.reshape(pred0,(fac,pred0.shape[0]/fac)+pred0.shape[1:])
