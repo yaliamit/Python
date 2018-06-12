@@ -1,1 +1,1 @@
-python source/start_class.py seed=30517 net=_pars/vgg16 batch_size=128 eta_init=.1 eta_current=.1 num_epochs=1000 dep_fac=1. force_global_prob=[1.,-1.] Mnist=cifar_100 Winit_fac=.1 hinge=False output=OUT_SM1>OUT_SM1.txt
+python source/start_class.py seed=30517 net=_pars/vgg16 batch_size=128 eta_init=.1 eta_current=.1 num_epochs=1000 dep_fac=1. force_global_prob=[1.,-1.] Mnist=cifar_100 Winit_fac=.01 hinge=False output=OUT_SM1>OUT_SM1.txt
