@@ -8,7 +8,7 @@ start:0
 Mnist:cifar_100
 net:fn
 #eta_schedule:(10.,.05,20.,.025,30,.0125)
-update:sgd
+update:nestorov
 batch_size:500
 eta_init:.1
 train:True
