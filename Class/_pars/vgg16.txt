@@ -7,7 +7,7 @@ edges:False
 start:0
 Mnist:cifar_100
 net:fn
-eta_schedule:(10.,.05,20.,.025,30,.0125)
+#eta_schedule:(10.,.05,20.,.025,30,.0125)
 update:sgd
 batch_size:500
 eta_init:.1
@@ -21,7 +21,7 @@ hinge:1.
 TRAIN:True
 global_prob:(1.,1.)
 global_tinout:(.5,1.)
-reg_param_weights:.0005
+#reg_param_weights:.0005
 #Classes:(0,1,2,3,4,5,6,7,8,9)
 #dict:num_class;det:True;num_class:100;class_epoch:10;batch_size:20
 name:input1
