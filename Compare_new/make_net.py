@@ -238,6 +238,7 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                         layer_list=[network[ipl][i] for ipl in ip]
                         input_la[i]=lasagne.layers.ElemwiseMergeLayer(layer_list,T.maximum,name='merge')
                 elif ('concatsum' in l['name']):
+                    layer_list=[]
                     for i,lay in enumerate(input_la):
                         for ipl in ip:
                             if ipl in network:
