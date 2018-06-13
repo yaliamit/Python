@@ -12,7 +12,7 @@ eta_init:.001
 train:True
 mult:1
 num_train:50000
-#eta_schedule:(170.,.01,190,.001)
+eta_schedule:(170.,.01,190,.001)
 agg:True
 dep_fac:1.
 adapt_eta:False
