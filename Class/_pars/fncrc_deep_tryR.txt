@@ -21,8 +21,8 @@ hinge:1.
 global_tinout:(.5,1.)
 global_prob:(1.,1.)
 name:input1
-name:conv0;parent:input1;filter_size:(3,3);tinout:(0.5,1.0);pad:(1,1);num_filters:16;non_linearity:tanh;stride:(1,1)
-name:conv0aR;parent:conv0;stride:(1,1);filter_size:(3,3);pad:(1,1);num_filters:16;non_linearity:tanh;tinout:(0.5,1.0);prob:(1.0,0.0)
+name:conv0;parent:input1;filter_size:(3,3);tinout:(0.5,1.0);pad:(1,1);num_filters:32;non_linearity:tanh;stride:(1,1)
+name:conv0aR;parent:conv0;stride:(1,1);filter_size:(3,3);pad:(1,1);num_filters:32;non_linearity:tanh;tinout:(0.5,1.0);prob:(1.0,0.0)
 name:concatsum0;parent:[conv0,conv0aR]
 name:drop0;drop:.5;parent:concatsum0
 name:conv1R;parent:drop0;filter_size:(3,3);tinout:(0.5,1.0);pad:(1,1);num_filters:64;non_linearity:tanh;stride:(1,1)
