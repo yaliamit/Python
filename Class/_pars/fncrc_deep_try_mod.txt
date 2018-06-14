@@ -1,3 +1,4 @@
 hinge:1.
+eta_schedule:(400.,.01,120,.001)
 REMOVE:densef
 name:newdensf;parent:newdensp;prob:(1.0,-1.0);non_linearity:linear;num_units:100;final:final
