@@ -284,6 +284,11 @@ def main_new(NETPARS):
     # Iterate over epochs:
     eta_p=run_compare.eta_params(network)
     curr_sched=0
+
+    if ('use_existing' in NETPARS):
+        out_test=iterate_on_batches(val_fn,X_test,y_test,batch_size,typ='Test',agg=True,fac=1,pars=None)
+
+
     if (NETPARS['train'] and NETPARS['num_epochs']>0):
         params = lasagne.layers.get_all_params(network, trainable=True)
         print('params',params[0].shape)
