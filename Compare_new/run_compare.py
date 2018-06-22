@@ -240,6 +240,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
         if (loss_type=='class'): # Output is a probability vector on classes.
             pred = T.flatten(pred,outdim=2)
             if ('hinge' not in NETPARS or not NETPARS['hinge']):
+                pred=theano.tensor.nnet.nnet.softmax(pred)
                 aloss = lasagne.objectives.categorical_crossentropy(pred, target_var)
             else:
                 delta_down=1.
