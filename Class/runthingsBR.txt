@@ -1,1 +1,1 @@
-python source/start_class.py seed=30517 net=_pars/fncrc_deep_tryR batch_size=500 eta_init=.1 eta_current=.1 update=sgd num_epochs=10 dep_fac=10. force_global_prob=[1.,-1.] Mnist=cifar_100 hinge=False output=OUT_SMtemp2>OUT_SMtemp2.txt
+python source/start_class.py seed=30517 net=_pars/fncrc_deep_tryR use_existing=True mult=2 start=1 batch_size=500 update=sgd eta_init=.1 eta_current=.1 num_epochs=1000 dep_fac=10. force_global_prob=[1.,1.] Mnist=cifar_100 hinge=1. output=OUThtR_2>OUThtR_2.txt
