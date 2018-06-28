@@ -27,7 +27,8 @@ name:concatsum0;parent:[conv0,conv0aR]
 name:conv1R;parent:concatsum0;filter_size:(3,3);tinout:(0.5,1.0);pad:(1,1);prob:(1.,0.);num_filters:32;non_linearity:tanh;stride:(1,1)
 name:conv1aR;parent:conv1R;stride:(1,1);filter_size:(3,3);pad:(1,1);num_filters:32;non_linearity:tanh;tinout:(0.5,1.0);prob:(1.0,0.0)
 name:concatsum1;parent:[conv1R,conv1aR]
-name:pool1;parent:concatsum1;pool_size:(3,3);stride:(2,2);pad:(1,1);mode:max
+name:drop1;drop:.5;parent:concatsum1
+name:pool1;parent:drop1;pool_size:(3,3);stride:(2,2);pad:(1,1);mode:max
 name:conv2R;parent:pool1;filter_size:(3,3);tinout:(0.5,1.0);pad:(1,1);num_filters:64;prob:(1.,0.);non_linearity:tanh;stride:(1,1)
 name:conv2aR;parent:conv2R;stride:(1,1);filter_size:(3,3);pad:(1,1);num_filters:64;non_linearity:tanh;tinout:(0.5,1.0);prob:(1.0,0.0)
 name:concatsum2;parent:[conv2R,conv2aR]
