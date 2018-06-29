@@ -27,12 +27,12 @@ name:concatsum0;parent:[conv0,conv0aR]
 name:conv1R;parent:concatsum0;filter_size:(3,3);tinout:(0.5,1.0);pad:(1,1);prob:(1.,0.);num_filters:32;non_linearity:tanh;stride:(1,1)
 name:conv1aR;parent:conv1R;stride:(1,1);filter_size:(3,3);pad:(1,1);num_filters:32;non_linearity:tanh;tinout:(0.5,1.0);prob:(1.0,0.0)
 name:concatsum1;parent:[conv1R,conv1aR]
-name:pool1;parent:concatsum1;pool_size:(3,3);stride:(2,2);pad:(1,1);mode:max
+name:pool1;parent:concatsum1;pool_size:(3,3);stride:(2,2);pad:(1,1);mode:average_inc_pad
 name:drop1;drop:.5;parent:pool1
 name:conv2R;parent:drop1;filter_size:(3,3);tinout:(0.5,1.0);pad:(1,1);num_filters:64;prob:(1.,0.);non_linearity:tanh;stride:(1,1)
 name:conv2aR;parent:conv2R;stride:(1,1);filter_size:(3,3);pad:(1,1);num_filters:64;non_linearity:tanh;tinout:(0.5,1.0);prob:(1.0,0.0)
 name:concatsum2;parent:[conv2R,conv2aR]
-name:pool2;parent:concatsum2;pool_size:(3,3);stride:(2,2);pad:(1,1);mode:max
+name:pool2;parent:concatsum2;pool_size:(3,3);stride:(2,2);pad:(1,1);mode:average_inc_pad
 name:conv3R;parent:pool2;filter_size:(3,3);tinout:(0.5,1.0);pad:(1,1);num_filters:128;prob:(1.,0.);non_linearity:tanh;stride:(1,1)
 name:conv3aR;parent:conv3R;stride:(1,1);filter_size:(3,3);pad:(1,1);num_filters:128;non_linearity:tanh;tinout:(0.5,1.0);prob:(1.0,0.0)
 name:concatsum3;parent:[conv3R,conv3aR]
