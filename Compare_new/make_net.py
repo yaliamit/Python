@@ -387,7 +387,9 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                         Wz=np.float32(np.random.rand(input_dim,num_units)<prob[0])
                         if (prob[1]>=0):
                             # Sparsification of R if R will be used.
-                            Rz=np.float32(r.uniform(0,1.,(input_dim,num_units))<prob[0])
+                            Rzp=np.float32(r.uniform(0,1.,(input_dim,num_units))<prob[0])
+                            p=.8
+                            Rz=(Wz)*(Rzp<p)+(1-Wz)*(Rzp<(1-p))
                     # Initialize W
                     std=gain*np.sqrt(6./(input_dim+num_units))
                     W=np.float32(np.random.uniform(-Winit_fac*std,Winit_fac*std,(input_dim,num_units)))*Wz
