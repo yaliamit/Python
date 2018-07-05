@@ -89,7 +89,7 @@ class BaseConvLayerR(Layer):
         p=.8
         self.Rzer=self.Rzer<self.prob[0]
         #RZ=self.Wzer*(self.Rzer<p)+(1-self.Wzer)*(self.Rzer<(1-p))
-  
+
         #self.Rzer=RZ
         self.R=self.R*self.Rzer
         #self.prob[1]=0 no gradient on R
