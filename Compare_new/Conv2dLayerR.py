@@ -75,6 +75,7 @@ class BaseConvLayerR(Layer):
 
         self.Wzer=self.add_param(Wzer,self.get_W_shape(),name="Wzero", trainable=False)
         self.Wzer=self.Wzer<self.prob[0]
+        WZ=T.copy(self.Wzer)
         self.W=self.W*self.Wzer
         if (self.prob[1]<0):
             self.R=np.zeros((2,2))
@@ -87,7 +88,7 @@ class BaseConvLayerR(Layer):
             self.Rzer=self.add_param(Rzer,self.get_W_shape(),name="Rzero", trainable=False)
         p=.8
         #self.Rzer=self.Rzer<self.prob[0]
-        RZ=self.Wzer*(self.Rzer<p)+(1-self.Wzer)*(self.Rzer<(1-p))
+        RZ=WZ*(self.Rzer<p)+(1-WZ)*(self.Rzer<(1-p))
         #print('RZ',RZ.shape)
         self.Rzer=RZ
         self.R=self.R*self.Rzer
