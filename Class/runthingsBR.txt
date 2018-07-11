@@ -1,1 +1,1 @@
-python source/start_class.py seed=351729 net=_pars/fncrc_deep_tryR batch_size=500 eta_init=.1 eta_current=.1 update=sgd num_epochs=1000 dep_fac=10. force_global_prob=[1.,-1.] dep_fac=10. Mnist=cifar_100 hinge=1. output=OUT_h2>OUT_h2.txt
+python source/start_class.py seed=351729 net=_pars/fncrc_deep_tryR batch_size=500 eta_init=.08 eta_current=.08 eta_schedule=[200.,.03,300,.01,500,.001] update=sgd num_epochs=1000 dep_fac=10. force_global_prob=[1.,-1.] dep_fac=10. Mnist=cifar_100 hinge=1. output=OUT_h2>OUT_h2.txt
