@@ -2,6 +2,25 @@ import deepdish as dd
 import numpy as np
 import os
 from scipy import linalg
+import h5py
+
+def get_cifar(data_set='cifar10'):
+    filename = '../_CIFAR100/' + data_set + '_train.hdf5'
+    f = h5py.File(filename, 'r')
+    key = list(f.keys())[0]
+    tr = f[key]
+    key = list(f.keys())[1]
+    train_labels = f[key]
+    train_data = np.float32(tr[0:50000]) / 255.
+    filename = '../_CIFAR100/' + data_set + '_test.hdf5'
+    f = h5py.File(filename, 'r')
+    key = list(f.keys())[0]
+    # Get the data
+    test_data = np.float32(f[key]) / 255.
+    key = list(f.keys())[1]
+    test_labels = f[key]
+    return train_data, train_labels, test_data, test_labels
+
 def load_dataset(data_set,num_train=50000, num_test=10000, num_val=5000, marg=0, Train=True, white=True):
     home='../'#os.path.expanduser('~')
     os.environ['CIFAR10_DIR']=home+'_CIFAR10'
@@ -10,16 +29,18 @@ def load_dataset(data_set,num_train=50000, num_test=10000, num_val=5000, marg=0,
     train_y=None
     val_x=None
     val_y=None
-    if (data_set=='cifar_100'):
-        print('loading cifar_100')
-        if (Train):
-            Tr_x, Tr_y = dd.io.load_cifar_100('training', offset=0, count=50000, marg=marg)
-        te_x, te_y = dd.io.load_cifar_100('testing', offset=0, count=10000, marg=marg)
-    else:
-        print('loading cifar_10')
-        if (Train):
-            Tr_x, Tr_y = dd.io.load_cifar_10('training', offset=0, count=50000, marg=marg)
-        te_x, te_y = dd.io.load_cifar_10('testing', offset=0, count=10000, marg=marg)
+    Tr_x, Tr_y, te_x, te_y = get_cifar(data_set)
+
+    # if (data_set=='cifar_100'):
+    #     print('loading cifar_100')
+    #     if (Train):
+    #         Tr_x, Tr_y = dd.io.load_cifar_100('training', offset=0, count=50000, marg=marg)
+    #     te_x, te_y = dd.io.load_cifar_100('testing', offset=0, count=10000, marg=marg)
+    # else:
+    #     print('loading cifar_10')
+    #     if (Train):
+    #         Tr_x, Tr_y = dd.io.load_cifar_10('training', offset=0, count=50000, marg=marg)
+    #     te_x, te_y = dd.io.load_cifar_10('testing', offset=0, count=10000, marg=marg)
 
     if (Train):
         Tr_x=np.transpose(Tr_x,(0,3,1,2))

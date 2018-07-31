@@ -299,7 +299,7 @@ def one_hot(values,n_values=10):
 
 def get_cifar(data_set='cifar10'):
     
-    filename = '/project2/cmsc25025/mnist/'+data_set+'_train.hdf5'
+    filename = '../_CIFAR100/'+data_set+'_train.hdf5'
     print(filename)
     f = h5py.File(filename, 'r')
     key = list(f.keys())[0]
@@ -312,7 +312,7 @@ def get_cifar(data_set='cifar10'):
     train_labels=one_hot(np.int32(tr_lb[0:45000]))
     val_data=np.float32(tr[45000:])/255.
     val_labels=one_hot(np.int32(tr_lb[45000:]))
-    filename = '/project2/cmsc25025/mnist/'+data_set+'_test.hdf5'
+    filename = '../_CIFAR100/'+data_set+'_test.hdf5'
     f = h5py.File(filename, 'r')
     key = list(f.keys())[0]
     # Get the data
@@ -357,7 +357,7 @@ def get_stats(data,labels,fc):
 def run_epoch(train,Tr=True):
         t1=time.time()
         # Randomly shuffle the training data
-        ii = np.arange(0, train.shape[0], 1)
+        ii = np.arange(0, train[0].shape[0], 1)
         if (Tr):
             np.random.shuffle(ii)
         tr=train[0][ii]
