@@ -4,14 +4,14 @@ simple_augmentation:True
 mod_net:None
 edges:False
 start:0
-Mnist:cifar100
+Mnist:cifar10
 net:fnc
 update:sgd
 batch_size:100
 eta_init:.1
 train:True
 mult:1
-num_train:5000
+num_train:1000
 #eta_schedule:(10.,.0001)
 agg:True
 dep_fac:1.
