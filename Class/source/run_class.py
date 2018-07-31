@@ -292,6 +292,8 @@ def main_new(NETPARS):
     if (NETPARS['train'] and NETPARS['num_epochs']>0):
         params = lasagne.layers.get_all_params(network, trainable=True)
         print('params',params[0].shape)
+        for p in params:
+            print(p.name,np.std(p.eval()))
         icl=0
         print("Starting training...","Training set size:",X_train.shape[0],np.max(X_train[0]))
         mod_eta=True
