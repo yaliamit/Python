@@ -1,1 +1,1 @@
-python Conv_net_gpu.py fncrc_try.txt output=OUTtry>OUTtry.txt
+python Conv_net_gpu.py fncrc_try.txt>OUTtry.txt

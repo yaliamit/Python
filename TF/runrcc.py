@@ -10,7 +10,7 @@ l=len(sys.argv)
 outname=sys.argv[-1]
 OUTNAME=outname+'.txt'
 lOUTNAME=outname+'-rcc.txt'
-ss='python Conv_net_gpu.py '+' '.join(sys.argv[1:l-1]) + ' output='+outname+'>'+OUTNAME
+ss='python Conv_net_gpu.py '+' '.join(sys.argv[1:l-1])+'>'+OUTNAME
 if 'loc' in outname:
     os.system(ss)
 else:
