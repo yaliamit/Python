@@ -1,1 +1,1 @@
-python Conv_net_gpu.py fncrc_deep_tryR_avg > OUT
+python Conv_net_gpu.py fncrc_try.txt output=OUTtry>OUTtry.txt

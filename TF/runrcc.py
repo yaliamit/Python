@@ -14,7 +14,7 @@ ss='python Conv_net_gpu.py '+' '.join(sys.argv[1:l-1]) + ' output='+outname+'>'+
 if 'loc' in outname:
     os.system(ss)
 else:
-    f=open('runthings.txt','w')
+    f=open('runthings','w')
     f.write(ss+'\n')
     f.close()
 
