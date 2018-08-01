@@ -176,7 +176,8 @@ def create_network(PARS):
             with tf.variable_scope(l['name']):
                 U=tf.random_uniform([batch_size]+(parent.shape.as_list())[1:])<l['drop']
                 Z=tf.zeros_like(parent)
-                drop = K.tf.where(U,Z,parent)
+                fac=1/(1-l['drop'])
+                drop = K.tf.where(U,Z,parent*fac,name='probx{:.1f}x'.format(fac))
                 TS.append(drop)
         elif ('concatsum' in l['name']):
             with tf.variable_scope(l['name']):
@@ -257,6 +258,9 @@ def back_prop():
                 OPLIST.append(assign_op_convR)
             ts+=1
             vs+=2
+        elif ('drop' in T.name):
+            fac=np.float32(T.name.split('x')[1])
+            gradx=gradx*fac
         elif ('Equal' in T.name):
             mask=TS[ts]
             ts+=1
@@ -452,17 +456,26 @@ with tf.Session() as sess:
         if (np.mod(i,1)==0):
             #lo,ac = get_stats(train[0][0:num_train],train[1][0:num_train],TS[0])
             AC.append(ac)
-            print('Epoch',i,'Train loss, accuracy',lo,ac)
+            print("Final results: epoch",i)
+            print("Train loss:\t\t\t{:.6f}".format(lo))
+            print("Train acc:\t\t\t{:.6f}".format(ac))
             #vlo,vac = get_stats(val[0],val[1],TS[0])
             vac, vlo = run_epoch(val)
             VAC.append(vac)
-            print('EPoch',i,'Validation loss, accuracy',vlo,vac)
+            print("Final results: epoch", i)
+            print("Val loss:\t\t\t{:.6f}".format(vlo))
+            print("Val acc:\t\t\t{:.6f}".format(vac))
+            #print('EPoch',i,'Validation loss, accuracy',vlo,vac)
             sys.stdout.flush()
 
     AC=np.array(AC)
     VAC=np.array(VAC)
     lo,ac = get_stats(test[0],test[1],TS[0])
-    print('test accuracy %g' % ac)
+    print("Final results: epoch", i)
+    print("Test loss:\t\t\t{:.6f}".format(lo))
+    print("Test acc:\t\t\t{:.6f}".format(ac))
+
+    print('step', 0, 'aggegate accuracy', ac)
     #plt.plot(AC)
     #plt.plot(VAC)
     #plt.show()

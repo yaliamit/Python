@@ -1,7 +1,7 @@
 import time
 import os
 import shutil
-import commands
+import subprocess as commands
 import sys
 
 def process_args(args,parms):
@@ -71,7 +71,8 @@ def print_OUTPUT(name='OUTPUT'):
             OO='_'+ss[1]+'/AOUT'
 
     dirs=os.listdir(OO)
-    cc=commands.getoutput('grep XXX ' + name + '.txt')
+    #cc=commands.getoutput('grep XXX ' + name + '.txt')
+    cc=commands.check_output('grep XXX ' + name + '.txt',shell=True)
 
     nn=str.split(cc,' ')
     nna=nn[1]
@@ -93,39 +94,39 @@ def print_OUTPUT(name='OUTPUT'):
 def  plot_OUT(s):
 
     import numpy as np
-    import commands
+
     import pylab as py
     py.ion()
-    aaa=commands.getoutput('grep ERR ' + s + '.txt | cut -d" " -f2-4')
+    aaa=commands.check_output('grep ERR ' + s + '.txt | cut -d" " -f2-4')
     bt=np.fromstring(aaa,sep='\n\t\t\t')
     btt=bt.reshape((-1,3))
     py.plot(btt)
 
 
 def plot_OUTPUT(name='OUTPUT',code='',first=None,last=None):
-    import commands
+    #import commands
     import numpy as np
     import pylab as py
     py.ion()
     havetrain=False
-    oo=commands.getoutput('grep Posi ' + name + '.txt  | cut -d" " -f2,3')
+    oo=commands.check_output('grep Posi ' + name + '.txt  | cut -d" " -f2,3', shell=True)
     bp=[]
     #bp=np.fromstring(oo,sep='\n\t\t\t')
     #bp=bp.reshape((-1,2))
-    bt=np.fromstring(commands.getoutput('grep Train ' + name + '.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
-    loss=np.fromstring(commands.getoutput('grep Train ' + name + '.txt | grep loss | cut -d":" -f2'),sep='\n\t\t\t')
+    bt=np.fromstring(commands.check_output('grep Train ' + name + '.txt | grep acc | cut -d":" -f2',shell=True),sep='\n\t\t\t')
+    loss=np.fromstring(commands.check_output('grep Train ' + name + '.txt | grep loss | cut -d":" -f2',shell=True),sep='\n\t\t\t')
     fig=py.figure(2)
     py.plot(loss)
     py.figure(1)
-    bv=np.fromstring(commands.getoutput('grep Val ' + name + '.txt | grep acc | cut -d":" -f2'),sep='\n\t\t\t')
+    bv=np.fromstring(commands.check_output('grep Val ' + name + '.txt | grep acc | cut -d":" -f2',shell=True),sep='\n\t\t\t')
     ss='grep aggegate ' + name + '.txt'
-    if (len(commands.getoutput(ss))):
+    if (len(commands.check_output(ss,shell=True))):
         ss='grep aggegate ' + name + '.txt | cut -d"," -f4 | cut -d")" -f1'
-        atest=np.fromstring(commands.getoutput(ss),sep='\n\t\t\t')
+        atest=np.fromstring(commands.check_output(ss,shell=True),sep='\n\t\t\t')
         if (type(atest) is np.ndarray and len(atest)>0 ):
             atest=atest[-1]
         ss='grep Post-train ' + name + '.txt | grep acc | cut -d":" -f2'
-        atrain=np.fromstring(commands.getoutput(ss),sep='\n\t\t\t')
+        atrain=np.fromstring(commands.check_output(ss,shell=True),sep='\n\t\t\t')
         if (type(atrain) is np.ndarray and len(atrain)>0):
             havetrain=True
             atrain=atrain[-1]
