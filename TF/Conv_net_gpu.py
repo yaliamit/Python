@@ -5,7 +5,7 @@
 
 
 import tensorflow as tf
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import numpy as np
 import sys
 
@@ -463,9 +463,9 @@ with tf.Session() as sess:
     VAC=np.array(VAC)
     lo,ac = get_stats(test[0],test[1],TS[0])
     print('test accuracy %g' % ac)
-    plt.plot(AC)
-    plt.plot(VAC)
-    plt.show()
+    #plt.plot(AC)
+    #plt.plot(VAC)
+    #plt.show()
     ACC=np.concatenate([np.expand_dims(AC,axis=1),np.expand_dims(VAC,axis=1)],axis=1)
     np.save('ACC',ACC)
     # Save model
