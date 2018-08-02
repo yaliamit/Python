@@ -1,1 +1,1 @@
-python Conv_net_gpu.py ../Class/_pars/fncrc>OUT_tt.txt
+python Conv_net_gpu.py ../Class/_pars/fncrc>OUT_h20.txt

@@ -1,5 +1,5 @@
 seed:45239
-num_epochs:2
+num_epochs:20
 simple_augmentation:True
 mod_net:None
 edges:False
@@ -8,7 +8,7 @@ data_set:cifar10
 net:fnc
 update:sgd
 batch_size:500
-eta_init:.01
+eta_init:.1
 train:True
 mult:1
 num_train:50000
@@ -16,7 +16,7 @@ num_train:50000
 agg:True
 dep_fac:1.
 adapt_eta:False
-hinge:False
+hinge:True
 TRAIN:True
 global_tinout:(.5,1.)
 #global_prob:(1.,1.)
