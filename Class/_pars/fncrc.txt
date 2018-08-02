@@ -11,7 +11,7 @@ batch_size:100
 eta_init:.1
 train:True
 mult:1
-num_train:1000
+num_train:50000
 #eta_schedule:(10.,.0001)
 agg:True
 dep_fac:1.
