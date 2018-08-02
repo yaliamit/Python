@@ -36,7 +36,7 @@ else:
         time.sleep(30)
         commands.getoutput('scp yaliamit@midway2.rcc.uchicago.edu:Desktop/Dropbox/Python/TF/'+OUTNAME+' ' + lOUTNAME)
 
-    time.sleep(30)
+    #time.sleep(30)
     #pnn=commands.getoutput('grep NNN ' + lOUTNAME)
     #pnnn=str.split(pnn,':')
     #netname=str.strip(pnnn[1],' ,\')')

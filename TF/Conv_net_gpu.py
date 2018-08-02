@@ -199,9 +199,9 @@ def create_network(PARS):
          res=tf.reshape(res,shape=shp)
          res=tf.reduce_sum(tf.nn.relu(1.+res),axis=1)
          #print('res',res.shape)
-         loss=tf.reduce_mean(cor+PARS['dep_fac']*res/(n_classes-1),name="LOSS")
+         loss=tf.reduce_mean(cor+PARS['dep_fac']*res/(n_classes-1),name="hinge")
        else:
-         loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=TS[-1]),name="LOSS")
+         loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=TS[-1]),name="sm")
 
         
     # Accuracy computation
@@ -419,7 +419,7 @@ with tf.Session() as sess:
     TS.reverse()
     for t in TS:
         print(t)
-    
+    print(loss)
     # Initialize variables
     sess.run(tf.global_variables_initializer())
     
@@ -457,7 +457,7 @@ with tf.Session() as sess:
 
     AC=np.array(AC)
     VAC=np.array(VAC)
-    lo,ac = get_stats(test[0],test[1],TS[0])
+    ac, lo = run_epoch(test)
     print("Final results: epoch", i)
     print("Test loss:\t\t\t{:.6f}".format(lo))
     print("Test acc:\t\t\t{:.6f}".format(ac))
