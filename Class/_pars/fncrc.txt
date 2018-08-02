@@ -16,7 +16,7 @@ num_train:50000
 agg:True
 dep_fac:1.
 adapt_eta:False
-hinge:True
+hinge:1.
 TRAIN:True
 global_tinout:(.5,1.)
 #global_prob:(1.,1.)
