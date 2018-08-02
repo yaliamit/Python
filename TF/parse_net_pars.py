@@ -15,56 +15,22 @@ def one_hot(values,n_values=10):
     oh=np.eye(n_v)[values]
     return oh
 
-def get_cifar_10():
-    tr=np.float32(np.load('/project2/cmsc25025/mnist/CIFAR_10.npy'))
-    tr_lb=np.int32(np.load('/project2/cmsc25025/mnist/CIFAR_labels.npy'))
-    #tr=tr.reshape((-1,np.prod(np.array(tr.shape)[1:4])))
-    train_data=tr[0:45000]/255.
-    train_labels=one_hot(tr_lb[0:45000])
-    val_data=tr[45000:]/255.
-    val_labels=one_hot(tr_lb[45000:])
-    test_data=np.float32(np.load('/project/cmsc25025/mnist/CIFAR_10_test.npy'))
-    #test_data=test_data.reshape((-1,np.prod(np.array(test_data.shape)[1:4])))
-    test_data=test_data/255.
-    test_labels=one_hot(np.int32(np.load('/project/cmsc25025/mnist/CIFAR_labels_test.npy')))
-    return (train_data, train_labels), (val_data, val_labels), (test_data, test_labels)
-
-def get_cifar(data_set='cifar10'):
-    
-    filename = '/project2/cmsc25025/mnist/'+data_set+'_train.hdf5'
-    f = h5py.File(filename, 'r')
-    key = list(f.keys())[0]
-    # Get the data
-    tr = f[key]
-    key = list(f.keys())[1]
-    tr_lb=f[key]
-    train_data=np.float32(tr[0:45000])/255.
-    train_labels=one_hot(tr_lb[0:45000])
-    val_data=np.float32(tr[45000:])/255.
-    val_labels=one_hot(tr_lb[45000:])
-    filename = '/project2/cmsc25025/mnist/'+data_set+'_test.hdf5'
-    f = h5py.File(filename, 'r')
-    key = list(f.keys())[0]
-    # Get the data
-    test_data = np.float32(f[key])/255.
-    key = list(f.keys())[1]
-    test_labels=one_hot(f[key])
-    return (train_data, train_labels), (val_data, val_labels), (test_data, test_labels)
 
 def get_mnist():
 
-    labels=np.float32(np.load('/project/cmsc25025/mnist/MNIST_labels.npy'))
-    data=np.float64(np.load('/project/cmsc25025/mnist/MNIST.npy'))
+    labels = np.float32(np.load('/project/cmsc25025/mnist/MNIST_labels.npy'))
+    data = np.float64(np.load('/project/cmsc25025/mnist/MNIST.npy'))
     print(data.shape)
-    data=np.float32(data)/255.
-    train_dat=data[0:50000]
-    train_labels=one_hot(np.int32(labels[0:50000]))
-    val_dat=data[50000:60000]
-    val_labels=one_hot(np.int32(labels[50000:60000]))
-    test_dat=data[60000:70000]
-    test_labels=one_hot(np.int32(labels[60000:70000]))
-    
+    data = np.float32(data) / 255.
+    train_dat = data[0:50000]
+    train_labels = one_hot(np.int32(labels[0:50000]))
+    val_dat = data[50000:60000]
+    val_labels = one_hot(np.int32(labels[50000:60000]))
+    test_dat = data[60000:70000]
+    test_labels = one_hot(np.int32(labels[60000:70000]))
+
     return (train_dat, train_labels), (val_dat, val_labels), (test_dat, test_labels)
+
 
 def get_data(data_set):
     if ('cifar' in data_set):

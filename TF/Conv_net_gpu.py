@@ -8,7 +8,7 @@ import tensorflow as tf
 #import matplotlib.pyplot as plt
 import numpy as np
 import sys
-
+import mnist
 # In[2]:
 
 
@@ -301,8 +301,15 @@ import h5py
 
 def one_hot(values,n_values=10):
     n_v = np.maximum(n_values,np.max(values) + 1)
-    oh=np.eye(n_v)[values]
+    oh=np.float32(np.eye(n_v)[values])
     return oh
+
+def get_mnist():
+    tr, trl, val, vall, test, testl = mnist.load_dataset()
+    trl=one_hot(trl)
+    vall=one_hot(vall)
+    testl=one_hot(testl)
+    return (tr,trl), (val,vall), (test,testl)
 
 def get_cifar(data_set='cifar10'):
     
@@ -328,13 +335,14 @@ def get_cifar(data_set='cifar10'):
     test_labels=one_hot(np.int32(f[key]))
     return (train_data, train_labels), (val_data, val_labels), (test_data, test_labels)
 
+
+
+
 def get_data(data_set):
     if ('cifar' in data_set):
         return(get_cifar(data_set=data_set))
     elif (data_set=="mnist"):
         return(get_mnist())
-    elif (data_set=="mnist_transform"):
-        return(get_mnist_trans())
 
 
 # In[8]:
@@ -362,12 +370,32 @@ def run_epoch(train,Tr=True):
                 grad=sess.run(dW_OPs,feed_dict={x: batch[0], y_: batch[1]})
             else:
                 grad=sess.run(dW_OPs[-2:], feed_dict={x:batch[0],y_:batch[1]})
+            # print(j,grad[-1])
             acc+=grad[-2]
             lo+=grad[-1]
             ca+=1
         print('Epoch time',time.time()-t1)
         return acc/ca, lo/ca
 
+
+def run_epoch_test(test):
+    t1 = time.time()
+    # Randomly shuffle the training data
+
+    tr = test[0]
+    y = test[1]
+    lo = 0.
+    acc = 0.
+    ca = 0.
+    for j in np.arange(0, len(y), batch_size):
+        batch = (tr[j:j + batch_size], y[j:j + batch_size])
+        act, lot = sess.run([accuracy,loss], feed_dict={x: batch[0], y_: batch[1]})
+        print(j, lot)
+        acc += act
+        lo += lot
+        ca += 1
+    print('Epoch time', time.time() - t1)
+    return acc / ca, lo / ca
 
 # In[9]:
 
@@ -439,20 +467,22 @@ with tf.Session() as sess:
     # Run epochs
     AC=[]
     VAC=[]
-    ac, lo = run_epoch(test)
+    ac, lo = run_epoch_test(test)
     print("Final results: before training")
     print("Test loss:\t\t\t{:.6f}".format(lo))
     print("Test acc:\t\t\t{:.6f}".format(ac))
     for i in range(num_epochs):  # number of epochs
+        #ac,lo=\
         ac,lo=run_epoch(train)
         if (np.mod(i,1)==0):
             #lo,ac = get_stats(train[0][0:num_train],train[1][0:num_train],TS[0])
+            #ac, lo = run_epoch_test(train)
             AC.append(ac)
             print("Final results: epoch",i)
             print("Train loss:\t\t\t{:.6f}".format(lo))
             print("Train acc:\t\t\t{:.6f}".format(ac))
             #vlo,vac = get_stats(val[0],val[1],TS[0])
-            vac, vlo = run_epoch(val,Tr=False)
+            vac, vlo = run_epoch_test(val)
             VAC.append(vac)
             print("Final results: epoch", i)
             print("Val loss:\t\t\t{:.6f}".format(vlo))
