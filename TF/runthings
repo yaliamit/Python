@@ -1,1 +1,1 @@
-python Conv_net_gpu.py ../Class/_pars/fncrc>OUT_a.txt
+python Conv_net_gpu.py fncrc_try>OUT_a.txt
