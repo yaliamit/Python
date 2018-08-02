@@ -119,19 +119,24 @@ def plot_OUTPUT(name='OUTPUT',code='',first=None,last=None):
     py.plot(loss)
     py.figure(1)
     bv=np.fromstring(commands.check_output('grep Val ' + name + '.txt | grep acc | cut -d":" -f2',shell=True),sep='\n\t\t\t')
-    ss='grep aggegate ' + name + '.txt'
-    if (len(commands.check_output(ss,shell=True))):
-        ss='grep aggegate ' + name + '.txt | cut -d"," -f4 | cut -d")" -f1'
-        atest=np.fromstring(commands.check_output(ss,shell=True),sep='\n\t\t\t')
-        if (type(atest) is np.ndarray and len(atest)>0 ):
-            atest=atest[-1]
-        ss='grep Post-train ' + name + '.txt | grep acc | cut -d":" -f2'
-        atrain=np.fromstring(commands.check_output(ss,shell=True),sep='\n\t\t\t')
-        if (type(atrain) is np.ndarray and len(atrain)>0):
-            havetrain=True
-            atrain=atrain[-1]
-        if (havetrain):
-            print(atest,atrain)
+    #
+    #if (len(commands.check_output(ss,shell=True))):
+    ss='grep aggegate ' + name + '.txt | cut -d"," -f4 | cut -d")" -f1'
+    try:
+        aa=commands.check_output(ss,shell=True)
+        atest=np.fromstring(aa,sep='\n\t\t\t')
+        if (type(atest) is np.ndarray and len(atest) > 0):
+            atest = atest[-1]
+        ss = 'grep Post-train ' + name + '.txt | grep acc | cut -d":" -f2'
+        atrain = np.fromstring(commands.check_output(ss, shell=True), sep='\n\t\t\t')
+        if (type(atrain) is np.ndarray and len(atrain) > 0):
+            havetrain = True
+            atrain = atrain[-1]
+    except:
+        print('aggeg not found')
+
+    if (havetrain):
+            print('Final',atest,atrain)
     if (first is not None and last is not None):
         bt=bt[first:last]
         bv=bv[first:last]
