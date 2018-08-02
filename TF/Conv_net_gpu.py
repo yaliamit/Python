@@ -374,6 +374,7 @@ def run_epoch(train,Tr=True):
 
 def zero_out_weights():
         if (PARS['force_global_prob'][1]>=0 and PARS['force_global_prob'][0]<1.):
+            print('Zeroing out weights at rate ',PARS['force_global_prob'][0])
             shape=v.get_shape().as_list()
             Z=tf.zeros(shape)
             U=tf.random_uniform(shape)
@@ -438,6 +439,10 @@ with tf.Session() as sess:
     # Run epochs
     AC=[]
     VAC=[]
+    ac, lo = run_epoch(test)
+    print("Final results: before training")
+    print("Test loss:\t\t\t{:.6f}".format(lo))
+    print("Test acc:\t\t\t{:.6f}".format(ac))
     for i in range(num_epochs):  # number of epochs
         ac,lo=run_epoch(train)
         if (np.mod(i,1)==0):
@@ -447,7 +452,7 @@ with tf.Session() as sess:
             print("Train loss:\t\t\t{:.6f}".format(lo))
             print("Train acc:\t\t\t{:.6f}".format(ac))
             #vlo,vac = get_stats(val[0],val[1],TS[0])
-            vac, vlo = run_epoch(val)
+            vac, vlo = run_epoch(val,Tr=False)
             VAC.append(vac)
             print("Final results: epoch", i)
             print("Val loss:\t\t\t{:.6f}".format(vlo))
@@ -457,7 +462,7 @@ with tf.Session() as sess:
 
     AC=np.array(AC)
     VAC=np.array(VAC)
-    ac, lo = run_epoch(test)
+    ac, lo = run_epoch(test,Tr=False)
     print("Final results: epoch", i)
     print("Test loss:\t\t\t{:.6f}".format(lo))
     print("Test acc:\t\t\t{:.6f}".format(ac))
