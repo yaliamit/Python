@@ -189,7 +189,7 @@ def create_network(PARS):
                     sibs[TS[-1].name]=joint_parent
     
     with tf.variable_scope('loss'):
-    #    loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=TS[-1]),name="LOSS")
+       if (PARS['hinge']):
          cor=tf.boolean_mask(TS[-1],y_)
          cor = tf.nn.relu(1.-cor)
          #print(y_.shape,cor.shape)
@@ -199,7 +199,10 @@ def create_network(PARS):
          res=tf.reshape(res,shape=shp)
          res=tf.reduce_sum(tf.nn.relu(1.+res),axis=1)
          #print('res',res.shape)
-         loss=tf.reduce_mean(cor+PARS['dep_fac']*res/(n_classes-1))
+         loss=tf.reduce_mean(cor+PARS['dep_fac']*res/(n_classes-1),name="LOSS")
+       else:
+         loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=TS[-1]),name="LOSS")
+
         
     # Accuracy computation
     with tf.variable_scope('helpers'):
@@ -340,22 +343,6 @@ def get_data(data_set):
 # Function to get loss and accuracy from only one run of the feature extraction network
 from scipy.special import logsumexp
 
-def get_stats(data,labels,fc):
-    t1=time.time()
-    lo=0.
-    acc=0.
-    delta=batch_size
-    rr=np.arange(0,data.shape[0],delta)
-    for i in rr:
-        fc_out=fc.eval(feed_dict={x: data[i:i+delta], y_:labels[i:i+delta]})
-        log_sf=logsumexp(fc_out,axis=1).reshape((fc_out.shape[0],1))-fc_out
-        lo+=np.mean(np.sum(labels[i:i+delta]*log_sf, axis=1))
-        acc += np.mean(np.equal(np.argmax(fc_out, axis=1),np.argmax(labels[i:i+delta], axis=1)))
-    acc=acc/np.float32(len(rr))
-    lo=lo/np.float32(len(rr))
-    print('get stats time',time.time()-t1)
-    # We return the final functions (they contain all the information about the graph of the network)
-    return lo, acc
 
 # Run the iterations of one epoch
 def run_epoch(train,Tr=True):
