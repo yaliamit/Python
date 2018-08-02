@@ -52,7 +52,7 @@ def grad_conv_layer(below, back_propped, current, W, R):
 def fully_connected_layer(input,num_features,prob=[1.,-1.]):
     # Make sure input is flattened.
     flat_dim=np.int32(np.array(input.get_shape().as_list())[1:].prod())
-    input_flattened = tf.reshape(input, shape=[-1,flat_dim])
+    input_flattened = tf.reshape(input, shape=[batch_size,flat_dim])
     shape=[flat_dim,num_features]
     shapeR=shape
     if (prob[1]==-1.):
@@ -390,7 +390,7 @@ def run_epoch_test(test):
     for j in np.arange(0, len(y), batch_size):
         batch = (tr[j:j + batch_size], y[j:j + batch_size])
         act, lot = sess.run([accuracy,loss], feed_dict={x: batch[0], y_: batch[1]})
-        print(j, lot)
+        #print(j, lot)
         acc += act
         lo += lot
         ca += 1

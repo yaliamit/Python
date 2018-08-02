@@ -14,7 +14,7 @@ mult:1
 num_train:50000
 #eta_schedule:(100.,.01,120,.001)
 dep_fac:1.
-hinge:False
+hinge:1.
 global_tinout:(.5,1.)
 force_global_prob:(1.,-1.)
 name:input1
