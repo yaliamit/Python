@@ -35,7 +35,7 @@ def grad_conv_layer(below, back_propped, current, W, R):
     out_backprop=tf.reshape(back_propped,back_prop_shape)
     on_zero = K.zeros_like(out_backprop)
     out_backpropF=K.tf.where(tf.equal(tf.abs(current),1.),on_zero,out_backprop)
-    gradconvW=tf.nn.conv2d_backprop_filter(input=below,filter_sizes=w_shape,                                                     out_backprop=out_backpropF,                                                     strides=strides,                                           padding='SAME')
+    gradconvW=tf.nn.conv2d_backprop_filter(input=below,filter_sizes=w_shape,out_backprop=out_backpropF,strides=strides,padding='SAME')
     input_shape=[batch_size]+(below.shape.as_list())[1:]
     
     filter=W
