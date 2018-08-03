@@ -1,1 +1,1 @@
-python Conv_net_gpu.py fncrc_deep_tryR_avg>OUT_deep.txt
+python Conv_net_gpu.py fncrc_try>OUT_deeper.txt
