@@ -349,7 +349,7 @@ def get_data(data_set):
 
 
 # Function to get loss and accuracy from only one run of the feature extraction network
-from scipy.special import logsumexp
+#from scipy.special import logsumexp
 
 
 # Run the iterations of one epoch
