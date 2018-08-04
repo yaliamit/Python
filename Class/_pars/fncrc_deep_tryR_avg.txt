@@ -1,4 +1,5 @@
 seed:45239
+adapt_eta:False
 num_epochs:1000
 data_set:cifar10
 batch_size:500
