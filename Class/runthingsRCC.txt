@@ -1,1 +1,1 @@
-python source/start_class.py net=../TF/fncrc_deep_tryR_avg output=OUTo_deeper>OUTo_deeper.txt
+python source/start_class.py net=_pars/fncrc_deep_tryR_avg output=OUTo_deeper>OUTo_deeper.txt
