@@ -246,7 +246,7 @@ def back_prop():
             pre=x
         # You have held a gradx from a higher up layer to be added to current one.
         if (parent is not None and parent == T.name.split('/')[0]):
-            print('grad_hold',grad_hold_var[parent])
+            print(parent,'grad_hold',grad_hold_var[parent])
             gradx=tf.add(gradx,grad_hold_var[parent])
             parent=None
         if ('conv' in T.name):  
