@@ -125,7 +125,6 @@ def find_sibling(l,parent):
         for ly in PARS['layers']:
             if ('parent' in ly):
                 q=ly['parent']
-
                 if (ly is not l and type(q)==str and q in parent):
                     return q
         return None  
@@ -246,7 +245,7 @@ def back_prop():
         else:
             pre=x
         # You have held a gradx from a higher up layer to be added to current one.
-        if (parent is not None and parent in T.name):
+        if (parent is not None and parent == T.name.split('/')[0]):
             print('grad_hold',grad_hold_var[parent])
             gradx=tf.add(gradx,grad_hold_var[parent])
             parent=None
