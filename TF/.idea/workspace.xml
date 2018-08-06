@@ -22,9 +22,11 @@
       <file leaf-file-name="Conv_net_gpu.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Conv_net_gpu.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="385" column="47" lean-forward="false" selection-start-line="385" selection-start-column="47" selection-end-line="385" selection-end-column="47" />
-              <folding />
+            <state relative-caret-position="15">
+              <caret line="284" column="12" lean-forward="false" selection-start-line="284" selection-start-column="12" selection-end-line="284" selection-end-column="12" />
+              <folding>
+                <marker date="1533595030819" expanded="true" signature="10055:10682" ph="..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -549,7 +551,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="37" column="44" lean-forward="false" selection-start-line="37" selection-start-column="0" selection-end-line="38" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1533595030819" expanded="true" signature="10055:10682" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -591,7 +595,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1533595030819" expanded="true" signature="10055:10682" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -599,7 +605,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1533595030819" expanded="true" signature="10055:10682" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -615,7 +623,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1533595030819" expanded="true" signature="10055:10682" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -623,7 +633,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1533595030819" expanded="true" signature="10055:10682" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -639,7 +651,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="7" column="1" lean-forward="false" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
-          <folding />
+          <folding>
+            <marker date="1533595030819" expanded="true" signature="10055:10682" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -647,7 +661,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1533595030819" expanded="true" signature="10055:10682" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -670,7 +686,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="446" column="16" lean-forward="false" selection-start-line="446" selection-start-column="16" selection-end-line="446" selection-end-column="16" />
-          <folding />
+          <folding>
+            <marker date="1533595030819" expanded="true" signature="10055:10682" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -685,7 +703,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="440" column="17" lean-forward="false" selection-start-line="440" selection-start-column="17" selection-end-line="440" selection-end-column="17" />
-          <folding />
+          <folding>
+            <marker date="1533595030819" expanded="true" signature="10055:10682" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -700,7 +720,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="448" column="10" lean-forward="false" selection-start-line="448" selection-start-column="10" selection-end-line="448" selection-end-column="10" />
-          <folding />
+          <folding>
+            <marker date="1533595030819" expanded="true" signature="10055:10682" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -708,7 +730,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="448" column="10" lean-forward="false" selection-start-line="448" selection-start-column="10" selection-end-line="448" selection-end-column="10" />
-          <folding />
+          <folding>
+            <marker date="1533595030819" expanded="true" signature="10055:10682" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -730,7 +754,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="442" column="24" lean-forward="false" selection-start-line="442" selection-start-column="24" selection-end-line="442" selection-end-column="24" />
-          <folding />
+          <folding>
+            <marker date="1533595030819" expanded="true" signature="10055:10682" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -745,7 +771,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="181" column="8" lean-forward="false" selection-start-line="181" selection-start-column="8" selection-end-line="181" selection-end-column="8" />
-          <folding />
+          <folding>
+            <marker date="1533595030819" expanded="true" signature="10055:10682" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -753,7 +781,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="181" column="8" lean-forward="false" selection-start-line="181" selection-start-column="8" selection-end-line="181" selection-end-column="8" />
-          <folding />
+          <folding>
+            <marker date="1533595030819" expanded="true" signature="10055:10682" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -884,9 +914,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Conv_net_gpu.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="385" column="47" lean-forward="false" selection-start-line="385" selection-start-column="47" selection-end-line="385" selection-end-column="47" />
-          <folding />
+        <state relative-caret-position="15">
+          <caret line="284" column="12" lean-forward="false" selection-start-line="284" selection-start-column="12" selection-end-line="284" selection-end-column="12" />
+          <folding>
+            <marker date="1533595030819" expanded="true" signature="10055:10682" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>

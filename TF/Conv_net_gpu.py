@@ -282,7 +282,7 @@ def back_prop():
             all_grad.append(gradx)
             ts+=1
         elif ('dens' in T.name):
-            tf.gradients(loss, T)
+            
             gradfcW, gradx = grad_fully_connected(below=pre,back_propped=gradx,W=VS[vs],R=VS[vs+1])
             assign_op_fcW = update_only_non_zero(VS[vs],gradfcW,step_size)
             #assign_op_fcW=tf.assign(VS[vs],VS[vs]-step_size*gradfcW)
@@ -383,7 +383,7 @@ def run_epoch(train,Tr=True):
             batch=(tr[j:j+batch_size],y[j:j+batch_size])
             if (Tr):
                 grad=sess.run(dW_OPs[-3-lall+1:],feed_dict={x: batch[0], y_: batch[1]})
-                for j in np.arange(-3-lall+1,-2):
+                for j in np.arange(-3,-3-lall,-1):
                     print(j, 'gradient sd', grad[j].shape, np.std(grad[j]))
             else:
                 grad=sess.run(dW_OPs[-2:], feed_dict={x:batch[0],y_:batch[1]})
