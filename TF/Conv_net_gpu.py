@@ -177,7 +177,7 @@ def create_network(PARS):
             with tf.variable_scope(l['name']):
                 U=tf.random_uniform([batch_size]+(parent.shape.as_list())[1:])<l['drop']
                 Z=tf.zeros_like(parent)
-                fac=1/(1-l['drop'])
+                fac=1. #1/(1-l['drop'])
                 drop = K.tf.where(U,Z,parent*fac,name='probx{:.1f}x'.format(fac))
                 TS.append(drop)
         elif ('concatsum' in l['name']):
@@ -218,7 +218,7 @@ def create_network(PARS):
 
 def update_only_non_zero(V,gra, step):
     up=V-step*gra
-    up=K.tf.where(V==0,V,up)
+    #up=K.tf.where(V==0,V,up)
     assign_op = tf.assign(V,up)
     return assign_op
 
@@ -238,6 +238,7 @@ def back_prop():
     OPLIST=[]
     grad_hold_var={}
     parent=None
+    all_grad=[gradx]
     for ts in range(lts):
         T=TS[ts]
         if (ts<lts-1):
@@ -260,6 +261,7 @@ def back_prop():
                 assign_op_convR=update_only_non_zero(VS[vs+1],gradconvW, Rstep_size)
                 #assign_op_convR=tf.assign(VS[vs+1],VS[vs+1]-Rstep_size*gradconvW)
                 OPLIST.append(assign_op_convR)
+            all_grad.append(gradx)
             ts+=1
             vs+=2
         elif ('drop' in T.name):
@@ -267,12 +269,14 @@ def back_prop():
             gradx=gradx*fac
         elif ('Equal' in T.name):
             mask=TS[ts]
+            all_grad.append(mask)
             ts+=1
         elif ('Max' in T.name):
-            gradx=grad_pool(gradx,TS[ts],mask,[2,2])  
+            gradx=grad_pool(gradx,TS[ts],mask,[2,2])
+            all_grad.append(gradx)
             ts+=1
         elif ('dens' in T.name):
-            gradfcW, gradx = grad_fully_connected(W=VS[vs],R=VS[vs+1],back_propped=gradx,below=pre)
+            gradfcW, gradx = grad_fully_connected(below=pre,back_propped=gradx,W=VS[vs],R=VS[vs+1])
             assign_op_fcW = update_only_non_zero(VS[vs],gradfcW,step_size)
             #assign_op_fcW=tf.assign(VS[vs],VS[vs]-step_size*gradfcW)
             OPLIST.append(assign_op_fcW)
@@ -280,14 +284,16 @@ def back_prop():
                 assign_op_fcR = update_only_non_zero(VS[vs+1],gradfcW,Rstep_size)
                 #assign_op_fcR=tf.assign(VS[vs+1],VS[vs+1]-Rstep_size*gradfcW)
                 OPLIST.append(assign_op_fcR)
+            all_grad.append(gradx)
             ts+=1
             vs+=2
         if (T.name in sibs):
             grad_hold=gradx
             parent=sibs[T.name]
             grad_hold_var[parent]=grad_hold
-
-
+    print('all_grad',len(all_grad))
+    for cg in all_grad:
+        OPLIST.append(cg)
     #print('Length of VS',len(VS),'Length of OPLIST',len(OPLIST))
     OPLIST.append(acc)
     OPLIST.append(loss)
@@ -369,12 +375,20 @@ def run_epoch(train,Tr=True):
             batch=(tr[j:j+batch_size],y[j:j+batch_size])
             if (Tr):
                 grad=sess.run(dW_OPs,feed_dict={x: batch[0], y_: batch[1]})
+                print(j, 'gradient sd', grad[-9].shape, np.std(grad[-9]))
+                print(j, 'gradient sd', grad[-8].shape, np.std(grad[-8]))
+                print(j, 'gradient sd', grad[-7].shape, np.std(grad[-7]))
+                #print(j, 'gradient sd', grad[-6].shape, np.sum(grad[-6]==0,axis=(1,2,3))/(32.*32.*16))
+                print(j, 'gradient sd', grad[-5].shape, np.std(grad[-5]))
+                print(j,'gradient sd',grad[-4].shape,np.std(grad[-4]))
+                print(j,'gradient sd',grad[-3].shape,np.std(grad[-3]))
             else:
                 grad=sess.run(dW_OPs[-2:], feed_dict={x:batch[0],y_:batch[1]})
             # print(j,grad[-1])
             acc+=grad[-2]
             lo+=grad[-1]
             ca+=1
+
         print('Epoch time',time.time()-t1)
         return acc/ca, lo/ca
 
@@ -430,6 +444,7 @@ model_name="model"
 
 train,val,test=get_data(data_set=data_set)
 num_train=np.minimum(num_train,train[0].shape[0])
+train=(train[0][0:num_train],train[1][0:num_train])
 dim=train[0].shape[1]
 nchannels=train[0].shape[3]
 n_classes=train[1].shape[1]

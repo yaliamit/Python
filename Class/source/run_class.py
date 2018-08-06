@@ -166,8 +166,14 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
                 tout=f(inputs,targets)
         # Information on gradient magnitude
         acc += tout[1]; err += tout[0]
-        #if (typ=='Train'):
-        #     print('L2',tout[3])
+        if (typ=='Train'):
+           print(tout[4].shape,np.std(tout[4]))
+           print(tout[5].shape,np.std(tout[5]))
+           print(tout[6].shape, np.std(tout[6]))
+           print(tout[7].shape, np.std(tout[7]))
+           print(tout[8].shape, np.std(tout[8]))
+           print(tout[9].shape, np.std(tout[9]))
+
         ## TEMP
         #if (typ=='Train'):
         #    print(np.array(tout[4]))

@@ -232,8 +232,15 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             spen.append(spe)
 
         if (Train):
-            pred = lasagne.layers.get_output(network)
-            #pred, activation = lasagne.layers.get_output([network,network.input_layer])
+            #pred = lasagne.layers.get_output(network)
+            layers=lasagne.layers.get_all_layers(network)
+            actl=[network]
+            for l in layers:
+                if ('conv' in l.name or 'dens' in l.name or 'pool' in l.name or 'input' in l.name):
+                    actl.append(l)
+            activations = lasagne.layers.get_output(actl)
+            print('activations',len(activations))
+            pred=activations[0]
         else:
             pred = lasagne.layers.get_output(network, deterministic=True)
         gloss=[]
@@ -263,12 +270,15 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             acc = T.mean(T.eq(T.argmax(pred, axis=1), target_var),
                           dtype=theano.config.floatX)
 
-            # if (Train):
+            if (Train):
             # #    gloss.append(T.grad(loss,pred))
-            # # Get gradients.
-            #       layers=lasagne.layers.get_all_layers(network)
-            #       for l in layers:
-            #              if ('dens' in l.name):
+            # Get gradients
+                for i in np.arange(1,len(activations),1):
+                  gloss.append(T.grad(loss,activations[i]))
+            #      layers=lasagne.layers.get_all_layers(network)
+            #      for l in layers:
+            #            if ('conv' in l.name):
+            #                gloss.append(T.grad(loss,l))
             #                  gloss.append(T.mean(l.W))
             #                  gloss.append(T.std(l.W))
             #                  gloss.append(T.max(l.W))
@@ -320,7 +330,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
         if ('reg_param_weights' in NETPARS and Train):
             train_fn = theano.function([input_var,target_var], [loss, acc, pred, spe], updates=updates)
         else:
-            train_fn = theano.function([input_var,target_var], [loss, acc, pred, aloss], updates=updates)
+            train_fn = theano.function([input_var,target_var], [loss, acc, pred, aloss]+gloss, updates=updates)
             #train_fn = theano.function(inp, [loss, acc], updates=updates)
 
 
