@@ -60,7 +60,10 @@ def fully_connected_layer(input,num_features,prob=[1.,-1.]):
     if (prob[1]==-1.):
         shapeR=[1]
     R_fc = tf.get_variable('R',shape=shapeR)
-    W_fc = tf.get_variable('W',shape=shape)
+    np.random.seed(1234)
+    aa=np.random.rand(shape[0],shape[1])*.01
+    rint(aa[0, 0], aa[2, 2])
+    W_fc = tf.get_variable('W',shape=shape,initializer=aa)
 
     #b_fc = tf.get_variable('b',shape=[num_features],initializer=tf.zeros_initializer)
     fc = tf.matmul(input_flattened, W_fc) # + b_fc
@@ -375,7 +378,7 @@ def run_epoch(train,Tr=True):
         for j in np.arange(0,len(y),batch_size):
             batch=(tr[j:j+batch_size],y[j:j+batch_size])
             if (Tr):
-                grad=sess.run(dW_OPs[-3-lall+1:],feed_dict={x: batch[0], y_: batch[1]})
+                grad=sess.run(dW_OPs,feed_dict={x: batch[0], y_: batch[1]})
                 for j in np.arange(-3,-3-lall,-1):
                     print(j, 'gradient sd', grad[j].shape, np.std(grad[j]))
             else:
