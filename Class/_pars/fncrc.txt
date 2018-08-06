@@ -7,11 +7,11 @@ start:0
 data_set:cifar10
 net:fnc
 update:sgd
-batch_size:500
+batch_size:10
 eta_init:.0
 train:True
 mult:1
-num_train:500
+num_train:10
 #eta_schedule:(10.,.0001)
 agg:True
 dep_fac:1.
@@ -27,6 +27,6 @@ name:input1
 #name:conv1R;num_filters:8;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);prob:(1.,0.);non_linearity:tanh;parent:conv1
 #name:pool1;pool_size:(2, 2);stride:(2, 2);mode:max;parent:conv1R
 #name:drop1;drop:.5;parent:pool1
-name:newdensp;num_units:50;non_linearity:tanh;prob:(1.,0.);tinout:(.1,1.);parent:input1
+name:newdensp;num_units:5;non_linearity:tanh;prob:(1.,0.);tinout:(.1,1.);parent:input1
 #name:drop2;drop:0.3;parent:newdensp
 name:newdensf;num_units:10;prob:(1.,0.);non_linearity:lasagne.nonlinearity.linear;parent:newdensp;final:final
