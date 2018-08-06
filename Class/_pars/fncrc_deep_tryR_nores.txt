@@ -1,6 +1,6 @@
 seed:45239
 num_epochs:1000
-data_set:cifar100
+data_set:cifar10
 update:sgd
 batch_size:500
 eta_init:.1
