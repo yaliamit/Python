@@ -375,7 +375,7 @@ def run_epoch(train,Tr=True):
         for j in np.arange(0,len(y),batch_size):
             batch=(tr[j:j+batch_size],y[j:j+batch_size])
             if (Tr):
-                grad=sess.run(dW_OPs,feed_dict={x: batch[0], y_: batch[1]})
+                grad=sess.run(dW_OPs[-3-lall+1:],feed_dict={x: batch[0], y_: batch[1]})
                 for j in np.arange(-3,-3-lall,-1):
                     print(j, 'gradient sd', grad[j].shape, np.std(grad[j]))
             else:
