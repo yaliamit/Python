@@ -1,11 +1,6 @@
 seed:45239
-num_epochs:200
-simple_augmentation:True
-mod_net:None
-edges:False
-start:0
-Mnist:cifar100
-net:fnc
+num_epochs:1000
+data_set:cifar100
 update:sgd
 batch_size:500
 eta_init:.1
@@ -17,9 +12,10 @@ agg:True
 dep_fac:1.
 adapt_eta:False
 TRAIN:True
-hinge:False
+hinge:1.
 global_tinout:(.5,1.)
 global_prob:(1.,-1.)
+force_global_prob:(1.,-1.)
 name:input1
 name:conv0;parent:input1;filter_size:(3,3);tinout:(0.5,1.0);pad:(1,1);num_filters:16;non_linearity:tanh;stride:(1,1)
 name:conv0aR;parent:conv0;stride:(1,1);filter_size:(3,3);pad:(1,1);num_filters:16;non_linearity:tanh;tinout:(0.5,1.0);prob:(1.0,0.0)
