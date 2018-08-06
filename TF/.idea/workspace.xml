@@ -20,11 +20,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Conv_net_gpu.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Conv_net_gpu.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Conv_net_gpu.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="463" column="0" lean-forward="false" selection-start-line="463" selection-start-column="0" selection-end-line="463" selection-end-column="0" />
+            <state relative-caret-position="143">
+              <caret line="382" column="23" lean-forward="true" selection-start-line="382" selection-start-column="23" selection-end-line="382" selection-end-column="23" />
               <folding />
             </state>
           </provider>
@@ -82,11 +82,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="run_class.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="run_class.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../Class/source/run_class.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="231" column="4" lean-forward="false" selection-start-line="231" selection-start-column="4" selection-end-line="231" selection-end-column="4" />
+            <state relative-caret-position="88">
+              <caret line="143" column="5" lean-forward="false" selection-start-line="143" selection-start-column="5" selection-end-line="143" selection-end-column="5" />
               <folding />
             </state>
           </provider>
@@ -134,8 +134,8 @@
         <option value="$PROJECT_DIR$/../Compare_new/make_net.py" />
         <option value="$PROJECT_DIR$/../Compare_new/run_compare.py" />
         <option value="$PROJECT_DIR$/../Class/_pars/fncrc.txt" />
-        <option value="$PROJECT_DIR$/Conv_net_gpu.py" />
         <option value="$PROJECT_DIR$/../Class/source/run_class.py" />
+        <option value="$PROJECT_DIR$/Conv_net_gpu.py" />
       </list>
     </option>
   </component>
@@ -906,18 +906,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Conv_net_gpu.py">
+    <entry file="file://$PROJECT_DIR$/../Class/source/run_class.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="463" column="0" lean-forward="false" selection-start-line="463" selection-start-column="0" selection-end-line="463" selection-end-column="0" />
+        <state relative-caret-position="88">
+          <caret line="143" column="5" lean-forward="false" selection-start-line="143" selection-start-column="5" selection-end-line="143" selection-end-column="5" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../Class/source/run_class.py">
+    <entry file="file://$PROJECT_DIR$/Conv_net_gpu.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="231" column="4" lean-forward="false" selection-start-line="231" selection-start-column="4" selection-end-line="231" selection-end-column="4" />
+        <state relative-caret-position="143">
+          <caret line="382" column="23" lean-forward="true" selection-start-line="382" selection-start-column="23" selection-end-line="382" selection-end-column="23" />
           <folding />
         </state>
       </provider>

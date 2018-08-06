@@ -378,8 +378,8 @@ def run_epoch(train,Tr=True):
         t1=time.time()
         # Randomly shuffle the training data
         ii = np.arange(0, train[0].shape[0], 1)
-        if (Tr):
-            np.random.shuffle(ii)
+        #if (Tr):
+        #    np.random.shuffle(ii)
         tr=train[0][ii]
         y=train[1][ii]
         lo=0.
