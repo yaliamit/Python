@@ -42,6 +42,7 @@ def grad_conv_layer(below, back_propped, current, W, R):
     if (len(R.shape.as_list())==4):
         print('using R')
         filter=R
+    print('input_sizes',input_shape,'filter',filter.shape.as_list(),'out_backprop',out_backprop.shape.as_list())
     gradconvx=tf.nn.conv2d_backprop_input(input_sizes=input_shape,filter=filter,out_backprop=out_backpropF,strides=strides,padding='SAME')
     
     return gradconvW, gradconvx
