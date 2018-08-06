@@ -298,7 +298,7 @@ def back_prop():
     OPLIST.append(acc)
     OPLIST.append(loss)
     
-    return OPLIST
+    return OPLIST, len(all_grad)
 
 
 # In[7]:
@@ -371,17 +371,13 @@ def run_epoch(train,Tr=True):
         lo=0.
         acc=0.
         ca=0.
+        print('lall',lall)
         for j in np.arange(0,len(y),batch_size):
             batch=(tr[j:j+batch_size],y[j:j+batch_size])
             if (Tr):
                 grad=sess.run(dW_OPs,feed_dict={x: batch[0], y_: batch[1]})
-                print(j, 'gradient sd', grad[-9].shape, np.std(grad[-9]))
-                print(j, 'gradient sd', grad[-8].shape, np.std(grad[-8]))
-                print(j, 'gradient sd', grad[-7].shape, np.std(grad[-7]))
-                #print(j, 'gradient sd', grad[-6].shape, np.sum(grad[-6]==0,axis=(1,2,3))/(32.*32.*16))
-                print(j, 'gradient sd', grad[-5].shape, np.std(grad[-5]))
-                print(j,'gradient sd',grad[-4].shape,np.std(grad[-4]))
-                print(j,'gradient sd',grad[-3].shape,np.std(grad[-3]))
+                for j in np.arange(-3,-3-lall,-1):
+                    print(j, 'gradient sd', grad[j].shape, np.std(grad[j]))
             else:
                 grad=sess.run(dW_OPs[-2:], feed_dict={x:batch[0],y_:batch[1]})
             # print(j,grad[-1])
@@ -477,7 +473,7 @@ with tf.Session() as sess:
     # Differences between W and R
     for t in np.arange(0,len(VS),2):
        print('t',t,'zeros',np.sum(VS[t].eval()==0), np.max(np.abs(VS[t].eval()-VS[t+1].eval())))
-    dW_OPs=back_prop() 
+    dW_OPs, lall=back_prop()
 
    
     # Run epochs
