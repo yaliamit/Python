@@ -76,7 +76,7 @@ def fully_connected_layer(input,num_features,prob=[1.,-1.]):
     return(fc)
 
 def grad_fully_connected(below, back_propped, W, R):
-    
+
     if (len(below.shape.as_list())==4):
         below=tf.transpose(below,[0,3,1,2])
     belowf=tf.contrib.layers.flatten(below)
@@ -305,6 +305,7 @@ def back_prop():
             parent=sibs[T.name]
             grad_hold_var[parent]=grad_hold
     print('all_grad',len(all_grad))
+    OPLIST.append(TS[-1])
     for cg in all_grad:
         OPLIST.append(cg)
     #print('Length of VS',len(VS),'Length of OPLIST',len(OPLIST))
@@ -388,8 +389,8 @@ def run_epoch(train,Tr=True):
         for j in np.arange(0,len(y),batch_size):
             batch=(tr[j:j+batch_size],y[j:j+batch_size])
             if (Tr):
-                grad=sess.run(dW_OPs[-3-lall+1:],feed_dict={x: batch[0], y_: batch[1]})
-                for j in np.arange(-3,-3-lall,-1):
+                grad=sess.run(dW_OPs[-3-lall:],feed_dict={x: batch[0], y_: batch[1]})
+                for j in np.arange(-3,-3-lall-1,-1):
                     print(j, 'gradient sd', grad[j].shape, np.std(grad[j]))
             else:
                 grad=sess.run(dW_OPs[-2:], feed_dict={x:batch[0],y_:batch[1]})
