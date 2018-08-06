@@ -62,7 +62,7 @@ def fully_connected_layer(input,num_features,prob=[1.,-1.]):
     R_fc = tf.get_variable('R',shape=shapeR)
     np.random.seed(1234)
     aa=np.random.rand(shape[0],shape[1])*.01
-    rint(aa[0, 0], aa[2, 2])
+    print(aa[0, 0], aa[2, 2])
     W_fc = tf.get_variable('W',shape=shape,initializer=aa)
 
     #b_fc = tf.get_variable('b',shape=[num_features],initializer=tf.zeros_initializer)
