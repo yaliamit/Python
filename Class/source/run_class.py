@@ -227,8 +227,8 @@ def main_new(NETPARS):
     print("seed",NETPARS['seed'])
     print("Loading data...")
     X_train, y_train, X_val, y_val, X_test, y_test=data.get_train(NETPARS)
-    print(Xtrain[300, 4, 5, 2])
-    print(Xtest[300, 4, 5, 2])
+    print(X_train[300, 4, 5, 2])
+    print(X_test[300, 4, 5, 2])
 
 
     if ('Classes' not in NETPARS or NETPARS['Classes']==None):
