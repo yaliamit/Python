@@ -461,8 +461,7 @@ dim=train[0].shape[1]
 nchannels=train[0].shape[3]
 n_classes=train[1].shape[1]
 print('n_classes',n_classes,'dim',dim,'nchannels',nchannels)
-print(train[0][300,4,5,2])
-print(test[0][300,4,5,2])
+
 tf.reset_default_graph()
 
 x = tf.placeholder(tf.float32, shape=[None, dim, dim, nchannels],name="x")
