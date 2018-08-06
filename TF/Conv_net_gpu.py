@@ -53,6 +53,9 @@ def grad_conv_layer(below, back_propped, current, W, R):
 
 def fully_connected_layer(input,num_features,prob=[1.,-1.]):
     # Make sure input is flattened.
+    ### TEMP
+    if (len(input.shape.as_list())==4):
+        input=tf.transpose(input,[0,3,1,2])
     flat_dim=np.int32(np.array(input.get_shape().as_list())[1:].prod())
     input_flattened = tf.reshape(input, shape=[batch_size,flat_dim])
     shape=[flat_dim,num_features]
@@ -74,6 +77,8 @@ def fully_connected_layer(input,num_features,prob=[1.,-1.]):
 
 def grad_fully_connected(below, back_propped, W, R):
     
+    if (len(below.shape.as_list())==4):
+        below=tf.transpose(below,[0,3,1,2])
     belowf=tf.contrib.layers.flatten(below)
     # Gradient of weights of dense layer
     gradfcW=tf.matmul(tf.transpose(belowf),back_propped)
