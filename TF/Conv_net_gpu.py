@@ -282,8 +282,9 @@ def back_prop():
             all_grad.append(gradx)
             ts+=1
         elif ('dens' in T.name):
-            
-            gradfcW, gradx = grad_fully_connected(below=pre,back_propped=gradx,W=VS[vs],R=VS[vs+1])
+
+            gradfcW, gradxo = grad_fully_connected(below=pre,back_propped=gradx,W=VS[vs],R=VS[vs+1])
+            gradx=tf.gradients(loss,pre)
             assign_op_fcW = update_only_non_zero(VS[vs],gradfcW,step_size)
             #assign_op_fcW=tf.assign(VS[vs],VS[vs]-step_size*gradfcW)
             OPLIST.append(assign_op_fcW)
