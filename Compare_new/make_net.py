@@ -396,11 +396,9 @@ def build_cnn_on_pars(input_var, PARS, input_layer=None, num_class=None):
                             #     Rz=Rzp
                     # Initialize W
                     std=gain*np.sqrt(6./(input_dim+num_units))
-                    np.random.rand(1234)
-                    W=np.float32(np.random.rand(input_dim,num_units))
-                    np.save('W'+l['name'],W)
-                    print(W[0,0],W[2,2])
-                    #np.float32(np.random.uniform(-Winit_fac*std,Winit_fac*std,(input_dim,num_units)))*Wz
+                    W=np.float32(np.random.uniform(-Winit_fac*std,Winit_fac*std,(input_dim,num_units)))*Wz
+                    np.save('W' + l['name'], W)
+                    print(W[0, 0], W[2, 2])
                     if (Rz.shape[0] > 1):
                         # Initialize R
                         R=np.float32(r.uniform(-std,std,(input_dim,num_units)))*Rz
