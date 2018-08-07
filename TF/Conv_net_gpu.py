@@ -241,7 +241,7 @@ def create_network(PARS):
 
 def update_only_non_zero(V,gra, step):
     up=V-step*gra
-    up=K.tf.where(V==0,V,up)
+    up=K.tf.where(tf.equal(V,tf.constant(0.)),V,up)
     assign_op = tf.assign(V,up)
     return assign_op
 
@@ -292,7 +292,11 @@ def back_prop():
             vs+=2
         elif ('drop' in T.name):
             fac=np.float32(T.name.split('x')[1])
-            gradx=gradx*fac
+            Z = tf.equal(T, tf.constant(0.))
+            gradx=K.tf.where(Z,T,gradx*fac)
+            #all_grad.append(Z)
+            #all_grad.append(T)
+            all_grad.append(gradx)
         elif ('Equal' in T.name):
             mask=TS[ts]
             all_grad.append(mask)
@@ -405,7 +409,7 @@ def run_epoch(train,Tr=True):
             if (Tr):
                 grad=sess.run(dW_OPs,feed_dict={x: batch[0], y_: batch[1]})
                 #for j in np.arange(-3,-3-lall-1,-1):
-                #   print(j, 'gradient sd', grad[j].shape, np.std(grad[j]))
+                #   print(j, 'gradient sd', grad[j].shape, np.std(grad[j]),np.mean(grad[j]==0))
             else:
                 grad=sess.run(dW_OPs[-2:], feed_dict={x:batch[0],y_:batch[1]})
             # print(j,grad[-1])
@@ -445,7 +449,7 @@ def zero_out_weights():
             shape=v.get_shape().as_list()
             Z=tf.zeros(shape)
             U=tf.random_uniform(shape)
-            zero_op=tf.assign(v,K.tf.where(U<PARS['force_global_prob'][0],v,Z))
+            zero_op=tf.assign(v,K.tf.where(tf.less(U,tf.constant(PARS['force_global_prob'][0])),v,Z))
             sess.run(zero_op)
 
 # Run the training

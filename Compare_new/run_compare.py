@@ -233,14 +233,14 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
 
         if (Train):
             pred = lasagne.layers.get_output(network)
-            # layers=lasagne.layers.get_all_layers(network)
-            # actl=[network]
-            # for l in layers:
-            #     if ('conv' in l.name or 'dens' in l.name or 'pool' in l.name or 'input' in l.name):
-            #         actl.append(l)
-            # activations = lasagne.layers.get_output(actl)
-            # print('activations',len(activations))
-            # pred=activations[0]
+            layers=lasagne.layers.get_all_layers(network)
+            actl=[network]
+            for l in layers:
+                if ('conv' in l.name or 'dens' in l.name or 'pool' in l.name or 'input' in l.name or 'drop' in l.name):
+                     actl.append(l)
+            activations = lasagne.layers.get_output(actl)
+            print('activations',len(activations))
+            pred=activations[0]
         else:
             pred = lasagne.layers.get_output(network, deterministic=True)
         gloss=[]
@@ -270,12 +270,12 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             acc = T.mean(T.eq(T.argmax(pred, axis=1), target_var),
                           dtype=theano.config.floatX)
 
-            # if (Train):
+            if (Train):
             # # #    gloss.append(T.grad(loss,pred))
             # # Get gradients
             #     gloss.append(activations[2])
-            #     for i in np.arange(1,len(activations),1):
-            #       gloss.append(T.grad(loss,activations[i]))
+                 for i in np.arange(1,len(activations),1):
+                       gloss.append(T.grad(loss,activations[i]))
             #      layers=lasagne.layers.get_all_layers(network)
             #      for l in layers:
             #            if ('conv' in l.name):
