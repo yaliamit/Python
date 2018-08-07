@@ -77,8 +77,6 @@ def fully_connected_layer(input,num_features,prob=[1.,-1.], scale=0):
 
 def grad_fully_connected(below, back_propped, current, W, R, scale=0):
 
-    if (len(below.shape.as_list())==4):
-        below=tf.transpose(below,[0,3,1,2])
     belowf=tf.contrib.layers.flatten(below)
     # Gradient of weights of dense layer
     if (scale>0):
