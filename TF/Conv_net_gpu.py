@@ -562,4 +562,6 @@ with tf.Session() as sess:
     saver = tf.train.Saver()
     save_path = saver.save(sess, "tmp/"+model_name)
     print("Model saved in path: %s" % save_path)
+    print("DONE")
+    sys.stdout.flush()
 
