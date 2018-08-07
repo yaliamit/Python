@@ -13,6 +13,7 @@ dep_fac:1.
 adapt_eta:False
 TRAIN:True
 hinge:1.
+debug:False
 global_tinout:(.5,1.)
 global_prob:(1.,-1.)
 force_global_prob:(1.,-1.)

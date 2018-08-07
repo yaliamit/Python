@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ef2eb448-6413-411f-9ec4-6f9aac3066f7" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/Conv_net_gpu.py" afterPath="$PROJECT_DIR$/Conv_net_gpu.py" />
+      <change beforePath="$PROJECT_DIR$/../Class/_pars/fncrc_deep_tryR_nores.txt" afterPath="$PROJECT_DIR$/../Class/_pars/fncrc_deep_tryR_nores.txt" />
+      <change beforePath="$PROJECT_DIR$/fncrc_deep_tryR_avg.txt" afterPath="$PROJECT_DIR$/fncrc_deep_tryR_avg.txt" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -19,11 +20,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Conv_net_gpu.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Conv_net_gpu.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Conv_net_gpu.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="350">
-              <caret line="548" column="32" lean-forward="true" selection-start-line="548" selection-start-column="32" selection-end-line="548" selection-end-column="32" />
+            <state relative-caret-position="155">
+              <caret line="535" column="55" lean-forward="true" selection-start-line="535" selection-start-column="55" selection-end-line="535" selection-end-column="55" />
               <folding />
             </state>
           </provider>
@@ -52,8 +53,18 @@
       <file leaf-file-name="fncrc_deep_tryR_avg.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/fncrc_deep_tryR_avg.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="13" column="0" lean-forward="false" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+            <state relative-caret-position="120">
+              <caret line="8" column="11" lean-forward="false" selection-start-line="8" selection-start-column="11" selection-end-line="8" selection-end-column="11" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="fncrc_deep_tryR_nores.txt" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/../Class/_pars/fncrc_deep_tryR_nores.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="106">
+              <caret line="15" column="11" lean-forward="false" selection-start-line="15" selection-start-column="11" selection-end-line="15" selection-end-column="11" />
               <folding />
             </state>
           </provider>
@@ -99,11 +110,9 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/conv_net.py" />
-        <option value="$PROJECT_DIR$/../Class/_pars/fncrc_deep_tryR_nores.txt" />
         <option value="$PROJECT_DIR$/parse_net_pars.py" />
         <option value="$PROJECT_DIR$/mnist.py" />
         <option value="$PROJECT_DIR$/fncrc_try.txt" />
-        <option value="$PROJECT_DIR$/fncrc_deep_tryR_avg.txt" />
         <option value="$PROJECT_DIR$/fncrc_deep_tryR_noc.txt" />
         <option value="$PROJECT_DIR$/try.py" />
         <option value="$PROJECT_DIR$/../Compare_new/make_net.py" />
@@ -111,6 +120,8 @@
         <option value="$PROJECT_DIR$/../Compare_new/run_compare.py" />
         <option value="$PROJECT_DIR$/../Class/_pars/fncrc.txt" />
         <option value="$PROJECT_DIR$/Conv_net_gpu.py" />
+        <option value="$PROJECT_DIR$/fncrc_deep_tryR_avg.txt" />
+        <option value="$PROJECT_DIR$/../Class/_pars/fncrc_deep_tryR_nores.txt" />
       </list>
     </option>
   </component>
@@ -780,13 +791,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../Class/_pars/fncrc_deep_tryR_nores.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="106">
-          <caret line="15" column="21" lean-forward="false" selection-start-line="15" selection-start-column="21" selection-end-line="15" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../Compare_new/run_compare.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="735">
@@ -825,14 +829,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/fncrc_deep_tryR_avg.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="13" column="0" lean-forward="false" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda2/envs/myenv/lib/python3.6/site-packages/tensorflow/python/framework/ops.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -859,8 +855,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Conv_net_gpu.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="350">
-          <caret line="548" column="32" lean-forward="true" selection-start-line="548" selection-start-column="32" selection-end-line="548" selection-end-column="32" />
+        <state relative-caret-position="155">
+          <caret line="535" column="55" lean-forward="true" selection-start-line="535" selection-start-column="55" selection-end-line="535" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fncrc_deep_tryR_avg.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="11" lean-forward="false" selection-start-line="8" selection-start-column="11" selection-end-line="8" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Class/_pars/fncrc_deep_tryR_nores.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="106">
+          <caret line="15" column="11" lean-forward="false" selection-start-line="15" selection-start-column="11" selection-end-line="15" selection-end-column="11" />
           <folding />
         </state>
       </provider>
