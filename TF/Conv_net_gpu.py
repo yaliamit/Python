@@ -293,7 +293,7 @@ def back_prop():
         elif ('drop' in T.name):
             fac=np.float32(T.name.split('x')[1])
             Z = tf.equal(T, tf.constant(0.))
-            gradx=K.tf.where(Z,T,gradx*fac)
+            gradx=K.tf.where(Z,T,tf.reshape(gradx,T.shape)*fac)
             #all_grad.append(Z)
             #all_grad.append(T)
             all_grad.append(gradx)
