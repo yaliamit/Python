@@ -232,15 +232,18 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             spen.append(spe)
 
         if (Train):
-            pred = lasagne.layers.get_output(network)
-            layers=lasagne.layers.get_all_layers(network)
-            actl=[network]
-            for l in layers:
-                if ('conv' in l.name or 'dens' in l.name or 'pool' in l.name or 'input' in l.name or 'drop' in l.name):
-                     actl.append(l)
-            activations = lasagne.layers.get_output(actl)
-            print('activations',len(activations))
-            pred=activations[0]
+            if ('debug' in NETPARS and NETPARS['debug']):
+                layers = lasagne.layers.get_all_layers(network)
+                actl=[network]
+                for l in layers:
+                    if ('conv' in l.name or 'dens' in l.name or 'pool' in l.name or 'input' in l.name or 'drop' in l.name):
+                         actl.append(l)
+                activations = lasagne.layers.get_output(actl)
+                print('activations',len(activations))
+                pred=activations[0]
+            else:
+                pred = lasagne.layers.get_output(network)
+
         else:
             pred = lasagne.layers.get_output(network, deterministic=True)
         gloss=[]
