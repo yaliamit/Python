@@ -14,6 +14,8 @@ import make_net
 import run_compare
 import untied_conv_mat
 
+debug=False
+
 def get_confusion_matrix(pred,y):
         num_class=np.max(y)+1
         conf_mat=np.zeros((num_class,num_class))
@@ -262,7 +264,8 @@ def main_new(NETPARS):
     NETPARS['layers'][0]['dimx']=dims[1]
     NETPARS['layers'][0]['dimy']=dims[2]
     NETPARS['layers'][0]['num_input_channels']=dims[0]
-
+    if ('debug' in NETPARS):
+        debug=NETPARS['deubg']
 
     print("Building model and compiling functions...")
 
