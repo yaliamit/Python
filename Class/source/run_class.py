@@ -169,7 +169,7 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
         if (typ=='Train'):
             for j in np.arange(4,len(tout),1):
                 if (j==4):
-                    print(tout[j].shape,np.mean(tout[j],axis=1))
+                    print(tout[j].shape,tout[j])
                 print(tout[j].shape,np.std(tout[j]))
         ## TEMP
         #if (typ=='Train'):
