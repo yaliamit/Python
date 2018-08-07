@@ -392,7 +392,7 @@ def run_epoch(train,Tr=True):
                 grad=sess.run(dW_OPs[-3-lall:],feed_dict={x: batch[0], y_: batch[1]})
                 for j in np.arange(-3,-3-lall-1,-1):
                     if (j==-3-lall):
-                        print(np.mean(grad[j],axis=1))
+                        print(grad[j].shape,np.mean(grad[j],axis=1))
                     print(j, 'gradient sd', grad[j].shape, np.std(grad[j]))
             else:
                 grad=sess.run(dW_OPs[-2:], feed_dict={x:batch[0],y_:batch[1]})
