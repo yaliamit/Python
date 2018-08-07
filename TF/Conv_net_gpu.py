@@ -241,7 +241,7 @@ def create_network(PARS):
 
 def update_only_non_zero(V,gra, step):
     up=V-step*gra
-    up=K.tf.where(tf.equal(V,tf.constant(0.)),V,up)
+    #up=K.tf.where(tf.equal(V,tf.constant(0.)),V,up)
     assign_op = tf.assign(V,up)
     return assign_op
 
@@ -261,7 +261,9 @@ def back_prop():
     OPLIST=[]
     grad_hold_var={}
     parent=None
-    all_grad=[gradx]
+    all_grad=[]
+    if (debug):
+        all_grad.append(gradx)
     for ts in range(lts):
         T=TS[ts]
         if (ts<lts-1):
@@ -281,13 +283,12 @@ def back_prop():
                 scale=nonlin_scale
             gradconvW, gradx = grad_conv_layer(below=pre,back_propped=gradx,current=TS[ts],W=VS[vs], R=VS[vs+1],scale=scale)
             assign_op_convW = update_only_non_zero(VS[vs],gradconvW,step_size)
-            #assign_op_convW=tf.assign(VS[vs],VS[vs]-step_size*gradconvW)
             OPLIST.append(assign_op_convW)
             if (len(VS[vs+1].shape.as_list())==4):
                 assign_op_convR=update_only_non_zero(VS[vs+1],gradconvW, Rstep_size)
-                #assign_op_convR=tf.assign(VS[vs+1],VS[vs+1]-Rstep_size*gradconvW)
                 OPLIST.append(assign_op_convR)
-            all_grad.append(gradx)
+            if (debug):
+                all_grad.append(gradx)
             ts+=1
             vs+=2
         elif ('drop' in T.name):
@@ -296,14 +297,16 @@ def back_prop():
             gradx=K.tf.where(Z,T,tf.reshape(gradx,T.shape)*fac)
             #all_grad.append(Z)
             #all_grad.append(T)
-            all_grad.append(gradx)
+            if (debug):
+                all_grad.append(gradx)
         elif ('Equal' in T.name):
             mask=TS[ts]
             all_grad.append(mask)
             ts+=1
         elif ('Max' in T.name):
             gradx=grad_pool(gradx,TS[ts],mask,[2,2])
-            all_grad.append(gradx)
+            if (debug):
+                all_grad.append(gradx)
             ts+=1
         elif ('dens' in T.name):
             scale = 0
@@ -315,17 +318,18 @@ def back_prop():
             if (len(VS[vs+1].shape.as_list())==2):
                 assign_op_fcR = update_only_non_zero(VS[vs+1],gradfcW,Rstep_size)
                 OPLIST.append(assign_op_fcR)
-            all_grad.append(gradx)
+            if (debug):
+                all_grad.append(gradx)
             ts+=1
             vs+=2
         if (T.name in sibs):
             grad_hold=gradx
             parent=sibs[T.name]
             grad_hold_var[parent]=grad_hold
-    print('all_grad',len(all_grad))
-    #OPLIST.append(TS[-1])
-    for cg in all_grad:
-        OPLIST.append(cg)
+    if (debug):
+        print('all_grad',len(all_grad))
+        for cg in all_grad:
+            OPLIST.append(cg)
     #print('Length of VS',len(VS),'Length of OPLIST',len(OPLIST))
     OPLIST.append(acc)
     OPLIST.append(loss)
@@ -482,7 +486,7 @@ tf.reset_default_graph()
 
 x = tf.placeholder(tf.float32, shape=[None, dim, dim, nchannels],name="x")
 y_ = tf.placeholder(tf.float32, shape=[None,n_classes],name="y")
-
+debug=False
 
 with tf.Session() as sess:
     
