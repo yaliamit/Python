@@ -140,8 +140,8 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
     if (len(X)==0):
         return(0,0)
     shuffle=False
-    #if (typ=='Train'):
-    #    shuffle=True
+    if (typ=='Train'):
+        shuffle=True
     # Randomized augmentation at each batch step instead of for the whole data set at the beginning
     if (typ!='Val' and pars is not None and type(pars) is dict and 'trans' in pars and pars['trans']['repeat']):
         X=data.do_rands(X,pars,pars['trans']['insert'])

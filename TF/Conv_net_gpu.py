@@ -199,8 +199,9 @@ def create_network(PARS):
             with tf.variable_scope(l['name']):
                 U=tf.random_uniform([batch_size]+(parent.shape.as_list())[1:])<l['drop']
                 Z=tf.zeros_like(parent)
-                fac=1./(1.-l['drop'])
-                drop = K.tf.where(U,Z,parent*fac,name='probx{:.1f}x'.format(fac))
+                fac=tf.constant(1.)/(1.-l['drop'])
+                ffac=1./(1.-l['drop'])
+                drop = K.tf.where(U,Z,parent*fac,name='probx{:.1f}x'.format(ffac))
                 TS.append(drop)
         elif ('concatsum' in l['name']):
             with tf.variable_scope(l['name']):
@@ -391,14 +392,14 @@ def run_epoch(train,Tr=True):
         t1=time.time()
         # Randomly shuffle the training data
         ii = np.arange(0, train[0].shape[0], 1)
-        #if (Tr):
-        #    np.random.shuffle(ii)
+        if (Tr):
+            np.random.shuffle(ii)
         tr=train[0][ii]
         y=train[1][ii]
         lo=0.
         acc=0.
         ca=0.
-        print('lall',lall)
+
         for j in np.arange(0,len(y),batch_size):
             batch=(tr[j:j+batch_size],y[j:j+batch_size])
             if (Tr):
