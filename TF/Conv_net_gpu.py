@@ -546,7 +546,7 @@ with tf.Session() as sess:
 
     AC=np.array(AC)
     VAC=np.array(VAC)
-    ac, lo = run_epoch(test,Tr=False)
+    ac, lo = run_epoch_test(test)
     print("Final results: epoch", i)
     print("Test loss:\t\t\t{:.6f}".format(lo))
     print("Test acc:\t\t\t{:.6f}".format(ac))
