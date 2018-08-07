@@ -486,7 +486,7 @@ tf.reset_default_graph()
 
 x = tf.placeholder(tf.float32, shape=[None, dim, dim, nchannels],name="x")
 y_ = tf.placeholder(tf.float32, shape=[None,n_classes],name="y")
-debug=True
+debug=PARS['debug']
 
 with tf.Session() as sess:
     
