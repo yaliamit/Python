@@ -133,6 +133,12 @@ def grad_pool(back_propped,pool,mask,pool_size):
         return gradx
 
 
+def real_drop(parent, drop):
+    U = tf.random_uniform([batch_size] + (parent.shape.as_list())[1:]) < drop
+    Z = tf.zeros_like(parent)
+    fac = tf.constant(1.) / (1. - drop)
+    drop = K.tf.where(U, Z, parent * fac)
+    return drop
 
 def find_sibling(l,parent):
       
@@ -197,11 +203,8 @@ def create_network(PARS):
                 TS.append(mask)
         elif ('drop' in l['name']):
             with tf.variable_scope(l['name']):
-                U=tf.random_uniform([batch_size]+(parent.shape.as_list())[1:])<l['drop']
-                Z=tf.zeros_like(parent)
-                fac=tf.constant(1.)/(1.-l['drop'])
-                ffac=1./(1.-l['drop'])
-                drop = K.tf.where(U,Z,parent*fac,name='probx{:.1f}x'.format(ffac))
+                ffac = 1. / (1. - l['drop'])
+                drop=tf.cond(Train,lambda: real_drop(parent,l['drop']),lambda: parent, name='probx{:.1f}x'.format(ffac))
                 TS.append(drop)
         elif ('concatsum' in l['name']):
             with tf.variable_scope(l['name']):
@@ -411,7 +414,7 @@ def run_epoch(train,Tr=True):
         for j in np.arange(0,len(y),batch_size):
             batch=(tr[j:j+batch_size],y[j:j+batch_size])
             if (Tr):
-                grad=sess.run(dW_OPs,feed_dict={x: batch[0], y_: batch[1]})
+                grad=sess.run(dW_OPs,feed_dict={x: batch[0], y_: batch[1], Train:True})
                 if (debug):
                     for j in np.arange(-3,-3-lall-1,-1):
                            print(j, 'gradient sd', grad[j].shape, np.std(grad[j]),np.mean(grad[j]==0))
@@ -437,7 +440,7 @@ def run_epoch_test(test):
     ca = 0.
     for j in np.arange(0, len(y), batch_size):
         batch = (tr[j:j + batch_size], y[j:j + batch_size])
-        act, lot = sess.run([accuracy,loss], feed_dict={x: batch[0], y_: batch[1]})
+        act, lot = sess.run([accuracy,loss], feed_dict={x: batch[0], y_: batch[1], Train:False})
         acc += act
         lo += lot
         ca += 1
@@ -486,6 +489,7 @@ tf.reset_default_graph()
 
 x = tf.placeholder(tf.float32, shape=[None, dim, dim, nchannels],name="x")
 y_ = tf.placeholder(tf.float32, shape=[None,n_classes],name="y")
+Train=tf.placeholder(tf.bool,name="Train")
 debug=PARS['debug']
 
 with tf.Session() as sess:
