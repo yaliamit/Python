@@ -21,7 +21,8 @@ def conv_layer(input,filter_size=[3,3],num_features=[1],prob=[1.,-1.],scale=0):
         shapeR=[1,1]
     R = tf.get_variable('R',shape=shapeR)
     W = tf.get_variable('W',shape=shape) # Default initialization is Glorot (the one explained in the slides)
-    
+    input = tf.reshape(input, shape=[batch_size]+input.get_shape().as_list()[1:])
+
     #b = tf.get_variable('b',shape=[num_features],initializer=tf.zeros_initializer) 
     conv = tf.nn.conv2d(input, W, strides=[1, 1, 1, 1], padding='SAME')
     if (scale>0):
@@ -134,7 +135,8 @@ def grad_pool(back_propped,pool,mask,pool_size):
 
 
 def real_drop(parent, drop):
-    U = tf.random_uniform([batch_size] + (parent.shape.as_list())[1:]) < drop
+    U = tf.less(tf.random_uniform([batch_size] + (parent.shape.as_list())[1:]),drop)
+    #parent=tf.reshape(parent,[batch_size] + (parent.shape.as_list())[1:])
     Z = tf.zeros_like(parent)
     fac = tf.constant(1.) / (1. - drop)
     drop = K.tf.where(U, Z, parent * fac)
