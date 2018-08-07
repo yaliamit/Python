@@ -265,7 +265,7 @@ def main_new(NETPARS):
     NETPARS['layers'][0]['dimy']=dims[2]
     NETPARS['layers'][0]['num_input_channels']=dims[0]
     if ('debug' in NETPARS):
-        debug=NETPARS['deubg']
+        debug=NETPARS['debug']
 
     print("Building model and compiling functions...")
 
