@@ -68,11 +68,13 @@ def fully_connected_layer(input,num_features,prob=[1.,-1.], scale=0):
     #    aa=np.load('../Class/Wnewdensf.npy')
     #else:
     #    aa=np.load('../Class/Wnewdensp.npy')
-    W_fc = tf.get_variable('W',shape=shape)
     #W_fc = tf.get_variable('W',initializer=aa)
+
+    W_fc = tf.get_variable('W',shape=shape)
     fc = tf.matmul(input_flattened, W_fc)
     if (scale>0):
         fc = tf.clip_by_value(nonlin_scale * fc, -1., 1.)
+
     return(fc)
 
 def grad_fully_connected(below, back_propped, current, W, R, scale=0):
@@ -316,7 +318,7 @@ def back_prop():
             parent=sibs[T.name]
             grad_hold_var[parent]=grad_hold
     print('all_grad',len(all_grad))
-    OPLIST.append(TS[-1])
+    #OPLIST.append(TS[-1])
     for cg in all_grad:
         OPLIST.append(cg)
     #print('Length of VS',len(VS),'Length of OPLIST',len(OPLIST))
