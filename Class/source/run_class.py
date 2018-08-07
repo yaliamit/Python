@@ -168,7 +168,7 @@ def iterate_on_batches(func,X,y,batch_size,typ='Test',fac=False, agg=False, netw
                 tout=f(inputs,targets)
         # Information on gradient magnitude
         acc += tout[1]; err += tout[0]
-        if (typ=='Train' and 'debug' in NETPARS and NETPARS['debug']):
+        if (typ=='Train' and debug):
             for j in np.arange(4,len(tout),1):
                   print(tout[j].shape,np.std(tout[j]),np.mean(tout[j]==0))
 
