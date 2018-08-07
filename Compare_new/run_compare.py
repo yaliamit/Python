@@ -273,7 +273,7 @@ def setup_function(network,NETPARS,input_var,target_var,Train=True,loss_type='cl
             acc = T.mean(T.eq(T.argmax(pred, axis=1), target_var),
                           dtype=theano.config.floatX)
 
-            if (Train and 'debug' in pars and pars['debug']):
+            if (Train and 'debug' in NETPARS and NETPARS['debug']):
             # # #    gloss.append(T.grad(loss,pred))
             # # Get gradients
             #     gloss.append(activations[2])
