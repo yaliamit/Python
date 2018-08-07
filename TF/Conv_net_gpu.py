@@ -12,7 +12,7 @@ import mnist
 # In[2]:
 
 
-def conv_layer(input,filter_size=[3,3],num_features=[1],prob=[1.,-1.]):
+def conv_layer(input,filter_size=[3,3],num_features=[1],prob=[1.,-1.],scale=0):
     
     # Get number of input features from input and add to shape of new layer
     shape=filter_size+[input.get_shape().as_list()[-1],num_features]
@@ -24,18 +24,19 @@ def conv_layer(input,filter_size=[3,3],num_features=[1],prob=[1.,-1.]):
     
     #b = tf.get_variable('b',shape=[num_features],initializer=tf.zeros_initializer) 
     conv = tf.nn.conv2d(input, W, strides=[1, 1, 1, 1], padding='SAME')
-    conv = tf.clip_by_value(conv,-1.,1.)
-    
+    if (scale>0):
+        conv = tf.clip_by_value(nonlin_scale * conv, -1., 1.)
     return(conv)
 
-def grad_conv_layer(below, back_propped, current, W, R):
+def grad_conv_layer(below, back_propped, current, W, R, scale):
     w_shape=W.shape
     strides=[1,1,1,1]
     back_prop_shape=[-1]+(current.shape.as_list())[1:]
     out_backprop=tf.reshape(back_propped,back_prop_shape)
-    #on_zero = K.zeros_like(out_backprop)
-    out_backpropF=out_backprop #K.tf.where(tf.equal(tf.abs(current),1.),on_zero,out_backprop)
-    gradconvW=tf.nn.conv2d_backprop_filter(input=below,filter_sizes=w_shape,out_backprop=out_backpropF,strides=strides,padding='SAME')
+    if (scale>0):
+        on_zero = K.zeros_like(out_backprop)
+        out_backprop = scale * K.tf.where(tf.equal(tf.abs(current), 1.), on_zero, out_backprop)
+    gradconvW=tf.nn.conv2d_backprop_filter(input=below,filter_sizes=w_shape,out_backprop=out_backprop,strides=strides,padding='SAME')
     input_shape=[batch_size]+(below.shape.as_list())[1:]
     
     filter=W
@@ -43,7 +44,7 @@ def grad_conv_layer(below, back_propped, current, W, R):
         print('using R')
         filter=R
     print('input_sizes',input_shape,'filter',filter.shape.as_list(),'out_backprop',out_backprop.shape.as_list())
-    gradconvx=tf.nn.conv2d_backprop_input(input_sizes=input_shape,filter=filter,out_backprop=out_backpropF,strides=strides,padding='SAME')
+    gradconvx=tf.nn.conv2d_backprop_input(input_sizes=input_shape,filter=filter,out_backprop=out_backprop,strides=strides,padding='SAME')
     
     return gradconvW, gradconvx
 
@@ -51,11 +52,11 @@ def grad_conv_layer(below, back_propped, current, W, R):
 # In[3]:
 
 
-def fully_connected_layer(input,num_features,prob=[1.,-1.]):
+def fully_connected_layer(input,num_features,prob=[1.,-1.], scale=0):
     # Make sure input is flattened.
     ### TEMP
-    if (len(input.shape.as_list())==4):
-        input=tf.transpose(input,[0,3,1,2])
+    #if (len(input.shape.as_list())==4):
+    #    input=tf.transpose(input,[0,3,1,2])
     flat_dim=np.int32(np.array(input.get_shape().as_list())[1:].prod())
     input_flattened = tf.reshape(input, shape=[batch_size,flat_dim])
     shape=[flat_dim,num_features]
@@ -63,24 +64,26 @@ def fully_connected_layer(input,num_features,prob=[1.,-1.]):
     if (prob[1]==-1.):
         shapeR=[1]
     R_fc = tf.get_variable('R',shape=shapeR)
-    if (num_features==10):
-        aa=np.load('../Class/Wnewdensf.npy')
-    else:
-        aa=np.load('../Class/Wnewdensp.npy')
-    print(aa[0,0],aa[2,2])
-    #W_fc = tf.get_variable('W',shape=shape,initializer=aa)
-    W_fc = tf.get_variable('W',initializer=aa)
-
-    #b_fc = tf.get_variable('b',shape=[num_features],initializer=tf.zeros_initializer)
-    fc = tf.matmul(input_flattened, W_fc) # + b_fc
+    #if (num_features==10):
+    #    aa=np.load('../Class/Wnewdensf.npy')
+    #else:
+    #    aa=np.load('../Class/Wnewdensp.npy')
+    W_fc = tf.get_variable('W',shape=shape)
+    #W_fc = tf.get_variable('W',initializer=aa)
+    fc = tf.matmul(input_flattened, W_fc)
+    if (scale>0):
+        fc = tf.clip_by_value(nonlin_scale * fc, -1., 1.)
     return(fc)
 
-def grad_fully_connected(below, back_propped, W, R):
+def grad_fully_connected(below, back_propped, current, W, R, scale=0):
 
     if (len(below.shape.as_list())==4):
         below=tf.transpose(below,[0,3,1,2])
     belowf=tf.contrib.layers.flatten(below)
     # Gradient of weights of dense layer
+    if (scale>0):
+        on_zero = K.zeros_like(back_propped)
+        back_propped = scale * K.tf.where(tf.equal(tf.abs(current), 1.), on_zero, back_propped)
     gradfcW=tf.matmul(tf.transpose(belowf),back_propped)
     # Propagated error to conv layer.
     filter=W
@@ -130,8 +133,6 @@ def grad_pool(back_propped,pool,mask,pool_size):
         return gradx
 
 
-# In[5]:
-
 
 def find_sibling(l,parent):
       
@@ -171,17 +172,27 @@ def create_network(PARS):
                         if l['parent'] in ts.name and not 'Equal' in ts.name:
                             parent=ts
         if ('conv' in l['name']):
-            with tf.variable_scope(l['name']):
-                TS.append(conv_layer(parent, filter_size=list(l['filter_size']),num_features=l['num_filters'], prob=prob))
+            scope_name=l['name']
+            scale=0
+            if ('non_linearity' in l and l['non_linearity']=='tanh'):
+                scale=nonlin_scale
+                scope_name=l['name']+'nonlin'
+            with tf.variable_scope(scope_name):
+                TS.append(conv_layer(parent, filter_size=list(l['filter_size']),num_features=l['num_filters'], prob=prob, scale=scale))
         elif ('dens' in l['name']):
-            with tf.variable_scope(l['name']):
+            scope_name = l['name']
+            scale = 0
+            if('non_linearity' in l and l['non_linearity'] == 'tanh'):
+                scale = nonlin_scale
+                scope_name = l['name'] + 'nonlin'
+            with tf.variable_scope(scope_name):
                 num_units=l['num_units']
                 if ('final' in l):
                     num_units=n_classes
-                TS.append(fully_connected_layer(parent, num_features=num_units,prob=prob))
+                TS.append(fully_connected_layer(parent, num_features=num_units,prob=prob,scale=scale))
         elif ('pool' in l['name']):
             with tf.variable_scope(l['name']):
-                pool, mask = MaxPoolingandMask(parent, [1]+list(l['pool_size'])+[1],                                           strides=[1]+list(l['stride'])+[1])
+                pool, mask = MaxPoolingandMask(parent, [1]+list(l['pool_size'])+[1],strides=[1]+list(l['stride'])+[1])
                 TS.append(pool)
                 TS.append(mask)
         elif ('drop' in l['name']):
@@ -199,7 +210,7 @@ def create_network(PARS):
                 joint_parent=find_sibling(l,l['parent'])
                 if (joint_parent is not None):
                     sibs[TS[-1].name]=joint_parent
-    
+
     with tf.variable_scope('loss'):
        if (PARS['hinge']):
          cor=tf.boolean_mask(TS[-1],y_)
@@ -229,7 +240,7 @@ def create_network(PARS):
 
 def update_only_non_zero(V,gra, step):
     up=V-step*gra
-    #up=K.tf.where(V==0,V,up)
+    up=K.tf.where(V==0,V,up)
     assign_op = tf.assign(V,up)
     return assign_op
 
@@ -263,8 +274,11 @@ def back_prop():
             print(parent,'grad_hold',grad_hold_var[parent])
             gradx=tf.add(gradx,grad_hold_var[parent])
             parent=None
-        if ('conv' in T.name):  
-            gradconvW, gradx = grad_conv_layer(below=pre,back_propped=gradx,current=TS[ts],W=VS[vs], R=VS[vs+1])
+        if ('conv' in T.name):
+            scale=0
+            if ('nonlin' in T.name):
+                scale=nonlin_scale
+            gradconvW, gradx = grad_conv_layer(below=pre,back_propped=gradx,current=TS[ts],W=VS[vs], R=VS[vs+1],scale=scale)
             assign_op_convW = update_only_non_zero(VS[vs],gradconvW,step_size)
             #assign_op_convW=tf.assign(VS[vs],VS[vs]-step_size*gradconvW)
             OPLIST.append(assign_op_convW)
@@ -287,15 +301,14 @@ def back_prop():
             all_grad.append(gradx)
             ts+=1
         elif ('dens' in T.name):
-
-            gradfcW, gradx = grad_fully_connected(below=pre,back_propped=gradx,W=VS[vs],R=VS[vs+1])
-            #gradx=tf.gradients(loss,pre)
+            scale = 0
+            if ('nonlin' in T.name):
+                scale = nonlin_scale
+            gradfcW, gradx = grad_fully_connected(below=pre,back_propped=gradx,current=TS[ts], W=VS[vs],R=VS[vs+1], scale=scale)
             assign_op_fcW = update_only_non_zero(VS[vs],gradfcW,step_size)
-            #assign_op_fcW=tf.assign(VS[vs],VS[vs]-step_size*gradfcW)
             OPLIST.append(assign_op_fcW)
             if (len(VS[vs+1].shape.as_list())==2):
                 assign_op_fcR = update_only_non_zero(VS[vs+1],gradfcW,Rstep_size)
-                #assign_op_fcR=tf.assign(VS[vs+1],VS[vs+1]-Rstep_size*gradfcW)
                 OPLIST.append(assign_op_fcR)
             all_grad.append(gradx)
             ts+=1
@@ -389,10 +402,8 @@ def run_epoch(train,Tr=True):
         for j in np.arange(0,len(y),batch_size):
             batch=(tr[j:j+batch_size],y[j:j+batch_size])
             if (Tr):
-                grad=sess.run(dW_OPs[-3-lall:],feed_dict={x: batch[0], y_: batch[1]})
+                grad=sess.run(dW_OPs,feed_dict={x: batch[0], y_: batch[1]})
                 for j in np.arange(-3,-3-lall-1,-1):
-                    if (j==-3-lall):
-                        print(grad[j].shape,grad[j])
                     print(j, 'gradient sd', grad[j].shape, np.std(grad[j]))
             else:
                 grad=sess.run(dW_OPs[-2:], feed_dict={x:batch[0],y_:batch[1]})
@@ -451,7 +462,7 @@ num_train=PARS['num_train']
 data_set=PARS['data_set']
 Rstep_size=list(PARS['force_global_prob'])[1]*step_size
 print('Rstep_size',Rstep_size)
-
+nonlin_scale=.5
 model_name="model"
 
 train,val,test=get_data(data_set=data_set)
