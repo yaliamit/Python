@@ -1,1 +1,1 @@
-py Conv_net_gpu.py ../Class/fncrc>OUPT.txt
+pyt Conv_net_gpu.py ../Class/fncrc>OUPT.txt
