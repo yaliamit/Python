@@ -199,7 +199,7 @@ def create_network(PARS):
             with tf.variable_scope(l['name']):
                 U=tf.random_uniform([batch_size]+(parent.shape.as_list())[1:])<l['drop']
                 Z=tf.zeros_like(parent)
-                fac=1. #1/(1-l['drop'])
+                fac=1./(1.-l['drop'])
                 drop = K.tf.where(U,Z,parent*fac,name='probx{:.1f}x'.format(fac))
                 TS.append(drop)
         elif ('concatsum' in l['name']):
