@@ -412,11 +412,12 @@ def run_epoch(train,Tr=True):
             batch=(tr[j:j+batch_size],y[j:j+batch_size])
             if (Tr):
                 grad=sess.run(dW_OPs,feed_dict={x: batch[0], y_: batch[1]})
-                #for j in np.arange(-3,-3-lall-1,-1):
-                #   print(j, 'gradient sd', grad[j].shape, np.std(grad[j]),np.mean(grad[j]==0))
+                if (debug):
+                    for j in np.arange(-3,-3-lall-1,-1):
+                           print(j, 'gradient sd', grad[j].shape, np.std(grad[j]),np.mean(grad[j]==0))
             else:
                 grad=sess.run(dW_OPs[-2:], feed_dict={x:batch[0],y_:batch[1]})
-            # print(j,grad[-1])
+
             acc+=grad[-2]
             lo+=grad[-1]
             ca+=1
@@ -437,7 +438,6 @@ def run_epoch_test(test):
     for j in np.arange(0, len(y), batch_size):
         batch = (tr[j:j + batch_size], y[j:j + batch_size])
         act, lot = sess.run([accuracy,loss], feed_dict={x: batch[0], y_: batch[1]})
-        #print(j, lot)
         acc += act
         lo += lot
         ca += 1
@@ -486,7 +486,7 @@ tf.reset_default_graph()
 
 x = tf.placeholder(tf.float32, shape=[None, dim, dim, nchannels],name="x")
 y_ = tf.placeholder(tf.float32, shape=[None,n_classes],name="y")
-debug=False
+debug=True
 
 with tf.Session() as sess:
     
