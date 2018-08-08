@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ef2eb448-6413-411f-9ec4-6f9aac3066f7" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/data.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/run_conv.py" />
-      <change beforePath="$PROJECT_DIR$/../Class/_pars/fncrc.txt" afterPath="$PROJECT_DIR$/../Class/_pars/fncrc.txt" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/Conv_net_gpu.py" afterPath="$PROJECT_DIR$/Conv_net_gpu.py" />
-      <change beforePath="$PROJECT_DIR$/fncrc_deep_tryR_avg.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/fncrc_deep_tryR_noc.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/fncrc_try.txt" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/mnist.py" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/parse_net_pars.py" afterPath="$PROJECT_DIR$/parse_net_pars.py" />
-      <change beforePath="$PROJECT_DIR$/try.py" afterPath="$PROJECT_DIR$/try.py" />
-    </list>
+    <list default="true" id="ef2eb448-6413-411f-9ec4-6f9aac3066f7" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
