@@ -278,10 +278,15 @@ def back_prop():
         else:
             pre=x
         # You have held a gradx from a higher up layer to be added to current one.
-        if (parent is not None and parent == T.name.split('/')[0]):
-            print(parent,'grad_hold',grad_hold_var[parent])
-            gradx=tf.add(gradx,grad_hold_var[parent])
-            parent=None
+
+        if (parent is not None):
+            pp=T.name.split('/')[0]
+            ind=pp.find('nonlin')
+            pp=pp[:ind]
+            if (parent == pp):
+                print(parent,'grad_hold',grad_hold_var[parent])
+                gradx=tf.add(gradx,grad_hold_var[parent])
+                parent=None
         if ('conv' in T.name):
             scale=0
             if ('nonlin' in T.name):
@@ -306,7 +311,6 @@ def back_prop():
                 all_grad.append(gradx)
         elif ('Equal' in T.name):
             mask=TS[ts]
-            all_grad.append(mask)
             ts+=1
         elif ('Max' in T.name):
             gradx=grad_pool(gradx,TS[ts],mask,[2,2])
@@ -419,7 +423,7 @@ def run_epoch(train,Tr=True):
                 grad=sess.run(dW_OPs,feed_dict={x: batch[0], y_: batch[1], Train:True})
                 if (debug):
                     for j in np.arange(-3,-3-lall-1,-1):
-                           print(j, 'gradient sd', grad[j].shape, np.std(grad[j]),np.mean(grad[j]==0))
+                           print(dW_OPs[j].name, 'gradient sd', grad[j].shape, np.std(grad[j]),np.mean(grad[j]==0))
             else:
                 grad=sess.run(dW_OPs[-2:], feed_dict={x:batch[0],y_:batch[1]})
 

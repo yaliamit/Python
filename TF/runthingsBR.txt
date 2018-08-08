@@ -1,1 +1,1 @@
-/opt/anaconda/anaconda3/bin/python Conv_net_gpu.py ../Class/_pars/fncrc_deep_tryR_avg>OUTa.txt
+/opt/anaconda/anaconda3/bin/python Conv_net_gpu.py ../Class/_pars/fncrc_deep_tryR_avg>OUTaa.txt

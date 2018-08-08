@@ -11,7 +11,7 @@ batch_size:500
 eta_init:.1
 train:True
 mult:1
-debug:False
+debug:True
 num_train:5000
 #eta_schedule:(10.,.0001)
 agg:True
@@ -25,8 +25,9 @@ global_tinout:(.5,1.)
 force_global_prob:(1.,-1.)
 name:input1
 name:conv1;num_filters:8;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);non_linearity:tanh;parent:input1
-name:conv1R;num_filters:16;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);prob:(1.,0.);non_linearity:tanh;parent:conv1
-name:pool1;pool_size:(2, 2);stride:(2, 2);mode:max;parent:conv1R
+name:conv1R;num_filters:8;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1.);prob:(1.,0.);non_linearity:tanh;parent:conv1
+name:concatsum1;parent:[conv1,conv1R]
+name:pool1;pool_size:(2, 2);stride:(2, 2);mode:max;parent:concatsum1
 name:drop1;drop:.5;parent:pool1
 name:newdensp;num_units:50;non_linearity:tanh;prob:(1.,0.);tinout:(.1,1.);parent:drop1
 name:drop2;drop:0.8;parent:newdensp
