@@ -4,6 +4,14 @@ from __future__ import print_function
 import sys
 import os
 import numpy as np
+import h5py
+
+def one_hot(values,n_values=10):
+    n_v = np.maximum(n_values,np.max(values) + 1)
+    oh=np.float32(np.eye(n_v)[values])
+    return oh
+
+
 
 def load_dataset(pad=0,nval=10000):
     # We first define a download function, supporting both Python 2 and 3.
@@ -71,9 +79,36 @@ def load_dataset(pad=0,nval=10000):
 # This script supports three types of models. For each one, we define a
 # function that takes a Theano variable representing the input and returns
 # the output layer of a neural network model built in Lasagne.
+def get_mnist():
+    tr, trl, val, vall, test, testl = mnist.load_dataset()
+    trl=one_hot(trl)
+    vall=one_hot(vall)
+    testl=one_hot(testl)
+    return (tr,trl), (val,vall), (test,testl)
 
+def get_cifar(data_set='cifar10'):
 
-
+    filename = '../_CIFAR100/'+data_set+'_train.hdf5'
+    print(filename)
+    f = h5py.File(filename, 'r')
+    key = list(f.keys())[0]
+    # Get the data
+    tr = f[key]
+    print('tr',tr.shape)
+    key = list(f.keys())[1]
+    tr_lb=f[key]
+    train_data=np.float32(tr[0:45000])/255.
+    train_labels=one_hot(np.int32(tr_lb[0:45000]))
+    val_data=np.float32(tr[45000:])/255.
+    val_labels=one_hot(np.int32(tr_lb[45000:]))
+    filename = '../_CIFAR100/'+data_set+'_test.hdf5'
+    f = h5py.File(filename, 'r')
+    key = list(f.keys())[0]
+    # Get the data
+    test_data = np.float32(f[key])/255.
+    key = list(f.keys())[1]
+    test_labels=one_hot(np.int32(f[key]))
+    return (train_data, train_labels), (val_data, val_labels), (test_data, test_labels)
 
 
 

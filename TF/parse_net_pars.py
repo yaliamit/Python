@@ -1,45 +1,6 @@
 from __future__ import print_function
 
 
-# import lasagne
-# import pickle
-# import os
-# import make_net
-# import sys
-import numpy as np
-import h5py
-
-
-def one_hot(values,n_values=10):
-    n_v = np.maximum(n_values,np.max(values) + 1)
-    oh=np.eye(n_v)[values]
-    return oh
-
-
-def get_mnist():
-
-    labels = np.float32(np.load('/project/cmsc25025/mnist/MNIST_labels.npy'))
-    data = np.float64(np.load('/project/cmsc25025/mnist/MNIST.npy'))
-    print(data.shape)
-    data = np.float32(data) / 255.
-    train_dat = data[0:50000]
-    train_labels = one_hot(np.int32(labels[0:50000]))
-    val_dat = data[50000:60000]
-    val_labels = one_hot(np.int32(labels[50000:60000]))
-    test_dat = data[60000:70000]
-    test_labels = one_hot(np.int32(labels[60000:70000]))
-
-    return (train_dat, train_labels), (val_dat, val_labels), (test_dat, test_labels)
-
-
-def get_data(data_set):
-    if ('cifar' in data_set):
-        return(get_cifar(data_set=data_set))
-    elif (data_set=="mnist"):
-        return(get_mnist())
-    elif (data_set=="mnist_transform"):
-        return(get_mnist_trans())
-
 def process_param_line(line):
 
             # Split parameter line on :

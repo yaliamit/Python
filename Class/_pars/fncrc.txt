@@ -29,6 +29,6 @@ name:conv1R;num_filters:8;filter_size:(3,3);pad:(1,1);stride:(1, 1);tinout:(.5,1
 name:concatsum1;parent:[conv1,conv1R]
 name:pool1;pool_size:(2, 2);stride:(2, 2);mode:max;parent:concatsum1
 name:drop1;drop:.5;parent:pool1
-name:newdensp;num_units:50;non_linearity:tanh;prob:(1.,0.);tinout:(.1,1.);parent:pool1
+name:newdensp;num_units:50;non_linearity:tanh;prob:(1.,0.);tinout:(.1,1.);parent:drop1
 name:drop2;drop:0.8;parent:newdensp
 name:newdensf;num_units:10;prob:(1.,0.);non_linearity:lasagne.nonlinearity.linear;parent:drop2;final:final
