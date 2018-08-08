@@ -4,7 +4,7 @@ import time
 import sys
 import numpy as np
 import tensorflow as tf
-from Conv_net_gpu import get_data, create_network, zero_out_weights, back_prop
+from Conv_net_gpu import get_data, create_network, back_prop
 from keras import backend as K
 
 
