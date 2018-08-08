@@ -23,6 +23,29 @@ import Conv_net_gpu
 # im[0,:,:,1]=np.random.rand(4,4) #ones((4,4))*2
 # im[0,:,:,2]=np.random.rand(4,4) #ones((4,4))*3
 #im=np.float32(np.reshape(im,(1,4,4,3)))
+
+# In[4]:
+
+def local_pooling(input,pool_size):
+
+    paddings=np.int32(np.zeros((4,2)))
+    paddings[1,:]=pool_size
+    paddings[2,:]=pool_size
+    pad=tf.convert_to_tensor(paddings)
+    pinput=tf.pad(input,paddings=pad)
+
+    ll=[]
+    for j in range(pool_size[0]):
+        for k in range(pool_size[0]):
+            ll.append(tf.manip.roll(pinput,shift=[-j,-k],axis=[1,2]))
+    TT=tf.stack(ll)
+    TTT=tf.reduce_max(TT,axis=0)
+    III=tf.argmax(TT,axis=0)
+    TTTT=tf.slice(TTT,begin=[0,pool_size[0],pool_size[1],0],size=input.shape)
+    III=tf.slice(III,begin=[0,pool_size[0],pool_size[1],0],size=input.shape)
+    return(TTTT,III)
+
+
 im=np.random.rand(2,4,4,3)
 print(im[0,:,:,1])
 #im[1]=1.5*im[0]

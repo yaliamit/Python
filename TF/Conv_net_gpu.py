@@ -91,24 +91,6 @@ def grad_fully_connected(below, back_propped, current, W, R, scale=0):
     return gradfcW, gradfcx
 
 
-# In[4]:
-
-def local_pooling(input,pool_size):
-
-    paddings=np.int32(np.zeros((4,2)))
-    paddings[1,:]=pool_size
-    paddings[2,:]=pool_size
-    pad=tf.convert_to_tensor(paddings)
-    pinput=tf.pad(input,paddings=pad)
-
-    ll=[]
-    for j in range(pool_size[0]):
-        for k in range(pool_size[0]):
-            ll.append(tf.manip.roll(pinput,shift=[-j,-k],axis=[1,2]))
-    TT=tf.stack(ll)
-    TTT=tf.reduce_max(TT,axis=0)
-    TTTT=tf.slice(TTT,begin=[0,pool_size[0],pool_size[1],0],size=input.shape)
-    return(TTTT)
 
 
  
@@ -132,8 +114,8 @@ def unpooling(x,mask,strides):
     2. keep only values in mask (stored indices) and set the rest to zeros
     '''
     on_success = UpSampling2D(size=strides)(x)
-    on_fail = K.zeros_like(on_success)
-    return K.tf.where(mask, on_success, on_fail)
+    #on_fail = K.zeros_like(on_success)
+    return tf.multiply(on_success,tf.constant(.25)) #K.tf.where(mask, on_success, on_fail)
  
  
 
