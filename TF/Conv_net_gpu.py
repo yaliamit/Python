@@ -114,8 +114,8 @@ def unpooling(x,mask,strides):
     2. keep only values in mask (stored indices) and set the rest to zeros
     '''
     on_success = UpSampling2D(size=strides)(x)
-    #on_fail = K.zeros_like(on_success)
-    return tf.multiply(on_success,tf.constant(.25)) #K.tf.where(mask, on_success, on_fail)
+    on_fail = K.zeros_like(on_success)
+    return K.tf.where(mask, on_success, on_fail)
  
  
 

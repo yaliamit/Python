@@ -53,10 +53,12 @@ print(im[0,:,:,1])
 tf.reset_default_graph()
 input=tf.convert_to_tensor(im)
 
-inputp=Conv_net_gpu.local_pooling(input,[2,2])
+input1=input[0:2,0:2:4,0:2:4,0:3]
+#inputp=Conv_net_gpu.local_pooling(input,[2,2])
 
 with tf.Session() as sess:
-    ull=sess.run(inputp)
+    #ull=sess.run(inputp)
+    inn=sess.run(input1)
 print('done')
 # upim=UpSampling2D(size=[2,2])(input)
 # # aa=np.ones((3,3,3))*3
