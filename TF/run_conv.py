@@ -79,6 +79,7 @@ Rstep_size = list(PARS['force_global_prob'])[1] * step_size
 print('Rstep_size', Rstep_size)
 PARS['Rstep_size']=Rstep_size
 PARS['nonlin_scale'] = .5
+PARS['avoid_name']='Equal'
 model_name = "model"
 
 train, val, test = get_data(data_set=data_set)

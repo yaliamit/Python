@@ -26,39 +26,62 @@ import Conv_net_gpu
 
 # In[4]:
 
-def local_pooling(input,pool_size):
+def local_pooling(input,pool_size, stride):
 
+
+
+    shp=input.shape.as_list()
     paddings=np.int32(np.zeros((4,2)))
-    paddings[1,:]=pool_size
-    paddings[2,:]=pool_size
+    paddings[1,:]=[pool_size,pool_size]
+    paddings[2,:]=[pool_size,pool_size]
     pad=tf.convert_to_tensor(paddings)
     pinput=tf.pad(input,paddings=pad)
-
     ll=[]
-    for j in range(pool_size[0]):
-        for k in range(pool_size[0]):
+    for j in range(pool_size):
+        for k in range(pool_size):
             ll.append(tf.manip.roll(pinput,shift=[-j,-k],axis=[1,2]))
-    TT=tf.stack(ll)
-    TTT=tf.reduce_max(TT,axis=0)
-    III=tf.argmax(TT,axis=0)
-    TTTT=tf.slice(TTT,begin=[0,pool_size[0],pool_size[1],0],size=input.shape)
-    III=tf.slice(III,begin=[0,pool_size[0],pool_size[1],0],size=input.shape)
-    return(TTTT,III)
+
+    shifted_images=tf.stack(ll)
+
+    shifted_images = shifted_images[:,:, pool_size:pool_size + shp[1], pool_size:pool_size + shp[2], :]
+    checker = np.zeros(shifted_images.shape.as_list(), dtype=np.bool)
+    checker[:, :, 0::stride, 0::stride, :] = True
+    Tchecker = tf.convert_to_tensor(checker)
+    maxes = tf.reduce_max(shifted_images, axis=0)
+    cmaxes=tf.tile(tf.expand_dims(maxes,0),[pool_size*pool_size,1,1,1,1])
+    pooled = maxes[:,0::stride,0::stride,:]
 
 
-im=np.random.rand(2,4,4,3)
-print(im[0,:,:,1])
-#im[1]=1.5*im[0]
+    JJJ=tf.logical_and(tf.equal(cmaxes,shifted_images),Tchecker)
+    jjj=[]
+    for j in range(pool_size):
+        for k in range(pool_size):
+            jjj.append(tf.manip.roll(JJJ[j*pool_size+k,:,:,:,:],shift=[j,k],axis=[1,2]))
+    UUU=tf.stack(jjj)
+    mask=tf.reduce_sum(tf.cast(UUU,dtype=tf.int32),axis=0)
+
+    return(pooled,mask)
+
+
+im=np.random.rand(2,6,6,3)
+
 
 tf.reset_default_graph()
 input=tf.convert_to_tensor(im)
 
-input1=input[0:2,0:2:4,0:2:4,0:3]
-#inputp=Conv_net_gpu.local_pooling(input,[2,2])
+pool_size=2
+stride=2
+inputp=local_pooling(input,pool_size,stride)
 
 with tf.Session() as sess:
-    #ull=sess.run(inputp)
-    inn=sess.run(input1)
+    pooled,mask=sess.run(inputp)
+
+print(im[0,:,:,0])
+
+print(pooled[0,:,:,0])
+print(mask[0,:,:,0])
+
+
 print('done')
 # upim=UpSampling2D(size=[2,2])(input)
 # # aa=np.ones((3,3,3))*3

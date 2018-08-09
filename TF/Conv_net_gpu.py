@@ -91,10 +91,46 @@ def grad_fully_connected(below, back_propped, current, W, R, scale=0):
     return gradfcW, gradfcx
 
 
+def MaxPoolingandMask(input,pool_size, stride):
 
+
+
+    shp=input.shape.as_list()
+    paddings=np.int32(np.zeros((4,2)))
+    paddings[1,:]=[pool_size,pool_size]
+    paddings[2,:]=[pool_size,pool_size]
+    pad=tf.convert_to_tensor(paddings)
+    pinput=tf.pad(input,paddings=pad)
+    ll=[]
+    for j in range(pool_size):
+        for k in range(pool_size):
+            ll.append(tf.manip.roll(pinput,shift=[-j,-k],axis=[1,2]))
+
+    shifted_images=tf.stack(ll)
+
+    shifted_images = shifted_images[:,:, pool_size:pool_size + shp[1], pool_size:pool_size + shp[2], :]
+    checker = np.zeros(shifted_images.shape.as_list(), dtype=np.bool)
+    checker[:, :, 0::stride, 0::stride, :] = True
+    Tchecker = tf.convert_to_tensor(checker)
+    maxes = tf.reduce_max(shifted_images, axis=0,name='Max')
+    cmaxes=tf.tile(tf.expand_dims(maxes,0),[pool_size*pool_size,1,1,1,1])
+    #pooled = maxes[:,0::stride,0::stride,:]
+    pooled=tf.strided_slice(maxes,[0,0,0,0],shp,strides=[1,2,2,1],name='Max')
+
+
+
+    JJJ=tf.logical_and(tf.equal(cmaxes,shifted_images),Tchecker)
+    jjj=[]
+    for j in range(pool_size):
+        for k in range(pool_size):
+            jjj.append(tf.manip.roll(JJJ[j*pool_size+k,:,:,:,:],shift=[j,k],axis=[1,2]))
+    UUU=tf.stack(jjj)
+    mask=tf.cast(tf.reduce_sum(tf.cast(UUU,dtype=tf.int32),axis=0),dtype=tf.bool,name='Equal')
+
+    return pooled, mask
 
  
-def MaxPoolingandMask(inputs, pool_size, strides,
+def MaxPoolingandMask_old(inputs, pool_size, strides,
                           padding='SAME'):
 
         pooled = tf.nn.max_pool(inputs, ksize=pool_size, strides=strides, padding=padding)
@@ -145,6 +181,8 @@ def find_sibling(l,parent,PARS):
         return None  
 
 def create_network(PARS,x,y_,Train):
+
+
     TS=[]
     ln=len(PARS['layers'])
     sibs={}
@@ -165,12 +203,12 @@ def create_network(PARS,x,y_,Train):
                     parent=[] 
                     for s in l['parent']:
                         for ts in TS:
-                            if s in ts.name and not 'Equal' in ts.name:
+                            if s in ts.name and not PARS['avoid_name'] in ts.name:
                                 parent.append(ts)
                 # Get single parent
                 else:
                     for ts in TS:
-                        if l['parent'] in ts.name and not 'Equal' in ts.name:
+                        if l['parent'] in ts.name and not PARS['avoid_name'] in ts.name:
                             parent=ts
         if ('conv' in l['name']):
             scope_name=l['name']
@@ -193,7 +231,9 @@ def create_network(PARS,x,y_,Train):
                 TS.append(fully_connected_layer(parent,PARS['batch_size'],PARS['nonlin_scale'], num_features=num_units,prob=prob,scale=scale))
         elif ('pool' in l['name']):
             with tf.variable_scope(l['name']):
-                pool, mask = MaxPoolingandMask(parent, [1]+list(l['pool_size'])+[1],strides=[1]+list(l['stride'])+[1])
+                pool, mask = MaxPoolingandMask_old(parent, [1]+list(l['pool_size'])+[1],strides=[1]+list(l['stride'])+[1])
+                #pool, mask = MaxPoolingandMask(parent, list(l['pool_size'])[0],list(l['stride'])[0])
+
                 TS.append(pool)
                 TS.append(mask)
         elif ('drop' in l['name']):
@@ -263,7 +303,7 @@ def back_prop(loss,acc,TS,VS,x,PARS):
         T=TS[ts]
         if (ts<lts-1):
                 pre=TS[ts+1]
-                if ('Equal' in pre.name):
+                if (PARS['avoid_name'] in pre.name):
                     pre=TS[ts+2]
         else:
             pre=x
@@ -299,7 +339,7 @@ def back_prop(loss,acc,TS,VS,x,PARS):
             #all_grad.append(T)
             if (PARS['debug']):
                 all_grad.append(gradx)
-        elif ('Equal' in T.name):
+        elif (PARS['avoid_name'] in T.name):
             mask=TS[ts]
             ts+=1
         elif ('Max' in T.name):
