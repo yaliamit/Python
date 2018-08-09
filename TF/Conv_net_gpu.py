@@ -91,7 +91,7 @@ def grad_fully_connected(below, back_propped, current, W, R, scale=0):
     return gradfcW, gradfcx
 
 
-def MaxPoolingandMask(input,pool_size, stride):
+def MaxPoolingandMask_1(input,pool_size, stride):
 
 
 
@@ -124,13 +124,52 @@ def MaxPoolingandMask(input,pool_size, stride):
     jjj=[]
     for j in range(pool_size):
         for k in range(pool_size):
-            jjj.append(tf.manip.roll(JJJ[:,j*pool_size+k,:,:,:],shift=[j,k],axis=[1,2]))
+            jjj.append(tf.manip.roll(JJJ[:,j*pool_size+k,:,:,:],shift=[j,k],axis=[2,3]))
     UUU=tf.stack(jjj,axis=1)
     mask=tf.cast(tf.reduce_sum(tf.cast(UUU,dtype=tf.int32),axis=1),dtype=tf.bool,name='Equal')
 
     return pooled, mask
 
- 
+def MaxPoolingandMask(input,pool_size, stride):
+
+
+
+    shp=input.shape.as_list()
+    paddings=np.int32(np.zeros((4,2)))
+    paddings[1,:]=[pool_size,pool_size]
+    paddings[2,:]=[pool_size,pool_size]
+    pad=tf.get_variable(initializer=paddings,name='pad',trainable=False)
+    pinput=tf.pad(input,paddings=pad)
+    ll=[]
+    for j in range(pool_size):
+        for k in range(pool_size):
+            ll.append(tf.manip.roll(pinput,shift=[-j,-k],axis=[1,2]))
+
+    shifted_images=tf.stack(ll,axis=0)
+
+    #shifted_images = tf.slice(shifted_images,[0,0,pool_size,pool_size,0],)
+    shifted_images  = tf.reshape(shifted_images[:,:, pool_size:pool_size + shp[1], pool_size:pool_size + shp[2], :],[pool_size*pool_size,shp[0]]+shp[1:4])
+    checker = np.zeros([pool_size*pool_size,shp[0]]+shp[1:4], dtype=np.bool)
+    checker[:, :, 0::stride, 0::stride, :] = True
+    Tchecker = tf.get_variable(initializer=checker,name='checker',trainable=False)
+    maxes = tf.reduce_max(shifted_images, axis=0,name='Max')
+    cmaxes=tf.tile(tf.expand_dims(maxes,0),[pool_size*pool_size,1,1,1,1])
+    #pooled = maxes[:,0::stride,0::stride,:]
+    pooled=tf.strided_slice(maxes,[0,0,0,0],shp,strides=[1,2,2,1],name='Max')
+
+
+
+    JJJ=tf.logical_and(tf.equal(cmaxes,shifted_images),Tchecker)
+    jjj=[]
+    for j in range(pool_size):
+        for k in range(pool_size):
+            jjj.append(tf.manip.roll(JJJ[j*pool_size+k,:,:,:,:],shift=[j,k],axis=[1,2]))
+    UUU=tf.stack(jjj,axis=0)
+    mask=tf.cast(tf.reduce_sum(tf.cast(UUU,dtype=tf.int32),axis=0),dtype=tf.bool,name='Equal')
+
+    return pooled, mask
+
+
 def MaxPoolingandMask_old(inputs, pool_size, strides,
                           padding='SAME'):
 
