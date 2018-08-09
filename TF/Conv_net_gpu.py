@@ -231,8 +231,8 @@ def create_network(PARS,x,y_,Train):
                 TS.append(fully_connected_layer(parent,PARS['batch_size'],PARS['nonlin_scale'], num_features=num_units,prob=prob,scale=scale))
         elif ('pool' in l['name']):
             with tf.variable_scope(l['name']):
-                pool, mask = MaxPoolingandMask_old(parent, [1]+list(l['pool_size'])+[1],strides=[1]+list(l['stride'])+[1])
-                #pool, mask = MaxPoolingandMask(parent, list(l['pool_size'])[0],list(l['stride'])[0])
+                #pool, mask = MaxPoolingandMask_old(parent, [1]+list(l['pool_size'])+[1],strides=[1]+list(l['stride'])+[1])
+                pool, mask = MaxPoolingandMask(parent, list(l['pool_size'])[0],list(l['stride'])[0])
 
                 TS.append(pool)
                 TS.append(mask)
