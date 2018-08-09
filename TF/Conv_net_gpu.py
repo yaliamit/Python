@@ -144,20 +144,20 @@ def MaxPoolingandMask(input,pool_size, stride):
     for j in range(pool_size):
         for k in range(pool_size):
             ll.append(tf.manip.roll(pinput,shift=[-j,-k],axis=[1,2]))
+    shifted_images = tf.stack(ll, axis=0)
 
-    shifted_images=tf.stack(ll,axis=0)
 
-    #shifted_images = tf.slice(shifted_images,[0,0,pool_size,pool_size,0],)
     shifted_images  = tf.reshape(shifted_images[:,:, pool_size:pool_size + shp[1], pool_size:pool_size + shp[2], :],[pool_size*pool_size,shp[0]]+shp[1:4])
     checker = np.zeros([pool_size*pool_size,shp[0]]+shp[1:4], dtype=np.bool)
     checker[:, :, 0::stride, 0::stride, :] = True
     Tchecker = tf.get_variable(initializer=checker,name='checker',trainable=False)
     maxes = tf.reduce_max(shifted_images, axis=0,name='Max')
     cmaxes=tf.tile(tf.expand_dims(maxes,0),[pool_size*pool_size,1,1,1,1])
-    #pooled = maxes[:,0::stride,0::stride,:]
     pooled=tf.strided_slice(maxes,[0,0,0,0],shp,strides=[1,2,2,1],name='Max')
 
+    #pooled1, mask = MaxPoolingandMask_old(input, [1, pool_size, pool_size, 1], [1, stride, stride, 1])
 
+    #return pooled1, mask, pooled
 
     JJJ=tf.logical_and(tf.equal(cmaxes,shifted_images),Tchecker)
     jjj=[]
@@ -178,10 +178,7 @@ def MaxPoolingandMask_old(inputs, pool_size, strides,
         indexMask = K.tf.equal(inputs, upsampled)
         assert indexMask.get_shape().as_list() == inputs.get_shape().as_list()
         return pooled,indexMask
-     
-#def get_output_shape_for(self, input_shape):
-#        return input_shape
- 
+
  
 def unpooling(x,mask,strides):
     '''
@@ -222,7 +219,7 @@ def find_sibling(l,parent,PARS):
 
 def create_network(PARS,x,y_,Train):
 
-
+    EXTRAS=[]
     TS=[]
     ln=len(PARS['layers'])
     sibs={}
@@ -273,7 +270,7 @@ def create_network(PARS,x,y_,Train):
             with tf.variable_scope(l['name']):
                 #pool, mask = MaxPoolingandMask_old(parent, [1]+list(l['pool_size'])+[1],strides=[1]+list(l['stride'])+[1])
                 pool, mask = MaxPoolingandMask(parent, list(l['pool_size'])[0],list(l['stride'])[0])
-
+                #EXTRAS.append(SI)
                 TS.append(pool)
                 TS.append(mask)
         elif ('drop' in l['name']):
@@ -312,7 +309,7 @@ def create_network(PARS,x,y_,Train):
         correct_prediction = tf.equal(tf.argmax(TS[-1], 1), tf.argmax(y_, 1))
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32),name="ACC")
     print('sibs',sibs)
-    return loss, accuracy, TS, sibs
+    return loss, accuracy, TS, sibs, EXTRAS
 
 
 

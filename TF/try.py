@@ -1,9 +1,11 @@
 import tensorflow as tf
 import h5py
 import numpy as np
+import data
 import pylab as py
 import keras
 from keras.layers.convolutional import UpSampling2D
+import time
 import Conv_net_gpu
 # filename = '../_CIFAR100/cifar10_train.hdf5'
 # print(filename)
@@ -15,7 +17,10 @@ import Conv_net_gpu
 # key = list(f.keys())[1]
 # tr_lb=f[key]
 # train_data=np.float32(tr[0:45000])/255.
+train, val, test = Conv_net_gpu.get_data(data_set='cifar10')
 
+tro=np.tile(train[0],(1,1,1,8))
+print(tro.shape)
 #py.imshow(train_data[0])
 #py.show()
 
@@ -26,60 +31,25 @@ import Conv_net_gpu
 
 # In[4]:
 
-def local_pooling(input,pool_size, stride):
 
 
-
-    shp=input.shape.as_list()
-    paddings=np.int32(np.zeros((4,2)))
-    paddings[1,:]=[pool_size,pool_size]
-    paddings[2,:]=[pool_size,pool_size]
-    pad=tf.convert_to_tensor(paddings)
-    pinput=tf.pad(input,paddings=pad)
-    ll=[]
-    for j in range(pool_size):
-        for k in range(pool_size):
-            ll.append(tf.manip.roll(pinput,shift=[-j,-k],axis=[1,2]))
-
-    shifted_images=tf.stack(ll)
-
-    shifted_images = shifted_images[:,:, pool_size:pool_size + shp[1], pool_size:pool_size + shp[2], :]
-    checker = np.zeros(shifted_images.shape.as_list(), dtype=np.bool)
-    checker[:, :, 0::stride, 0::stride, :] = True
-    Tchecker = tf.convert_to_tensor(checker)
-    maxes = tf.reduce_max(shifted_images, axis=0)
-    cmaxes=tf.tile(tf.expand_dims(maxes,0),[pool_size*pool_size,1,1,1,1])
-    pooled = maxes[:,0::stride,0::stride,:]
-
-
-    JJJ=tf.logical_and(tf.equal(cmaxes,shifted_images),Tchecker)
-    jjj=[]
-    for j in range(pool_size):
-        for k in range(pool_size):
-            jjj.append(tf.manip.roll(JJJ[j*pool_size+k,:,:,:,:],shift=[j,k],axis=[1,2]))
-    UUU=tf.stack(jjj)
-    mask=tf.reduce_sum(tf.cast(UUU,dtype=tf.int32),axis=0)
-
-    return(pooled,mask)
-
-
-im=np.random.rand(2,6,6,3)
+#im=np.random.rand(2,6,6,3)
 
 
 tf.reset_default_graph()
-input=tf.convert_to_tensor(im)
+input=tf.convert_to_tensor(tro[0:500])
 
 pool_size=2
 stride=2
-inputp=local_pooling(input,pool_size,stride)
+inputp=Conv_net_gpu.MaxPoolingandMask(input,pool_size,stride)
 
 with tf.Session() as sess:
+
+    sess.run(tf.global_variables_initializer())
+
+    t1=time.time()
     pooled,mask=sess.run(inputp)
-
-print(im[0,:,:,0])
-
-print(pooled[0,:,:,0])
-print(mask[0,:,:,0])
+    print('time',time.time()-t1)
 
 
 print('done')
