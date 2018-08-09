@@ -1,1 +1,1 @@
-/opt/anaconda/anaconda3/bin/python run_conv.py ../Class/_pars/fncrc>TP5.txt
+/opt/anaconda/anaconda3/bin/python run_conv.py ../Class/_pars/fncrc_deep_tryR_avg>TP5d.txt
