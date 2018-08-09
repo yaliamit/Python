@@ -1,1 +1,1 @@
-/opt/anaconda/anaconda3/bin/python run_conv.py ../Class/_pars/fncrc>TP.txt
+/opt/anaconda/anaconda3/bin/python run_conv.py ../Class/_pars/fncrc>TPO.txt
