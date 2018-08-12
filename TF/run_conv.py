@@ -31,7 +31,6 @@ def run_epoch(train):
 
     for j in np.arange(0, len(y), batch_size):
         batch = (tr[j:j + batch_size], y[j:j + batch_size])
-        junk = sess.run(EXTRAS,feed_dict={x: batch[0], y_: batch[1], Train: True})
         grad = sess.run(dW_OPs, feed_dict={x: batch[0], y_: batch[1], Train: True})
         if (debug):
             for j in np.arange(-3, -3 - lall - 1, -1):
@@ -100,7 +99,7 @@ debug = PARS['debug']
 with tf.Session() as sess:
     # Create the network architecture with the above placeholdes as the inputs.
 
-    loss, accuracy, TS, sibs, EXTRAS = create_network(PARS,x,y_,Train)
+    loss, accuracy, TS, sibs = create_network(PARS,x,y_,Train)
     PARS['sibs']=sibs
     TS.reverse()
     for t in TS:

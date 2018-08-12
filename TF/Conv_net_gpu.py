@@ -133,7 +133,6 @@ def MaxPoolingandMask_1(input,pool_size, stride):
 def MaxPoolingandMask(input,pool_size, stride):
 
 
-
     shp=input.shape.as_list()
     paddings=np.int32(np.zeros((4,2)))
     paddings[1,:]=[pool_size,pool_size]
@@ -141,34 +140,51 @@ def MaxPoolingandMask(input,pool_size, stride):
     pad=tf.get_variable(initializer=paddings,name='pad',trainable=False)
     pinput=tf.pad(input,paddings=pad)
     ll=[]
+    # Create pool_size x pool_size shifts of the data stacked on top of each pixel
+    # to represent the pool_size x pool_size window with that pixel as upper left hand corner
     for j in range(pool_size):
         for k in range(pool_size):
             ll.append(tf.manip.roll(pinput,shift=[-j,-k],axis=[1,2]))
+
     shifted_images = tf.stack(ll, axis=0)
-
-
+    # After shifting eliminate padding - not needed any more
     shifted_images  = tf.reshape(shifted_images[:,:, pool_size:pool_size + shp[1], pool_size:pool_size + shp[2], :],[pool_size*pool_size,shp[0]]+shp[1:4])
+    # Get the max in each stack
+    maxes = tf.reduce_max(shifted_images, axis=0, name='Max')
+    # Expand to the stack
+    cmaxes = tf.tile(tf.expand_dims(maxes, 0), [pool_size * pool_size, 1, 1, 1, 1])
+    # Get the pooled maxes by jumping strides
+    pooled = tf.strided_slice(maxes, [0, 0, 0, 0], shp, strides=[1, 2, 2, 1], name='Max')
+    # Create the checker board filter based on the stride
     checker = np.zeros([pool_size*pool_size,shp[0]]+shp[1:4], dtype=np.bool)
     checker[:, :, 0::stride, 0::stride, :] = True
     Tchecker = tf.get_variable(initializer=checker,name='checker',trainable=False)
-    maxes = tf.reduce_max(shifted_images, axis=0,name='Max')
-    cmaxes=tf.tile(tf.expand_dims(maxes,0),[pool_size*pool_size,1,1,1,1])
-    pooled=tf.strided_slice(maxes,[0,0,0,0],shp,strides=[1,2,2,1],name='Max')
 
-    #pooled1, mask = MaxPoolingandMask_old(input, [1, pool_size, pool_size, 1], [1, stride, stride, 1])
-
-    #return pooled1, mask, pooled
-
-    JJJ=tf.logical_and(tf.equal(cmaxes,shifted_images),Tchecker)
+    # Filter the cmaxes and checker
+    JJJ=tf.cast(tf.logical_and(tf.equal(cmaxes,shifted_images),Tchecker),dtype=tf.float32)
+    # Reshift the cmaxes so that the stack for each pixel has true for indices corresonding to the upper left corner of each window
+    # that used that pixel as the max.
     jjj=[]
     for j in range(pool_size):
         for k in range(pool_size):
             jjj.append(tf.manip.roll(JJJ[j*pool_size+k,:,:,:,:],shift=[j,k],axis=[1,2]))
-    UUU=tf.stack(jjj,axis=0)
-    mask=tf.cast(tf.reduce_sum(tf.cast(UUU,dtype=tf.int32),axis=0),dtype=tf.bool,name='Equal')
+    # This a pool_sizexpool_size stack of masks one for each location of ulc using the pixel as max.
+    mask=tf.stack(jjj,axis=0, name='Equal')
 
     return pooled, mask
 
+def grad_pool(back_propped, pool, mask, pool_size, stride):
+        gradx_pool = tf.reshape(back_propped, [-1] + (pool.shape.as_list())[1:])
+        ll = []
+        gradx_pool=UpSampling2D(size=[stride,stride])(gradx_pool)
+        # Stack gradx values for different ulc of windows reaching pixel, add those flagged by mask.
+        for j in range(pool_size):
+            for k in range(pool_size):
+                ll.append(tf.manip.roll(gradx_pool, shift=[-j, -k], axis=[1, 2]))
+        shifted_gradx_pool = tf.stack(ll, axis=0)
+        gradx=tf.reduce_sum(tf.multiply(shifted_gradx_pool,mask),axis=0)
+
+        return gradx
 
 def MaxPoolingandMask_old(inputs, pool_size, strides,
                           padding='SAME'):
@@ -193,7 +209,7 @@ def unpooling(x,mask,strides):
  
 
 
-def grad_pool(back_propped,pool,mask,pool_size):
+def grad_pool_old(back_propped,pool,mask,pool_size):
         gradx_pool=tf.reshape(back_propped,[-1]+(pool.shape.as_list())[1:])
     #gradfcx=tf.reshape(gradfcx_pool,[-1]+(conv.shape.as_list())[1:])
         gradx=unpooling(gradx_pool,mask,pool_size)
@@ -215,7 +231,17 @@ def find_sibling(l,parent,PARS):
                 q=ly['parent']
                 if (ly is not l and type(q)==str and q in parent):
                     return q
-        return None  
+        return None
+
+
+def get_name(ts):
+    if type(ts) == list:
+        name = ts[0].name
+        T=ts[0]
+    else:
+        name = ts.name
+        T=ts
+    return (name,T)
 
 def create_network(PARS,x,y_,Train):
 
@@ -240,13 +266,15 @@ def create_network(PARS,x,y_,Train):
                     parent=[] 
                     for s in l['parent']:
                         for ts in TS:
-                            if s in ts.name and not PARS['avoid_name'] in ts.name:
-                                parent.append(ts)
+                            name,T=get_name(ts)
+                            if s in name and not PARS['avoid_name'] in name:
+                                parent.append(T)
                 # Get single parent
                 else:
                     for ts in TS:
-                        if l['parent'] in ts.name and not PARS['avoid_name'] in ts.name:
-                            parent=ts
+                        name, T = get_name(ts)
+                        if l['parent'] in name and not PARS['avoid_name'] in name:
+                            parent=T
         if ('conv' in l['name']):
             scope_name=l['name']
             scale=0
@@ -268,16 +296,19 @@ def create_network(PARS,x,y_,Train):
                 TS.append(fully_connected_layer(parent,PARS['batch_size'],PARS['nonlin_scale'], num_features=num_units,prob=prob,scale=scale))
         elif ('pool' in l['name']):
             with tf.variable_scope(l['name']):
-                #pool, mask = MaxPoolingandMask_old(parent, [1]+list(l['pool_size'])+[1],strides=[1]+list(l['stride'])+[1])
-                pool, mask = MaxPoolingandMask(parent, list(l['pool_size'])[0],list(l['stride'])[0])
+                if (l['pool_size']==l['stride']):
+                    pool, mask = MaxPoolingandMask_old(parent, [1]+list(l['pool_size'])+[1],strides=[1]+list(l['stride'])+[1])
+                    TS.append([pool,l['pool_size'],l['stride']])
+                else:
+                    pool, mask = MaxPoolingandMask(parent, l['pool_size'][0],l['stride'][0])
                 #EXTRAS.append(SI)
-                TS.append(pool)
+                    TS.append([pool,l['pool_size'][0],l['stride'][0]])
                 TS.append(mask)
         elif ('drop' in l['name']):
             with tf.variable_scope(l['name']):
                 ffac = 1. / (1. - l['drop'])
-                drop=tf.cond(Train,lambda: real_drop(parent,l['drop'],PARS['batch_size']),lambda: parent, name='probx{:.1f}x'.format(ffac))
-                TS.append(drop)
+                drop=tf.cond(Train,lambda: real_drop(parent,l['drop'],PARS['batch_size']),lambda: parent)
+                TS.append([drop,ffac])
         elif ('concatsum' in l['name']):
             with tf.variable_scope(l['name']):
                 res_sum=tf.add(parent[0],parent[1])
@@ -285,7 +316,8 @@ def create_network(PARS,x,y_,Train):
             # This is a sum layer get its sibling
                 joint_parent=find_sibling(l,l['parent'],PARS)
                 if (joint_parent is not None):
-                    sibs[TS[-1].name]=joint_parent
+                    name,T=get_name(TS[-1])
+                    sibs[name]=joint_parent
 
     with tf.variable_scope('loss'):
        if (PARS['hinge']):
@@ -309,7 +341,7 @@ def create_network(PARS,x,y_,Train):
         correct_prediction = tf.equal(tf.argmax(TS[-1], 1), tf.argmax(y_, 1))
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32),name="ACC")
     print('sibs',sibs)
-    return loss, accuracy, TS, sibs, EXTRAS
+    return loss, accuracy, TS, sibs
 
 
 
@@ -338,27 +370,31 @@ def back_prop(loss,acc,TS,VS,x,PARS):
         all_grad.append(gradx)
     for ts in range(lts):
         T=TS[ts]
+        name,T=get_name(T)
         if (ts<lts-1):
-                pre=TS[ts+1]
-                if (PARS['avoid_name'] in pre.name):
-                    pre=TS[ts+2]
+                #pre=TS[ts+1]
+                prename,pre=get_name(TS[ts+1])
+                if (PARS['avoid_name'] in prename):
+                    prename,pre=get_name(TS[ts+2])
+                    #pre=TS[ts+2]
         else:
             pre=x
         # You have held a gradx from a higher up layer to be added to current one.
 
         if (parent is not None):
-            pp=T.name.split('/')[0]
+
+            pp=name.split('/')[0]
             ind=pp.find('nonlin')
             pp=pp[:ind]
             if (parent == pp):
                 print(parent,'grad_hold',grad_hold_var[parent])
                 gradx=tf.add(gradx,grad_hold_var[parent])
                 parent=None
-        if ('conv' in T.name):
+        if ('conv' in name):
             scale=0
-            if ('nonlin' in T.name):
+            if ('nonlin' in name):
                 scale=PARS['nonlin_scale']
-            gradconvW, gradx = grad_conv_layer(PARS['batch_size'],below=pre,back_propped=gradx,current=TS[ts],W=VS[vs], R=VS[vs+1],scale=scale)
+            gradconvW, gradx = grad_conv_layer(PARS['batch_size'],below=pre,back_propped=gradx,current=T,W=VS[vs], R=VS[vs+1],scale=scale)
             assign_op_convW = update_only_non_zero(VS[vs],gradconvW,PARS['eta_init'])
             OPLIST.append(assign_op_convW)
             if (len(VS[vs+1].shape.as_list())==4):
@@ -368,27 +404,31 @@ def back_prop(loss,acc,TS,VS,x,PARS):
                 all_grad.append(gradx)
             ts+=1
             vs+=2
-        elif ('drop' in T.name):
-            fac=tf.constant(np.float32(T.name.split('x')[1]))
+        elif ('drop' in name):
+            #fac=tf.constant(np.float32(name.split('x')[1]))
             Z = tf.equal(T, tf.constant(0.))
-            gradx=K.tf.where(Z,T,tf.multiply(tf.reshape(gradx,T.shape),fac))
+            gradx=K.tf.where(Z,T,tf.multiply(tf.reshape(gradx,T.shape),TS[ts][1]))
             #all_grad.append(Z)
             #all_grad.append(T)
             if (PARS['debug']):
                 all_grad.append(gradx)
-        elif (PARS['avoid_name'] in T.name):
-            mask=TS[ts]
+        elif (PARS['avoid_name'] in name):
+            mask=T
             ts+=1
-        elif ('Max' in T.name):
-            gradx=grad_pool(gradx,TS[ts],mask,[2,2])
+        elif ('Max' in name):
+            if (TS[ts][1]==TS[ts][2]):
+                gradx=grad_pool_old(gradx,T,mask,[2,2])
+            else:
+                gradx=grad_pool(gradx,T,mask,pool_size=TS[ts][1],stride=TS[ts][2])
+
             if (PARS['debug']):
                 all_grad.append(gradx)
             ts+=1
-        elif ('dens' in T.name):
+        elif ('dens' in name):
             scale = 0
-            if ('nonlin' in T.name):
+            if ('nonlin' in name):
                 scale = PARS['nonlin_scale']
-            gradfcW, gradx = grad_fully_connected(below=pre,back_propped=gradx,current=TS[ts], W=VS[vs],R=VS[vs+1], scale=scale)
+            gradfcW, gradx = grad_fully_connected(below=pre,back_propped=gradx,current=T, W=VS[vs],R=VS[vs+1], scale=scale)
             assign_op_fcW = update_only_non_zero(VS[vs],gradfcW,PARS['eta_init'])
             OPLIST.append(assign_op_fcW)
             if (len(VS[vs+1].shape.as_list())==2):
@@ -398,9 +438,9 @@ def back_prop(loss,acc,TS,VS,x,PARS):
                 all_grad.append(gradx)
             ts+=1
             vs+=2
-        if (T.name in PARS['sibs']):
+        if (name in PARS['sibs']):
             grad_hold=gradx
-            parent=PARS['sibs'][T.name]
+            parent=PARS['sibs'][name]
             grad_hold_var[parent]=grad_hold
     if (PARS['debug']):
         print('all_grad',len(all_grad))
