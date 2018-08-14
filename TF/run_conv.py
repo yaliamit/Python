@@ -102,7 +102,6 @@ PARS['sibs']=sibs
 TS.reverse()
 for t in TS:
     print(t)
-print(loss)
 VS = tf.trainable_variables()
 VS.reverse()
 
@@ -110,8 +109,7 @@ dW_OPs, lall = back_prop(loss,accuracy,TS,VS,x,PARS)
 
 with tf.Session() as sess:
     # Create the network architecture with the above placeholdes as the inputs.
-    for v in VS:
-        print(v.name, v.get_shape().as_list(), np.std(v.eval()))
+
     # loss, accuracy, TS, sibs = create_network(PARS,x,y_,Train)
     # PARS['sibs']=sibs
     # TS.reverse()
@@ -121,7 +119,9 @@ with tf.Session() as sess:
     # Initialize variables
     sess.run(tf.global_variables_initializer())
     for v in VS:
+        print(v.name, v.get_shape().as_list(), np.std(v.eval()))
         zero_out_weights(PARS)
+
     # Differences between W and R
     for t in np.arange(0, len(VS), 2):
         print('t', t, 'zeros', np.sum(VS[t].eval() == 0), np.max(np.abs(VS[t].eval() - VS[t + 1].eval())))
