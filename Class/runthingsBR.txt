@@ -1,1 +1,1 @@
-python _pars/fncrc output=OUT2>OUT2.txt
+python _source/start_class.py _pars/fncrc>OUT2.txt
