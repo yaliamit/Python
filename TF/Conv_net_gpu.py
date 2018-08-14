@@ -149,11 +149,7 @@ def MaxPoolingandMask(input,pool_size, stride):
             pp=np.int64(np.zeros((4,2)))
             pp[1,:]=[pool_size-j,pool_size+j]
             pp[2,:]=[pool_size-k,pool_size+k]
-            #ind=j * pool_size + k
             ll.append(tf.pad(input,paddings=pp))
-            #BIGZ[ind,:,pool_size-j:pool_size-j+shp[1],pool_size-k:pool_size-k+shp[2],:]=input
-            #sh=tf.convert_to_tensor(np.int32([-j,-k]))
-            #ll.append(tf.manip.roll(pinput,shift=sh,axis=[1,2]))
 
     shifted_images = tf.stack(ll, axis=0)
     # After shifting eliminate padding - not needed any more
@@ -167,7 +163,7 @@ def MaxPoolingandMask(input,pool_size, stride):
     # Create the checker board filter based on the stride
     checker = np.zeros([pool_size*pool_size,shp[0]]+shp[1:4], dtype=np.bool)
     checker[:, :, 0::stride, 0::stride, :] = True
-    Tchecker = tf.get_variable(initializer=checker,name='checker',trainable=False)
+    Tchecker = tf.convert_to_tensor(checker) #get_variable(initializer=checker,name='checker',trainable=False)
 
     # Filter the cmaxes and checker
     JJJ=tf.cast(tf.logical_and(tf.equal(cmaxes,shifted_images),Tchecker),dtype=tf.float32)
