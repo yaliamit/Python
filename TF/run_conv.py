@@ -107,7 +107,7 @@ with tf.device('/device:GPU:1'):
     VS.reverse()
     dW_OPs, lall = back_prop(loss,accuracy,TS,VS,x,PARS)
 
-with tf.Session(config=tf.ConfigProto(log_device_placement=True)) as sess:
+with tf.Session() as sess:
     # Initialize variables
     sess.run(tf.global_variables_initializer())
     for v in VS:
