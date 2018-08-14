@@ -132,7 +132,7 @@ def MaxPoolingandMask_1(input,pool_size, stride):
 
 def MaxPoolingandMask(input,pool_size, stride):
 
-
+# We are assuming 'SAME' padding with 0's.
     shp=input.shape.as_list()
     paddings=np.int32(np.zeros((4,2)))
     paddings[1,:]=[pool_size,pool_size]
@@ -154,7 +154,7 @@ def MaxPoolingandMask(input,pool_size, stride):
     # Expand to the stack
     cmaxes = tf.tile(tf.expand_dims(maxes, 0), [pool_size * pool_size, 1, 1, 1, 1])
     # Get the pooled maxes by jumping strides
-    pooled = tf.strided_slice(maxes, [0, 0, 0, 0], shp, strides=[1, 2, 2, 1], name='Max')
+    pooled = tf.strided_slice(maxes, [0, 0, 0, 0], shp, strides=[1, stride, stride, 1], name='Max')
     # Create the checker board filter based on the stride
     checker = np.zeros([pool_size*pool_size,shp[0]]+shp[1:4], dtype=np.bool)
     checker[:, :, 0::stride, 0::stride, :] = True
