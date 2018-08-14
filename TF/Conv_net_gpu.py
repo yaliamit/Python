@@ -134,7 +134,7 @@ def MaxPoolingandMask(input,pool_size, stride):
 
 # We are assuming 'SAME' padding with 0's.
     shp=input.shape.as_list()
-    paddings=np.int32(np.zeros((4,2)))
+    paddings=np.int64(np.zeros((4,2)))
     paddings[1,:]=[pool_size,pool_size]
     paddings[2,:]=[pool_size,pool_size]
     pad=tf.get_variable(initializer=paddings,name='pad',trainable=False)
