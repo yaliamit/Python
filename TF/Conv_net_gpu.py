@@ -144,7 +144,8 @@ def MaxPoolingandMask(input,pool_size, stride):
     # to represent the pool_size x pool_size window with that pixel as upper left hand corner
     for j in range(pool_size):
         for k in range(pool_size):
-            ll.append(tf.manip.roll(pinput,shift=[-j,-k],axis=[1,2]))
+            sh=tf.convert_to_tensor(np.int64([-j,-k]))
+            ll.append(tf.manip.roll(pinput,shift=sh,axis=[1,2]))
 
     shifted_images = tf.stack(ll, axis=0)
     # After shifting eliminate padding - not needed any more
@@ -167,7 +168,8 @@ def MaxPoolingandMask(input,pool_size, stride):
     jjj=[]
     for j in range(pool_size):
         for k in range(pool_size):
-            jjj.append(tf.manip.roll(JJJ[j*pool_size+k,:,:,:,:],shift=[j,k],axis=[1,2]))
+            sh = tf.convert_to_tensor(np.int64([-j, -k]))
+            jjj.append(tf.manip.roll(JJJ[j*pool_size+k,:,:,:,:],shift=sh,axis=[1,2]))
     # This a pool_sizexpool_size stack of masks one for each location of ulc using the pixel as max.
     mask=tf.stack(jjj,axis=0, name='Equal')
 
