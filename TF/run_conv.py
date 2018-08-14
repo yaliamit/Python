@@ -90,32 +90,24 @@ PARS['n_classes'] = train[1].shape[1]
 print('n_classes', PARS['n_classes'], 'dim', dim, 'nchannels', PARS['nchannels'])
 
 tf.reset_default_graph()
+with tf.device('/device:GPU:1'):
 
-x = tf.placeholder(tf.float32, shape=[None, dim, dim, PARS['nchannels']], name="x")
-y_ = tf.placeholder(tf.float32, shape=[None, PARS['n_classes']], name="y")
-Train = tf.placeholder(tf.bool, name="Train")
-debug = PARS['debug']
+    x = tf.placeholder(tf.float32, shape=[None, dim, dim, PARS['nchannels']], name="x")
+    y_ = tf.placeholder(tf.float32, shape=[None, PARS['n_classes']], name="y")
+    Train = tf.placeholder(tf.bool, name="Train")
+    debug = PARS['debug']
 
-
-loss, accuracy, TS, sibs = create_network(PARS,x,y_,Train)
-PARS['sibs']=sibs
-TS.reverse()
-for t in TS:
-    print(t)
-VS = tf.trainable_variables()
-VS.reverse()
-
-dW_OPs, lall = back_prop(loss,accuracy,TS,VS,x,PARS)
-
-with tf.Session() as sess:
     # Create the network architecture with the above placeholdes as the inputs.
+    loss, accuracy, TS, sibs = create_network(PARS,x,y_,Train)
+    PARS['sibs']=sibs
+    TS.reverse()
+    for t in TS:
+        print(t)
+    VS = tf.trainable_variables()
+    VS.reverse()
+    dW_OPs, lall = back_prop(loss,accuracy,TS,VS,x,PARS)
 
-    # loss, accuracy, TS, sibs = create_network(PARS,x,y_,Train)
-    # PARS['sibs']=sibs
-    # TS.reverse()
-    # for t in TS:
-    #     print(t)
-    # print(loss)
+with tf.Session(config=tf.ConfigProto(log_device_placement=True)) as sess:
     # Initialize variables
     sess.run(tf.global_variables_initializer())
     for v in VS:
@@ -125,16 +117,6 @@ with tf.Session() as sess:
     # Differences between W and R
     for t in np.arange(0, len(VS), 2):
         print('t', t, 'zeros', np.sum(VS[t].eval() == 0), np.max(np.abs(VS[t].eval() - VS[t + 1].eval())))
-    # Show trainable variables
-    # VS = tf.trainable_variables()
-    # VS.reverse()
-    # for v in VS:
-    #     print(v.name, v.get_shape().as_list(), np.std(v.eval()))
-    #     zero_out_weights(PARS)
-    # # Differences between W and R
-    # for t in np.arange(0, len(VS), 2):
-    #     print('t', t, 'zeros', np.sum(VS[t].eval() == 0), np.max(np.abs(VS[t].eval() - VS[t + 1].eval())))
-    # dW_OPs, lall = back_prop(loss,accuracy,TS,VS,x,PARS)
 
     # Run epochs
     AC = []
