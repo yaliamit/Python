@@ -91,69 +91,22 @@ def grad_fully_connected(below, back_propped, current, W, R, scale=0):
     return gradfcW, gradfcx
 
 
-def MaxPoolingandMask_1(input,pool_size, stride):
-
-
-
-    shp=input.shape.as_list()
-    paddings=np.int32(np.zeros((4,2)))
-    paddings[1,:]=[pool_size,pool_size]
-    paddings[2,:]=[pool_size,pool_size]
-    pad=tf.get_variable(initializer=paddings,name='pad',trainable=False)
-    pinput=tf.pad(input,paddings=pad)
-    ll=[]
-    for j in range(pool_size):
-        for k in range(pool_size):
-            ll.append(tf.manip.roll(pinput,shift=[-j,-k],axis=[1,2]))
-
-    shifted_images=tf.stack(ll,axis=1)
-
-    #shifted_images = tf.slice(shifted_images,[0,0,pool_size,pool_size,0],)
-    shifted_images  = tf.reshape(shifted_images[:,:, pool_size:pool_size + shp[1], pool_size:pool_size + shp[2], :],[shp[0],pool_size*pool_size]+shp[1:4])
-    checker = np.zeros([shp[0],pool_size*pool_size]+shp[1:4], dtype=np.bool)
-    checker[:, :, 0::stride, 0::stride, :] = True
-    Tchecker = tf.get_variable(initializer=checker,name='checker',trainable=False)
-    maxes = tf.reduce_max(shifted_images, axis=1,name='Max')
-    cmaxes=tf.tile(tf.expand_dims(maxes,1),[1,pool_size*pool_size,1,1,1])
-    #pooled = maxes[:,0::stride,0::stride,:]
-    pooled=tf.strided_slice(maxes,[0,0,0,0],shp,strides=[1,2,2,1],name='Max')
-
-
-
-    JJJ=tf.logical_and(tf.equal(cmaxes,shifted_images),Tchecker)
-    jjj=[]
-    for j in range(pool_size):
-        for k in range(pool_size):
-            jjj.append(tf.manip.roll(JJJ[:,j*pool_size+k,:,:,:],shift=[j,k],axis=[2,3]))
-    UUU=tf.stack(jjj,axis=1)
-    mask=tf.cast(tf.reduce_sum(tf.cast(UUU,dtype=tf.int32),axis=1),dtype=tf.bool,name='Equal')
-
-    return pooled, mask
-
 def MaxPoolingandMask(input,pool_size, stride):
 
 # We are assuming 'SAME' padding with 0's.
     shp=input.shape.as_list()
-    bigz=np.float32(np.zeros([pool_size*pool_size,shp[0],shp[1]+2*pool_size,shp[2]+2*pool_size,shp[3]]))
-    #BIGZ=tf.convert_to_tensor(bigz) #get_variable(initializer=bigz,name='BIGZ',trainable=False)
-    # paddings=np.int64(np.zeros((4,2)))
-    # paddings[1,:]=[pool_size,pool_size]
-    # paddings[2,:]=[pool_size,pool_size]
-    # pad=tf.get_variable(initializer=paddings,name='pad',trainable=False)
-    # pinput=tf.pad(input,paddings=pad)
     ll=[]
     # Create pool_size x pool_size shifts of the data stacked on top of each pixel
     # to represent the pool_size x pool_size window with that pixel as upper left hand corner
     for j in range(pool_size):
         for k in range(pool_size):
             pp=np.int64(np.zeros((4,2)))
-            pp[1,:]=[pool_size-j,pool_size+j]
-            pp[2,:]=[pool_size-k,pool_size+k]
-            ll.append(tf.pad(input,paddings=pp))
+            pp[1,:]=[0,j]
+            pp[2,:]=[0,k]
+            input_pad=tf.pad(input,pp)
+            ll.append(input_pad[:,j:j+shp[1],k:k+shp[2],:])
 
     shifted_images = tf.stack(ll, axis=0)
-    # After shifting eliminate padding - not needed any more
-    shifted_images  = tf.reshape(shifted_images[:,:, pool_size:pool_size + shp[1], pool_size:pool_size + shp[2], :],[pool_size*pool_size,shp[0]]+shp[1:4])
     # Get the max in each stack
     maxes = tf.reduce_max(shifted_images, axis=0, name='Max')
     # Expand to the stack
@@ -174,9 +127,10 @@ def MaxPoolingandMask(input,pool_size, stride):
         for k in range(pool_size):
             ind = j * pool_size + k
             pp = np.int64(np.zeros((4, 2)))
-            pp[1, :] = [0, j]
-            pp[2, :] = [0, k]
-            jjj.append(tf.pad(JJJ[ind,:,j:,k:,:],paddings=pp))
+            pp[1, :] = [j,0]
+            pp[2, :] = [k,0]
+            jj_pad=tf.pad(JJJ[ind,:,:,:,:],paddings=pp)
+            jjj.append(jj_pad[:,0:shp[1],0:shp[2],:])
     # This a pool_sizexpool_size stack of masks one for each location of ulc using the pixel as max.
     mask=tf.stack(jjj,axis=0, name='Equal')
 
@@ -185,12 +139,19 @@ def MaxPoolingandMask(input,pool_size, stride):
 
 def grad_pool(back_propped, pool, mask, pool_size, stride):
         gradx_pool = tf.reshape(back_propped, [-1] + (pool.shape.as_list())[1:])
+
+
         ll = []
         gradx_pool=UpSampling2D(size=[stride,stride])(gradx_pool)
+        shp = gradx_pool.shape.as_list()
         # Stack gradx values for different ulc of windows reaching pixel, add those flagged by mask.
         for j in range(pool_size):
             for k in range(pool_size):
-                ll.append(tf.manip.roll(gradx_pool, shift=[-j, -k], axis=[1, 2]))
+                pp = np.int64(np.zeros((4, 2)))
+                pp[1, :] = [0,j]
+                pp[2, :] = [0,k]
+                gradx_pool_pad=tf.pad(gradx_pool, paddings=pp)
+                ll.append(gradx_pool_pad[:,j:j+shp[1],k:k+shp[2],:])
         shifted_gradx_pool = tf.stack(ll, axis=0)
         gradx=tf.reduce_sum(tf.multiply(shifted_gradx_pool,mask),axis=0)
 
