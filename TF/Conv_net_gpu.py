@@ -148,10 +148,14 @@ def grad_pool(back_propped, pool, mask, pool_size, stride):
         for j in range(pool_size):
             for k in range(pool_size):
                 pp = np.int64(np.zeros((4, 2)))
-                pp[1, :] = [0,j]
-                pp[2, :] = [0,k]
+                #pp[1, :] = [0,j]
+                #pp[2, :] = [0,k]
+                pp[1, :] = [j, 0]
+                pp[2, :] = [k, 0]
                 gradx_pool_pad=tf.pad(gradx_pool, paddings=pp)
-                ll.append(gradx_pool_pad[:,j:j+shp[1],k:k+shp[2],:])
+                #ll.append(gradx_pool_pad[:,j:j+shp[1],k:k+shp[2],:])
+                ll.append(gradx_pool_pad[:,0:shp[1],0:shp[2],:])
+
         shifted_gradx_pool = tf.stack(ll, axis=0)
         gradx=tf.reduce_sum(tf.multiply(shifted_gradx_pool,mask),axis=0)
 
