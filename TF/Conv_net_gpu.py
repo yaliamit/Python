@@ -322,7 +322,7 @@ def create_network(PARS,x,y_,Train):
 
 def update_only_non_zero(V,gra, step):
     up=V-step*gra
-    #up=K.tf.where(tf.equal(V,tf.constant(0.)),V,up)
+    up=K.tf.where(tf.equal(V,tf.constant(0.)),V,up)
     assign_op = tf.assign(V,up)
     return assign_op
 
