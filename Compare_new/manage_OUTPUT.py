@@ -125,18 +125,19 @@ def plot_OUTPUT(name='OUTPUT',code='',first=None,last=None):
     try:
         aa=commands.check_output(ss,shell=True)
         atest=np.fromstring(aa,sep='\n\t\t\t')
+        print(atest)
         if (type(atest) is np.ndarray and len(atest) > 0):
             atest = atest[-1]
-        ss = 'grep Post-train ' + name + '.txt | grep acc | cut -d":" -f2'
-        atrain = np.fromstring(commands.check_output(ss, shell=True), sep='\n\t\t\t')
-        if (type(atrain) is np.ndarray and len(atrain) > 0):
-            havetrain = True
-            atrain = atrain[-1]
+        # ss = 'grep Post-train ' + name + '.txt | grep acc | cut -d":" -f2'
+        # atrain = np.fromstring(commands.check_output(ss, shell=True), sep='\n\t\t\t')
+        # if (type(atrain) is np.ndarray and len(atrain) > 0):
+        #     havetrain = True
+        #     atrain = atrain[-1]
     except:
         print('aggeg not found')
 
-    if (havetrain):
-            print('Final',atest,atrain)
+    #if (havetrain):
+    print('Final',atest) #,atrain)
     if (first is not None and last is not None):
         bt=bt[first:last]
         bv=bv[first:last]
