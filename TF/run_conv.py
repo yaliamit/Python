@@ -151,7 +151,7 @@ with tf.Session() as sess:
     print("Test loss:\t\t\t{:.6f}".format(lo))
     print("Test acc:\t\t\t{:.6f}".format(ac))
 
-    print('step','0', 'aggegate accuracy', ac)
+    print('step,','0,', 'aggegate accuracy,', ac)
     # plt.plot(AC)
     # plt.plot(VAC)
     # plt.show()
