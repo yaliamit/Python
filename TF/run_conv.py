@@ -73,6 +73,7 @@ PARS = {}
 
 net = sys.argv[1]  # 'fncrc_try' #'fncrc_deep_tryR_avg'
 gpu_device='/device:GPU:'+sys.argv[2]
+print('gpu_device',gpu_device)
 print('net', net)
 pp.parse_text_file(net, PARS, lname='layers', dump=True)
 batch_size = PARS['batch_size']
