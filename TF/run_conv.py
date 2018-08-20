@@ -63,23 +63,16 @@ def run_epoch_test(test):
     return acc / ca, lo / ca
 
 
-def get_gpu_number():
-    import subprocess as commands
-    bt=commands.check_output('ssh amit@marx.uchicago.edu "ssh amit@bernie.uchicago.edu \'nvidia-smi -q --id=0 | grep Performance | cut -d: -f2 | cut -dP -f2\' " ', shell=True)
-    if (np.int32(bt)<=5):
-        return 0
-    bt=np.fromstring(commands.check_output('ssh amit@marx.uchicago.edu "ssh amit@bernie \'nvidia-smi -q --id=1 | grep Performance | cut -d: -f2 | cut -dP -f2\' " '))
-    if (np.int32(bt) <= 5):
-        return 1
-
-    return None
 
 
-gpu_no=get_gpu_number()
-gpu_device='/device:GPU:'+str(gpu_no)
+
+#gpu_no=get_gpu_number()
+gpu_no=1
+
 PARS = {}
 
 net = sys.argv[1]  # 'fncrc_try' #'fncrc_deep_tryR_avg'
+gpu_device='/device:GPU:'+sys.argv[2]
 print('net', net)
 pp.parse_text_file(net, PARS, lname='layers', dump=True)
 batch_size = PARS['batch_size']
