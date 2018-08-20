@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ef2eb448-6413-411f-9ec4-6f9aac3066f7" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/../Class/_pars/fncrc.txt" afterPath="$PROJECT_DIR$/../Class/_pars/fncrc.txt" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/run_conv.py" afterPath="$PROJECT_DIR$/run_conv.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -22,7 +23,7 @@
       <file leaf-file-name="Conv_net_gpu.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Conv_net_gpu.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4785">
+            <state relative-caret-position="-103">
               <caret line="324" column="4" lean-forward="false" selection-start-line="324" selection-start-column="4" selection-end-line="324" selection-end-column="4" />
               <folding>
                 <element signature="e#2#25#0" expanded="true" />
@@ -31,11 +32,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="run_conv.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="run_conv.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/run_conv.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1085">
-              <caret line="153" column="43" lean-forward="false" selection-start-line="153" selection-start-column="43" selection-end-line="153" selection-end-column="43" />
+            <state relative-caret-position="80">
+              <caret line="79" column="0" lean-forward="false" selection-start-line="79" selection-start-column="0" selection-end-line="79" selection-end-column="0" />
               <folding>
                 <element signature="e#19#46#0" expanded="true" />
               </folding>
@@ -46,8 +47,8 @@
       <file leaf-file-name="manage_OUTPUT.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../Compare_new/manage_OUTPUT.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="423">
-              <caret line="138" column="15" lean-forward="true" selection-start-line="138" selection-start-column="15" selection-end-line="138" selection-end-column="15" />
+            <state relative-caret-position="-1674">
+              <caret line="3" column="29" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="29" />
               <folding />
             </state>
           </provider>
@@ -56,8 +57,8 @@
       <file leaf-file-name="runber.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/runber.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="31" column="134" lean-forward="false" selection-start-line="31" selection-start-column="134" selection-end-line="31" selection-end-column="134" />
+            <state relative-caret-position="211">
+              <caret line="23" column="41" lean-forward="false" selection-start-line="23" selection-start-column="41" selection-end-line="23" selection-end-column="41" />
               <folding />
             </state>
           </provider>
@@ -73,7 +74,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="fncrc.txt" pinned="false" current-in-tab="true">
+      <file leaf-file-name="fncrc.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../Class/_pars/fncrc.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="15">
@@ -164,11 +165,11 @@
         <option value="$PROJECT_DIR$/data.py" />
         <option value="$PROJECT_DIR$/parse_net_pars.py" />
         <option value="$PROJECT_DIR$/try.py" />
-        <option value="$PROJECT_DIR$/run_conv.py" />
         <option value="$PROJECT_DIR$/Conv_net_gpu.py" />
         <option value="$PROJECT_DIR$/runber.py" />
         <option value="$PROJECT_DIR$/../Class/_pars/fncrc_deep_tryR_avg.txt" />
         <option value="$PROJECT_DIR$/../Class/_pars/fncrc.txt" />
+        <option value="$PROJECT_DIR$/run_conv.py" />
       </list>
     </option>
   </component>
@@ -238,7 +239,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.try">
+  <component name="RunManager" selected="Python.run_conv">
     <configuration name="Conv_net_gpu" type="PythonConfigurationType" factoryName="Python">
       <output_file path="$PROJECT_DIR$/OUTPUTloc.txt" is_save="true" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -442,8 +443,8 @@
     </list>
     <recent_temporary>
       <list size="3">
-        <item index="0" class="java.lang.String" itemvalue="Python.try" />
-        <item index="1" class="java.lang.String" itemvalue="Python.run_conv" />
+        <item index="0" class="java.lang.String" itemvalue="Python.run_conv" />
+        <item index="1" class="java.lang.String" itemvalue="Python.try" />
         <item index="2" class="java.lang.String" itemvalue="Python.runber" />
       </list>
     </recent_temporary>
@@ -470,7 +471,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="44" y="78" width="1191" height="677" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -480,7 +480,7 @@
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20683454" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26837608" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19141324" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.47942755" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -542,6 +542,16 @@
           <line>43</line>
           <option name="timeStamp" value="87" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/run_conv.py</url>
+          <line>79</line>
+          <option name="timeStamp" value="88" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/run_conv.py</url>
+          <line>68</line>
+          <option name="timeStamp" value="89" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
@@ -553,54 +563,54 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="88" />
+      <option name="time" value="90" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateCodeFragment">
       <expression>
-        <expression-string>print(gradi[1][5,0,:,:,0])</expression-string>
+        <expression-string>np.int32(bt)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>print(gradi[1][4,0,:,:,0])</expression-string>
+        <expression-string>btt[2]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>print(gradi[1][3,0,:,:,0])</expression-string>
+        <expression-string>btt[1]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>print(gradi[1][2,0,:,:,0])</expression-string>
+        <expression-string>btt[0]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>print(gradi[1][1,0,:,:,0])</expression-string>
+        <expression-string>btt=str(bt)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>print(gradi[1][0,0,:,:,0])</expression-string>
+        <expression-string>str(bt)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>print(np.sum(mask,axis=0).reshape((8,8)))</expression-string>
+        <expression-string>bt</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>print(np.sum(mask,axis=0))</expression-string>
+        <expression-string>bt[0]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>print(grad_test[0][0,:,:,0])</expression-string>
+        <expression-string>bt[0 ]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
@@ -967,46 +977,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Conv_net_gpu.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4785">
-          <caret line="324" column="4" lean-forward="false" selection-start-line="324" selection-start-column="4" selection-end-line="324" selection-end-column="4" />
-          <folding>
-            <element signature="e#2#25#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/runber.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="31" column="134" lean-forward="false" selection-start-line="31" selection-start-column="134" selection-end-line="31" selection-end-column="134" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../Class/_pars/fncrc_deep_tryR_avg.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="465">
           <caret line="31" column="1" lean-forward="false" selection-start-line="31" selection-start-column="1" selection-end-line="31" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/run_conv.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1085">
-          <caret line="153" column="43" lean-forward="false" selection-start-line="153" selection-start-column="43" selection-end-line="153" selection-end-column="43" />
-          <folding>
-            <element signature="e#19#46#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../Compare_new/manage_OUTPUT.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="423">
-          <caret line="138" column="15" lean-forward="true" selection-start-line="138" selection-start-column="15" selection-end-line="138" selection-end-column="15" />
           <folding />
         </state>
       </provider>
@@ -1016,6 +990,42 @@
         <state relative-caret-position="15">
           <caret line="1" column="15" lean-forward="false" selection-start-line="1" selection-start-column="15" selection-end-line="1" selection-end-column="15" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Conv_net_gpu.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-103">
+          <caret line="324" column="4" lean-forward="false" selection-start-line="324" selection-start-column="4" selection-end-line="324" selection-end-column="4" />
+          <folding>
+            <element signature="e#2#25#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/runber.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="211">
+          <caret line="23" column="41" lean-forward="false" selection-start-line="23" selection-start-column="41" selection-end-line="23" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../Compare_new/manage_OUTPUT.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1674">
+          <caret line="3" column="29" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run_conv.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="80">
+          <caret line="79" column="0" lean-forward="false" selection-start-line="79" selection-start-column="0" selection-end-line="79" selection-end-column="0" />
+          <folding>
+            <element signature="e#19#46#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -63,7 +63,20 @@ def run_epoch_test(test):
     return acc / ca, lo / ca
 
 
+def get_gpu_number():
+    import subprocess as commands
+    bt=commands.check_output('ssh amit@marx.uchicago.edu "ssh amit@bernie.uchicago.edu \'nvidia-smi -q --id=0 | grep Performance | cut -d: -f2 | cut -dP -f2\' " ', shell=True)
+    if (np.int32(bt)<=5):
+        return 0
+    bt=np.fromstring(commands.check_output('ssh amit@marx.uchicago.edu "ssh amit@bernie \'nvidia-smi -q --id=1 | grep Performance | cut -d: -f2 | cut -dP -f2\' " '))
+    if (np.int32(bt) <= 5):
+        return 1
 
+    return None
+
+
+gpu_no=get_gpu_number()
+gpu_device='/device:GPU:'+str(gpu_no)
 PARS = {}
 
 net = sys.argv[1]  # 'fncrc_try' #'fncrc_deep_tryR_avg'
@@ -90,7 +103,7 @@ PARS['n_classes'] = train[1].shape[1]
 print('n_classes', PARS['n_classes'], 'dim', dim, 'nchannels', PARS['nchannels'])
 
 tf.reset_default_graph()
-with tf.device('/device:GPU:1'):
+with tf.device(gpu_device):
 
     x = tf.placeholder(tf.float32, shape=[None, dim, dim, PARS['nchannels']], name="x")
     y_ = tf.placeholder(tf.float32, shape=[None, PARS['n_classes']], name="y")
