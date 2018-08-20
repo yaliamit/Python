@@ -72,6 +72,7 @@ gpu_no=1
 PARS = {}
 
 net = sys.argv[1]  # 'fncrc_try' #'fncrc_deep_tryR_avg'
+print(sys.argv[2])
 gpu_device='/device:GPU:'+sys.argv[2]
 print('gpu_device',gpu_device)
 print('net', net)
