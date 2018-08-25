@@ -73,7 +73,7 @@ PARS = {}
 
 net = sys.argv[1]  # 'fncrc_try' #'fncrc_deep_tryR_avg'
 print(sys.argv[2])
-gpu_device='/device:GPU:'+sys.argv[2]
+#gpu_device='/device:GPU:'+sys.argv[2]
 print('gpu_device',gpu_device)
 print('net', net)
 pp.parse_text_file(net, PARS, lname='layers', dump=True)
@@ -98,22 +98,22 @@ PARS['n_classes'] = train[1].shape[1]
 print('n_classes', PARS['n_classes'], 'dim', dim, 'nchannels', PARS['nchannels'])
 
 tf.reset_default_graph()
-with tf.device(gpu_device):
+#with tf.device(gpu_device):
 
-    x = tf.placeholder(tf.float32, shape=[None, dim, dim, PARS['nchannels']], name="x")
-    y_ = tf.placeholder(tf.float32, shape=[None, PARS['n_classes']], name="y")
-    Train = tf.placeholder(tf.bool, name="Train")
-    debug = PARS['debug']
+x = tf.placeholder(tf.float32, shape=[None, dim, dim, PARS['nchannels']], name="x")
+y_ = tf.placeholder(tf.float32, shape=[None, PARS['n_classes']], name="y")
+Train = tf.placeholder(tf.bool, name="Train")
+debug = PARS['debug']
 
-    # Create the network architecture with the above placeholdes as the inputs.
-    loss, accuracy, TS, sibs = create_network(PARS,x,y_,Train)
-    PARS['sibs']=sibs
-    TS.reverse()
-    for t in TS:
-        print(t)
-    VS = tf.trainable_variables()
-    VS.reverse()
-    dW_OPs, lall = back_prop(loss,accuracy,TS,VS,x,PARS)
+# Create the network architecture with the above placeholdes as the inputs.
+loss, accuracy, TS, sibs = create_network(PARS,x,y_,Train)
+PARS['sibs']=sibs
+TS.reverse()
+for t in TS:
+    print(t)
+VS = tf.trainable_variables()
+VS.reverse()
+dW_OPs, lall = back_prop(loss,accuracy,TS,VS,x,PARS)
 
 with tf.Session() as sess:
     # Initialize variables
