@@ -71,7 +71,7 @@ with tf.device(gpu_device):
     VS = tf.trainable_variables()
     VS.reverse()
     dW_OPs, lall = back_prop(loss,accuracy,TS,VS,x,PARS)
-
+    print(dW_Ops)
     with tf.Session() as sess:
         # Initialize variables
         sess.run(tf.global_variables_initializer())
