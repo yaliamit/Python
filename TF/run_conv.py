@@ -56,9 +56,9 @@ print('net', net)
 PARS=process_parameters(net)
 train, val, test, dim = get_data(PARS)
 
-
+tf.reset_default_graph()
 with tf.device(gpu_device):
-    tf.reset_default_graph()
+
     x = tf.placeholder(tf.float32, shape=[None, dim, dim, PARS['nchannels']], name="x")
     y_ = tf.placeholder(tf.float32, shape=[None, PARS['n_classes']], name="y")
     Train = tf.placeholder(tf.bool, name="Train")
