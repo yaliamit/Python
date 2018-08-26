@@ -148,12 +148,9 @@ def grad_pool(back_propped, pool, mask, pool_size, stride):
         for j in range(pool_size):
             for k in range(pool_size):
                 pp = np.int64(np.zeros((4, 2)))
-                #pp[1, :] = [0,j]
-                #pp[2, :] = [0,k]
                 pp[1, :] = [j, 0]
                 pp[2, :] = [k, 0]
                 gradx_pool_pad=tf.pad(gradx_pool, paddings=pp)
-                #ll.append(gradx_pool_pad[:,j:j+shp[1],k:k+shp[2],:])
                 ll.append(gradx_pool_pad[:,0:shp[1],0:shp[2],:])
 
         shifted_gradx_pool = tf.stack(ll, axis=0)
@@ -186,14 +183,12 @@ def unpooling(x,mask,strides):
 
 def grad_pool_old(back_propped,pool,mask,pool_size):
         gradx_pool=tf.reshape(back_propped,[-1]+(pool.shape.as_list())[1:])
-    #gradfcx=tf.reshape(gradfcx_pool,[-1]+(conv.shape.as_list())[1:])
         gradx=unpooling(gradx_pool,mask,pool_size)
         return gradx
 
 
 def real_drop(parent, drop,batch_size):
     U = tf.less(tf.random_uniform([batch_size] + (parent.shape.as_list())[1:]),drop)
-    #parent=tf.reshape(parent,[batch_size] + (parent.shape.as_list())[1:])
     Z = tf.zeros_like(parent)
     fac = tf.constant(1.) / (1. - drop)
     drop = K.tf.where(U, Z, parent * fac)
@@ -208,7 +203,8 @@ def find_sibling(l,parent,PARS):
                     return q
         return None
 
-
+# If ts is a tensor just return name and tensor
+# is ts is a list only first entry is a tensor, the rest are paremters, return name and tensor.
 def get_name(ts):
     if type(ts) == list:
         name = ts[0].name
@@ -220,18 +216,15 @@ def get_name(ts):
 
 def create_network(PARS,x,y_,Train):
 
-    EXTRAS=[]
+
     TS=[]
     ln=len(PARS['layers'])
-    sibs={}
+    joint_parent={}
     for i,l in enumerate(PARS['layers']):
         parent=None
         prob=[1.,-1.]
         if ('force_global_prob' in PARS):
             prob=list(PARS['force_global_prob'])
-        # Last output layer is fully connected to last hidden layer
-        if (i==ln-1):
-            prob[0]=1.
         if ('parent' in l):
             if ('input' in l['parent']):
                 parent=x
@@ -242,13 +235,13 @@ def create_network(PARS,x,y_,Train):
                     for s in l['parent']:
                         for ts in TS:
                             name,T=get_name(ts)
-                            if s in name and not PARS['avoid_name'] in name:
+                            if s in name and not 'Equal' in name:
                                 parent.append(T)
                 # Get single parent
                 else:
                     for ts in TS:
                         name, T = get_name(ts)
-                        if l['parent'] in name and not PARS['avoid_name'] in name:
+                        if l['parent'] in name and not 'Equal' in name:
                             parent=T
         if ('conv' in l['name']):
             scope_name=l['name']
@@ -288,19 +281,18 @@ def create_network(PARS,x,y_,Train):
             with tf.variable_scope(l['name']):
                 res_sum=tf.add(parent[0],parent[1])
                 TS.append(res_sum)
-            # This is a sum layer get its sibling
-                joint_parent=find_sibling(l,l['parent'],PARS)
-                if (joint_parent is not None):
+            # This is a sum layer get its sibling the other layer connected to its parent
+                j_parent=find_sibling(l,l['parent'],PARS)
+                if (j_parent is not None):
                     name,T=get_name(TS[-1])
-                    sibs[name]=joint_parent
+                    joint_parent[name]=j_parent
 
     with tf.variable_scope('loss'):
        if (PARS['hinge']):
          yb=tf.cast(y_,dtype=tf.bool)
          cor=tf.boolean_mask(TS[-1],yb)
          cor = tf.nn.relu(1.-cor)
-         #print(y_.shape,cor.shape)
-         res=tf.boolean_mask(TS[-1],tf.logical_not(yb)) #tf.subtract(tf.ones_like(yb),yb))
+         res=tf.boolean_mask(TS[-1],tf.logical_not(yb))
          shp=TS[-1].shape.as_list()
          shp[1]=shp[1]-1
          res=tf.reshape(res,shape=shp)
@@ -315,8 +307,13 @@ def create_network(PARS,x,y_,Train):
     with tf.variable_scope('helpers'):
         correct_prediction = tf.equal(tf.argmax(TS[-1], 1), tf.argmax(y_, 1))
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32),name="ACC")
-    print('sibs',sibs)
-    return loss, accuracy, TS, sibs
+    print('joint_parent',joint_parent)
+    # joint_parent contains information on layers that are parents to two other layers which affects the gradient propagation.
+    PARS['joint_parent'] = joint_parent
+    TS.reverse()
+    for t in TS:
+        print(t)
+    return loss, accuracy, TS
 
 
 
@@ -333,13 +330,12 @@ def back_prop(loss,acc,TS,VS,x,PARS):
     gradX=tf.gradients(loss,TS[0])
 
     gradx=gradX[0]
-    lvs=len(VS)
     lts=len(TS)
     vs=0
     ts=0
     OPLIST=[]
     grad_hold_var={}
-    parent=None
+    joint_parent=None
     all_grad=[]
     if (PARS['debug']):
         all_grad.append(gradx)
@@ -347,30 +343,26 @@ def back_prop(loss,acc,TS,VS,x,PARS):
         T=TS[ts]
         name,T=get_name(T)
         if (ts<lts-1):
-                #pre=TS[ts+1]
                 prename,pre=get_name(TS[ts+1])
-                if (PARS['avoid_name'] in prename):
+                if ('Equal' in prename):
                     prename,pre=get_name(TS[ts+2])
-                    #pre=TS[ts+2]
         else:
             pre=x
         # You have held a gradx from a higher up layer to be added to current one.
-
-        if (parent is not None):
-
+        if (joint_parent is not None):
             pp=name.split('/')[0]
             ind=pp.find('nonlin')
             pp=pp[:ind]
-            if (parent == pp):
-                print(parent,'grad_hold',grad_hold_var[parent])
-                gradx=tf.add(gradx,grad_hold_var[parent])
-                parent=None
+            if (joint_parent == pp):
+                print(joint_parent,'grad_hold',grad_hold_var[joint_parent])
+                gradx=tf.add(gradx,grad_hold_var[joint_parent])
+                joint_parent=None
         if ('conv' in name):
             scale=0
             if ('nonlin' in name):
                 scale=PARS['nonlin_scale']
             gradconvW, gradx = grad_conv_layer(PARS['batch_size'],below=pre,back_propped=gradx,current=T,W=VS[vs], R=VS[vs+1],scale=scale)
-            assign_op_convW = update_only_non_zero(VS[vs],gradconvW,PARS['eta_init'])
+            assign_op_convW = update_only_non_zero(VS[vs],gradconvW,PARS['step_size'])
             OPLIST.append(assign_op_convW)
             if (len(VS[vs+1].shape.as_list())==4):
                 assign_op_convR=update_only_non_zero(VS[vs+1],gradconvW, PARS['Rstep_size'])
@@ -387,7 +379,7 @@ def back_prop(loss,acc,TS,VS,x,PARS):
             #all_grad.append(T)
             if (PARS['debug']):
                 all_grad.append(gradx)
-        elif (PARS['avoid_name'] in name):
+        elif ('Equal' in name):
             mask=T
             ts+=1
         elif ('Max' in name):
@@ -404,7 +396,7 @@ def back_prop(loss,acc,TS,VS,x,PARS):
             if ('nonlin' in name):
                 scale = PARS['nonlin_scale']
             gradfcW, gradx = grad_fully_connected(below=pre,back_propped=gradx,current=T, W=VS[vs],R=VS[vs+1], scale=scale)
-            assign_op_fcW = update_only_non_zero(VS[vs],gradfcW,PARS['eta_init'])
+            assign_op_fcW = update_only_non_zero(VS[vs],gradfcW,PARS['step_size'])
             OPLIST.append(assign_op_fcW)
             if (len(VS[vs+1].shape.as_list())==2):
                 assign_op_fcR = update_only_non_zero(VS[vs+1],gradfcW,PARS['Rstep_size'])
@@ -413,10 +405,10 @@ def back_prop(loss,acc,TS,VS,x,PARS):
                 all_grad.append(gradx)
             ts+=1
             vs+=2
-        if (name in PARS['sibs']):
+        if (name in PARS['joint_parent']):
             grad_hold=gradx
-            parent=PARS['sibs'][name]
-            grad_hold_var[parent]=grad_hold
+            joint_parent=PARS['joint_parent'][name]
+            grad_hold_var[joint_parent]=grad_hold
     if (PARS['debug']):
         print('all_grad',len(all_grad))
         for cg in all_grad:
@@ -428,13 +420,18 @@ def back_prop(loss,acc,TS,VS,x,PARS):
     return OPLIST, len(all_grad)
 
 
-def get_data(data_set):
-    if ('cifar' in data_set):
-        return(data.get_cifar(data_set=data_set))
-    elif (data_set=="mnist"):
-        return(data.get_mnist())
-
-
+def get_data(PARS):
+    if ('cifar' in PARS['data_set']):
+        train, val, test=data.get_cifar(data_set=PARS['data_set'])
+    elif (PARS['data_set']=="mnist"):
+        train, val, test= data.get_mnist()
+    num_train = np.minimum(PARS['num_train'], train[0].shape[0])
+    train = (train[0][0:num_train], train[1][0:num_train])
+    dim = train[0].shape[1]
+    PARS['nchannels'] = train[0].shape[3]
+    PARS['n_classes'] = train[1].shape[1]
+    print('n_classes', PARS['n_classes'], 'dim', dim, 'nchannels', PARS['nchannels'])
+    return train, val, test, dim
 
 
 
