@@ -71,6 +71,7 @@ with tf.device(gpu_device):
     VS = tf.trainable_variables()
     VS.reverse()
     dW_OPs, lall = back_prop(loss,accuracy,TS,VS,x,PARS)
+    print("OPS:")
     for w in dW_OPs:
         print(w)
     with tf.Session() as sess:
