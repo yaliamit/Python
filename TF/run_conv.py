@@ -75,9 +75,10 @@ with tf.device(gpu_device):
     for w in dW_OPs:
         print(w)
     #config = tf.ConfigProto()
+    gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
     #config.gpu_options.allow_growth = True
-
-    with tf.Session(config=tf.ConfigProto(log_device_placement=True,allow_growth=True)) as sess:
+    #config = tf.ConfigProto(log_device_placement=True, allow_growth=True)
+    with tf.Session(config=tf.ConfigProto(gpu_options=gpu_options)) as sess:
         # Initialize variables
         sess.run(tf.global_variables_initializer())
         for i,v in enumerate(VS):
