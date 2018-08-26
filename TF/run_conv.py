@@ -74,7 +74,7 @@ with tf.device(gpu_device):
     print("OPS:")
     for w in dW_OPs:
         print(w)
-    with tf.Session() as sess:
+    with tf.Session(config=tf.ConfigProto(log_device_placement=True)) as sess:
         # Initialize variables
         sess.run(tf.global_variables_initializer())
         for i,v in enumerate(VS):
