@@ -58,27 +58,27 @@ train, val, test, dim = get_data(PARS)
 
 tf.reset_default_graph()
 with tf.device(gpu_device):
-
-    x = tf.placeholder(tf.float32, shape=[None, dim, dim, PARS['nchannels']], name="x")
-    y_ = tf.placeholder(tf.float32, shape=[None, PARS['n_classes']], name="y")
-    Train = tf.placeholder(tf.bool, name="Train")
-
-
-    # Create the network architecture with the above placeholdes as the inputs.
-    # TS is a list of tensors or tensors + a list of associated parameters (pool size etc.)
-    loss, accuracy, TS = create_network(PARS,x,y_,Train)
-
-    VS = tf.trainable_variables()
-    VS.reverse()
-    dW_OPs, lall = back_prop(loss,accuracy,TS,VS,x,PARS)
-    print("OPS:")
-    for w in dW_OPs:
-        print(w)
-    #config = tf.ConfigProto()
     gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.5)
-    #config.gpu_options.allow_growth = True
-    #config = tf.ConfigProto(log_device_placement=True, allow_growth=True)
+    # config.gpu_options.allow_growth = True
+    # config = tf.ConfigProto(log_device_placement=True, allow_growth=True)
     with tf.Session(config=tf.ConfigProto(gpu_options=gpu_options)) as sess:
+        x = tf.placeholder(tf.float32, shape=[None, dim, dim, PARS['nchannels']], name="x")
+        y_ = tf.placeholder(tf.float32, shape=[None, PARS['n_classes']], name="y")
+        Train = tf.placeholder(tf.bool, name="Train")
+
+
+        # Create the network architecture with the above placeholdes as the inputs.
+        # TS is a list of tensors or tensors + a list of associated parameters (pool size etc.)
+        loss, accuracy, TS = create_network(PARS,x,y_,Train)
+    
+        VS = tf.trainable_variables()
+        VS.reverse()
+        dW_OPs, lall = back_prop(loss,accuracy,TS,VS,x,PARS)
+        print("OPS:")
+        for w in dW_OPs:
+            print(w)
+    #config = tf.ConfigProto()
+
         # Initialize variables
         sess.run(tf.global_variables_initializer())
         for i,v in enumerate(VS):
