@@ -148,17 +148,31 @@ def MaxPoolingandMask_old(inputs, pool_size, strides,
 
         pooled = tf.nn.max_pool(inputs, ksize=pool_size, strides=strides, padding=padding)
         upsampled = UpSampling2D(size=strides[1:3])(pooled)
-        indexMask = K.tf.equal(inputs, upsampled)
-        assert indexMask.get_shape().as_list() == inputs.get_shape().as_list()
+        input_shape=inputs.get_shape().as_list()
+        pooled_shape=upsampled.get_shape().as_list()
+        if (input_shape != pooled_shape):
+            pads=np.zeros((4,2))
+            for i in range(4):
+                pads[i,1]=pooled_shape[i]-input_shape[i]
+            pinput=tf.pad(inputs,paddings=pads)
+        else:
+            pinput=input
+        indexMask = K.tf.equal(pinput, upsampled)
+        #assert indexMask.get_shape().as_list() == inputs.get_shape().as_list()
         return pooled,indexMask
 
 
 
-def grad_pool_old(back_propped,pool,mask,pool_size):
+def grad_pool_old(back_propped,pool,mask,pre,pool_size):
+
         gradx_pool=tf.reshape(back_propped,[-1]+(pool.shape.as_list())[1:])
         on_success = UpSampling2D(size=pool_size)(gradx_pool)
         on_fail = K.zeros_like(on_success)
         gradx=K.tf.where(mask, on_success, on_fail)
+        dim = on_success.get_shape().as_list()
+        predim = pre.get_shape().as_list()
+        if (dim !=predim):
+            gradx=gradx[:,0:predim[1],0:predim[2],:]
         return gradx
 
 
@@ -356,7 +370,7 @@ def back_prop(loss,acc,TS,VS,x,PARS):
             ts+=1
         elif ('Max' in name):
             if (TS[ts][1]==TS[ts][2]):
-                gradx=grad_pool_old(gradx,T,mask,[2,2])
+                gradx=grad_pool_old(gradx,T,mask,pre,TS[ts][1])
             else:
                 gradx=grad_pool(gradx,T,mask,pool_size=TS[ts][1],stride=TS[ts][2])
             if (PARS['debug']):
