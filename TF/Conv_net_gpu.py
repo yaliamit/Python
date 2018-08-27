@@ -153,7 +153,7 @@ def MaxPoolingandMask_old(inputs, pool_size, strides,
         return pooled,indexMask
 
 
- 
+
 def grad_pool_old(back_propped,pool,mask,pool_size):
         gradx_pool=tf.reshape(back_propped,[-1]+(pool.shape.as_list())[1:])
         on_success = UpSampling2D(size=pool_size)(gradx_pool)
