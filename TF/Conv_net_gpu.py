@@ -156,7 +156,7 @@ def MaxPoolingandMask_old(inputs, pool_size, strides,
                 pads[i,1]=upsampled_shape[i]-input_shape[i]
             pinput=tf.pad(inputs,paddings=pads)
         else:
-            pinput=input
+            pinput=inputs
         indexMask = K.tf.equal(pinput, upsampled)
         #assert indexMask.get_shape().as_list() == inputs.get_shape().as_list()
         return pooled,indexMask
