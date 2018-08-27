@@ -92,9 +92,9 @@ with tf.device(gpu_device):
         ac, lo= run_epoch(test,i,type='Test')
         print('step,','0,', 'aggegate accuracy,', ac)
 
-        saver = tf.train.Saver()
-        model_name='model'
-        save_path = saver.save(sess, "tmp/" + model_name)
-        print("Model saved in path: %s" % save_path)
+        # saver = tf.train.Saver()
+        # model_name='model'
+        # save_path = saver.save(sess, "tmp/" + model_name)
+        # print("Model saved in path: %s" % save_path)
         print("DONE")
         sys.stdout.flush()

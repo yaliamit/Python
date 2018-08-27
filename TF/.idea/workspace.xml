@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="ef2eb448-6413-411f-9ec4-6f9aac3066f7" name="Default" comment="Folder for parameter files">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/Untitled.ipynb" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/_pars/fncrc.txt" afterPath="$PROJECT_DIR$/_pars/fncrc.txt" />
-      <change beforePath="$PROJECT_DIR$/runrcc.py" afterPath="$PROJECT_DIR$/_scripts/runrcc.py" />
+      <change beforePath="$PROJECT_DIR$/run_conv.py" afterPath="$PROJECT_DIR$/run_conv.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -34,11 +32,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="run_conv.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="run_conv.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/run_conv.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="344">
-              <caret line="91" column="45" lean-forward="false" selection-start-line="91" selection-start-column="45" selection-end-line="91" selection-end-column="45" />
+            <state relative-caret-position="377">
+              <caret line="97" column="54" lean-forward="true" selection-start-line="94" selection-start-column="10" selection-end-line="97" selection-end-column="54" />
               <folding>
                 <element signature="e#19#46#0" expanded="true" />
               </folding>
@@ -46,7 +44,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="runber.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="runber.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/_scripts/runber.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="360">
@@ -62,7 +60,7 @@
         <entry file="file://$PROJECT_DIR$/_pars/fncrc.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="15">
-              <caret line="1" column="13" lean-forward="true" selection-start-line="1" selection-start-column="13" selection-end-line="1" selection-end-column="13" />
+              <caret line="1" column="13" lean-forward="false" selection-start-line="1" selection-start-column="13" selection-end-line="1" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -155,10 +153,10 @@
         <option value="$PROJECT_DIR$/../Class/_pars/fncrc.txt" />
         <option value="$PROJECT_DIR$/init.py" />
         <option value="$PROJECT_DIR$/Conv_net_aux.py" />
-        <option value="$PROJECT_DIR$/run_conv.py" />
         <option value="$PROJECT_DIR$/Conv_net_gpu.py" />
         <option value="$PROJECT_DIR$/_pars/fncrc.txt" />
         <option value="$PROJECT_DIR$/_scripts/runber.py" />
+        <option value="$PROJECT_DIR$/run_conv.py" />
       </list>
     </option>
   </component>
@@ -939,20 +937,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/run_conv.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="344">
-          <caret line="91" column="45" lean-forward="false" selection-start-line="91" selection-start-column="45" selection-end-line="91" selection-end-column="45" />
-          <folding>
-            <element signature="e#19#46#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/_pars/fncrc.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
-          <caret line="1" column="13" lean-forward="true" selection-start-line="1" selection-start-column="13" selection-end-line="1" selection-end-column="13" />
+          <caret line="1" column="13" lean-forward="false" selection-start-line="1" selection-start-column="13" selection-end-line="1" selection-end-column="13" />
           <folding />
         </state>
       </provider>
@@ -963,6 +951,16 @@
           <caret line="77" column="33" lean-forward="false" selection-start-line="77" selection-start-column="33" selection-end-line="77" selection-end-column="33" />
           <folding>
             <element signature="e#0#29#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run_conv.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="377">
+          <caret line="97" column="54" lean-forward="true" selection-start-line="94" selection-start-column="10" selection-end-line="97" selection-end-column="54" />
+          <folding>
+            <element signature="e#19#46#0" expanded="true" />
           </folding>
         </state>
       </provider>
