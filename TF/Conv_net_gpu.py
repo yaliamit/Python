@@ -297,7 +297,6 @@ def create_network(PARS,x,y_,Train):
          shp[1]=shp[1]-1
          res=tf.reshape(res,shape=shp)
          res=tf.reduce_sum(tf.nn.relu(1.+res),axis=1)
-         #print('res',res.shape)
          loss=tf.reduce_mean(cor+PARS['dep_fac']*res/(PARS['n_classes']-1),name="hinge")
        else:
          loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=TS[-1]),name="sm")
@@ -364,6 +363,7 @@ def back_prop(loss,acc,TS,VS,x,PARS):
             gradconvW, gradx = grad_conv_layer(PARS['batch_size'],below=pre,back_propped=gradx,current=T,W=VS[vs], R=VS[vs+1],scale=scale)
             assign_op_convW = update_only_non_zero(VS[vs],gradconvW,PARS['step_size'])
             OPLIST.append(assign_op_convW)
+            # If an R variable exists and is a 4-dim array i.e. is active
             if (len(VS[vs+1].shape.as_list())==4):
                 assign_op_convR=update_only_non_zero(VS[vs+1],gradconvW, PARS['Rstep_size'])
                 OPLIST.append(assign_op_convR)
@@ -372,11 +372,8 @@ def back_prop(loss,acc,TS,VS,x,PARS):
             ts+=1
             vs+=2
         elif ('drop' in name):
-            #fac=tf.constant(np.float32(name.split('x')[1]))
             Z = tf.equal(T, tf.constant(0.))
             gradx=K.tf.where(Z,T,tf.multiply(tf.reshape(gradx,T.shape),TS[ts][1]))
-            #all_grad.append(Z)
-            #all_grad.append(T)
             if (PARS['debug']):
                 all_grad.append(gradx)
         elif ('Equal' in name):
@@ -387,7 +384,6 @@ def back_prop(loss,acc,TS,VS,x,PARS):
                 gradx=grad_pool_old(gradx,T,mask,[2,2])
             else:
                 gradx=grad_pool(gradx,T,mask,pool_size=TS[ts][1],stride=TS[ts][2])
-
             if (PARS['debug']):
                 all_grad.append(gradx)
             ts+=1
@@ -398,6 +394,7 @@ def back_prop(loss,acc,TS,VS,x,PARS):
             gradfcW, gradx = grad_fully_connected(below=pre,back_propped=gradx,current=T, W=VS[vs],R=VS[vs+1], scale=scale)
             assign_op_fcW = update_only_non_zero(VS[vs],gradfcW,PARS['step_size'])
             OPLIST.append(assign_op_fcW)
+            # If an R variable exists and is a 2-dim matrix i.e. is active
             if (len(VS[vs+1].shape.as_list())==2):
                 assign_op_fcR = update_only_non_zero(VS[vs+1],gradfcW,PARS['Rstep_size'])
                 OPLIST.append(assign_op_fcR)
@@ -434,4 +431,17 @@ def get_data(PARS):
     return train, val, test, dim
 
 
-
+def zero_out_weights(PARS,VS,sess):
+    for i, v in enumerate(VS):
+        print(v.name, v.get_shape().as_list(), np.std(v.eval()))
+        # After reversal, i=0 - first trainable variable is last dense layer W.
+        #                 i=1 - second trainable variable is last dense layer R
+        # Don't zero out these because with large numbers of classes the hinge loss doesn't work.
+        if (i > 1):
+             if (PARS['force_global_prob'][1] >= 0 and PARS['force_global_prob'][0] < 1.):
+                print('Zeroing out weights at rate ', PARS['force_global_prob'][0])
+                shape = v.get_shape().as_list()
+                Z = tf.zeros(shape)
+                U = tf.random_uniform(shape)
+                zero_op = tf.assign(v, K.tf.where(tf.less(U, tf.constant(PARS['force_global_prob'][0])), v, Z))
+                sess.run(zero_op)

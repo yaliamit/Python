@@ -4,8 +4,8 @@ import time
 import sys
 import numpy as np
 import tensorflow as tf
-from Conv_net_gpu import get_data, create_network, back_prop
-from Conv_net_aux import process_parameters,zero_out_weights,print_results
+from Conv_net_gpu import get_data, create_network, back_prop, zero_out_weights
+from Conv_net_aux import process_parameters,print_results
 
 
 def run_epoch(train,i,type='Train'):
@@ -58,13 +58,9 @@ train, val, test, dim = get_data(PARS)
 
 tf.reset_default_graph()
 with tf.device(gpu_device):
-    #gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.4)
-    #config.gpu_options.allow_growth = True
-    # config = tf.ConfigProto(log_device_placement=True, allow_growth=True)
-    #config = tf.ConfigProto(gpu_options=gpu_options)
+
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
-
     with tf.Session(config=config) as sess:
         x = tf.placeholder(tf.float32, shape=[None, dim, dim, PARS['nchannels']], name="x")
         y_ = tf.placeholder(tf.float32, shape=[None, PARS['n_classes']], name="y")
@@ -78,37 +74,22 @@ with tf.device(gpu_device):
         VS = tf.trainable_variables()
         VS.reverse()
         dW_OPs, lall = back_prop(loss,accuracy,TS,VS,x,PARS)
-        print("OPS:")
-        for w in dW_OPs:
-            print(w)
-    #config = tf.ConfigProto()
 
         # Initialize variables
         sess.run(tf.global_variables_initializer())
-        for i,v in enumerate(VS):
-            print(v.name, v.get_shape().as_list(), np.std(v.eval()))
-            # After reversal, i=0 - first trainable variable is last dense layer W.
-            #                 i=1 - second trainable variable is last dense layer R
-            # Don't zero out these because with large numbers of classes the hinge loss doesn't work.
-            if (i > 1):
-                zero_out_weights(PARS,v,sess)
+        zero_out_weights(PARS,VS,sess)
 
-        # Differences between W and R
-        for t in np.arange(0, len(VS), 2):
-            print('t', t, 'zeros', np.sum(VS[t].eval() == 0), np.max(np.abs(VS[t].eval() - VS[t + 1].eval())))
-
-        # Run epochs
+        # Initial test accuracy
         run_epoch(test,-1,type='Test')
-
+        # Run training epochs
         for i in range(PARS['num_epochs']):  # number of epochs
-            # ac,lo=\
             run_epoch(train,i)
             if (np.mod(i, 1) == 0):
                 run_epoch(val,i,type='Val')
                 sys.stdout.flush()
 
+        # Final test accuracy
         ac, lo= run_epoch(test,i,type='Test')
-
         print('step,','0,', 'aggegate accuracy,', ac)
 
         saver = tf.train.Saver()
