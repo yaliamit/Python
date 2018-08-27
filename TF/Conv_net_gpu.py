@@ -1,9 +1,5 @@
-
-
 import tensorflow as tf
-#import matplotlib.pyplot as plt
 import numpy as np
-import data
 from keras import backend as K
 from keras.layers.convolutional import UpSampling2D
 
