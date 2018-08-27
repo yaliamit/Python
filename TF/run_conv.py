@@ -1,12 +1,11 @@
 # Run the training
-import parse_net_pars as pp
 import time
 import sys
 import numpy as np
 import tensorflow as tf
-from Conv_net_gpu import get_data, create_network, back_prop, zero_out_weights
+from Conv_net_gpu import create_network, back_prop, zero_out_weights
 from Conv_net_aux import process_parameters,print_results
-
+from Conv_data import get_data
 
 def run_epoch(train,i,type='Train'):
     t1 = time.time()

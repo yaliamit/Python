@@ -416,21 +416,6 @@ def back_prop(loss,acc,TS,VS,x,PARS):
     
     return OPLIST, len(all_grad)
 
-
-def get_data(PARS):
-    if ('cifar' in PARS['data_set']):
-        train, val, test=data.get_cifar(data_set=PARS['data_set'])
-    elif (PARS['data_set']=="mnist"):
-        train, val, test= data.get_mnist()
-    num_train = np.minimum(PARS['num_train'], train[0].shape[0])
-    train = (train[0][0:num_train], train[1][0:num_train])
-    dim = train[0].shape[1]
-    PARS['nchannels'] = train[0].shape[3]
-    PARS['n_classes'] = train[1].shape[1]
-    print('n_classes', PARS['n_classes'], 'dim', dim, 'nchannels', PARS['nchannels'])
-    return train, val, test, dim
-
-
 def zero_out_weights(PARS,VS,sess):
     for i, v in enumerate(VS):
         print(v.name, v.get_shape().as_list(), np.std(v.eval()))
