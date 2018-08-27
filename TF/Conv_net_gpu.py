@@ -149,11 +149,11 @@ def MaxPoolingandMask_old(inputs, pool_size, strides,
         pooled = tf.nn.max_pool(inputs, ksize=pool_size, strides=strides, padding=padding)
         upsampled = UpSampling2D(size=strides[1:3])(pooled)
         input_shape=inputs.get_shape().as_list()
-        pooled_shape=upsampled.get_shape().as_list()
-        if (input_shape != pooled_shape):
+        upsampled_shape=upsampled.get_shape().as_list()
+        if (input_shape != upsampled_shape):
             pads=np.zeros((4,2))
             for i in range(4):
-                pads[i,1]=pooled_shape[i]-input_shape[i]
+                pads[i,1]=upsampled_shape[i]-input_shape[i]
             pinput=tf.pad(inputs,paddings=pads)
         else:
             pinput=input
