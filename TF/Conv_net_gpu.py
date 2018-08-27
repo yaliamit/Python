@@ -34,7 +34,6 @@ def grad_conv_layer(batch_size,below, back_propped, current, W, R, scale):
     
     filter=W
     if (len(R.shape.as_list())==4):
-        print('using R')
         filter=R
     print('input_sizes',input_shape,'filter',filter.shape.as_list(),'out_backprop',out_backprop.shape.as_list())
     gradconvx=tf.nn.conv2d_backprop_input(input_sizes=input_shape,filter=filter,out_backprop=out_backprop,strides=strides,padding='SAME')
@@ -47,9 +46,6 @@ def grad_conv_layer(batch_size,below, back_propped, current, W, R, scale):
 
 def fully_connected_layer(input,batch_size,nonlin_scale, num_features,prob=[1.,-1.], scale=0):
     # Make sure input is flattened.
-    ### TEMP
-    #if (len(input.shape.as_list())==4):
-    #    input=tf.transpose(input,[0,3,1,2])
     flat_dim=np.int32(np.array(input.get_shape().as_list())[1:].prod())
     input_flattened = tf.reshape(input, shape=[batch_size,flat_dim])
     shape=[flat_dim,num_features]
@@ -57,17 +53,10 @@ def fully_connected_layer(input,batch_size,nonlin_scale, num_features,prob=[1.,-
     if (prob[1]==-1.):
         shapeR=[1]
     R_fc = tf.get_variable('R',shape=shapeR)
-    #if (num_features==10):
-    #    aa=np.load('../Class/Wnewdensf.npy')
-    #else:
-    #    aa=np.load('../Class/Wnewdensp.npy')
-    #W_fc = tf.get_variable('W',initializer=aa)
-
     W_fc = tf.get_variable('W',shape=shape)
     fc = tf.matmul(input_flattened, W_fc)
     if (scale>0):
         fc = tf.clip_by_value(nonlin_scale * fc, -1., 1.)
-
     return(fc)
 
 def grad_fully_connected(below, back_propped, current, W, R, scale=0):
@@ -163,23 +152,13 @@ def MaxPoolingandMask_old(inputs, pool_size, strides,
         assert indexMask.get_shape().as_list() == inputs.get_shape().as_list()
         return pooled,indexMask
 
- 
-def unpooling(x,mask,strides):
-    '''
-    do unpooling with indices, move this to separate layer if it works
-    1. do naive upsampling (repeat elements)
-    2. keep only values in mask (stored indices) and set the rest to zeros
-    '''
-    on_success = UpSampling2D(size=strides)(x)
-    on_fail = K.zeros_like(on_success)
-    return K.tf.where(mask, on_success, on_fail)
- 
- 
 
-
+ 
 def grad_pool_old(back_propped,pool,mask,pool_size):
         gradx_pool=tf.reshape(back_propped,[-1]+(pool.shape.as_list())[1:])
-        gradx=unpooling(gradx_pool,mask,pool_size)
+        on_success = UpSampling2D(size=pool_size)(gradx_pool)
+        on_fail = K.zeros_like(on_success)
+        gradx=K.tf.where(mask, on_success, on_fail)
         return gradx
 
 
@@ -190,7 +169,7 @@ def real_drop(parent, drop,batch_size):
     drop = K.tf.where(U, Z, parent * fac)
     return drop
 
-def find_sibling(l,parent,PARS):
+def find_joint_parent(l,parent,PARS):
       
         for ly in PARS['layers']:
             if ('parent' in ly):
@@ -278,7 +257,7 @@ def create_network(PARS,x,y_,Train):
                 res_sum=tf.add(parent[0],parent[1])
                 TS.append(res_sum)
             # This is a sum layer get its sibling the other layer connected to its parent
-                j_parent=find_sibling(l,l['parent'],PARS)
+                j_parent=find_joint_parent(l,l['parent'],PARS)
                 if (j_parent is not None):
                     name,T=get_name(TS[-1])
                     joint_parent[name]=j_parent
