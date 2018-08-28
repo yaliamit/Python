@@ -123,9 +123,8 @@ def MaxPoolingandMask(input,pool_size, stride):
 
 
 def grad_pool(back_propped, pool, mask, pool_size, stride):
+
         gradx_pool = tf.reshape(back_propped, [-1] + (pool.shape.as_list())[1:])
-
-
         ll = []
         gradx_pool=UpSampling2D(size=[stride,stride])(gradx_pool)
         shp = gradx_pool.shape.as_list()
@@ -232,51 +231,63 @@ def create_network(PARS,x,y_,Train):
                         name, T = get_name(ts)
                         if l['parent'] in name and not 'Equal' in name:
                             parent=T
+        # Convolutional layer
         if ('conv' in l['name']):
             scope_name=l['name']
             scale=0
+            # with non-linearity - always clipped linearity
             if ('non_linearity' in l and l['non_linearity']=='tanh'):
                 scale=PARS['nonlin_scale']
                 scope_name=l['name']+'nonlin'
             with tf.variable_scope(scope_name):
                 TS.append(conv_layer(parent,PARS['batch_size'],PARS['nonlin_scale'], filter_size=list(l['filter_size']),num_features=l['num_filters'], prob=prob, scale=scale))
+        # Dense layer
         elif ('dens' in l['name']):
             scope_name = l['name']
             scale = 0
+            # with non-linearity - always clipped linearity
             if('non_linearity' in l and l['non_linearity'] == 'tanh'):
                 scale = PARS['nonlin_scale']
                 scope_name = l['name'] + 'nonlin'
             with tf.variable_scope(scope_name):
                 num_units=l['num_units']
+                # Make sure final layer has num_units=num_classes
                 if ('final' in l):
                     num_units=PARS['n_classes']
                 TS.append(fully_connected_layer(parent,PARS['batch_size'],PARS['nonlin_scale'], num_features=num_units,prob=prob,scale=scale))
+        # Pooling layer
         elif ('pool' in l['name']):
             with tf.variable_scope(l['name']):
+                # Quick computation pooling on disjoint regions
                 if (l['pool_size']==l['stride']):
                     pool, mask = MaxPoolingandMask_old(parent, [1]+list(l['pool_size'])+[1],strides=[1]+list(l['stride'])+[1])
                     TS.append([pool,l['pool_size'],l['stride']])
+                # More complex computation using shifts of arrays for stride < pool_size
                 else:
                     pool, mask = MaxPoolingandMask(parent, l['pool_size'][0],l['stride'][0])
-                #EXTRAS.append(SI)
                     TS.append([pool,l['pool_size'][0],l['stride'][0]])
+                # Keep record of mask for gradient computation
                 TS.append(mask)
+        # Drop layer
         elif ('drop' in l['name']):
             with tf.variable_scope(l['name']):
                 ffac = 1. / (1. - l['drop'])
+                # Only drop is place holder Train is True
                 drop=tf.cond(Train,lambda: real_drop(parent,l['drop'],PARS['batch_size']),lambda: parent)
                 TS.append([drop,ffac])
+        # Add two equal sized consecutive layers
         elif ('concatsum' in l['name']):
             with tf.variable_scope(l['name']):
                 res_sum=tf.add(parent[0],parent[1])
                 TS.append(res_sum)
-            # This is a sum layer get its sibling the other layer connected to its parent
+                # This is a sum layer hold its joint_parent with another other layer
                 j_parent=find_joint_parent(l,l['parent'],PARS)
                 if (j_parent is not None):
                     name,T=get_name(TS[-1])
                     joint_parent[name]=j_parent
 
     with tf.variable_scope('loss'):
+       # Hinge loss
        if (PARS['hinge']):
          yb=tf.cast(y_,dtype=tf.bool)
          cor=tf.boolean_mask(TS[-1],yb)
@@ -288,6 +299,7 @@ def create_network(PARS,x,y_,Train):
          res=tf.reduce_sum(tf.nn.relu(1.+res),axis=1)
          loss=tf.reduce_mean(cor+PARS['dep_fac']*res/(PARS['n_classes']-1),name="hinge")
        else:
+         # Softmax-logistic loss
          loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=TS[-1]),name="sm")
 
         
