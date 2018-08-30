@@ -16,12 +16,8 @@ num_train:50000
 #eta_schedule:(10.,.0001)
 agg:True
 dep_fac:1.
-adapt_eta:False
-hinge:1.
+hinge:False
 TRAIN:True
-global_tinout:(.5,1.)
-#global_prob:(1.,1.)
-#reg_param_weights:.0005
 force_global_prob:(1.,-1.)
 name:input1
 name:conv1;num_filters:8;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:input1
