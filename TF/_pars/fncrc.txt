@@ -23,8 +23,8 @@ name:input1
 name:conv1;num_filters:8;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:input1
 name:conv1aR;num_filters:8;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:conv1
 name:conv1bR;num_filters:8;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:conv1aR
-#name:concatsum1;parent:[conv1,conv1bR]
-name:pool1;pool_size:(3, 3);stride:(2, 2);mode:max;parent:conv1bR
+name:concatsum1;parent:[conv1,conv1bR]
+name:pool1;pool_size:(3, 3);stride:(2, 2);mode:max;parent:concatsum1
 name:drop1;drop:.5;parent:pool1
 name:newdensp;num_units:50;non_linearity:tanh;parent:drop1
 name:drop2;drop:0.8;parent:newdensp
