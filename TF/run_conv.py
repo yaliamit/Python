@@ -57,7 +57,7 @@ train, val, test, dim = get_data(PARS)
 
 tf.reset_default_graph()
 with tf.device(gpu_device):
-    config=None
+    
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     with tf.Session(config=config) as sess:
