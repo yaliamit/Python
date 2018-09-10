@@ -57,9 +57,9 @@ train, val, test, dim = get_data(PARS)
 
 tf.reset_default_graph()
 with tf.device(gpu_device):
-
-    config = tf.ConfigProto()
-    config.gpu_options.allow_growth = True
+    config=None
+    #config = tf.ConfigProto()
+    #config.gpu_options.allow_growth = True
     with tf.Session(config=config) as sess:
         x = tf.placeholder(tf.float32, shape=[None, dim, dim, PARS['nchannels']], name="x")
         y_ = tf.placeholder(tf.float32, shape=[None, PARS['n_classes']], name="y")
