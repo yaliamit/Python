@@ -45,9 +45,9 @@ def run_epoch(train,i,type='Train'):
 
 net = sys.argv[1]
 gpu_device=None
-# if (len(sys.argv)>2):
-#     print(sys.argv[2])
-#     gpu_device='/device:GPU:'+sys.argv[2]
+if (len(sys.argv)>2):
+    print(sys.argv[2])
+    gpu_device='/device:GPU:'+sys.argv[2]
 print('gpu_device',gpu_device)
 print('net', net)
 
@@ -58,8 +58,8 @@ train, val, test, dim = get_data(PARS)
 tf.reset_default_graph()
 with tf.device(gpu_device):
     config=None
-    #config = tf.ConfigProto()
-    #config.gpu_options.allow_growth = True
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True
     with tf.Session(config=config) as sess:
         x = tf.placeholder(tf.float32, shape=[None, dim, dim, PARS['nchannels']], name="x")
         y_ = tf.placeholder(tf.float32, shape=[None, PARS['n_classes']], name="y")
