@@ -1,1 +1,1 @@
-/opt/anaconda/anaconda3/bin/python run_conv.py _pars/fncrc 0 >OUTc1.txt
+/opt/anaconda/anaconda3/bin/python run_conv.py fncrc 0 >OUT.txt

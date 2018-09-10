@@ -45,9 +45,9 @@ def run_epoch(train,i,type='Train'):
 
 net = sys.argv[1]
 gpu_device=None
-if (len(sys.argv)>2):
-    print(sys.argv[2])
-    gpu_device='/device:GPU:'+sys.argv[2]
+# if (len(sys.argv)>2):
+#     print(sys.argv[2])
+#     gpu_device='/device:GPU:'+sys.argv[2]
 print('gpu_device',gpu_device)
 print('net', net)
 
