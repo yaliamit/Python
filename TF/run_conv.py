@@ -101,7 +101,12 @@ with tf.device(gpu_device):
         # save_path = saver.save(sess, "tmp/" + model_name)
         # print("Model saved in path: %s" % save_path)
 
-    if ('sparse'in PARS):
+if ('sparse'in PARS):
+    with tf.device(gpu_device):
+
+        config = tf.ConfigProto()
+        config.gpu_options.allow_growth = True
+
     # Recreate graph with existing value of parameters
         tf.reset_default_graph()
         TS=[]
