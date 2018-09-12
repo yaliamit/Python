@@ -99,19 +99,13 @@ with tf.device(gpu_device):
         # model_name='model'
         # save_path = saver.save(sess, "tmp/" + model_name)
         # print("Model saved in path: %s" % save_path)
-        print("DONE")
-        sys.stdout.flush()
+
 
 # Recreate graph with existing value of parameters
-tf.reset_default_graph()
-TS=[]
-VS=[]
+    tf.reset_default_graph()
+    TS=[]
+    VS=[]
 
-
-with tf.device(gpu_device):
-
-    config = tf.ConfigProto()
-    config.gpu_options.allow_growth = True
     with tf.Session(config=config) as sess:
         x = tf.placeholder(tf.float32, shape=[None, dim, dim, PARS['nchannels']], name="x")
         y_ = tf.placeholder(tf.float32, shape=[None, PARS['n_classes']], name="y")
