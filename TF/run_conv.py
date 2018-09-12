@@ -88,44 +88,48 @@ with tf.device(gpu_device):
                 run_epoch(val,i,type='Val')
                 sys.stdout.flush()
 
-
-        WR=get_parameters(VS,PARS)
-        sparse_shape=find_ts(PARS['sparse'],TS).get_shape().as_list()[1:3]
+        if ('sparse' in PARS):
+            WR=get_parameters(VS,PARS)
+            sparse_shape=find_ts(PARS['sparse'],TS).get_shape().as_list()[1:3]
         # Final test accuracy
-        ac, lo= run_epoch(test,i,type='Test')
-        print('step,','0,', 'aggegate accuracy,', ac)
+        else:
+            ac, lo= run_epoch(test,i,type='Test')
+            print('step,','0,', 'aggegate accuracy,', ac)
 
         # saver = tf.train.Saver()
         # model_name='model'
         # save_path = saver.save(sess, "tmp/" + model_name)
         # print("Model saved in path: %s" % save_path)
 
+    if ('sparse'in PARS):
+    # Recreate graph with existing value of parameters
+        tf.reset_default_graph()
+        TS=[]
+        VS=[]
 
-# Recreate graph with existing value of parameters
-    tf.reset_default_graph()
-    TS=[]
-    VS=[]
-
-    with tf.Session(config=config) as sess:
-        x = tf.placeholder(tf.float32, shape=[None, dim, dim, PARS['nchannels']], name="x")
-        y_ = tf.placeholder(tf.float32, shape=[None, PARS['n_classes']], name="y")
-        Train = tf.placeholder(tf.bool, name="Train")
-        SP=convert_conv_to_sparse(sparse_shape,WR[PARS['sparse']],sess)
+        with tf.Session(config=config) as sess:
+            x = tf.placeholder(tf.float32, shape=[None, dim, dim, PARS['nchannels']], name="x")
+            y_ = tf.placeholder(tf.float32, shape=[None, PARS['n_classes']], name="y")
+            Train = tf.placeholder(tf.bool, name="Train")
+            SP=convert_conv_to_sparse(sparse_shape,WR[PARS['sparse']],sess)
 
 
-        loss,accuracy,TS = recreate_network(PARS,x,y_,Train,WR,SP)
-        VS = tf.trainable_variables()
-        VS.reverse()
+            loss,accuracy,TS = recreate_network(PARS,x,y_,Train,WR,SP)
+            VS = tf.trainable_variables()
+            VS.reverse()
 
-        dW_OPs, lall = back_prop(loss,accuracy,TS,VS,x,PARS)
+            dW_OPs, lall = back_prop(loss,accuracy,TS,VS,x,PARS)
 
-        # Initialize variables
-        sess.run(tf.global_variables_initializer())
-        zero_out_weights(PARS,VS,sess)
-        run_epoch(test,-1,type='Test')
+            # Initialize variables
+            sess.run(tf.global_variables_initializer())
+            zero_out_weights(PARS,VS,sess)
+            run_epoch(test,-1,type='Test')
 
-        for i in range(PARS['num_epochs_sparse']):  # number of epochs
-            run_epoch(train,i)
-            if (np.mod(i, 1) == 0):
-                run_epoch(val,i,type='Val')
-                sys.stdout.flush()
+            for i in range(PARS['num_epochs_sparse']):  # number of epochs
+                run_epoch(train,i)
+                if (np.mod(i, 1) == 0):
+                    run_epoch(val,i,type='Val')
+                    sys.stdout.flush()
+
+print("DONE")
+sys.stdout.flush()
