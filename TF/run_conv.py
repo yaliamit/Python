@@ -3,7 +3,7 @@ import time
 import sys
 import numpy as np
 import tensorflow as tf
-from Conv_net_gpu import create_network, back_prop, zero_out_weights
+from Conv_net_gpu import create_network, back_prop, zero_out_weights, convert_conv_to_sparse, find_ts, recreate_network, get_parameters
 from Conv_net_aux import process_parameters,print_results
 from Conv_data import get_data
 
@@ -57,7 +57,7 @@ train, val, test, dim = get_data(PARS)
 
 tf.reset_default_graph()
 with tf.device(gpu_device):
-    
+
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     with tf.Session(config=config) as sess:
@@ -72,6 +72,7 @@ with tf.device(gpu_device):
 
         VS = tf.trainable_variables()
         VS.reverse()
+
         dW_OPs, lall = back_prop(loss,accuracy,TS,VS,x,PARS)
 
         # Initialize variables
@@ -87,6 +88,9 @@ with tf.device(gpu_device):
                 run_epoch(val,i,type='Val')
                 sys.stdout.flush()
 
+
+        WR=get_parameters(VS,PARS)
+        sparse_shape=find_ts(PARS['sparse'],TS).get_shape().as_list()[1:3]
         # Final test accuracy
         ac, lo= run_epoch(test,i,type='Test')
         print('step,','0,', 'aggegate accuracy,', ac)
@@ -97,3 +101,37 @@ with tf.device(gpu_device):
         # print("Model saved in path: %s" % save_path)
         print("DONE")
         sys.stdout.flush()
+
+# Recreate graph with existing value of parameters
+tf.reset_default_graph()
+TS=[]
+VS=[]
+
+
+with tf.device(gpu_device):
+
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True
+    with tf.Session(config=config) as sess:
+        x = tf.placeholder(tf.float32, shape=[None, dim, dim, PARS['nchannels']], name="x")
+        y_ = tf.placeholder(tf.float32, shape=[None, PARS['n_classes']], name="y")
+        Train = tf.placeholder(tf.bool, name="Train")
+        SP=convert_conv_to_sparse(sparse_shape,WR[PARS['sparse']],sess)
+
+
+        loss,accuracy,TS = recreate_network(PARS,x,y_,Train,WR,SP)
+        VS = tf.trainable_variables()
+        VS.reverse()
+
+        dW_OPs, lall = back_prop(loss,accuracy,TS,VS,x,PARS)
+
+        # Initialize variables
+        sess.run(tf.global_variables_initializer())
+        zero_out_weights(PARS,VS,sess)
+        run_epoch(test,-1,type='Test')
+
+        for i in range(PARS['num_epochs_sparse']):  # number of epochs
+            run_epoch(train,i)
+            if (np.mod(i, 1) == 0):
+                run_epoch(val,i,type='Val')
+                sys.stdout.flush()

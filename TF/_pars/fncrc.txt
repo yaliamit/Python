@@ -1,5 +1,6 @@
 seed:45239
-num_epochs:100
+num_epochs:1
+num_epochs_sparse:10
 simple_augmentation:True
 mod_net:None
 edges:False
@@ -13,6 +14,7 @@ train:True
 mult:1
 debug:False
 num_train:50000
+sparse:conv1aR
 #eta_schedule:(10.,.0001)
 agg:True
 dep_fac:1.
@@ -20,11 +22,11 @@ hinge:False
 TRAIN:True
 force_global_prob:(1.,-1.)
 name:input1
-name:conv1;num_filters:8;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:input1
+name:conv1;num_filters:4;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:input1
 name:conv1aR;num_filters:8;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:conv1
 #name:conv1bR;num_filters:8;filter_size:(3,3);pad:(1,1);stride:(1, 1);parent:conv1aR
-name:concatsum1;parent:[conv1,conv1aR]
-name:pool1;pool_size:(3, 3);stride:(2, 2);mode:max;parent:concatsum1
+#name:concatsum1;parent:[conv1,conv1aR]
+name:pool1;pool_size:(3, 3);stride:(2, 2);mode:max;parent:conv1aR
 name:drop1;drop:.5;parent:pool1
 name:newdensp;num_units:50;non_linearity:tanh;parent:drop1
 name:drop2;drop:0.8;parent:newdensp

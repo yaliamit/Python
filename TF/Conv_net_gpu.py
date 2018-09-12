@@ -1,186 +1,112 @@
 import tensorflow as tf
 import numpy as np
 from keras import backend as K
-from keras.layers.convolutional import UpSampling2D
+
+from layers import conv_layer, grad_conv_layer, fully_connected_layer, grad_fully_connected, grad_pool, grad_pool_old
+from layers import sparse_fully_connected_layer, grad_sparse_fully_connected, MaxPoolingandMask, MaxPoolingandMask_old, real_drop
+
+def find_ts(name,TS):
+    for ts in TS:
+        if (type(ts) is list):
+            if (name in ts[0].name):
+                return(ts)
+        elif (name in ts.name):
+            return(ts)
+
+def find_wr(name,VS):
+    W=None
+    R=None
+    for vs in VS:
+        if (name in vs.name):
+            if ('W' in vs.name):
+                W=vs
+            elif('R' in vs.name):
+                R=vs
+    return W,R
+
+# Creare dictionary of parameters with name given by layer name
+def get_parameters(VSIN,PARS):
+
+    WR={}
+    for i,l in enumerate(PARS['layers']):
+
+        if ('conv' in l['name'] or 'dens' in l['name']):
+            Win,Rin=find_wr(l['name'],VSIN)
+            WR[l['name']]=[Win.eval(),Rin.eval()]
+
+    return(WR)
 
 
-def conv_layer(input,batch_size,nonlin_scale,filter_size=[3,3],num_features=[1],prob=[1.,-1.],scale=0):
-    
-    # Get number of input features from input and add to shape of new layer
-    shape=filter_size+[input.get_shape().as_list()[-1],num_features]
-    shapeR=shape
-    if (prob[1]==-1.):
-        shapeR=[1,1]
-    R = tf.get_variable('R',shape=shapeR)
-    W = tf.get_variable('W',shape=shape) # Default initialization is Glorot (the one explained in the slides)
-    input = tf.reshape(input, shape=[batch_size]+input.get_shape().as_list()[1:])
-
-    #b = tf.get_variable('b',shape=[num_features],initializer=tf.zeros_initializer) 
-    conv = tf.nn.conv2d(input, W, strides=[1, 1, 1, 1], padding='SAME')
-    if (scale>0):
-        conv = tf.clip_by_value(nonlin_scale * conv, -1., 1.)
-    return(conv)
-
-def grad_conv_layer(batch_size,below, back_propped, current, W, R, scale):
-    w_shape=W.shape
-    strides=[1,1,1,1]
-    back_prop_shape=[-1]+(current.shape.as_list())[1:]
-    out_backprop=tf.reshape(back_propped,back_prop_shape)
-    if (scale>0):
-        on_zero = K.zeros_like(out_backprop)
-        out_backprop = scale * K.tf.where(tf.equal(tf.abs(current), 1.), on_zero, out_backprop)
-    gradconvW=tf.nn.conv2d_backprop_filter(input=below,filter_sizes=w_shape,out_backprop=out_backprop,strides=strides,padding='SAME')
-    input_shape=[batch_size]+(below.shape.as_list())[1:]
-    
-    filter=W
-    if (len(R.shape.as_list())==4):
-        filter=R
-    print('input_sizes',input_shape,'filter',filter.shape.as_list(),'out_backprop',out_backprop.shape.as_list())
-    gradconvx=tf.nn.conv2d_backprop_input(input_sizes=input_shape,filter=filter,out_backprop=out_backprop,strides=strides,padding='SAME')
-    
-    return gradconvW, gradconvx
+def convert_conv_to_sparse(dshape,WR,sess):
 
 
-# In[3]:
+    # for ts in TS:
+    #     if (type(ts) is not list and name in ts.name):
+    #         dshape=ts.get_shape().as_list()[1:3]
+    W=WR[0]
+    R=WR[1]
+    doR=len(R.shape)>2
+    Wt=tf.convert_to_tensor(np.float32(W))
+    Rt=tf.convert_to_tensor(np.float32(R))
+    wshape=W.shape
+    infe=wshape[2]
+    outfe=wshape[3]
+    din=dshape+[infe,]
+    dimin=np.prod(din)
+    dout=din[0:2]+[outfe,]
+    dimout=np.prod(dout)
 
 
-def fully_connected_layer(input,batch_size,nonlin_scale, num_features,prob=[1.,-1.], scale=0):
-    # Make sure input is flattened.
-    flat_dim=np.int32(np.array(input.get_shape().as_list())[1:].prod())
-    input_flattened = tf.reshape(input, shape=[batch_size,flat_dim])
-    shape=[flat_dim,num_features]
-    shapeR=shape
-    if (prob[1]==-1.):
-        shapeR=[1]
-    R_fc = tf.get_variable('R',shape=shapeR)
-    W_fc = tf.get_variable('W',shape=shape)
-    fc = tf.matmul(input_flattened, W_fc)
-    if (scale>0):
-        fc = tf.clip_by_value(nonlin_scale * fc, -1., 1.)
-    return(fc)
-
-def grad_fully_connected(below, back_propped, current, W, R, scale=0):
-
-    belowf=tf.contrib.layers.flatten(below)
-    # Gradient of weights of dense layer
-    if (scale>0):
-        on_zero = K.zeros_like(back_propped)
-        back_propped = scale * K.tf.where(tf.equal(tf.abs(current), 1.), on_zero, back_propped)
-    gradfcW=tf.matmul(tf.transpose(belowf),back_propped)
-    # Propagated error to conv layer.
-    filter=W
-    if (len(R.shape.as_list())==2):
-        filter=R
-    gradfcx=tf.matmul(back_propped,tf.transpose(filter))
-    
-    return gradfcW, gradfcx
+    XX=np.zeros([dimin,]+din)
+    t=0
+    for i in range(din[0]):
+        for j in range(din[1]):
+            for k in range(din[2]):
+                XX[t,i,j,k]=1
+                t+=1
 
 
-def MaxPoolingandMask(input,pool_size, stride):
+    inc=np.int32(dimin/8)
+    indsaw=[]
+    valsaw=[]
+    indsar=[]
+    valsar=[]
+    for t in range(0,dimin,inc):
+        batch=tf.convert_to_tensor(np.float32(XX[t:t+inc,]))
+        outw = sess.run(tf.nn.conv2d(batch,Wt,strides=[1,1,1,1],padding='SAME'))
+        outw=np.reshape(outw,(inc,-1))
+        valsw=outw[outw!=0]
+        indsw=np.array(np.where(outw!=0))
+        indsw[0]=indsw[0]+t
+        indsaw.append(indsw.transpose())
+        valsaw.append(valsw)
+        if (doR):
+            outr = sess.run(tf.nn.conv2d(batch,Rt,strides=[1,1,1,1],padding='SAME'))
+            outr=np.reshape(outr,(inc,-1))
+            valsr=outr[outr!=0]
+            indsr=np.array(np.where(outr!=0))
+            indsr[0]=indsr[0]+t
+            indsar.append(indsr.transpose())
+            valsar.append(valsr)
 
-# We are assuming 'SAME' padding with 0's.
-    shp=input.shape.as_list()
-    ll=[]
-    # Create pool_size x pool_size shifts of the data stacked on top of each pixel
-    # to represent the pool_size x pool_size window with that pixel as upper left hand corner
-    for j in range(pool_size):
-        for k in range(pool_size):
-            pp=np.int64(np.zeros((4,2)))
-            pp[1,:]=[0,j]
-            pp[2,:]=[0,k]
-            input_pad=tf.pad(input,pp)
-            ll.append(input_pad[:,j:j+shp[1],k:k+shp[2],:])
+    INDSW=tf.convert_to_tensor(np.concatenate(indsaw,axis=0),dtype=np.int64)
+    VALSW=tf.convert_to_tensor(np.concatenate(valsaw,axis=0), dtype=np.float32)
+    ndims=tf.convert_to_tensor([dimin,dimout],dtype=np.int64)
 
-    shifted_images = tf.stack(ll, axis=0)
-    # Get the max in each stack
-    maxes = tf.reduce_max(shifted_images, axis=0, name='Max')
-    # Expand to the stack
-    cmaxes = tf.tile(tf.expand_dims(maxes, 0), [pool_size * pool_size, 1, 1, 1, 1])
-    # Get the pooled maxes by jumping strides
-    pooled = tf.strided_slice(maxes, [0, 0, 0, 0], shp, strides=[1, stride, stride, 1], name='Max')
-    # Create the checker board filter based on the stride
-    checker = np.zeros([pool_size*pool_size,shp[0]]+shp[1:4], dtype=np.bool)
-    checker[:, :, 0::stride, 0::stride, :] = True
-    Tchecker = tf.convert_to_tensor(checker) #get_variable(initializer=checker,name='checker',trainable=False)
+    SPW=tf.SparseTensor(indices=INDSW,values=VALSW,dense_shape=ndims)
+    SPW=tf.sparse_transpose(SPW)
+    SPR=None
+    if (doR):
+        INDSR=tf.convert_to_tensor(np.concatenate(indsar,axis=0),dtype=np.int64)
+        VALSR=tf.convert_to_tensor(np.concatenate(valsar,axis=0), dtype=np.float32)
+        ndims=tf.convert_to_tensor([dimin,dimout],dtype=np.int64)
 
-    # Filter the cmaxes and checker
-    JJJ=tf.cast(tf.logical_and(tf.equal(cmaxes,shifted_images),Tchecker),dtype=tf.float32)
-    # Reshift the cmaxes so that the stack for each pixel has true for indices corresonding to the upper left corner of each window
-    # that used that pixel as the max.
-    jjj=[]
-    for j in range(pool_size):
-        for k in range(pool_size):
-            ind = j * pool_size + k
-            pp = np.int64(np.zeros((4, 2)))
-            pp[1, :] = [j,0]
-            pp[2, :] = [k,0]
-            jj_pad=tf.pad(JJJ[ind,:,:,:,:],paddings=pp)
-            jjj.append(jj_pad[:,0:shp[1],0:shp[2],:])
-    # This a pool_sizexpool_size stack of masks one for each location of ulc using the pixel as max.
-    mask=tf.stack(jjj,axis=0, name='Equal')
+        SPR=tf.SparseTensor(indices=INDSR,values=VALSR,dense_shape=ndims)
+        SPR=tf.sparse_transpose(SPR)
 
-    return pooled, mask
+    return(SPW, SPR)
 
 
-def grad_pool(back_propped, pool, mask, pool_size, stride):
-
-        gradx_pool = tf.reshape(back_propped, [-1] + (pool.shape.as_list())[1:])
-        ll = []
-        gradx_pool=UpSampling2D(size=[stride,stride])(gradx_pool)
-        shp = gradx_pool.shape.as_list()
-        # Stack gradx values for different ulc of windows reaching pixel, add those flagged by mask.
-        for j in range(pool_size):
-            for k in range(pool_size):
-                pp = np.int64(np.zeros((4, 2)))
-                pp[1, :] = [j, 0]
-                pp[2, :] = [k, 0]
-                gradx_pool_pad=tf.pad(gradx_pool, paddings=pp)
-                ll.append(gradx_pool_pad[:,0:shp[1],0:shp[2],:])
-
-        shifted_gradx_pool = tf.stack(ll, axis=0)
-        gradx=tf.reduce_sum(tf.multiply(shifted_gradx_pool,mask),axis=0)
-
-        return gradx
-
-def MaxPoolingandMask_old(inputs, pool_size, strides,
-                          padding='SAME'):
-
-        pooled = tf.nn.max_pool(inputs, ksize=pool_size, strides=strides, padding=padding)
-        upsampled = UpSampling2D(size=strides[1:3])(pooled)
-        input_shape=inputs.get_shape().as_list()
-        upsampled_shape=upsampled.get_shape().as_list()
-        if (input_shape != upsampled_shape):
-            pads=np.zeros((4,2))
-            for i in range(4):
-                pads[i,1]=upsampled_shape[i]-input_shape[i]
-            pinput=tf.pad(inputs,paddings=pads)
-        else:
-            pinput=inputs
-        indexMask = K.tf.equal(pinput, upsampled)
-        #assert indexMask.get_shape().as_list() == inputs.get_shape().as_list()
-        return pooled,indexMask
-
-
-
-def grad_pool_old(back_propped,pool,mask,pre,pool_size):
-
-        gradx_pool=tf.reshape(back_propped,[-1]+(pool.shape.as_list())[1:])
-        on_success = UpSampling2D(size=pool_size)(gradx_pool)
-        on_fail = K.zeros_like(on_success)
-        gradx=K.tf.where(mask, on_success, on_fail)
-        dim = on_success.get_shape().as_list()
-        predim = pre.get_shape().as_list()
-        if (dim !=predim):
-            gradx=gradx[:,0:predim[1],0:predim[2],:]
-        return gradx
-
-
-def real_drop(parent, drop,batch_size):
-    U = tf.less(tf.random_uniform([batch_size] + (parent.shape.as_list())[1:]),drop)
-    Z = tf.zeros_like(parent)
-    fac = tf.constant(1.) / (1. - drop)
-    drop = K.tf.where(U, Z, parent * fac)
-    return drop
 
 def find_joint_parent(l,parent,PARS):
       
@@ -315,6 +241,135 @@ def create_network(PARS,x,y_,Train):
         print(t)
     return loss, accuracy, TS
 
+def recreate_network(PARS,x,y_,Train,WR,SP):
+
+
+            TS=[]
+            ln=len(PARS['layers'])
+            joint_parent={}
+            for i,l in enumerate(PARS['layers']):
+                parent=None
+                prob=[1.,-1.]
+                if ('force_global_prob' in PARS):
+                    prob=list(PARS['force_global_prob'])
+                if ('parent' in l):
+                    if ('input' in l['parent']):
+                        parent=x
+                    else:
+                        # Get list of parents
+                        if (type(l['parent'])==list):
+                            parent=[]
+                            for s in l['parent']:
+                                for ts in TS:
+                                    name,T=get_name(ts)
+                                    if s in name and not 'Equal' in name:
+                                        parent.append(T)
+                        # Get single parent
+                        else:
+                            for ts in TS:
+                                name, T = get_name(ts)
+                                if l['parent'] in name and not 'Equal' in name:
+                                    parent=T
+                # Convolutional layer
+                if (PARS['sparse'] in l['name']):
+                    Win=SP[0]
+                    Rin=SP[1]
+                    scope_name = 'sparse'+l['name']
+                    scale = 0
+                    # with non-linearity - always clipped linearity
+                    if('non_linearity' in l and l['non_linearity'] == 'tanh'):
+                        scale = PARS['nonlin_scale']
+                        scope_name = 'sparse'+l['name']+ 'nonlin'
+                    with tf.variable_scope(scope_name):
+                        num_units=(Win.dense_shape[0]).eval()
+                        TS.append(sparse_fully_connected_layer(parent,PARS['batch_size'],PARS['nonlin_scale'], num_units=num_units, num_features=l['num_filters'], prob=prob,scale=scale, Win=Win,Rin=Rin))
+                else:
+                    if ('conv' in l['name']):
+                        Win=WR[l['name']][0]
+                        Rin=WR[l['name']][1]
+                        scope_name=l['name']
+                        scale=0
+                        # with non-linearity - always clipped linearity
+                        if ('non_linearity' in l and l['non_linearity']=='tanh'):
+                            scale=PARS['nonlin_scale']
+                            scope_name=l['name']+'nonlin'
+                        with tf.variable_scope(scope_name):
+                            TS.append(conv_layer(parent,PARS['batch_size'],PARS['nonlin_scale'], filter_size=list(l['filter_size']),num_features=l['num_filters'], prob=prob, scale=scale,Win=Win,Rin=Rin))
+                    # Dense layer
+                    elif ('dens' in l['name']):
+                        Win=WR[l['name']][0]
+                        Rin=WR[l['name']][1]
+                        scope_name = l['name']
+                        scale = 0
+                        # with non-linearity - always clipped linearity
+                        if('non_linearity' in l and l['non_linearity'] == 'tanh'):
+                            scale = PARS['nonlin_scale']
+                            scope_name = l['name'] + 'nonlin'
+                        with tf.variable_scope(scope_name):
+                            num_units=l['num_units']
+                            # Make sure final layer has num_units=num_classes
+                            if ('final' in l):
+                                num_units=PARS['n_classes']
+                            TS.append(fully_connected_layer(parent,PARS['batch_size'],PARS['nonlin_scale'], num_features=num_units,prob=prob,scale=scale, Win=Win,Rin=Rin))
+                    # Pooling layer
+                    elif ('pool' in l['name']):
+                        with tf.variable_scope(l['name']):
+                            # Quick computation pooling on disjoint regions
+                            if (l['pool_size']==l['stride']):
+                                pool, mask = MaxPoolingandMask_old(parent, [1]+list(l['pool_size'])+[1],strides=[1]+list(l['stride'])+[1])
+                                TS.append([pool,l['pool_size'],l['stride']])
+                            # More complex computation using shifts of arrays for stride < pool_size
+                            else:
+                                pool, mask = MaxPoolingandMask(parent, l['pool_size'][0],l['stride'][0])
+                                TS.append([pool,l['pool_size'][0],l['stride'][0]])
+                            # Keep record of mask for gradient computation
+                            TS.append(mask)
+                    # Drop layer
+                    elif ('drop' in l['name']):
+                        with tf.variable_scope(l['name']):
+                            ffac = 1. / (1. - l['drop'])
+                            # Only drop is place holder Train is True
+                            drop=tf.cond(Train,lambda: real_drop(parent,l['drop'],PARS['batch_size']),lambda: parent)
+                            TS.append([drop,ffac])
+                    # Add two equal sized consecutive layers
+                    elif ('concatsum' in l['name']):
+                        with tf.variable_scope(l['name']):
+                            res_sum=tf.add(parent[0],parent[1])
+                            TS.append(res_sum)
+                            # This is a sum layer hold its joint_parent with another other layer
+                            j_parent=find_joint_parent(l,l['parent'],PARS)
+                            if (j_parent is not None):
+                                name,T=get_name(TS[-1])
+                                joint_parent[name]=j_parent
+
+            with tf.variable_scope('loss'):
+               # Hinge loss
+               if (PARS['hinge']):
+                 yb=tf.cast(y_,dtype=tf.bool)
+                 cor=tf.boolean_mask(TS[-1],yb)
+                 cor = tf.nn.relu(1.-cor)
+                 res=tf.boolean_mask(TS[-1],tf.logical_not(yb))
+                 shp=TS[-1].shape.as_list()
+                 shp[1]=shp[1]-1
+                 res=tf.reshape(res,shape=shp)
+                 res=tf.reduce_sum(tf.nn.relu(1.+res),axis=1)
+                 loss=tf.reduce_mean(cor+PARS['dep_fac']*res/(PARS['n_classes']-1),name="hinge")
+               else:
+                 # Softmax-logistic loss
+                 loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=TS[-1]),name="sm")
+
+
+            # Accuracy computation
+            with tf.variable_scope('helpers'):
+                correct_prediction = tf.equal(tf.argmax(TS[-1], 1), tf.argmax(y_, 1))
+                accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32),name="ACC")
+            print('joint_parent',joint_parent)
+            # joint_parent contains information on layers that are parents to two other layers which affects the gradient propagation.
+            PARS['joint_parent'] = joint_parent
+            TS.reverse()
+            for t in TS:
+                print(t)
+            return loss, accuracy, TS
 
 
 def update_only_non_zero(V,gra, step):
@@ -357,7 +412,7 @@ def back_prop(loss,acc,TS,VS,x,PARS):
                 print(joint_parent,'grad_hold',grad_hold_var[joint_parent])
                 gradx=tf.add(gradx,grad_hold_var[joint_parent])
                 joint_parent=None
-        if ('conv' in name):
+        if ('conv' in name and not 'sparse' in name):
             scale=0
             if ('nonlin' in name):
                 scale=PARS['nonlin_scale']
@@ -403,6 +458,22 @@ def back_prop(loss,acc,TS,VS,x,PARS):
                 all_grad.append(gradx)
             ts+=1
             vs+=2
+        elif ('sparse' in name):
+            scale = 0
+            if ('nonlin' in name):
+                scale = PARS['nonlin_scale']
+            gradfcW, gradx = grad_sparse_fully_connected(below=pre,back_propped=gradx,current=T, W_inds=VS[vs], W_vals=VS[vs+1], W_dims=VS[vs+2],
+                                                         R_inds=VS[vs+3], R_vals=VS[vs+4], R_dims=VS[vs+5], scale=scale)
+            assign_op_fcW = update_only_non_zero(VS[vs+1],gradfcW,PARS['step_size'])
+            OPLIST.append(assign_op_fcW)
+            # If an R variable exists and is a 2-dim matrix i.e. is active
+            if (len(VS[vs+1].shape.as_list())==2):
+                assign_op_fcR = update_only_non_zero(VS[vs+4],gradfcW,PARS['Rstep_size'])
+                OPLIST.append(assign_op_fcR)
+            if (PARS['debug']):
+                all_grad.append(gradx)
+            ts+=1
+            vs+=6
         if (name in PARS['joint_parent']):
             grad_hold=gradx
             joint_parent=PARS['joint_parent'][name]

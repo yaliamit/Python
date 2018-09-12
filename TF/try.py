@@ -3,45 +3,71 @@ import numpy as np
 import time
 import Conv_net_gpu
 
-#train, val, test = Conv_net_gpu.get_data(data_set='cifar10')
-
-#tro=np.tile(train[0],(1,1,1,8))
-tro=np.float32(np.random.rand(1,8,8,1))
-fac=np.float32(np.array(range(16)).reshape(1,4,4,1))
-print(tro.shape)
-
+print(tf.__version__)
 tf.reset_default_graph()
-input=tf.convert_to_tensor(tro)
-tfac=tf.convert_to_tensor(fac)
-pool_size=3
-stride=3
-#input_test=tf.nn.max_pool(input,[1,pool_size,pool_size,1],[1,stride,stride,1],padding='SAME')
-# ltest=tf.reduce_sum(tf.multiply(input_test,tfac))
-# dpl=tf.gradients(ltest,input)
-inputp=Conv_net_gpu.MaxPoolingandMask_old(input,[1,pool_size,pool_size,1],[1,stride,stride,1])
-# lp=tf.reduce_sum(tf.multiply(inputp[0],tfac))
-# dpg=tf.gradients(lp,inputp[0])
-# dpi=Conv_net_gpu.grad_pool(dpg, inputp[0], inputp[1], pool_size, stride)
-#inputp=Conv_net_gpu.MaxPoolingandMask_old(input,[1,pool_size,pool_size,1],[1,stride,stride,1])
+infe=2
+outfe=3
+tro=np.float32(np.random.rand(1,4,4,infe))
+
+#print('done')
+
+shape=[3,3,infe,outfe]
+W = tf.convert_to_tensor(np.float32(np.random.rand(shape[0],shape[1],shape[2],shape[3]))) #tf.get_variable('W',shape=shape)
+din=tro.shape[1:]
+dimin=np.prod(din)
+dout=din[0:2]+(shape[3],)
+dimout=np.prod(dout)
+
+
+XX=np.zeros((dimin,)+din)
+t=0
+for i in range(din[0]):
+    for j in range(din[1]):
+        for k in range(din[2]):
+            XX[t,i,j,k]=1
+            t+=1
+
+#x = tf.placeholder(tf.float32, shape=[None, din[0], din[1], din[2]], name="x")
+#conv = tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
+
+
+
 
 with tf.Session() as sess:
 
-    sess.run(tf.global_variables_initializer())
+    #sess.run(tf.global_variables_initializer())
     #dpgo=sess.run(dpg)
-    pooled, mask = sess.run(inputp)
-    #pooled_test=sess.run(input_test)
-    #gradi=sess.run(dpi)
-    #grad_test=sess.run(dpl)
+    inc=8
+    pin=0
+    indsa=[]
+    valsa=[]
+    for t in range(0,dimin,inc):
+        batch=tf.convert_to_tensor(np.float32(XX[t:t+inc,]))
+        out = sess.run(tf.nn.conv2d(batch,W,strides=[1,1,1,1],padding='SAME'))
+        out=np.reshape(out,(inc,-1))
+        vals=out[out!=0]
+        inds=np.array(np.where(out!=0))
+        inds[0]=inds[0]+t
+        indsa.append(inds.transpose())
+        valsa.append(vals)
 
-    print('tro',tro[0,:,:,0])
-    #print('dpgo',dpgo[0][0,:,:,0])
-    print('pooled',pooled[0,:,:,0])
-    #print('pooled_test',pooled_test[0,:,:,0])
-    print('mask',mask[0,:,:,0])
-    #print('gradi',gradi[0][0,:,:,0])
-    #print('grad_pool_shift',gradi[1][0,:,:,0])
-    #print('grad_test',grad_test[0][0,:,:,0])
+    INDS=tf.convert_to_tensor(np.concatenate(indsa,axis=0),dtype=np.int64)
+    VALS=tf.convert_to_tensor(np.concatenate(valsa,axis=0), dtype=np.float32)
+    ndims=tf.convert_to_tensor([dimin,dimout],dtype=np.int64)
+
+
+    print('tro',tro[:,:,0])
+
+    SP=tf.SparseTensor(indices=INDS,values=VALS,dense_shape=ndims)
+    SP=tf.sparse_transpose(SP)
+    out1=sess.run(tf.nn.conv2d(tro,W,strides=[1,1,1,1],padding='SAME'))
+    ttro=tf.convert_to_tensor(np.reshape(tro,(1,-1)).transpose())
+    convs=tf.sparse_tensor_dense_matmul(SP,ttro)
+    out2=sess.run(convs)
+    out2a=np.reshape(out2,out1.shape)
+    print(out1.shape,out2a.shape)
+    print('out1',out1[0,:,:,1])
+    print('out2a',out2a[0,:,:,1])
 print('done')
-
 
 
