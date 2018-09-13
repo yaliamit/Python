@@ -54,7 +54,8 @@ with tf.Session() as sess:
     INDS=tf.convert_to_tensor(np.concatenate(indsa,axis=0),dtype=np.int64)
     VALS=tf.convert_to_tensor(np.concatenate(valsa,axis=0), dtype=np.float32)
     ndims=tf.convert_to_tensor([dimin,dimout],dtype=np.int64)
-
+    INDSA=tf.gather(INDS,[1,0],axis=1)
+    ndimsa=tf.gather(ndims,[1,0],axis=0)
 
     print('tro',tro[:,:,0])
 
