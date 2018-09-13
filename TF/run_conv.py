@@ -60,6 +60,7 @@ with tf.device(gpu_device):
     tf.reset_default_graph()
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
+    config.log_device_placement = True
     with tf.Session(config=config) as sess:
         x = tf.placeholder(tf.float32, shape=[None, dim, dim, PARS['nchannels']], name="x")
         y_ = tf.placeholder(tf.float32, shape=[None, PARS['n_classes']], name="y")
