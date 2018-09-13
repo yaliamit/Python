@@ -135,10 +135,11 @@ def grad_sparse_fully_connected(below, back_propped, current, W_inds, W_vals, W_
         filter_inds=R_inds
         filter_vals=R_vals
         filter_dims=R_dims
-    filter_inds=tf.gather(filter_inds,[1,0],axis=1)
-    filter_dims=tf.gather(filter_dims,[1,0],axis=0)
+    #filter_inds=tf.gather(filter_inds,[1,0],axis=1)
+    #filter_dims=tf.gather(filter_dims,[1,0],axis=0)
     filter=tf.SparseTensor(indices=filter_inds,values=filter_vals,dense_shape=filter_dims)
-    filter=tf.sparse_reorder(filter)
+    #filter=tf.sparse_reorder(filter)
+    filter=tf.sparse_transpose(filter)
     gradfcx=tf.transpose(tf.sparse_tensor_dense_matmul(filter,tf.transpose(back_proppedf)))
     gradfcx=tf.reshape(gradfcx,below.shape)
     return gradfcW, gradfcx
