@@ -1,5 +1,5 @@
 seed:45239
-num_epochs:1
+num_epochs:2
 num_epochs_sparse:10
 simple_augmentation:True
 mod_net:None
