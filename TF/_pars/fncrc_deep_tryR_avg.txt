@@ -1,11 +1,11 @@
 seed:45239
 adapt_eta:False
-num_epochs:10
+num_epochs:2
 data_set:cifar100
-batch_size:100
+batch_size:50
 eta_init:.15
 debug:False
-num_train:50000
+num_train:5000
 #eta_schedule:(100.,.01,120,.001)
 agg:True
 dep_fac:10.
