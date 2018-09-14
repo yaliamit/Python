@@ -1,6 +1,6 @@
 seed:45239
 adapt_eta:False
-num_epochs:1
+num_epochs:10
 data_set:cifar10
 batch_size:50
 eta_init:.1
