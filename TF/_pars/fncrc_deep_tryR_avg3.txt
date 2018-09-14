@@ -9,7 +9,7 @@ num_train:50000
 #eta_schedule:(100.,.01,120,.001)
 agg:True
 dep_fac:1.
-hinge:False
+hinge:1.
 #sparse:conv3aR
 num_epochs_sparse:10
 force_global_prob:(1.,-1.)
