@@ -1,6 +1,6 @@
 seed:45239
 adapt_eta:False
-num_epochs:10
+num_epochs:100
 data_set:cifar10
 batch_size:50
 eta_init:.1
@@ -10,7 +10,7 @@ num_train:50000
 agg:True
 dep_fac:1.
 hinge:1.
-sparse:conv3aR
+#sparse:conv3aR
 num_epochs_sparse:10
 force_global_prob:(1.,1.)
 name:input1
