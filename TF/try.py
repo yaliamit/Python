@@ -1,7 +1,6 @@
 import tensorflow as tf
 import numpy as np
-import time
-import Conv_net_gpu
+
 
 print(tf.__version__)
 tf.reset_default_graph()

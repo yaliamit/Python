@@ -86,7 +86,7 @@ def grad_fully_connected(below, back_propped, current, W, R, scale=0):
 
     return gradfcW, gradfcx
 
-def sparse_fully_connected_layer(input,batch_size,nonlin_scale, num_units, num_features,prob=[1.,-1.], scale=0,Win=None,Rin=None):
+def sparse_fully_connected_layer(input,batch_size,nonlin_scale, num_units, num_features,prob=[1.,-1.], scale=0,Win=None,Rin=None, Fin=None):
     # Make sure input is flattened.
     input_shape=input.get_shape().as_list()
     flat_dim=np.int32(np.prod(input_shape[1:]))
@@ -95,11 +95,11 @@ def sparse_fully_connected_layer(input,batch_size,nonlin_scale, num_units, num_f
     shapeR=shape
     if (prob[1]==-1.):
         shapeR=[1]
+
     if (Rin is None):
         R_dims = tf.get_variable('Rdims',initializer=[1])
         R_vals = tf.get_variable('Rvals',shape=[1,1])
         R_inds = tf.get_variable('Rinds',shape=[1,1])
-
     else:
         R_dims = tf.get_variable('Rdims',initializer=Rin.dense_shape)
         R_vals = tf.get_variable('Rvals',initializer=Rin.values)
@@ -110,13 +110,17 @@ def sparse_fully_connected_layer(input,batch_size,nonlin_scale, num_units, num_f
         W_dims = tf.get_variable('Wdims',initializer=Win.dense_shape)
         W_vals = tf.get_variable('Wvals',initializer=Win.values)
         W_inds = tf.get_variable('Winds',initializer=Win.indices)
+    F_dims = tf.get_variable('Fdims',initializer=Fin.dense_shape)
+    F_vals = tf.get_variable('Fvals',initializer=Fin.values)
+    F_inds = tf.get_variable('Finds',initializer=Fin.indices)
+
     fc = tf.transpose(tf.sparse_tensor_dense_matmul(tf.SparseTensor(indices=W_inds,values=W_vals,dense_shape=W_dims),tf.transpose(input_flattened)))
     fc = tf.reshape(fc,input_shape[0:3]+[num_features,])
     if (scale>0):
         fc = tf.clip_by_value(nonlin_scale * fc, -1., 1.)
     return(fc)
 
-def grad_sparse_fully_connected(below, back_propped, current, W_inds, W_vals, W_dims, R_inds, R_vals, R_dims, scale=0):
+def grad_sparse_fully_connected(below, back_propped, current, F_inds, F_vals, F_dims, W_inds, scale=0):
 
     belowf=tf.contrib.layers.flatten(below)
     # Gradient of weights of dense layer
@@ -128,15 +132,15 @@ def grad_sparse_fully_connected(below, back_propped, current, W_inds, W_vals, W_
     back_propped_list=tf.gather(back_proppedf,W_inds[:,0],axis=1)
     gradfcW=tf.reduce_sum(tf.multiply(below_list,back_propped_list),axis=0) #tf.matmul(tf.transpose(belowf),back_propped)
     # Propagated error to conv layer.
-    filter_inds=W_inds
-    filter_vals=W_vals
-    filter_dims=W_dims
-    if (len(R_dims.get_shape().as_list())==2):
-        filter_inds=R_inds
-        filter_vals=R_vals
-        filter_dims=R_dims
-    filter=tf.SparseTensor(indices=filter_inds,values=filter_vals,dense_shape=filter_dims)
-    filter=tf.sparse_transpose(filter)
+    # filter_inds=W_inds
+    # filter_vals=W_vals
+    # filter_dims=W_dims
+    # if (len(R_dims.get_shape().as_list())==2):
+    #     filter_inds=R_inds
+    #     filter_vals=R_vals
+    #     filter_dims=R_dims
+    filter=tf.SparseTensor(indices=F_inds,values=F_vals,dense_shape=F_dims)
+    #filter=tf.sparse_transpose(filter)
     gradfcx=tf.transpose(tf.sparse_tensor_dense_matmul(filter,tf.transpose(back_proppedf)))
     gradfcx=tf.reshape(gradfcx,below.shape)
     return gradfcW, gradfcx

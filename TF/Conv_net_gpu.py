@@ -274,6 +274,18 @@ def recreate_network(PARS,x,y_,Train,WR,SP):
                 if (PARS['sparse'] in l['name']):
                     Win=SP[0]
                     Rin=SP[1]
+                    if (Rin is None):
+                        F=Win
+
+                    else:
+                        F=Rin
+                    Finds=F.indices.eval()
+                    Fvals=F.values.eval()
+                    Fdims=F.dense_shape.eval()
+                    Finds=Finds[:,[1,0]]
+                    Fdims=Fdims[[1,0]]
+                    Fin=tf.SparseTensor(indices=Finds,values=Fvals,dense_shape=Fdims)
+                    Fin=tf.sparse_reorder(Fin)
                     scope_name = 'sparse'+l['name']
                     scale = 0
                     # with non-linearity - always clipped linearity
@@ -282,7 +294,7 @@ def recreate_network(PARS,x,y_,Train,WR,SP):
                         scope_name = 'sparse'+l['name']+ 'nonlin'
                     with tf.variable_scope(scope_name):
                         num_units=(Win.dense_shape[0]).eval()
-                        TS.append(sparse_fully_connected_layer(parent,PARS['batch_size'],PARS['nonlin_scale'], num_units=num_units, num_features=l['num_filters'], prob=prob,scale=scale, Win=Win,Rin=Rin))
+                        TS.append(sparse_fully_connected_layer(parent,PARS['batch_size'],PARS['nonlin_scale'], num_units=num_units, num_features=l['num_filters'], prob=prob,scale=scale, Win=Win,Rin=Rin, Fin=Fin))
                 else:
                     if ('conv' in l['name']):
                         Win=WR[l['name']][0]
@@ -462,18 +474,17 @@ def back_prop(loss,acc,TS,VS,x,PARS):
             scale = 0
             if ('nonlin' in name):
                 scale = PARS['nonlin_scale']
-            gradfcW, gradx = grad_sparse_fully_connected(below=pre,back_propped=gradx,current=T, W_inds=VS[vs], W_vals=VS[vs+1], W_dims=VS[vs+2],
-                                                         R_inds=VS[vs+3], R_vals=VS[vs+4], R_dims=VS[vs+5], scale=scale)
-            assign_op_fcW = update_only_non_zero(VS[vs+1],gradfcW,PARS['step_size'])
+            gradfcW, gradx = grad_sparse_fully_connected(below=pre,back_propped=gradx,current=T, F_inds=VS[vs], F_vals=VS[vs+1], F_dims=VS[vs+2], W_inds=VS[vs+3], scale=scale)
+            assign_op_fcW = update_only_non_zero(VS[vs+4],gradfcW,PARS['step_size'])
             OPLIST.append(assign_op_fcW)
             # If an R variable exists and is a 2-dim matrix i.e. is active
             if (len(VS[vs+1].shape.as_list())==2):
-                assign_op_fcR = update_only_non_zero(VS[vs+4],gradfcW,PARS['Rstep_size'])
+                assign_op_fcR = update_only_non_zero(VS[vs+7],gradfcW,PARS['Rstep_size'])
                 OPLIST.append(assign_op_fcR)
             if (PARS['debug']):
                 all_grad.append(gradx)
             ts+=1
-            vs+=6
+            vs+=9
         if (name in PARS['joint_parent']):
             grad_hold=gradx
             joint_parent=PARS['joint_parent'][name]
