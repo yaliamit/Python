@@ -13,7 +13,7 @@ eta_init:.1
 train:True
 mult:1
 debug:False
-num_train:5000
+num_train:50000
 sparse:conv1aR
 #eta_schedule:(10.,.0001)
 agg:True
