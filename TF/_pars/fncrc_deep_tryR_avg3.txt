@@ -2,7 +2,7 @@ seed:45239
 adapt_eta:False
 num_epochs:100
 data_set:cifar10
-batch_size:50
+batch_size:100
 eta_init:.1
 debug:False
 num_train:50000
