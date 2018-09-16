@@ -8,12 +8,12 @@ start:0
 data_set:cifar10
 net:fnc
 update:sgd
-batch_size:50
+batch_size:100
 eta_init:.1
 train:True
 mult:1
 debug:False
-num_train:5000
+num_train:50000
 sparse:conv1aR,conv1,
 #eta_schedule:(10.,.0001)
 agg:True
