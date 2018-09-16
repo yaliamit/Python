@@ -66,8 +66,8 @@
       <file leaf-file-name="fncrc_deep_tryR_avg3.txt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg3.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+            <state relative-caret-position="60">
+              <caret line="4" column="13" lean-forward="false" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -1028,8 +1028,8 @@ os.dir()</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg3.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        <state relative-caret-position="60">
+          <caret line="4" column="13" lean-forward="false" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
           <folding />
         </state>
       </provider>
