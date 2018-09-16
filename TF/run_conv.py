@@ -106,10 +106,11 @@ with tf.device(gpu_device):
             if (np.mod(i, 1) == 0):
                 run_epoch(val,i,type='Val')
                 sys.stdout.flush()
-
+        sparse_shape={}
         if ('sparse' in PARS):
             WR=get_parameters(VS,PARS)
-            sparse_shape=find_ts(PARS['sparse'],TS).get_shape().as_list()[1:3]
+            for sp in PARS['sparse']:
+                sparse_shape[sp]=find_ts(sp,TS).get_shape().as_list()[1:3]
         # Final test accuracy
         else:
             ac, lo= run_epoch(test,i,type='Test')
@@ -133,11 +134,13 @@ with tf.device(gpu_device):
       VS=[]
 
       with tf.Session(config=config) as sess:
-        x = tf.placeholder(tf.float32, shape=[None, dim, dim, PARS['nchannels']], name="x")
-        y_ = tf.placeholder(tf.float32, shape=[None, PARS['n_classes']], name="y")
+        x = tf.placeholder(tf.float32, shape=[PARS['batch_size'], dim, dim, PARS['nchannels']], name="x")
+        y_ = tf.placeholder(tf.float32, shape=[PARS['batch_size'], PARS['n_classes']], name="y")
         Train = tf.placeholder(tf.bool, name="Train")
 
-        SP=convert_conv_to_sparse(sparse_shape,WR[PARS['sparse']],sess)
+        SP={}
+        for sp in PARS['sparse']:
+            SP[sp]=convert_conv_to_sparse(sparse_shape[sp],WR[sp],sess)
         loss,accuracy,TS = recreate_network(PARS,x,y_,Train,WR,SP)
         VS = tf.trainable_variables()
         VS.reverse()

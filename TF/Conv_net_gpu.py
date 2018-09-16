@@ -271,12 +271,11 @@ def recreate_network(PARS,x,y_,Train,WR,SP):
                                 if l['parent'] in name and not 'Equal' in name:
                                     parent=T
                 # Convolutional layer
-                if (PARS['sparse'] in l['name']):
-                    Win=SP[0]
-                    Rin=SP[1]
+                if (l['name'] in PARS['sparse']):
+                    Win=SP[l['name']][0]
+                    Rin=SP[l['name']][1]
                     if (Rin is None):
                         F=Win
-
                     else:
                         F=Rin
                     Finds=F.indices.eval()
