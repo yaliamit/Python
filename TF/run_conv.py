@@ -191,8 +191,8 @@ with tf.device(gpu_device):
         zero_out_weights(PARS,VS,sess)
         run_epoch(test,-1,type='Test')
         print('sparse comparison before training')
-        for sp in PARS['sparse']:
-            WW=compare_params_sparse(sp,sparse_shape,VS,WR)
+        #for sp in PARS['sparse']:
+        #    WW=compare_params_sparse(sp,sparse_shape,VS,WR)
         for i in range(PARS['num_epochs_sparse']):  # number of epochs
                 run_epoch(train,i)
                 # transpose W or R for sparse layer
@@ -201,8 +201,8 @@ with tf.device(gpu_device):
                     run_epoch(val,i,type='Val')
                     sys.stdout.flush()
         print('sparse comparison after training')
-        for sp in PARS['sparse']:
-            WW = compare_params_sparse(sp, sparse_shape, VS, WR)
+        #for sp in PARS['sparse']:
+        #    WW = compare_params_sparse(sp, sparse_shape, VS, WR)
 
 
 
