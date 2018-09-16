@@ -74,7 +74,7 @@ def convert_conv_to_sparse(dshape,WR,sess):
                 XX[t,i,j,k]=1
                 t+=1
 
-    fac=32
+    fac=128
     inci=np.int32(din[0]/fac)
     inc=np.int32(dimin/fac)
     print('inshape',[inc,]+din,'dout',dout)
