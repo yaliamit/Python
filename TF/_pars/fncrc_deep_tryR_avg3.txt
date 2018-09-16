@@ -5,12 +5,12 @@ data_set:cifar10
 batch_size:100
 eta_init:.1
 debug:False
-num_train:5000
+num_train:50000
 #eta_schedule:(100.,.01,120,.001)
 agg:True
 dep_fac:1.
 hinge:1.
-sparse:conv3aR
+sparse:conv3aR,conv3R,
 num_epochs_sparse:100
 force_global_prob:(1.,1.)
 name:input1
