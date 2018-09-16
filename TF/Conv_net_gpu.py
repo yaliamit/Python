@@ -74,14 +74,24 @@ def convert_conv_to_sparse(dshape,WR,sess):
                 XX[t,i,j,k]=1
                 t+=1
 
-
-    inc=np.int32(dimin/8)
+    fac=32
+    inci=np.int32(din[0]/fac)
+    inc=np.int32(dimin/fac)
     indsaw=[]
     valsaw=[]
     indsar=[]
     valsar=[]
+    ii=0
     for t in range(0,dimin,inc):
-        batch=tf.convert_to_tensor(np.float32(XX[t:t+inc,]))
+        s=0
+        XX=np.zeros([inc,]+din)
+        for i in np.arange(ii,ii+inci,1):
+            for j in range(din[1]):
+                for k in range(din[2]):
+                    XX[s,i,j,k]=1
+                    s+=1
+        ii+=inci
+        batch=tf.convert_to_tensor(np.float32(XX))
         outw = sess.run(tf.nn.conv2d(batch,Wt,strides=[1,1,1,1],padding='SAME'))
         outw=np.reshape(outw,(inc,-1))
         valsw=outw[outw!=0]
