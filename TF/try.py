@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 from Conv_net_aux import plot_OUTPUT as po
 
-po('_OUTPUTS/OUTh_deep-br')
+po('_OUTPUTS/OUTh_deep_R-br')
 
 
 print(tf.__version__)
