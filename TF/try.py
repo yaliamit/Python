@@ -1,5 +1,8 @@
 import tensorflow as tf
 import numpy as np
+from Conv_net_aux import plot_OUTPUT as po
+
+po('OUT_deep_nosp-br')
 
 
 print(tf.__version__)
