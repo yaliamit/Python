@@ -77,6 +77,7 @@ def convert_conv_to_sparse(dshape,WR,sess):
     fac=32
     inci=np.int32(din[0]/fac)
     inc=np.int32(dimin/fac)
+    print('inshape',[inc,]+din,'dout',dout)
     indsaw=[]
     valsaw=[]
     indsar=[]
