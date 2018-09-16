@@ -3,9 +3,41 @@ import time
 import sys
 import numpy as np
 import tensorflow as tf
-from Conv_net_gpu import create_network, back_prop, zero_out_weights, convert_conv_to_sparse, find_ts, recreate_network, get_parameters
+from Conv_net_gpu import create_network, back_prop, zero_out_weights, convert_conv_to_sparse, find_ts, \
+    recreate_network, get_parameters, get_parameters_s
 from Conv_net_aux import process_parameters,print_results
 from Conv_data import get_data
+
+
+def compare_params_sparse(sp, sh, VS, WR):
+    for v in VS:
+        if (sp in v.name and 'W' in v.name):
+            if ('inds' in v.name):
+                minds = v.eval()
+            if ('vals' in v.name):
+                mvals = v.eval()
+            if ('dims' in v.name):
+                mdims = v.eval()
+    dm = tf.sparse_to_dense(sparse_indices=minds, sparse_values=mvals, output_shape=mdims)
+    DM = dm.eval()
+    outfe=WR[sp][0].shape[3]
+    infe=WR[sp][0].shape[2]
+    fdims=[WR[sp][0].shape[0],WR[sp][0].shape[1]]
+    pfdims=np.prod(fdims)
+    newshape=[np.int32(DM.shape[0]/outfe),outfe,sh[sp][0],sh[sp][1],infe]
+    DM = np.reshape(DM, newshape)
+    tt = [[] for i in range(outfe)]
+    for i in range(newshape[0]):
+        for f in range(newshape[1]):
+            ww=np.where(DM[i,f,:,:,0])
+            if (len(ww[0])==pfdims):
+                tt[f].append(DM[i,f,ww[0],ww[1],0])
+    print('sp',sp)
+    for f in range(outfe):
+        tt[f]=np.array(tt[f])
+        print(f,np.max(np.std(tt[f],axis=0)/np.abs(np.mean(tt[f],axis=0))))
+
+
 
 def F_transpose(VS):
 
@@ -108,6 +140,7 @@ with tf.device(gpu_device):
                 sys.stdout.flush()
         sparse_shape={}
         if ('sparse' in PARS):
+            WRS=get_parameters_s(VS,PARS['sparse'])
             WR=get_parameters(VS,PARS)
             for sp in PARS['sparse']:
                 sparse_shape[sp]=find_ts(sp,TS).get_shape().as_list()[1:3]
@@ -140,10 +173,12 @@ with tf.device(gpu_device):
 
         SP={}
         for sp in PARS['sparse']:
-            SP[sp]=convert_conv_to_sparse(sparse_shape[sp],WR[sp],sess)
+            SP[sp]=convert_conv_to_sparse(sparse_shape[sp],WRS[sp],sess)
         loss,accuracy,TS = recreate_network(PARS,x,y_,Train,WR,SP)
         VS = tf.trainable_variables()
         VS.reverse()
+
+
         # Get indices of sparse layers:
         SS=[]
         for v in VS:
@@ -155,7 +190,9 @@ with tf.device(gpu_device):
         sess.run(tf.global_variables_initializer())
         zero_out_weights(PARS,VS,sess)
         run_epoch(test,-1,type='Test')
-
+        print('sparse comparison before training')
+        for sp in PARS['sparse']:
+            WW=compare_params_sparse(sp,sparse_shape,VS,WR)
         for i in range(PARS['num_epochs_sparse']):  # number of epochs
                 run_epoch(train,i)
                 # transpose W or R for sparse layer
@@ -163,6 +200,15 @@ with tf.device(gpu_device):
                 if (np.mod(i, 1) == 0):
                     run_epoch(val,i,type='Val')
                     sys.stdout.flush()
+        print('sparse comparison after training')
+        for sp in PARS['sparse']:
+            WW = compare_params_sparse(sp, sparse_shape, VS, WR)
+
+
+
+
+
+
 
 print("DONE")
 sys.stdout.flush()

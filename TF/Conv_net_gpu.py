@@ -25,6 +25,15 @@ def find_wr(name,VS):
     return W,R
 
 # Creare dictionary of parameters with name given by layer name
+def get_parameters_s(VSIN,SP):
+
+    WRS={}
+    for sp in SP:
+            Win,Rin=find_wr(sp,VSIN)
+            WRS[sp]=[Win.eval(),Rin.eval()]
+
+    return(WRS)
+
 def get_parameters(VSIN,PARS):
 
     WR={}
