@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ef2eb448-6413-411f-9ec4-6f9aac3066f7" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/TF.iml" afterPath="$PROJECT_DIR$/.idea/TF.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Conv_net_gpu.py" afterPath="$PROJECT_DIR$/Conv_net_gpu.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/_pars/fncrc.txt" afterPath="$PROJECT_DIR$/_pars/fncrc.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/run_conv.py" afterPath="$PROJECT_DIR$/run_conv.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -38,11 +35,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="run_conv.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="run_conv.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/run_conv.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="175" column="0" selection-start-line="175" selection-start-column="0" selection-end-line="175" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.6580977">
+              <caret line="194" column="9" selection-start-line="194" selection-start-column="9" selection-end-line="194" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -58,11 +55,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Conv_net_gpu.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Conv_net_gpu.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Conv_net_gpu.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.23136246">
-              <caret line="99" column="7" selection-start-line="99" selection-start-column="7" selection-end-line="99" selection-end-column="7" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="99" column="0" selection-start-line="99" selection-start-column="0" selection-end-line="99" selection-end-column="0" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -176,9 +173,9 @@
         <option value="$PROJECT_DIR$/layers.py" />
         <option value="$PROJECT_DIR$/try.py" />
         <option value="$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg3.txt" />
-        <option value="$PROJECT_DIR$/run_conv.py" />
         <option value="$PROJECT_DIR$/_pars/fncrc.txt" />
         <option value="$PROJECT_DIR$/Conv_net_gpu.py" />
+        <option value="$PROJECT_DIR$/run_conv.py" />
       </list>
     </option>
   </component>
@@ -1041,11 +1038,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/run_conv.py">
+    <entry file="file://$PROJECT_DIR$/Conv_net_gpu.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="175" column="0" selection-start-line="175" selection-start-column="0" selection-end-line="175" selection-end-column="0" />
-          <folding />
+          <caret line="99" column="0" selection-start-line="99" selection-start-column="0" selection-end-line="99" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1057,13 +1056,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Conv_net_gpu.py">
+    <entry file="file://$PROJECT_DIR$/run_conv.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.23136246">
-          <caret line="99" column="7" selection-start-line="99" selection-start-column="7" selection-end-line="99" selection-end-column="7" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="0.6580977">
+          <caret line="194" column="9" selection-start-line="194" selection-start-column="9" selection-end-line="194" selection-end-column="9" />
+          <folding />
         </state>
       </provider>
     </entry>

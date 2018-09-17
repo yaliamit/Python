@@ -97,7 +97,7 @@ def convert_conv_to_sparse(dshape,WR,sess):
         # if (inc>500):
         #     steps=np.arange(0,inc,500)
         #     if (steps[-1]+)
-       
+
         with tf.device("/cpu:0"):
             outw = sess.run(tf.nn.conv2d(batch,Wt,strides=[1,1,1,1],padding='SAME'))
         outw=np.reshape(outw,(inc,-1))
