@@ -18,8 +18,9 @@ def compare_params_sparse(sp, sh, VS, WR):
                 mvals = v.eval()
             if ('dims' in v.name):
                 mdims = v.eval()
-    dm = tf.sparse_to_dense(sparse_indices=minds, sparse_values=mvals, output_shape=mdims)
-    DM = dm.eval()
+    with tf.device("/cpu:0"):
+        dm = tf.sparse_to_dense(sparse_indices=minds, sparse_values=mvals, output_shape=mdims)
+        DM = dm.eval()
     outfe=WR[sp][0].shape[3]
     infe=WR[sp][0].shape[2]
     fdims=[WR[sp][0].shape[0],WR[sp][0].shape[1]]
@@ -191,8 +192,8 @@ with tf.device(gpu_device):
         zero_out_weights(PARS,VS,sess)
         run_epoch(test,-1,type='Test')
         print('sparse comparison before training')
-        #for sp in PARS['sparse']:
-        #    WW=compare_params_sparse(sp,sparse_shape,VS,WR)
+        for sp in PARS['sparse']:
+            WW=compare_params_sparse(sp,sparse_shape,VS,WR)
         for i in range(PARS['num_epochs_sparse']):  # number of epochs
                 run_epoch(train,i)
                 # transpose W or R for sparse layer
@@ -201,8 +202,9 @@ with tf.device(gpu_device):
                     run_epoch(val,i,type='Val')
                     sys.stdout.flush()
         print('sparse comparison after training')
-        #for sp in PARS['sparse']:
-        #    WW = compare_params_sparse(sp, sparse_shape, VS, WR)
+
+        for sp in PARS['sparse']:
+            WW = compare_params_sparse(sp, sparse_shape, VS, WR)
 
 
 
