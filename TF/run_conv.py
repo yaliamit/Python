@@ -201,6 +201,8 @@ with tf.device(gpu_device):
                 if (np.mod(i, 1) == 0):
                     run_epoch(val,i,type='Val')
                     sys.stdout.flush()
+        ac, lo= run_epoch(test,i,type='Test')
+        print('step,','0,', 'aggegate accuracy,', ac)
         print('sparse comparison after training')
 
         #for sp in PARS['sparse']:
