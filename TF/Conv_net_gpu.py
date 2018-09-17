@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from keras import backend as K
-
+from scipy.signal import convolve2d
 from layers import conv_layer, grad_conv_layer, fully_connected_layer, grad_fully_connected, grad_pool, grad_pool_old
 from layers import sparse_fully_connected_layer, grad_sparse_fully_connected, MaxPoolingandMask, MaxPoolingandMask_old, real_drop
 
@@ -94,7 +94,12 @@ def convert_conv_to_sparse(dshape,WR,sess):
                     s+=1
         ii+=inci
         batch=tf.convert_to_tensor(np.float32(XX))
-        outw = sess.run(tf.nn.conv2d(batch,Wt,strides=[1,1,1,1],padding='SAME'))
+        # if (inc>500):
+        #     steps=np.arange(0,inc,500)
+        #     if (steps[-1]+)
+       
+        with tf.device("/cpu:0"):
+            outw = sess.run(tf.nn.conv2d(batch,Wt,strides=[1,1,1,1],padding='SAME'))
         outw=np.reshape(outw,(inc,-1))
         valsw=outw[outw!=0]
         indsw=np.array(np.where(outw!=0))

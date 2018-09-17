@@ -13,7 +13,7 @@ eta_init:.1
 train:True
 mult:1
 debug:False
-num_train:50000
+num_train:5000
 sparse:conv1aR,conv1,
 #eta_schedule:(10.,.0001)
 agg:True
@@ -22,8 +22,8 @@ hinge:False
 TRAIN:True
 force_global_prob:(1.,-1.)
 name:input1
-name:conv1;num_filters:4;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:input1
-name:conv1aR;num_filters:8;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:conv1
+name:conv1;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:input1
+name:conv1aR;num_filters:32;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:conv1
 #name:conv1bR;num_filters:8;filter_size:(3,3);pad:(1,1);stride:(1, 1);parent:conv1aR
 #name:concatsum1;parent:[conv1,conv1aR]
 name:pool1;pool_size:(3, 3);stride:(2, 2);mode:max;parent:conv1aR
