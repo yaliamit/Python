@@ -8,7 +8,7 @@ start:0
 data_set:cifar10
 net:fnc
 update:sgd
-batch_size:100
+batch_size:50
 eta_init:.1
 train:True
 mult:1
