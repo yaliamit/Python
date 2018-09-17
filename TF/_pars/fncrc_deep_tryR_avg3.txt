@@ -10,7 +10,7 @@ num_train:50000
 agg:True
 dep_fac:1.
 hinge:1.
-sparse:conv1aR,
+sparse:conv1R,
 num_epochs_sparse:100
 force_global_prob:(1.,1.)
 name:input1
