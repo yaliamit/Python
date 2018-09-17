@@ -2,7 +2,7 @@ seed:45239
 adapt_eta:False
 num_epochs:1
 data_set:cifar10
-batch_size:100
+batch_size:50
 eta_init:.1
 debug:False
 num_train:50000
@@ -10,7 +10,7 @@ num_train:50000
 agg:True
 dep_fac:1.
 hinge:1.
-sparse:conv2R,conv2aR,conv3R,conv3aR,
+sparse:conv1R,conv1aR,conv2R,conv2aR,conv3R,conv3aR,
 num_epochs_sparse:100
 force_global_prob:(1.,1.)
 name:input1
