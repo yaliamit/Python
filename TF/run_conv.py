@@ -200,7 +200,11 @@ with tf.device(gpu_device):
                 F_transpose(SS)
                 if (np.mod(i, 1) == 0):
                     run_epoch(val,i,type='Val')
-                    sys.stdout.flush()
+
+                for v in enumerate(VS):
+                    V=v.eval()
+                    print(v.name, v.get_shape().as_list(), np.mean(V), np.std(V))
+                sys.stdout.flush()
         ac, lo= run_epoch(test,i,type='Test')
         print('step,','0,', 'aggegate accuracy,', ac)
         print('sparse comparison after training')
