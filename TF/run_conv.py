@@ -201,7 +201,7 @@ with tf.device(gpu_device):
                 if (np.mod(i, 1) == 0):
                     run_epoch(val,i,type='Val')
 
-                for v in enumerate(VS):
+                for v in VS:
                     V=v.eval()
                     print(v.name, v.get_shape().as_list(), np.mean(V), np.std(V))
                 sys.stdout.flush()
