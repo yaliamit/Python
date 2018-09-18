@@ -40,11 +40,15 @@ def compare_params_sparse(sp, sh, VS, WR):
 
 
 # Each layer comes in groups of 9 parameters
-def F_transpose(VS):
+def F_transpose_and_clip(VS,SDS=None):
 
     t=0
     for t in np.arange(0,len(VS),9):
-        if (len(VS[t+8].get_shape().as_list())==2):
+        if (SDS is not None):
+                sess.run(tf.assign(VS[t+7],tf.clip_by_value(VS[t+7],-SDS[t+7],SDS[t+7])))
+                sess.run(tf.assign(VS[t + 4], tf.clip_by_value(VS[t + 4], -SDS[t + 4], SDS[t + 4])))
+        # Indicates there is a real R feedback tensor. Otherwise the length is 1
+        if (VS[t+8].get_shape().as_list()[0]==2):
             finds=VS[t+6]
             fvals=VS[t+7]
             fdims=VS[t+8]
@@ -52,6 +56,7 @@ def F_transpose(VS):
             finds=VS[t+3]
             fvals=VS[t+4]
             fdims=VS[t+5]
+
         F=tf.SparseTensor(indices=finds,values=fvals,dense_shape=fdims)
         F=tf.sparse_transpose(F)
 
@@ -141,9 +146,6 @@ with tf.device(gpu_device):
             if (np.mod(i, 1) == 0):
                 run_epoch(val,i,type='Val')
                 sys.stdout.flush()
-            for v in VS:
-                V = v.eval()
-                print(v.name, v.get_shape().as_list(), np.mean(V), np.std(V))
         sparse_shape={}
         if ('sparse' in PARS):
             WRS=get_parameters_s(VS,PARS['sparse'])
@@ -194,22 +196,25 @@ with tf.device(gpu_device):
 
         # Initialize variables
         sess.run(tf.global_variables_initializer())
-        zero_out_weights(PARS,VS,sess)
+        #zero_out_weights(PARS,VS,sess)
         run_epoch(test,-1,type='Test')
+        SDS=None
+        for ss in SS:
+            #if ('Wvals' in ss.name):
+                V = ss.eval()
+                #SDS.append(np.std(V))
+                print(ss.name, ss.get_shape().as_list(), np.mean(V),np.std(V))
         #print('sparse comparison before training')
         #for sp in PARS['sparse']:
         #   WW=compare_params_sparse(sp,sparse_shape,VS,WR)
         for i in range(PARS['num_epochs_sparse']):  # number of epochs
                 run_epoch(train,i)
                 # transpose W or R for sparse layer
-                F_transpose(SS)
+                F_transpose_and_clip(SS,SDS)
                 if (np.mod(i, 1) == 0):
                     run_epoch(val,i,type='Val')
 
-                for ss in SS:
-                    if ('Wvals' in ss.name):
-                        V=ss.eval()
-                        print(ss.name, ss.get_shape().as_list(), np.mean(V), np.std(V))
+
                 sys.stdout.flush()
         ac, lo= run_epoch(test,i,type='Test')
         print('step,','0,', 'aggegate accuracy,', ac)

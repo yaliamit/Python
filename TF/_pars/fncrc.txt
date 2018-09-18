@@ -14,7 +14,7 @@ train:True
 mult:1
 debug:False
 num_train:5000
-sparse:conv1aR,conv1,
+sparse:conv1aR,
 #eta_schedule:(10.,.0001)
 agg:True
 dep_fac:1.
