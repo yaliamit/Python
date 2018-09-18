@@ -503,7 +503,7 @@ def back_prop(loss,acc,TS,VS,x,PARS):
             assign_op_fcW = update_only_non_zero(VS[vs+4],gradfcW,PARS['step_size'])
             OPLIST.append(assign_op_fcW)
             # If an R variable exists and is a 2-dim matrix i.e. is active
-            if (len(VS[vs+1].shape.as_list())==2):
+            if (VS[vs+ 8].get_shape().as_list()[0] == 2):
                 assign_op_fcR = update_only_non_zero(VS[vs+7],gradfcW,PARS['Rstep_size'])
                 OPLIST.append(assign_op_fcR)
             if (PARS['debug']):
