@@ -39,23 +39,25 @@ def compare_params_sparse(sp, sh, VS, WR):
         print(f,np.max(np.std(tt[f],axis=0)/np.abs(np.mean(tt[f],axis=0))))
 
 
-
+# Each layer comes in groups of 9 parameters
 def F_transpose(VS):
 
-    if (len(VS[8].get_shape().as_list())==2):
-        finds=VS[6]
-        fvals=VS[7]
-        fdims=VS[8]
-    else:
-        finds=VS[3]
-        fvals=VS[4]
-        fdims=VS[5]
-    F=tf.SparseTensor(indices=finds,values=fvals,dense_shape=fdims)
-    F=tf.sparse_transpose(F)
+    t=0
+    for t in np.arange(0,len(VS),9):
+        if (len(VS[t+8].get_shape().as_list())==2):
+            finds=VS[t+6]
+            fvals=VS[t+7]
+            fdims=VS[t+8]
+        else:
+            finds=VS[t+3]
+            fvals=VS[t+4]
+            fdims=VS[t+5]
+        F=tf.SparseTensor(indices=finds,values=fvals,dense_shape=fdims)
+        F=tf.sparse_transpose(F)
 
-    sess.run(tf.assign(VS[0],F.indices))
-    sess.run(tf.assign(VS[1],F.values))
-    sess.run(tf.assign(VS[2],F.dense_shape))
+        sess.run(tf.assign(VS[t+0],F.indices))
+        sess.run(tf.assign(VS[t+1],F.values))
+        sess.run(tf.assign(VS[t+2],F.dense_shape))
 
 
 def run_epoch(train,i,type='Train'):
@@ -139,6 +141,9 @@ with tf.device(gpu_device):
             if (np.mod(i, 1) == 0):
                 run_epoch(val,i,type='Val')
                 sys.stdout.flush()
+            for v in VS:
+                V = v.eval()
+                print(v.name, v.get_shape().as_list(), np.mean(V), np.std(V))
         sparse_shape={}
         if ('sparse' in PARS):
             WRS=get_parameters_s(VS,PARS['sparse'])
@@ -201,9 +206,10 @@ with tf.device(gpu_device):
                 if (np.mod(i, 1) == 0):
                     run_epoch(val,i,type='Val')
 
-                for v in VS:
-                    V=v.eval()
-                    print(v.name, v.get_shape().as_list(), np.mean(V), np.std(V))
+                for ss in SS:
+                    if ('Wvals' in ss.name):
+                        V=ss.eval()
+                        print(ss.name, ss.get_shape().as_list(), np.mean(V), np.std(V))
                 sys.stdout.flush()
         ac, lo= run_epoch(test,i,type='Test')
         print('step,','0,', 'aggegate accuracy,', ac)
