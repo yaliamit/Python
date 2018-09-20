@@ -10,6 +10,7 @@ net:fnc
 update:sgd
 batch_size:50
 eta_init:.1
+eta_sparse_init:.1
 train:True
 mult:1
 debug:False

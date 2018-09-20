@@ -3,66 +3,11 @@ import time
 import sys
 import numpy as np
 import tensorflow as tf
-from Conv_net_gpu import create_network, back_prop, zero_out_weights, convert_conv_to_sparse, find_ts, \
+from Conv_net_gpu import create_network, back_prop, zero_out_weights, find_ts, \
     recreate_network, get_parameters, get_parameters_s
 from Conv_net_aux import process_parameters,print_results
 from Conv_data import get_data
-
-
-def compare_params_sparse(sp, sh, VS, WR):
-    for v in VS:
-        if (sp in v.name and 'W' in v.name):
-            if ('inds' in v.name):
-                minds = v.eval()
-            if ('vals' in v.name):
-                mvals = v.eval()
-            if ('dims' in v.name):
-                mdims = v.eval()
-    with tf.device("/cpu:0"):
-        dm = tf.sparse_to_dense(sparse_indices=minds, sparse_values=mvals, output_shape=mdims)
-        DM = dm.eval()
-    outfe=WR[sp][0].shape[3]
-    infe=WR[sp][0].shape[2]
-    fdims=[WR[sp][0].shape[0],WR[sp][0].shape[1]]
-    pfdims=np.prod(fdims)
-    newshape=[np.int32(DM.shape[0]/outfe),outfe,sh[sp][0],sh[sp][1],infe]
-    DM = np.reshape(DM, newshape)
-    tt = [[] for i in range(outfe)]
-    for i in range(newshape[0]):
-        for f in range(newshape[1]):
-            ww=np.where(DM[i,f,:,:,0])
-            if (len(ww[0])==pfdims):
-                tt[f].append(DM[i,f,ww[0],ww[1],0])
-    print('sp',sp)
-    for f in range(outfe):
-        tt[f]=np.array(tt[f])
-        print(f,np.max(np.std(tt[f],axis=0)/np.abs(np.mean(tt[f],axis=0))))
-
-
-# Each layer comes in groups of 9 parameters
-def F_transpose_and_clip(VS,SDS=None):
-
-    t=0
-    for t in np.arange(0,len(VS),9):
-        if (SDS is not None):
-                sess.run(tf.assign(VS[t+7],tf.clip_by_value(VS[t+7],-SDS[t+7],SDS[t+7])))
-                sess.run(tf.assign(VS[t + 4], tf.clip_by_value(VS[t + 4], -SDS[t + 4], SDS[t + 4])))
-        # Indicates there is a real R feedback tensor. Otherwise the length is 1
-        if (VS[t+8].get_shape().as_list()[0]==2):
-            finds=VS[t+6]
-            fvals=VS[t+7]
-            fdims=VS[t+8]
-        else:
-            finds=VS[t+3]
-            fvals=VS[t+4]
-            fdims=VS[t+5]
-
-        F=tf.SparseTensor(indices=finds,values=fvals,dense_shape=fdims)
-        F=tf.sparse_transpose(F)
-
-        sess.run(tf.assign(VS[t+0],F.indices))
-        sess.run(tf.assign(VS[t+1],F.values))
-        sess.run(tf.assign(VS[t+2],F.dense_shape))
+from Conv_sparse_aux import F_transpose_and_clip, compare_params_sparse, convert_conv_to_sparse, get_weight_stats
 
 
 def run_epoch(train,i,type='Train'):
@@ -199,35 +144,24 @@ with tf.device(gpu_device):
         zero_out_weights(PARS,VS,sess)
         run_epoch(test,-1,type='Test')
         SDS=None
-        for ss in SS:
-            #if ('Wvals' in ss.name):
-                V = ss.eval()
-                #SDS.append(np.std(V))
-                print(ss.name, ss.get_shape().as_list(), np.mean(V),np.std(V))
+        get_weight_stats(SS)
         #print('sparse comparison before training')
-        #for sp in PARS['sparse']:
-        #   WW=compare_params_sparse(sp,sparse_shape,VS,WR)
+        for sp in PARS['sparse']:
+           WW=compare_params_sparse(sp,sparse_shape,VS,WR)
         for i in range(PARS['num_epochs_sparse']):  # number of epochs
                 run_epoch(train,i)
-                # transpose W or R for sparse layer
-                F_transpose_and_clip(SS,SDS)
-                if (np.mod(i, 1) == 0):
-                    run_epoch(val,i,type='Val')
-
-
+                # transpose W or R for sparse layer computed once for each epoch
+                # NOT for each batch - still works fine.
+                F_transpose_and_clip(SS,sess,SDS)
+                run_epoch(val,i,type='Val')
+                get_weight_stats(SS)
                 sys.stdout.flush()
         ac, lo= run_epoch(test,i,type='Test')
         print('step,','0,', 'aggegate accuracy,', ac)
         print('sparse comparison after training')
 
-        #for sp in PARS['sparse']:
-        #    WW = compare_params_sparse(sp, sparse_shape, VS, WR)
-
-
-
-
-
-
+        for sp in PARS['sparse']:
+            WW = compare_params_sparse(sp, sparse_shape, VS, WR)
 
 print("DONE")
 sys.stdout.flush()
