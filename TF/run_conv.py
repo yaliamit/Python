@@ -167,6 +167,9 @@ with tf.device(gpu_device):
     # Recreate graph with existing value of parameters
     if ('sparse' in PARS):
       PARS['step_size']=PARS['eta_sparse_init']
+      Rstep_size = list(PARS['force_global_prob'])[1] * PARS['step_size']
+      print('Rstep_size', Rstep_size)
+      PARS['Rstep_size'] = Rstep_size
       tf.reset_default_graph()
       TS=[]
       VS=[]
