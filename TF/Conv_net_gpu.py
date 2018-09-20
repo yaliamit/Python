@@ -497,14 +497,19 @@ def back_prop(loss,acc,TS,VS,x,PARS):
             vs+=2
         elif ('sparse' in name):
             scale = 0
+            doR=(VS[vs+ 8].get_shape().as_list()[0] == 2)
             if ('nonlin' in name):
                 scale = PARS['nonlin_scale']
-            gradfcW, gradx = grad_sparse_fully_connected(below=pre,back_propped=gradx,current=T, F_inds=VS[vs], F_vals=VS[vs+1], F_dims=VS[vs+2], W_inds=VS[vs+3], scale=scale)
+            if (PARS['force_global_prob'][0]==1. or not doR):
+                gradfcW, gradx, gradfcR = grad_sparse_fully_connected(below=pre,back_propped=gradx,current=T, F_inds=VS[vs], F_vals=VS[vs+1], F_dims=VS[vs+2], W_inds=VS[vs+3], R_inds=None,scale=scale)
+            else:
+                gradfcW, gradx, gradfcR = grad_sparse_fully_connected(below=pre,back_propped=gradx,current=T, F_inds=VS[vs], F_vals=VS[vs+1], F_dims=VS[vs+2], W_inds=VS[vs+3], R_inds=VS[vs+6],scale=scale)
+
             assign_op_fcW = update_only_non_zero(VS[vs+4],gradfcW,PARS['step_size'])
             OPLIST.append(assign_op_fcW)
             # If an R variable exists and is a 2-dim matrix i.e. is active
-            if (VS[vs+ 8].get_shape().as_list()[0] == 2):
-                assign_op_fcR = update_only_non_zero(VS[vs+7],gradfcW,PARS['Rstep_size'])
+            if (doR):
+                assign_op_fcR = update_only_non_zero(VS[vs+7],gradfcR,PARS['Rstep_size'])
                 OPLIST.append(assign_op_fcR)
             if (PARS['debug']):
                 all_grad.append(gradx)

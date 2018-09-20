@@ -120,7 +120,7 @@ def sparse_fully_connected_layer(input,batch_size,nonlin_scale, num_units, num_f
         fc = tf.clip_by_value(nonlin_scale * fc, -1., 1.)
     return(fc)
 
-def grad_sparse_fully_connected(below, back_propped, current, F_inds, F_vals, F_dims, W_inds, scale=0):
+def grad_sparse_fully_connected(below, back_propped, current, F_inds, F_vals, F_dims, W_inds, R_inds, scale=0):
 
     belowf=tf.contrib.layers.flatten(below)
     # Gradient of weights of dense layer
@@ -131,10 +131,16 @@ def grad_sparse_fully_connected(below, back_propped, current, F_inds, F_vals, F_
     below_list=tf.gather(belowf,W_inds[:,1],axis=1)
     back_propped_list=tf.gather(back_proppedf,W_inds[:,0],axis=1)
     gradfcW=tf.reduce_sum(tf.multiply(below_list,back_propped_list),axis=0) #tf.matmul(tf.transpose(belowf),back_propped)
+    if (R_inds is not None):
+        below_list = tf.gather(belowf, R_inds[:, 1], axis=1)
+        back_propped_list = tf.gather(back_proppedf, R_inds[:, 0], axis=1)
+        gradfcR = tf.reduce_sum(tf.multiply(below_list, back_propped_list), axis=0)
+    else:
+        gradfcR=gradfcW
     filter=tf.SparseTensor(indices=F_inds,values=F_vals,dense_shape=F_dims)
     gradfcx=tf.transpose(tf.sparse_tensor_dense_matmul(filter,tf.transpose(back_proppedf)))
     gradfcx=tf.reshape(gradfcx,below.shape)
-    return gradfcW, gradfcx
+    return gradfcW, gradfcx, gradfcR
 
 def MaxPoolingandMask(input,pool_size, stride):
 
