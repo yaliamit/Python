@@ -136,7 +136,7 @@ with tf.device(gpu_device):
 
         # Initialize variables
         sess.run(tf.global_variables_initializer())
-        zero_out_weights(PARS,VS,sess)
+        #zero_out_weights(PARS,VS,sess)
 
         # Initial test accuracy
         run_epoch(test,-1,type='Test')
@@ -181,7 +181,7 @@ with tf.device(gpu_device):
 
         SP={}
         for sp in PARS['sparse']:
-            SP[sp]=convert_conv_to_sparse(sparse_shape[sp],WRS[sp],sess)
+            SP[sp]=convert_conv_to_sparse(sparse_shape[sp],WRS[sp],sess,PARS['force_global_prob'][0])
         loss,accuracy,TS = recreate_network(PARS,x,y_,Train,WR,SP)
         VS = tf.trainable_variables()
         VS.reverse()
@@ -196,7 +196,7 @@ with tf.device(gpu_device):
 
         # Initialize variables
         sess.run(tf.global_variables_initializer())
-        #zero_out_weights(PARS,VS,sess)
+        zero_out_weights(PARS,VS,sess)
         run_epoch(test,-1,type='Test')
         SDS=None
         for ss in SS:

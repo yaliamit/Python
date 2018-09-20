@@ -46,7 +46,7 @@ def get_parameters(VSIN,PARS):
     return(WR)
 
 
-def convert_conv_to_sparse(dshape,WR,sess):
+def convert_conv_to_sparse(dshape,WR,sess,prob=None):
 
 
     # for ts in TS:
@@ -114,17 +114,32 @@ def convert_conv_to_sparse(dshape,WR,sess):
             indsr[0]=indsr[0]+t
             indsar.append(indsr.transpose())
             valsar.append(valsr)
-
-    INDSW=tf.convert_to_tensor(np.concatenate(indsaw,axis=0),dtype=np.int64)
-    VALSW=tf.convert_to_tensor(np.concatenate(valsaw,axis=0), dtype=np.float32)
+    cindsaw = np.concatenate(indsaw,axis=0)
+    cvalsaw = np.concatenate(valsaw,axis=0)
+    if (prob is not None and prob<1.):
+            clen=cindsaw.shape[0]
+            U = np.random.rand(clen)
+            ii = np.where(U<prob)[0]
+            cindsaw = cindsaw[ii,:]
+            cvalsaw=cvalsaw[ii]
+    INDSW=tf.convert_to_tensor(cindsaw,dtype=np.int64)
+    VALSW=tf.convert_to_tensor(cvalsaw, dtype=np.float32)
     ndims=tf.convert_to_tensor([dimin,dimout],dtype=np.int64)
 
     SPW=tf.SparseTensor(indices=INDSW,values=VALSW,dense_shape=ndims)
     SPW=tf.sparse_transpose(SPW)
     SPR=None
     if (doR):
-        INDSR=tf.convert_to_tensor(np.concatenate(indsar,axis=0),dtype=np.int64)
-        VALSR=tf.convert_to_tensor(np.concatenate(valsar,axis=0), dtype=np.float32)
+        cindsar = np.concatenate(indsar, axis=0)
+        cvalsar = np.concatenate(valsar, axis=0)
+        if (prob is not None and prob < 1.):
+            clen = cindsar.shape[0]
+            U = np.random.rand(clen)
+            ii = np.where(U < prob)[0]
+            cindsar = cindsar[ii, :]
+            cvalsar = cvalsar[ii]
+        INDSR=tf.convert_to_tensor(cindsar,dtype=np.int64)
+        VALSR=tf.convert_to_tensor(cvalsar, dtype=np.float32)
         ndims=tf.convert_to_tensor([dimin,dimout],dtype=np.int64)
 
         SPR=tf.SparseTensor(indices=INDSR,values=VALSR,dense_shape=ndims)
@@ -533,16 +548,17 @@ def zero_out_weights(PARS,VS,sess):
     SDS=[]
     for i, v in enumerate(VS):
         SDS.append(np.std(v.eval()))
-        print(v.name, v.get_shape().as_list(), SDS[-1])
+        shape=v.get_shape().as_list()
+        print(v.name, shape, SDS[-1])
         # After reversal, i=0 - first trainable variable is last dense layer W.
         #                 i=1 - second trainable variable is last dense layer R
         # Don't zero out these because with large numbers of classes the hinge loss doesn't work.
         if (i > 1):
              if (PARS['force_global_prob'][1] >= 0 and PARS['force_global_prob'][0] < 1.):
                 print('Zeroing out weights at rate ', PARS['force_global_prob'][0])
-                shape = v.get_shape().as_list()
-                Z = tf.zeros(shape)
-                U = tf.random_uniform(shape)
-                zero_op = tf.assign(v, K.tf.where(tf.less(U, tf.constant(PARS['force_global_prob'][0])), v, Z))
-                sess.run(zero_op)
+                if (not 'sparse' in v.name):
+                    Z = tf.zeros(shape)
+                    U = tf.random_uniform(shape)
+                    zero_op = tf.assign(v, K.tf.where(tf.less(U, tf.constant(PARS['force_global_prob'][0])), v, Z))
+                    sess.run(zero_op)
     return(SDS)
