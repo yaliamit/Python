@@ -25,14 +25,15 @@ def find_wr(name,VS):
     return W,R
 
 # Creare dictionary of parameters with name given by layer name
-def get_parameters_s(VSIN,SP):
+def get_parameters_s(VSIN,SP,TS):
 
     WRS={}
+    sparse_shape = {}
     for sp in SP:
             Win,Rin=find_wr(sp,VSIN)
             WRS[sp]=[Win.eval(),Rin.eval()]
-
-    return(WRS)
+            sparse_shape[sp] = find_ts(sp, TS).get_shape().as_list()[1:3]
+    return(WRS,sparse_shape)
 
 def get_parameters(VSIN,PARS):
 
@@ -70,7 +71,7 @@ def get_name(ts):
         T=ts
     return (name,T)
 
-def create_network(PARS,x,y_,Train):
+def create_network(PARS,x,y_,Train,WR=None,SP=None):
 
 
     TS=[]
@@ -101,6 +102,11 @@ def create_network(PARS,x,y_,Train):
                             parent=T
         # Convolutional layer
         if ('conv' in l['name']):
+            Win=None
+            Rin=None
+            if (WR is not None):
+                Win = WR[l['name']][0]
+                Rin = WR[l['name']][1]
             scope_name=l['name']
             scale=0
             # with non-linearity - always clipped linearity
@@ -108,9 +114,14 @@ def create_network(PARS,x,y_,Train):
                 scale=PARS['nonlin_scale']
                 scope_name=l['name']+'nonlin'
             with tf.variable_scope(scope_name):
-                TS.append(conv_layer(parent,PARS['batch_size'],PARS['nonlin_scale'], filter_size=list(l['filter_size']),num_features=l['num_filters'], prob=prob, scale=scale))
+                TS.append(conv_layer(parent,PARS['batch_size'],PARS['nonlin_scale'], filter_size=list(l['filter_size']),num_features=l['num_filters'], prob=prob, scale=scale, Win=Win, Rin=Rin))
         # Dense layer
         elif ('dens' in l['name']):
+            Win = None
+            Rin = None
+            if (WR is not None):
+                Win = WR[l['name']][0]
+                Rin = WR[l['name']][1]
             scope_name = l['name']
             scale = 0
             # with non-linearity - always clipped linearity
@@ -122,7 +133,7 @@ def create_network(PARS,x,y_,Train):
                 # Make sure final layer has num_units=num_classes
                 if ('final' in l):
                     num_units=PARS['n_classes']
-                TS.append(fully_connected_layer(parent,PARS['batch_size'],PARS['nonlin_scale'], num_features=num_units,prob=prob,scale=scale))
+                TS.append(fully_connected_layer(parent,PARS['batch_size'],PARS['nonlin_scale'], num_features=num_units,prob=prob,scale=scale, Win=Win, Rin=Rin))
         # Pooling layer
         elif ('pool' in l['name']):
             with tf.variable_scope(l['name']):
@@ -183,7 +194,7 @@ def create_network(PARS,x,y_,Train):
         print(t)
     return loss, accuracy, TS
 
-def recreate_network(PARS,x,y_,Train,WR,SP):
+def recreate_network(PARS,x,y_,Train,WR=None,SP=None):
 
 
             TS=[]
@@ -213,7 +224,7 @@ def recreate_network(PARS,x,y_,Train,WR,SP):
                                 if l['parent'] in name and not 'Equal' in name:
                                     parent=T
                 # Convolutional layer
-                if (l['name'] in PARS['sparse']):
+                if (l['name'] in PARS['sparse'] and SP is not None):
                     Win=SP[l['name']][0]
                     Rin=SP[l['name']][1]
                     if (Rin is None):
@@ -238,8 +249,11 @@ def recreate_network(PARS,x,y_,Train,WR,SP):
                         TS.append(sparse_fully_connected_layer(parent,PARS['batch_size'],PARS['nonlin_scale'], num_units=num_units, num_features=l['num_filters'], prob=prob,scale=scale, Win=Win,Rin=Rin, Fin=Fin))
                 else:
                     if ('conv' in l['name']):
-                        Win=WR[l['name']][0]
-                        Rin=WR[l['name']][1]
+                        Win=None
+                        Rin=None
+                        if (WR is not None):
+                            Win=WR[l['name']][0]
+                            Rin=WR[l['name']][1]
                         scope_name=l['name']
                         scale=0
                         # with non-linearity - always clipped linearity
@@ -250,8 +264,11 @@ def recreate_network(PARS,x,y_,Train,WR,SP):
                             TS.append(conv_layer(parent,PARS['batch_size'],PARS['nonlin_scale'], filter_size=list(l['filter_size']),num_features=l['num_filters'], prob=prob, scale=scale,Win=Win,Rin=Rin))
                     # Dense layer
                     elif ('dens' in l['name']):
-                        Win=WR[l['name']][0]
-                        Rin=WR[l['name']][1]
+                        Win = None
+                        Rin = None
+                        if (WR is not None):
+                            Win=WR[l['name']][0]
+                            Rin=WR[l['name']][1]
                         scope_name = l['name']
                         scale = 0
                         # with non-linearity - always clipped linearity

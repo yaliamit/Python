@@ -1,6 +1,8 @@
 import tensorflow as tf
 import numpy as np
 
+
+
 def convert_conv_to_sparse(dshape,WR,sess,prob=None):
 
 
@@ -101,6 +103,19 @@ def convert_conv_to_sparse(dshape,WR,sess,prob=None):
         SPR=tf.sparse_transpose(SPR)
 
     return(SPW, SPR)
+
+
+def get_sparse_parameters(VS):
+    SS = []
+    for v in VS:
+        if ('sparse' in v.name):
+            SS.append(v)
+    return(SS)
+def convert_conv_layers_to_sparse(sparse_shape, WRS, sess, PARS):
+    SP = {}
+    for sp in PARS['sparse']:
+        SP[sp] = convert_conv_to_sparse(sparse_shape[sp], WRS[sp], sess, PARS['force_global_prob'][0])
+    return (SP)
 
 # Each layer comes in groups of 9 parameters
 def F_transpose_and_clip(VS,sess,SDS=None):

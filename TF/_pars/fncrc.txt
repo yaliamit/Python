@@ -1,6 +1,6 @@
 seed:45239
-num_epochs:0
-num_epochs_sparse:20
+num_epochs:1
+num_epochs_sparse:2
 simple_augmentation:True
 mod_net:None
 edges:False
