@@ -146,7 +146,10 @@ with tf.device(gpu_device):
                 # transpose W or R for sparse layer computed once for each epoch
                 # NOT for each batch - still works fine.
                 Conv_sparse_aux.F_transpose_and_clip(SS,sess,SDS)
-                run_epoch(val,i,type='Val',shift=15)
+                shift=None
+                if ('shift' in PARS):
+                    shift=PARS[shift]
+                run_epoch(val,i,type='Val',shift=shift)
 
                 sys.stdout.flush()
         for sp in PARS['sparse']:

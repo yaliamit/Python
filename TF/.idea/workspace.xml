@@ -2,15 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ef2eb448-6413-411f-9ec4-6f9aac3066f7" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/TF.iml" afterPath="$PROJECT_DIR$/.idea/TF.iml" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/Conv_data.py" afterPath="$PROJECT_DIR$/Conv_data.py" />
-      <change beforePath="$PROJECT_DIR$/Conv_net_gpu.py" afterPath="$PROJECT_DIR$/Conv_net_gpu.py" />
-      <change beforePath="$PROJECT_DIR$/Conv_sparse_aux.py" afterPath="$PROJECT_DIR$/Conv_sparse_aux.py" />
       <change beforePath="$PROJECT_DIR$/_pars/fncrc.txt" afterPath="$PROJECT_DIR$/_pars/fncrc.txt" />
       <change beforePath="$PROJECT_DIR$/run_conv.py" afterPath="$PROJECT_DIR$/run_conv.py" />
-      <change beforePath="$PROJECT_DIR$/try.py" afterPath="$PROJECT_DIR$/try.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -27,11 +20,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="run_conv.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="run_conv.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/run_conv.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="314">
-              <caret line="148" column="43" lean-forward="false" selection-start-line="148" selection-start-column="43" selection-end-line="148" selection-end-column="43" />
+            <state relative-caret-position="359">
+              <caret line="151" column="54" lean-forward="false" selection-start-line="151" selection-start-column="54" selection-end-line="151" selection-end-column="54" />
               <folding>
                 <element signature="e#19#30#0" expanded="true" />
               </folding>
@@ -61,11 +54,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="fncrc.txt" pinned="false" current-in-tab="false">
+      <file leaf-file-name="fncrc.txt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/_pars/fncrc.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="20" lean-forward="false" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="20" />
+            <state relative-caret-position="360">
+              <caret line="24" column="8" lean-forward="false" selection-start-line="24" selection-start-column="8" selection-end-line="24" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -151,12 +144,12 @@
         <option value="$PROJECT_DIR$/Conv_net_aux.py" />
         <option value="$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg3.txt" />
         <option value="$PROJECT_DIR$/Conv_net_gpu.py" />
-        <option value="$PROJECT_DIR$/_pars/fncrc.txt" />
         <option value="$PROJECT_DIR$/../Compare_new/data.py" />
         <option value="$PROJECT_DIR$/Conv_data.py" />
         <option value="$PROJECT_DIR$/try.py" />
         <option value="$PROJECT_DIR$/Conv_sparse_aux.py" />
         <option value="$PROJECT_DIR$/run_conv.py" />
+        <option value="$PROJECT_DIR$/_pars/fncrc.txt" />
       </list>
     </option>
   </component>
@@ -960,14 +953,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_pars/fncrc.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="20" lean-forward="false" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Conv_sparse_aux.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="162">
@@ -986,11 +971,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/run_conv.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="314">
-          <caret line="148" column="43" lean-forward="false" selection-start-line="148" selection-start-column="43" selection-end-line="148" selection-end-column="43" />
+        <state relative-caret-position="359">
+          <caret line="151" column="54" lean-forward="false" selection-start-line="151" selection-start-column="54" selection-end-line="151" selection-end-column="54" />
           <folding>
             <element signature="e#19#30#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_pars/fncrc.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="24" column="8" lean-forward="false" selection-start-line="24" selection-start-column="8" selection-end-line="24" selection-end-column="8" />
+          <folding />
         </state>
       </provider>
     </entry>
