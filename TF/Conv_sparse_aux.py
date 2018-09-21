@@ -179,7 +179,7 @@ def compare_params_sparse(sp, sh, VS, WR):
             gradr=grada/np.abs(ttt[:-1,:-1])
             me[p]=np.mean(gradr)
             sd[p]=np.std(gradr)
-        print('f',f,np.max(me),np.mean(me),np.std(me))
+        print('fgrad:',f,np.max(me),np.mean(me),np.std(me))
 
 def get_weight_stats(SS):
             SDS=None
