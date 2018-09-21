@@ -137,11 +137,11 @@ with tf.device(gpu_device):
         #SDS=Conv_sparse_aux.get_weight_stats(SS)
 
         for i in range(PARS['num_epochs_sparse']):  # number of epochs
-                run_epoch(train,i)
+                run_epoch(train,i,type='Train',shift=shift)
                 # transpose W or R for sparse layer computed once for each epoch
                 # NOT for each batch - still works fine.
                 Conv_sparse_aux.F_transpose_and_clip(SS,sess,SDS)
-                run_epoch(val,i,type='Val',shift=shift)
+                run_epoch(val,i,type='Val')
 
                 sys.stdout.flush()
         for sp in PARS['sparse']:
