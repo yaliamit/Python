@@ -5,18 +5,22 @@ import numpy as np
 import tensorflow as tf
 from Conv_net_gpu import create_network, back_prop, zero_out_weights, find_ts, \
     recreate_network, get_parameters, get_parameters_s
+import Conv_sparse_aux
 from Conv_net_aux import process_parameters,print_results
-from Conv_data import get_data
-from Conv_sparse_aux import F_transpose_and_clip, compare_params_sparse, convert_conv_to_sparse, get_weight_stats
+from Conv_data import get_data, rotate_dataset_rand
 
 
-def run_epoch(train,i,type='Train'):
+
+def run_epoch(train,i,type='Train',shift=None):
     t1 = time.time()
     # Randomly shuffle the training data
     ii = np.arange(0, train[0].shape[0], 1)
-    if ('Train'):
+    if (type=='Train'):
         np.random.shuffle(ii)
     tr = train[0][ii]
+    if (shift is not None and type=='Train'):
+        tr=rotate_dataset_rand(tr,shift=shift,gr=0)
+
     y = train[1][ii]
     lo = 0.
     acc = 0.
@@ -26,9 +30,6 @@ def run_epoch(train,i,type='Train'):
         batch = (tr[j:j + batch_size], y[j:j + batch_size])
         if (type=='Train'):
             grad = sess.run(dW_OPs, feed_dict={x: batch[0], y_: batch[1], Train: True})
-            if (PARS['debug']):
-                for j in np.arange(-3, -3 - lall - 1, -1):
-                    print(dW_OPs[j].name, 'gradient sd', grad[j].shape, np.std(grad[j]), np.mean(grad[j] == 0))
             acc += grad[-2]
             lo += grad[-1]
         else:
@@ -102,13 +103,6 @@ with tf.device(gpu_device):
             ac, lo= run_epoch(test,i,type='Test')
             print('step,','0,', 'aggegate accuracy,', ac)
 
-        # saver = tf.train.Saver()
-        # model_name='model'
-        # save_path = saver.save(sess, "tmp/" + model_name)
-        # print("Model saved in path: %s" % save_path)
-
-
-
     # Recreate graph with existing value of parameters
     if ('sparse' in PARS):
       PARS['step_size']=PARS['eta_sparse_init']
@@ -126,7 +120,7 @@ with tf.device(gpu_device):
 
         SP={}
         for sp in PARS['sparse']:
-            SP[sp]=convert_conv_to_sparse(sparse_shape[sp],WRS[sp],sess,PARS['force_global_prob'][0])
+            SP[sp]=Conv_sparse_aux.convert_conv_to_sparse(sparse_shape[sp],WRS[sp],sess,PARS['force_global_prob'][0])
         loss,accuracy,TS = recreate_network(PARS,x,y_,Train,WR,SP)
         VS = tf.trainable_variables()
         VS.reverse()
@@ -143,25 +137,25 @@ with tf.device(gpu_device):
         sess.run(tf.global_variables_initializer())
         zero_out_weights(PARS,VS,sess)
         run_epoch(test,-1,type='Test')
-        SDS=None
-        get_weight_stats(SS)
+        SDS=Conv_sparse_aux.get_weight_stats(SS)
         #print('sparse comparison before training')
         for sp in PARS['sparse']:
-           WW=compare_params_sparse(sp,sparse_shape,VS,WR)
+           WW=Conv_sparse_aux.compare_params_sparse(sp,sparse_shape,VS,WR)
         for i in range(PARS['num_epochs_sparse']):  # number of epochs
                 run_epoch(train,i)
                 # transpose W or R for sparse layer computed once for each epoch
                 # NOT for each batch - still works fine.
-                F_transpose_and_clip(SS,sess,SDS)
-                run_epoch(val,i,type='Val')
-                get_weight_stats(SS)
+                Conv_sparse_aux.F_transpose_and_clip(SS,sess,SDS)
+                run_epoch(val,i,type='Val',shift=15)
+
                 sys.stdout.flush()
+        for sp in PARS['sparse']:
+            WW = Conv_sparse_aux.compare_params_sparse(sp, sparse_shape, VS, WR)
         ac, lo= run_epoch(test,i,type='Test')
         print('step,','0,', 'aggegate accuracy,', ac)
         print('sparse comparison after training')
 
-        for sp in PARS['sparse']:
-            WW = compare_params_sparse(sp, sparse_shape, VS, WR)
+
 
 print("DONE")
 sys.stdout.flush()

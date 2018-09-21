@@ -5,6 +5,87 @@ import sys
 import os
 import numpy as np
 import h5py
+import scipy.ndimage
+import pylab as py
+import matplotlib.colors as col
+
+def rotate_dataset_rand(X,angle=0,scale=0,shift=0,gr=0,flip=False,blur=False,saturation=False, spl=None):
+    # angle=NETPARS['trans']['angle']
+    # scale=NETPARS['trans']['scale']
+    # #shear=NETPARS['trans']['shear']
+    # shift=NETPARS['trans']['shift']
+    s=np.shape(X)
+    Xr=np.zeros(s)
+    cent=np.array(s[2:4])/2
+    #angles=np.random.rand(Xr.shape[0])*angle-angle/2.
+    aa=np.int32(np.random.rand(Xr.shape[0])*.25)
+    aa[np.int32(len(aa)/2):]=aa[np.int32(len(aa)/2):]+.75
+    angles=aa*angle-angle/2
+    SX=np.exp(np.random.rand(Xr.shape[0],2)*scale-scale/2.)
+    SH=np.int32(np.round(np.random.rand(Xr.shape[0],2)*shift)-shift/2)
+    FL=np.zeros(Xr.shape[0])
+    BL=np.zeros(Xr.shape[0])
+    HS=np.zeros(Xr.shape[0])
+    if (flip):
+        FL=(np.random.rand(Xr.shape[0])>.5)
+    if (blur):
+        BL=(np.random.rand(Xr.shape[0])>.5)
+    if (saturation):
+        HS=(np.power(2,np.random.rand(Xr.shape[0])*4-2))
+        HU=((np.random.rand(Xr.shape[0]))-.5)*.2
+    #SHR=np.random.rand(Xr.shape[0])*shear-shear/2.
+    for i in range(Xr.shape[0]):
+        if (np.mod(i,1000)==0):
+            print(i,end=" ")
+        mat=np.eye(2)
+        #mat[1,0]=SHR[i]
+        mat[0,0]=SX[i,0]
+        mat[1,1]=SX[i,0]
+        rmat=np.eye(2)
+        a=angles[i]*np.pi/180.
+        rmat[0,0]=np.cos(a)
+        rmat[0,1]=-np.sin(a)
+        rmat[1,0]=np.sin(a)
+        rmat[1,1]=np.cos(a)
+        mat=mat.dot(rmat)
+        offset=cent-mat.dot(cent)+SH[i]
+        for d in range(X.shape[3]):
+            Xt=scipy.ndimage.interpolation.affine_transform(X[i,:,:,d],mat, offset=offset, mode='reflect')
+            Xt=np.minimum(Xt,.99)
+            if (FL[i]):
+                Xt=np.fliplr(Xt)
+            if (BL[i]):
+                Xt=scipy.ndimage.gaussian_filter(Xt,sigma=.5)
+            Xr[i,:,:,d]=Xt
+        if (HS[i]):
+            y=col.rgb_to_hsv(Xr[i])
+            y[:,:,1]=np.minimum(y[:,:,1]*HS[i],1)
+            y[:,:,0]=np.mod(y[:,:,0]+HU[i],1.)
+            z=col.hsv_to_rgb(y)
+            Xr[i]=z
+
+    if (gr):
+        fig1=py.figure(1)
+        fig2=py.figure(2)
+        ii=np.arange(0,X.shape[0],1)
+        np.random.shuffle(ii)
+        nr=9
+        nr2=nr*nr
+        for j in range(nr2):
+            #print(angles[ii[j]]) #,SX[i],SH[i],FL[i],BL[i])
+            py.figure(fig1.number)
+            py.subplot(nr,nr,j+1)
+            py.imshow(X[ii[j]])
+            py.axis('off')
+            py.figure(fig2.number)
+            py.subplot(nr,nr,j+1)
+            py.imshow(Xr[ii[j]])
+            py.axis('off')
+        py.show()
+    print(end="\n")
+
+    return(np.float32(Xr))
+
 
 def one_hot(values,n_values=10):
     n_v = np.maximum(n_values,np.max(values) + 1)

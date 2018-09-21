@@ -32,7 +32,7 @@ def convert_conv_to_sparse(dshape,WR,sess,prob=None):
     fac=din[0]
     inci=1
     inc=np.int32(dimin/fac)
-    print('dimin',dimin,'inshape',[inc,]+din,'dout',dout)
+    print('In convert to sparse:','dimin',dimin,'inshape',[inc,]+din,'dout',dout)
     indsaw=[]
     valsaw=[]
     indsar=[]
@@ -40,7 +40,7 @@ def convert_conv_to_sparse(dshape,WR,sess,prob=None):
     ii=0
     for t in range(0,dimin,inc):
         s=0
-        print(ii,t)
+        #print(ii,t)
         XX=np.zeros([inc,]+din)
         for i in np.arange(ii,ii+inci,1):
             for j in range(din[1]):
@@ -145,21 +145,47 @@ def compare_params_sparse(sp, sh, VS, WR):
     infe=WR[sp][0].shape[2]
     fdims=[WR[sp][0].shape[0],WR[sp][0].shape[1]]
     pfdims=np.prod(fdims)
-    newshape=[np.int32(DM.shape[0]/outfe),outfe,sh[sp][0],sh[sp][1],infe]
+    numloc=np.int32(DM.shape[0]/outfe)
+    newshape=[numloc,outfe,sh[sp][0],sh[sp][1],infe]
     DM = np.reshape(DM, newshape)
-    tt = [[] for i in range(outfe)]
+    tt=np.zeros((sh[sp][0],sh[sp][1],outfe,pfdims))
+    nonz=np.int32(np.zeros((sh[sp][0],sh[sp][1])))
+
+    # Get the filters operating on the input_feature_index'th feature of the input layer.
+    # Can do similar thing on each feature of the input layer.
+    input_feature_index=0
     for i in range(newshape[0]):
+        x=np.int32(np.mod(i,sh[sp][0]))
+        y=np.int32(i//sh[sp][1])
         for f in range(newshape[1]):
-            ww=np.where(DM[i,f,:,:,0])
+            ww=np.where(DM[i,f,:,:,input_feature_index])
             if (len(ww[0])==pfdims):
-                tt[f].append(DM[i,f,ww[0],ww[1],0])
-    print('sp',sp)
+                if (f==0):
+                    nonz[x,y]=1
+                tt[x,y,f,:]=DM[i,f,ww[0],ww[1],0]
+    nonzi=np.where(nonz==1)
+    sx=min(nonzi[0])
+    ex=max(nonzi[0])+1
+    sy=min(nonzi[1])
+    ey=max(nonzi[1])+1
     for f in range(outfe):
-        tt[f]=np.array(tt[f])
-        print(f,np.max(np.std(tt[f],axis=0)/np.abs(np.mean(tt[f],axis=0))))
+        me=np.zeros(pfdims)
+        sd=np.zeros(pfdims)
+        for p in range(pfdims):
+            ttt=tt[sx:ex,sy:ey,f,p]
+            tttx=np.diff(ttt,axis=0)
+            ttty=np.diff(ttt,axis=1)
+            grada=np.abs(tttx[:,:-1])+np.abs(ttty[:-1,:])
+            gradr=grada/np.abs(ttt[:-1,:-1])
+            me[p]=np.mean(gradr)
+            sd[p]=np.std(gradr)
+        print('f',f,np.max(me),np.mean(me),np.std(me))
 
 def get_weight_stats(SS):
+            SDS=None
             for ss in SS:
+              if ('dims' not in ss.name):
                 V = ss.eval()
                 #SDS.append(np.std(V))
                 print(ss.name, ss.get_shape().as_list(), np.mean(V),np.std(V))
+            return(SDS)

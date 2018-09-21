@@ -446,20 +446,16 @@ def back_prop(loss,acc,TS,VS,x,PARS):
     return OPLIST, len(all_grad)
 
 def zero_out_weights(PARS,VS,sess):
-    SDS=[]
+
     for i, v in enumerate(VS):
-        SDS.append(np.std(v.eval()))
         shape=v.get_shape().as_list()
-        print(v.name, shape, SDS[-1])
         # After reversal, i=0 - first trainable variable is last dense layer W.
         #                 i=1 - second trainable variable is last dense layer R
         # Don't zero out these because with large numbers of classes the hinge loss doesn't work.
         if (i > 1):
              if (PARS['force_global_prob'][1] >= 0 and PARS['force_global_prob'][0] < 1.):
-                print('Zeroing out weights at rate ', PARS['force_global_prob'][0])
                 if (not 'sparse' in v.name):
                     Z = tf.zeros(shape)
                     U = tf.random_uniform(shape)
                     zero_op = tf.assign(v, K.tf.where(tf.less(U, tf.constant(PARS['force_global_prob'][0])), v, Z))
                     sess.run(zero_op)
-    return(SDS)
