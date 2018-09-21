@@ -148,7 +148,7 @@ with tf.device(gpu_device):
                 Conv_sparse_aux.F_transpose_and_clip(SS,sess,SDS)
                 shift=None
                 if ('shift' in PARS):
-                    shift=PARS[shift]
+                    shift=PARS['shift']
                 run_epoch(val,i,type='Val',shift=shift)
 
                 sys.stdout.flush()
