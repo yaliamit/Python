@@ -35,8 +35,8 @@ def rotate_dataset_rand(X,angle=0,scale=0,shift=0,gr=0,flip=False,blur=False,sat
         HU=((np.random.rand(Xr.shape[0]))-.5)*.2
     #SHR=np.random.rand(Xr.shape[0])*shear-shear/2.
     for i in range(Xr.shape[0]):
-        if (np.mod(i,1000)==0):
-            print(i,end=" ")
+        # if (np.mod(i,1000)==0):
+        #     print(i,end=" ")
         mat=np.eye(2)
         #mat[1,0]=SHR[i]
         mat[0,0]=SX[i,0]
