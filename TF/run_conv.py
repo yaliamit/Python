@@ -142,7 +142,6 @@ with tf.device(gpu_device):
                 # NOT for each batch - still works fine.
                 Conv_sparse_aux.F_transpose_and_clip(SS,sess,SDS)
                 run_epoch(val,i,type='Val')
-
                 sys.stdout.flush()
         Conv_sparse_aux.get_weight_stats(SS)
         for sp in PARS['sparse']:
