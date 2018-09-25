@@ -111,6 +111,7 @@ def get_sparse_parameters(VS):
         if ('sparse' in v.name):
             SS.append(v)
     return(SS)
+
 def convert_conv_layers_to_sparse(sparse_shape, WRS, sess, PARS):
     SP = {}
     for sp in PARS['sparse']:
@@ -177,7 +178,7 @@ def compare_params_sparse(sp, sh, VS, WR):
             if (len(ww[0])==pfdims):
                 if (f==0):
                     nonz[x,y]=1
-                tt[x,y,f,:]=DM[i,f,ww[0],ww[1],0]
+                tt[x,y,f,:]=DM[i,f,ww[0],ww[1],input_feature_index]
     nonzi=np.where(nonz==1)
     sx=min(nonzi[0])
     ex=max(nonzi[0])+1
@@ -190,17 +191,17 @@ def compare_params_sparse(sp, sh, VS, WR):
             ttt=tt[sx:ex,sy:ey,f,p]
             tttx=np.diff(ttt,axis=0)
             ttty=np.diff(ttt,axis=1)
-            grada=np.abs(tttx[:,:-1])+np.abs(ttty[:-1,:])
+            grada=np.sqrt(tttx[:,:-1]*tttx[:,:-1]+ttty[:-1,:]*ttty[:-1,:])
             gradr=grada/np.abs(ttt[:-1,:-1])
             me[p]=np.mean(gradr)
             sd[p]=np.std(gradr)
         print('fgrad:',f,np.max(me),np.mean(me),np.std(me))
 
-def get_weight_stats(SS):
-            SDS=None
+def get_weight_stats(SS,update=False):
+            SDS=[]
             for ss in SS:
-              if ('dims' not in ss.name):
                 V = ss.eval()
-                #SDS.append(np.std(V))
-                print(ss.name, ss.get_shape().as_list(), np.mean(V),np.std(V))
+                if (update):
+                    SDS.append(2*np.std(V))
+                print(ss.name, ss.get_shape().as_list(), np.mean(V),np.std(V),np.max(V))
             return(SDS)

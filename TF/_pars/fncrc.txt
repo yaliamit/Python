@@ -1,6 +1,6 @@
 seed:45239
-num_epochs:1
-num_epochs_sparse:2
+num_epochs:0
+num_epochs_sparse:15
 simple_augmentation:True
 mod_net:None
 edges:False
@@ -21,7 +21,7 @@ agg:True
 dep_fac:1.
 hinge:False
 TRAIN:True
-force_global_prob:(1.,0.)
+force_global_prob:(1.,1.)
 #shift:15
 name:input1
 name:conv1;num_filters:4;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:input1
