@@ -170,32 +170,43 @@ def compare_params_sparse(sp, sh, VS, WR):
     # Get the filters operating on the input_feature_index'th feature of the input layer.
     # Can do similar thing on each feature of the input layer.
     input_feature_index=0
-    for i in range(newshape[0]):
+    me = np.zeros(pfdims * outfe * infe)
+    uqa = np.zeros(pfdims * outfe * infe)
+    uqb = np.zeros(pfdims * outfe * infe)
+    t = 0
+    for inp in range(infe):
+      for i in range(newshape[0]):
         x=np.int32(np.mod(i,sh[sp][0]))
         y=np.int32(i//sh[sp][1])
         for f in range(newshape[1]):
-            ww=np.where(DM[i,f,:,:,input_feature_index])
+            ww=np.where(DM[i,f,:,:,inp])
             if (len(ww[0])==pfdims):
                 if (f==0):
                     nonz[x,y]=1
-                tt[x,y,f,:]=DM[i,f,ww[0],ww[1],input_feature_index]
-    nonzi=np.where(nonz==1)
-    sx=min(nonzi[0])
-    ex=max(nonzi[0])+1
-    sy=min(nonzi[1])
-    ey=max(nonzi[1])+1
-    for f in range(outfe):
-        me=np.zeros(pfdims)
-        sd=np.zeros(pfdims)
+                tt[x,y,f,:]=DM[i,f,ww[0],ww[1],inp]
+      nonzi=np.where(nonz==1)
+      sx=min(nonzi[0])
+      ex=max(nonzi[0])+1
+      sy=min(nonzi[1])
+      ey=max(nonzi[1])+1
+
+
+      for f in range(outfe):
         for p in range(pfdims):
             ttt=tt[sx:ex,sy:ey,f,p]
             tttx=np.diff(ttt,axis=0)
             ttty=np.diff(ttt,axis=1)
             grada=np.sqrt(tttx[:,:-1]*tttx[:,:-1]+ttty[:-1,:]*ttty[:-1,:])
             gradr=grada/np.abs(ttt[:-1,:-1])
-            me[p]=np.mean(gradr)
-            sd[p]=np.std(gradr)
-        print('fgrad:',f,np.max(me),np.mean(me),np.std(me))
+            me[t]=np.median(gradr)
+            uqa[t]=np.percentile(gradr,75.)
+            uqb[t]=np.percentile(gradr,90.)
+
+            t+=1
+    print(sp+'fgrad:',np.max(me),np.median(me),np.percentile(me,75),np.percentile(me,90))
+    print(sp+'fgrad:',np.max(uqa),np.median(uqa),np.percentile(uqa,75),np.percentile(uqa,90))
+    print(sp+'fgrad:',np.max(uqb),np.median(uqb),np.percentile(uqb,75),np.percentile(uqb,90))
+
 
 def get_weight_stats(SS,update=False):
             SDS=[]
