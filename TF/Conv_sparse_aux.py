@@ -154,6 +154,7 @@ def compare_params_sparse(sp, sh, VS, WR):
                 mvals = v.eval()
             if ('dims' in v.name):
                 mdims = v.eval()
+    sdv=np.std(mvals)
     with tf.device("/cpu:0"):
         dm = tf.sparse_to_dense(sparse_indices=minds, sparse_values=mvals, output_shape=mdims)
         DM = dm.eval()
@@ -197,7 +198,7 @@ def compare_params_sparse(sp, sh, VS, WR):
             tttx=np.diff(ttt,axis=0)
             ttty=np.diff(ttt,axis=1)
             grada=np.sqrt(tttx[:,:-1]*tttx[:,:-1]+ttty[:-1,:]*ttty[:-1,:])
-            gradr=grada/np.abs(ttt[:-1,:-1])
+            gradr=grada/sdv#np.abs(ttt[:-1,:-1])
             me[t]=np.median(gradr)
             uqa[t]=np.percentile(gradr,75.)
             uqb[t]=np.percentile(gradr,90.)
@@ -213,6 +214,6 @@ def get_weight_stats(SS,update=False):
             for ss in SS:
                 V = ss.eval()
                 if (update):
-                    SDS.append(2*np.std(V))
+                    SDS.append(np.std(V))
                 print(ss.name, ss.get_shape().as_list(), np.mean(V),np.std(V),np.max(V))
             return(SDS)

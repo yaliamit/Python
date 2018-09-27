@@ -142,10 +142,13 @@ with tf.device(gpu_device):
                 # NOT for each batch - still works fine.
                 Conv_sparse_aux.F_transpose_and_clip(SS,sess,SDS)
                 run_epoch(val,i,type='Val')
+                if (np.mod(i,10)==0):
+                    for sp in PARS['sparse']:
+                        Conv_sparse_aux.compare_params_sparse(sp, sparse_shape, VS, WR)
                 sys.stdout.flush()
         Conv_sparse_aux.get_weight_stats(SS)
         for sp in PARS['sparse']:
-            WW = Conv_sparse_aux.compare_params_sparse(sp, sparse_shape, VS, WR)
+            Conv_sparse_aux.compare_params_sparse(sp, sparse_shape, VS, WR)
         ac, lo= run_epoch(test,i,type='Test')
         print('step,','0,', 'aggegate accuracy,', ac)
         print('sparse comparison after training')
