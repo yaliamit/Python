@@ -11,14 +11,14 @@ from Conv_net_aux import process_parameters,print_results
 from Conv_data import get_data, rotate_dataset_rand
 
 
-def setup_net(PARS, x, y_, Train, WR=None, SP=None):
+def setup_net(PARS, x, y_, Train, WR=None, SP=None, non_trainable=None):
     # Create the network architecture with the above placeholdes as the inputs.
     # TS is a list of tensors or tensors + a list of associated parameters (pool size etc.)
     loss, accuracy, TS = Conv_net_gpu.recreate_network(PARS, x, y_, Train,WR=WR,SP=SP)
     VS = tf.trainable_variables()
     VS.reverse()
 
-    dW_OPs, lall = Conv_net_gpu.back_prop(loss, accuracy, TS, VS, x, PARS)
+    dW_OPs, lall = Conv_net_gpu.back_prop(loss, accuracy, TS, VS, x, PARS,non_trainable=non_trainable)
     return (loss, accuracy, TS, VS, dW_OPs, lall)
 
 def run_epoch(train,i,type='Train',shift=None):
@@ -128,7 +128,7 @@ with tf.device(gpu_device):
         x = tf.placeholder(tf.float32, shape=[PARS['batch_size'], dim, dim, PARS['nchannels']], name="x")
         y_ = tf.placeholder(tf.float32, shape=[PARS['batch_size'], PARS['n_classes']], name="y")
         Train = tf.placeholder(tf.bool, name="Train")
-        loss, accuracy, TS, VS, dW_OPs, lall = setup_net(PARS, x, y_, Train,WR=WR,SP=SP)
+        loss, accuracy, TS, VS, dW_OPs, lall = setup_net(PARS, x, y_, Train,WR=WR,SP=SP,non_trainable=PARS['non_trainable'])
 
         SS=Conv_sparse_aux.get_sparse_parameters(VS)
 
