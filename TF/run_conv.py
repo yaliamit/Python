@@ -52,6 +52,11 @@ def run_epoch(train,i,type='Train',shift=None):
     print_results(type, i, lo/ca, acc/ca)
     return acc / ca, lo / ca
 
+def read_model(net):
+    saver = tf.train.import_meta_graph('tmp/model_' + net + '.meta')
+    saver.restore(sess, 'tmp/model_' + net)
+    graph = tf.get_default_graph()
+    return(graph)
 
 ###
 # Script starts here
@@ -152,6 +157,9 @@ with tf.device(gpu_device):
         ac, lo= run_epoch(test,i,type='Test')
         print('step,','0,', 'aggegate accuracy,', ac)
         print('sparse comparison after training')
-
+        saver = tf.train.Saver()
+        save_path = saver.save(sess, "tmp/model_" + net)
+        print("Model saved in path: %s" % save_path)
+        print("DONE")
 print("DONE")
 sys.stdout.flush()
