@@ -73,6 +73,11 @@ print('net', net)
 
 PARS=process_parameters(net)
 train, val, test, dim = get_data(PARS)
+if ('re_randomize' in PARS): re_randomize=PARS['re_randomize']
+else: re_randomize=None
+if ('non_trainable' in PARS): non_trainable=PARS['non_trainable']
+else: non_trainable=None
+
 
 with tf.device(gpu_device):
     tf.reset_default_graph()
@@ -99,7 +104,7 @@ with tf.device(gpu_device):
                 sys.stdout.flush()
 
         if ('sparse' in PARS):
-            WRS, sparse_shape=get_parameters_s(VS,PARS['sparse'],TS)
+            WRS, sparse_shape=get_parameters_s(VS,PARS['sparse'],TS,re_randomize=re_randomize)
             WR=get_parameters(VS,PARS)
 
         # Final test accuracy
@@ -128,7 +133,8 @@ with tf.device(gpu_device):
         x = tf.placeholder(tf.float32, shape=[PARS['batch_size'], dim, dim, PARS['nchannels']], name="x")
         y_ = tf.placeholder(tf.float32, shape=[PARS['batch_size'], PARS['n_classes']], name="y")
         Train = tf.placeholder(tf.bool, name="Train")
-        loss, accuracy, TS, VS, dW_OPs, lall = setup_net(PARS, x, y_, Train,WR=WR,SP=SP,non_trainable=PARS['non_trainable'])
+
+        loss, accuracy, TS, VS, dW_OPs, lall = setup_net(PARS, x, y_, Train,WR=WR,SP=SP,non_trainable=non_trainable)
 
         SS=Conv_sparse_aux.get_sparse_parameters(VS)
 

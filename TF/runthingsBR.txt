@@ -1,1 +1,1 @@
-/opt/anaconda/anaconda3/bin/python run_conv.py _pars/fncrc_deep_tryR_avg3 0 >OUTtry.txt
+/opt/anaconda/anaconda3/bin/python run_conv.py _pars/fncrc_deep_tryR_avg3 0 >OUTtry5.txt

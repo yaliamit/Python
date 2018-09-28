@@ -24,14 +24,25 @@ def find_wr(name,VS):
                 R=vs
     return W,R
 
+def re_initialize(shape):
+    std=np.sqrt(6./((shape[0]+shape[1])*shape[2]*shape[3]))
+    Wout=np.float32(np.random.uniform(-std,std,shape))
+    Rout=np.float32(np.random.uniform(-std,std,shape))
+
+    return Wout, Rout
 # Creare dictionary of parameters with name given by layer name
-def get_parameters_s(VSIN,SP,TS):
+def get_parameters_s(VSIN,SP,TS, re_randomize=None):
 
     WRS={}
     sparse_shape = {}
     for sp in SP:
             Win,Rin=find_wr(sp,VSIN)
-            WRS[sp]=[Win.eval(),Rin.eval()]
+            wrs=[Win.eval(),Rin.eval()]
+            if (re_randomize is not None):
+              if sp in re_randomize:
+                 Win, Rin = re_initialize(Win.shape.as_list())
+                 wrs=[Win*(wrs[0]!=0),Rin*(wrs[1]!=0)]
+            WRS[sp]=wrs
             sparse_shape[sp] = find_ts(sp, TS).get_shape().as_list()[1:3]
     return(WRS,sparse_shape)
 

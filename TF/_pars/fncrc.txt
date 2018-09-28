@@ -1,5 +1,5 @@
 seed:45239
-num_epochs:0
+num_epochs:5
 num_epochs_sparse:5
 simple_augmentation:True
 mod_net:None
@@ -23,6 +23,7 @@ hinge:False
 TRAIN:True
 force_global_prob:(1.,1.)
 non_trainable:conv1,
+#re_randomize:conv1aR,
 #shift:15
 name:input1
 name:conv1;num_filters:4;filter_size:(3,3);pad:(1,1);stride:(1, 1);non_linearity:tanh;parent:input1
