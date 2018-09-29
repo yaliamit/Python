@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ef2eb448-6413-411f-9ec4-6f9aac3066f7" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg2.txt" afterPath="$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg2.txt" />
+      <change beforePath="$PROJECT_DIR$/Conv_net_gpu.py" afterPath="$PROJECT_DIR$/Conv_net_gpu.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -30,11 +29,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Conv_net_gpu.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Conv_net_gpu.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Conv_net_gpu.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5490">
-              <caret line="371" column="0" lean-forward="false" selection-start-line="371" selection-start-column="0" selection-end-line="371" selection-end-column="0" />
+            <state relative-caret-position="106">
+              <caret line="115" column="48" lean-forward="false" selection-start-line="115" selection-start-column="48" selection-end-line="115" selection-end-column="48" />
               <folding />
             </state>
           </provider>
@@ -72,7 +71,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="fncrc_deep_tryR_avg2.txt" pinned="false" current-in-tab="true">
+      <file leaf-file-name="fncrc_deep_tryR_avg2.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg2.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="240">
@@ -150,7 +149,6 @@
         <option value="$PROJECT_DIR$/_scripts/mrunber.py" />
         <option value="$PROJECT_DIR$/layers.py" />
         <option value="$PROJECT_DIR$/Conv_net_aux.py" />
-        <option value="$PROJECT_DIR$/Conv_net_gpu.py" />
         <option value="$PROJECT_DIR$/try.py" />
         <option value="$PROJECT_DIR$/_pars/fncrc.txt" />
         <option value="$PROJECT_DIR$/Conv_sparse_aux.py" />
@@ -158,6 +156,7 @@
         <option value="$PROJECT_DIR$/run_conv.py" />
         <option value="$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg3.txt" />
         <option value="$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg2.txt" />
+        <option value="$PROJECT_DIR$/Conv_net_gpu.py" />
       </list>
     </option>
   </component>
@@ -948,14 +947,6 @@ py.show()</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Conv_net_gpu.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5490">
-          <caret line="371" column="0" lean-forward="false" selection-start-line="371" selection-start-column="0" selection-end-line="371" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/run_conv.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2100">
@@ -976,6 +967,14 @@ py.show()</expression-string>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
           <caret line="16" column="1" lean-forward="false" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Conv_net_gpu.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="106">
+          <caret line="115" column="48" lean-forward="false" selection-start-line="115" selection-start-column="48" selection-end-line="115" selection-end-column="48" />
           <folding />
         </state>
       </provider>
