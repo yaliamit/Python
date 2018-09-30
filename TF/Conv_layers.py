@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 from keras import backend as K
 from keras.layers.convolutional import UpSampling2D
-
+import sys
 
 def conv_layer(input,batch_size,nonlin_scale,filter_size=[3,3],num_features=[1],prob=[1.,-1.],scale=0, Win=None, Rin=None):
 
@@ -105,7 +105,7 @@ def sparse_fully_connected_layer(input,batch_size,nonlin_scale, num_units, num_f
         R_vals = tf.get_variable('Rvals',initializer=Rin.values)
         R_inds = tf.get_variable('Rinds',initializer=Rin.indices)
     if (Win is None):
-        W_fc = tf.get_variable('W',shape=shape)
+       sys.exit('There should have been a precomputed W filter before this layer was created')
     else:
         W_dims = tf.get_variable('Wdims',initializer=Win.dense_shape)
         W_vals = tf.get_variable('Wvals',initializer=Win.values)
@@ -116,27 +116,34 @@ def sparse_fully_connected_layer(input,batch_size,nonlin_scale, num_units, num_f
 
     fc = tf.transpose(tf.sparse_tensor_dense_matmul(tf.SparseTensor(indices=W_inds,values=W_vals,dense_shape=W_dims),tf.transpose(input_flattened)))
     fc = tf.reshape(fc,input_shape[0:3]+[num_features,])
+    # If non-linearity
     if (scale>0):
         fc = tf.clip_by_value(nonlin_scale * fc, -1., 1.)
     return(fc)
 
+# Gradient for sparse fully connected.
 def grad_sparse_fully_connected(below, back_propped, current, F_inds, F_vals, F_dims, W_inds, R_inds, scale=0):
 
+    # Flatten whatever is coming from below
     belowf=tf.contrib.layers.flatten(below)
-    # Gradient of weights of dense layer
+    # If non-linearity
     if (scale>0):
         on_zero = K.zeros_like(back_propped)
         back_propped = scale * K.tf.where(tf.equal(tf.abs(current), 1.), on_zero, back_propped)
+    # Flatten whatever is coming from abbove
     back_proppedf=tf.contrib.layers.flatten(back_propped)
+    # Get the active indices from below and above for the out-product gradient.
     below_list=tf.gather(belowf,W_inds[:,1],axis=1)
     back_propped_list=tf.gather(back_proppedf,W_inds[:,0],axis=1)
-    gradfcW=tf.reduce_sum(tf.multiply(below_list,back_propped_list),axis=0) #tf.matmul(tf.transpose(belowf),back_propped)
+    gradfcW=tf.reduce_sum(tf.multiply(below_list,back_propped_list),axis=0)
+    # Same for the gradient of R.
     if (R_inds is not None):
         below_list = tf.gather(belowf, R_inds[:, 1], axis=1)
         back_propped_list = tf.gather(back_proppedf, R_inds[:, 0], axis=1)
         gradfcR = tf.reduce_sum(tf.multiply(below_list, back_propped_list), axis=0)
     else:
         gradfcR=gradfcW
+    # Finds,F_vals, F_dims stores the transpose of either W or R depending if we're doing non-symmetric
     filter=tf.SparseTensor(indices=F_inds,values=F_vals,dense_shape=F_dims)
     gradfcx=tf.transpose(tf.sparse_tensor_dense_matmul(filter,tf.transpose(back_proppedf)))
     gradfcx=tf.reshape(gradfcx,below.shape)
@@ -208,7 +215,7 @@ def grad_pool(back_propped, pool, mask, pool_size, stride):
 
         return gradx
 
-def MaxPoolingandMask_old(inputs, pool_size, strides,
+def MaxPoolingandMask_disjoint_fast(inputs, pool_size, strides,
                           padding='SAME'):
 
         pooled = tf.nn.max_pool(inputs, ksize=pool_size, strides=strides, padding=padding)
@@ -228,7 +235,7 @@ def MaxPoolingandMask_old(inputs, pool_size, strides,
 
 
 
-def grad_pool_old(back_propped,pool,mask,pre,pool_size):
+def grad_pool_disjoint_fast(back_propped,pool,mask,pre,pool_size):
 
         gradx_pool=tf.reshape(back_propped,[-1]+(pool.shape.as_list())[1:])
         on_success = UpSampling2D(size=pool_size)(gradx_pool)

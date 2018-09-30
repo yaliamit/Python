@@ -1,9 +1,8 @@
 import tensorflow as tf
 import numpy as np
 from keras import backend as K
-from scipy.signal import convolve2d
-from layers import conv_layer, grad_conv_layer, fully_connected_layer, grad_fully_connected, grad_pool, grad_pool_old
-from layers import sparse_fully_connected_layer, grad_sparse_fully_connected, MaxPoolingandMask, MaxPoolingandMask_old, real_drop
+from Conv_layers import conv_layer, grad_conv_layer, fully_connected_layer, grad_fully_connected, grad_pool, grad_pool_disjoint_fast
+from Conv_layers import sparse_fully_connected_layer, grad_sparse_fully_connected, MaxPoolingandMask, MaxPoolingandMask_disjoint_fast, real_drop
 
 def find_ts(name,TS):
     for ts in TS:
@@ -175,7 +174,7 @@ def recreate_network(PARS,x,y_,Train,WR=None,SP=None):
                         with tf.variable_scope(l['name']):
                             # Quick computation pooling on disjoint regions
                             if (l['pool_size']==l['stride']):
-                                pool, mask = MaxPoolingandMask_old(parent, [1]+list(l['pool_size'])+[1],strides=[1]+list(l['stride'])+[1])
+                                pool, mask = MaxPoolingandMask_disjoint_fast(parent, [1]+list(l['pool_size'])+[1],strides=[1]+list(l['stride'])+[1])
                                 TS.append([pool,l['pool_size'],l['stride']])
                             # More complex computation using shifts of arrays for stride < pool_size
                             else:
@@ -300,7 +299,7 @@ def back_prop(loss,acc,TS,VS,x,PARS, non_trainable=None):
             ts+=1
         elif ('Max' in name):
             if (TS[ts][1]==TS[ts][2]):
-                gradx=grad_pool_old(gradx,T,mask,pre,TS[ts][1])
+                gradx=grad_pool_disjoint_fast(gradx,T,mask,pre,TS[ts][1])
             else:
                 gradx=grad_pool(gradx,T,mask,pool_size=TS[ts][1],stride=TS[ts][2])
             if (PARS['debug']):
