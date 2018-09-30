@@ -9,10 +9,10 @@ num_train:50000
 #eta_schedule:(100.,.01,120,.001)
 dep_fac:1.
 hinge:1.
-sparse:conv2R,conv2aR,conv3R,conv3aR,
+sparse:conv0R,conv2R,conv2aR,conv3R,conv3aR,
 #non_trainable:conv0,conv0aR,conv1R,conv1aR
 #re_randomize:conv2R,conv2aR,conv3R,conv3aR,
-num_epochs_sparse:5
+num_epochs_sparse:99
 #shift:25
 force_global_prob:(1.,1.)
 name:input1
