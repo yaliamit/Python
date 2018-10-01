@@ -3,13 +3,13 @@ num_epochs:1
 data_set:cifar10
 batch_size:50
 eta_init:.01
-eta_sparse_init:.1
+eta_sparse_init:.15
 debug:False
 num_train:50000
 #eta_schedule:(100.,.01,120,.001)
 dep_fac:1.
 hinge:1.
-sparse:conv0R,conv2R,conv2aR,conv3R,conv3aR,
+sparse:conv0R,conv0aR,conv2R,conv2aR,conv3R,conv3aR,
 #non_trainable:conv0,conv0aR,conv1R,conv1aR
 #re_randomize:conv2R,conv2aR,conv3R,conv3aR,
 num_epochs_sparse:99
