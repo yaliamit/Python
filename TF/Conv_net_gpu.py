@@ -40,7 +40,7 @@ def get_parameters_s(VSIN,SP,TS, re_randomize=None):
             if (re_randomize is not None):
               if sp in re_randomize:
                  Win, Rin = re_initialize(Win.shape.as_list())
-                 wrs=[Win*(wrs[0]!=0),Rin*(wrs[1]!=0)]
+                 wrs=[Win,Rin]
             WRS[sp]=wrs
             sparse_shape[sp] = find_ts(sp, TS).get_shape().as_list()[1:3]
     return(WRS,sparse_shape)
