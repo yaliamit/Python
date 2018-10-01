@@ -1,5 +1,5 @@
 seed:45239
-num_epochs:50
+num_epochs:1
 data_set:cifar10
 batch_size:50
 eta_init:.1
