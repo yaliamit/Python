@@ -43,8 +43,8 @@
       <file leaf-file-name="fncrc_deep_tryR_avg2.txt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg2.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="14" column="20" lean-forward="true" selection-start-line="14" selection-start-column="20" selection-end-line="14" selection-end-column="20" />
+            <state relative-caret-position="-37">
+              <caret line="3" column="13" lean-forward="false" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -1023,8 +1023,8 @@ py.show()</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg2.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="20" lean-forward="true" selection-start-line="14" selection-start-column="20" selection-end-line="14" selection-end-column="20" />
+        <state relative-caret-position="-37">
+          <caret line="3" column="13" lean-forward="false" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="13" />
           <folding />
         </state>
       </provider>
