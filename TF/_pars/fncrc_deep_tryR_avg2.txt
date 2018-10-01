@@ -1,9 +1,9 @@
 seed:45239
 num_epochs:1
 data_set:cifar10
-batch_size:50
+batch_size:30
 eta_init:.01
-eta_sparse_init:.15
+eta_sparse_init:.1
 debug:False
 num_train:50000
 #eta_schedule:(100.,.01,120,.001)
