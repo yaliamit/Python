@@ -123,6 +123,7 @@ def F_transpose_and_clip(VS,sess,SDS=None):
 
     t=0
     for t in np.arange(0,len(VS),9):
+        # Clip weights at level corresponding to that layer.
         if (SDS is not None):
                 sess.run(tf.assign(VS[t+7],tf.clip_by_value(VS[t+7],-SDS[t+7],SDS[t+7])))
                 sess.run(tf.assign(VS[t + 4], tf.clip_by_value(VS[t + 4], -SDS[t + 4], SDS[t + 4])))

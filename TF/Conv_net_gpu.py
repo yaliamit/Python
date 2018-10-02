@@ -29,7 +29,8 @@ def re_initialize(shape):
     Rout=np.float32(np.random.uniform(-std,std,shape))
 
     return Wout, Rout
-# Creare dictionary of parameters with name given by layer name
+
+# Create dictionary of future sparse layer parameters with name given by layer name
 def get_parameters_s(VSIN,SP,TS, re_randomize=None):
 
     WRS={}
