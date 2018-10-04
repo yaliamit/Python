@@ -1,5 +1,5 @@
 seed:45239
-num_epochs:0
+num_epochs:1000
 num_epochs_sparse:5
 data_set:cifar10
 batch_size:500
@@ -12,11 +12,11 @@ num_train:5000
 dep_fac:1.
 hinge:False
 force_global_prob:(1.,1.)
-non_trainable:conv1,
+#non_trainable:conv1,
 #re_randomize:conv1aR,
 #shift:15
 name:input1
-name:conv1R;num_filters:32;filter_size:(3,3);non_linearity:tanh;parent:input1
+name:conv1;num_filters:32;filter_size:(3,3);non_linearity:tanh;parent:input1
 name:conv1aR;num_filters:32;filter_size:(3,3);non_linearity:tanh;parent:conv1
 #name:conv1bR;num_filters:8;filter_size:(3,3);parent:conv1aR
 #name:concatsum1;parent:[conv1,conv1aR]
