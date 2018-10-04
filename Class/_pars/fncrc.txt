@@ -6,7 +6,7 @@ simple_augmentation:True
 mod_net:None
 start:0
 TRAIN:True
-net:_pars/fncrc_0
+net:_pars/fncrc
 Classes:None
 force_global_prob:(1.0, -1.0)
 update:sgd
