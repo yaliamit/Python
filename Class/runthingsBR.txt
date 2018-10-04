@@ -1,1 +1,1 @@
-python _pars/fncrc output=OUTold>OUTold.txt
+python source/start_class.py _pars/fncrc output=OUTold>OUTold.txt
