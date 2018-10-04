@@ -11,16 +11,16 @@ num_train:5000
 #eta_schedule:(10.,.0001)
 dep_fac:1.
 hinge:False
-force_global_prob:(1.,1.)
+force_global_prob:(1.,-1.)
 #non_trainable:conv1,
 #re_randomize:conv1aR,
 #shift:15
 name:input1
-name:conv1;num_filters:32;filter_size:(3,3);non_linearity:tanh;parent:input1
-name:conv1aR;num_filters:32;filter_size:(3,3);non_linearity:tanh;parent:conv1
+name:conv1;num_filters:32;filter_size:(5,5);non_linearity:tanh;parent:input1
+#name:conv1aR;num_filters:32;filter_size:(3,3);non_linearity:tanh;parent:conv1
 #name:conv1bR;num_filters:8;filter_size:(3,3);parent:conv1aR
 #name:concatsum1;parent:[conv1,conv1aR]
-name:pool1;pool_size:(3, 3);stride:(2, 2);mode:max;parent:conv1aR
+name:pool1;pool_size:(3, 3);stride:(2, 2);mode:max;parent:conv1
 name:drop1;drop:.8;parent:pool1
 name:newdensp;num_units:500;non_linearity:tanh;parent:drop1
 name:drop2;drop:0.3;parent:newdensp
