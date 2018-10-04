@@ -22,7 +22,7 @@ adapt_eta:False
 hinge:False
 global_tinout:(0.5, 1.0)
 edges:False
-debug:True
+#debug:True
 name:input1
 name:conv1;num_filters:32;pad:(2, 2);filter_size:(5, 5);stride:(1, 1);prob:(1.0,-1.0);non_linearity:rect_sym;parent:input1
 name:pool1;pool_size:(3, 3);stride:(2, 2);pad:(0, 0);mode:max;parent:conv1
