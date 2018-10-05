@@ -1,6 +1,6 @@
 seed:45239
 num_epochs:1
-num_epochs_sparse:200
+num_epochs_sparse:1000
 data_set:cifar10
 batch_size:50
 eta_init:.01
