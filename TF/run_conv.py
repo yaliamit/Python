@@ -162,7 +162,7 @@ with tf.device(gpu_device):
         print('step,','0,', 'aggegate accuracy,', ac)
         print('sparse comparison after training')
         saver = tf.train.Saver()
-        save_path = saver.save(sess, "tmp/model_" + net)
+        save_path = saver.save(sess, "tmp/model_" + net.split('/')[1])
         print("Model saved in path: %s" % save_path)
         print("DONE")
 print("DONE")

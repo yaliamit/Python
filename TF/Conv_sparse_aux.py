@@ -216,5 +216,5 @@ def get_weight_stats(SS,update=False):
                 V = ss.eval()
                 if (update):
                     SDS.append(np.std(V))
-                print(ss.name, ss.get_shape().as_list(), np.mean(V),np.std(V),np.max(V))
+                print(ss.name, ss.get_shape().as_list(), np.mean(V),np.std(V),np.max(np.abs(V)))
             return(SDS)
