@@ -1,9 +1,9 @@
 seed:45239
 num_epochs:1
-num_epochs_sparse:20
+num_epochs_sparse:200
 data_set:cifar10
 batch_size:50
-eta_init:.1
+eta_init:.01
 eta_sparse_init:.1
 debug:False
 num_train:50000
