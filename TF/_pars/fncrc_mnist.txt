@@ -1,8 +1,8 @@
 seed:45239
 num_epochs:1
-num_epochs_sparse:1
+num_epochs_sparse:100
 data_set:cifar10
-batch_size:50
+batch_size:200
 eta_init:.01
 eta_sparse_init:.1
 debug:False
@@ -20,7 +20,7 @@ name:conv1R;num_filters:32;filter_size:(5,5);non_linearity:tanh;parent:input1
 #name:conv1aR;num_filters:32;filter_size:(3,3);non_linearity:tanh;parent:conv1
 #name:conv1bR;num_filters:8;filter_size:(3,3);parent:conv1aR
 #name:concatsum1;parent:[conv1,conv1aR]
-name:pool1;pool_size:(2, 2);stride:(2, 2);mode:max;parent:conv1R
+name:pool1;pool_size:(3, 3);stride:(2, 2);mode:max;parent:conv1R
 name:drop1;drop:.5;parent:pool1
 name:newdensp;num_units:500;non_linearity:tanh;parent:drop1
 name:drop2;drop:0.3;parent:newdensp
