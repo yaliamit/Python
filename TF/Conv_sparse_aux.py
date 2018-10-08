@@ -145,7 +145,11 @@ def F_transpose_and_clip(VS,sess,SDS=None):
         sess.run(tf.assign(VS[t+2],F.dense_shape))
 
 def generate_some_images(tt,inp):
-    import matplotlib as py
+
+    from matplotlib.figure import Figure
+    from matplotlib.backends.backend_agg import FigureCanvasAgg
+    fig = Figure(figsize=(4,4))
+    ax = fig.add_subplot(111)
     F=[2,4]
     X=[18,8,14,10]
     Y=[6,12,14,23]
@@ -153,12 +157,14 @@ def generate_some_images(tt,inp):
     for i,x in enumerate(X):
         for f in F:
             ttt=tt[x,Y[i],f,:].reshape(5,5)
-            py.pyplot.imshow(ttt,cmap="gray")
-            py.pyplot.axis('off')
+            ax.imshow(ttt,cmap="gray")
+            ax.axis('off')
             print(x,Y[i],f)
             print(ttt)
             s='fig'+str(inp)+'_'+str(x)+'_'+str(Y[i])+'_'+str(f)
-            py.pyplot.savefig(s)
+            canvas = FigureCanvasAgg(fig)
+            canvas.print_figure(s, dpi=80)
+
 
 
 def compare_params_sparse(sp, sh, VS, WR):
