@@ -6,7 +6,7 @@ batch_size:50
 eta_init:.01
 eta_sparse_init:.1
 debug:False
-num_train:1000
+num_train:50000
 #eta_schedule:(10.,.0001)
 dep_fac:1.
 hinge:1.
