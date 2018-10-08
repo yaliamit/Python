@@ -144,6 +144,21 @@ def F_transpose_and_clip(VS,sess,SDS=None):
         sess.run(tf.assign(VS[t+1],F.values))
         sess.run(tf.assign(VS[t+2],F.dense_shape))
 
+def generate_some_images(tt,inp):
+    import pylab as py
+    F=[2,4]
+    X=[18,8,14,10]
+    Y=[6,12,14,23]
+
+    for i,x in enumerate(X):
+        for f in F:
+            ttt=tt[x,Y[i],f,:].reshape(5,5)
+            py.imshow(ttt,cmap="gray")
+            py.axis('off')
+            print(x,Y[i],f)
+            print(ttt)
+            s='fig'+str(inp)+'_'+str(x)+'_'+str(Y[i])+'_'+str(f)
+            py.savefig(s)
 
 
 def compare_params_sparse(sp, sh, VS, WR):
@@ -192,6 +207,7 @@ def compare_params_sparse(sp, sh, VS, WR):
       sy=min(nonzi[1])
       ey=max(nonzi[1])+1
 
+      generate_some_images(tt,inp)
 
       for f in range(outfe):
         for p in range(pfdims):
