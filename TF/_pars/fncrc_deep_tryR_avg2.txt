@@ -1,7 +1,7 @@
 seed:45239
-num_epochs:500
+num_epochs:10
 data_set:cifar10
-batch_size:200
+batch_size:50
 eta_init:.1
 eta_sparse_init:.1
 debug:False
@@ -9,12 +9,12 @@ num_train:50000
 #eta_schedule:(100.,.01,120,.001)
 dep_fac:1.
 hinge:1.
-#sparse:conv0aR,conv2R,conv2aR,conv3R,conv3aR,
-#non_trainable:conv0R
-#re_randomize:conv0aR,conv2R,conv2aR,conv3R,conv3aR,
-#num_epochs_sparse:99
+sparse:conv0aR,conv2R,conv2aR,conv3R,conv3aR,
+non_trainable:conv0R
+re_randomize:conv0aR,conv2R,conv2aR,conv3R,conv3aR,
+num_epochs_sparse:500
 #shift:25
-force_global_prob:(1.,0.)
+force_global_prob:(1.,1.)
 name:input1
 name:conv0R;parent:input1;filter_size:(3,3);num_filters:16;non_linearity:tanh
 name:conv0aR;parent:conv0R;filter_size:(3,3);num_filters:16;non_linearity:tanh
