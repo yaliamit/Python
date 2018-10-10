@@ -20,7 +20,7 @@ name:conv0R;parent:input1;filter_size:(3,3);num_filters:16;non_linearity:tanh
 name:conv0aR;parent:conv0R;filter_size:(3,3);num_filters:16;non_linearity:tanh
 name:concatsum0;parent:[conv0R,conv0aR]
 name:pool1;parent:concatsum0;pool_size:(3,3);stride:(3,3);mode:max
-name:drop1;drop:.5;parent:pool1
+name:drop1;drop:.8;parent:pool1
 name:conv2R;parent:drop1;filter_size:(3,3);num_filters:64;non_linearity:tanh
 name:conv2aR;parent:conv2R;filter_size:(3,3);num_filters:64;non_linearity:tanh
 name:concatsum2;parent:[conv2R,conv2aR]
