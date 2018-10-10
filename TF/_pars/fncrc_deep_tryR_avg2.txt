@@ -7,8 +7,8 @@ eta_sparse_init:.1
 debug:False
 num_train:50000
 #eta_schedule:(100.,.01,120,.001)
-dep_fac:10.
-hinge:False
+dep_fac:1.
+hinge:1.
 #sparse:conv0aR,conv2R,conv2aR,conv3R,conv3aR,
 #non_trainable:conv0R
 #re_randomize:conv0aR,conv2R,conv2aR,conv3R,conv3aR,
