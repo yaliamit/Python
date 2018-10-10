@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="ef2eb448-6413-411f-9ec4-6f9aac3066f7" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/_pars/fncrc.txt" afterPath="$PROJECT_DIR$/_pars/fncrc.txt" />
+      <change beforePath="$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg2.txt" afterPath="$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg2.txt" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -23,7 +23,7 @@
       <file leaf-file-name="run_conv.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/run_conv.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2250">
+            <state relative-caret-position="277">
               <caret line="159" column="10" lean-forward="false" selection-start-line="159" selection-start-column="10" selection-end-line="159" selection-end-column="10" />
               <folding />
             </state>
@@ -43,7 +43,7 @@
       <file leaf-file-name="Conv_sparse_aux.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Conv_sparse_aux.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
+            <state relative-caret-position="617">
               <caret line="189" column="46" lean-forward="false" selection-start-line="189" selection-start-column="46" selection-end-line="189" selection-end-column="46" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
@@ -52,7 +52,27 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="fncrc.txt" pinned="false" current-in-tab="true">
+      <file leaf-file-name="fncrc_deep_tryR_avg3.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg3.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-77">
+              <caret line="1" column="12" lean-forward="false" selection-start-line="1" selection-start-column="12" selection-end-line="1" selection-end-column="12" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="fncrc_deep_tryR_avg2.txt" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg2.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="240">
+              <caret line="16" column="23" lean-forward="false" selection-start-line="16" selection-start-column="23" selection-end-line="16" selection-end-column="23" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="fncrc.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/_pars/fncrc.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="345">
@@ -158,19 +178,19 @@
         <option value="$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg.txt" />
         <option value="$PROJECT_DIR$/layers.py" />
         <option value="$PROJECT_DIR$/Conv_net_gpu.py" />
-        <option value="$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg2.txt" />
         <option value="$PROJECT_DIR$/../Class/_pars/fncrc_1.txt" />
         <option value="$PROJECT_DIR$/../Class/_pars/fncrc.txt" />
         <option value="$PROJECT_DIR$/run_conv.py" />
         <option value="$PROJECT_DIR$/Conv_sparse_aux.py" />
         <option value="$PROJECT_DIR$/_pars/fncrc_mnist.txt" />
         <option value="$PROJECT_DIR$/_pars/fncrc.txt" />
+        <option value="$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg2.txt" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="155" />
-    <option name="y" value="155" />
+    <option name="x" value="101" />
+    <option name="y" value="85" />
     <option name="width" value="1215" />
     <option name="height" value="670" />
   </component>
@@ -190,14 +210,29 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="TF" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TF" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="TF" type="b2602c69:ProjectViewProjectNode" />
+              <item name="TF" type="462c0819:PsiDirectoryNode" />
+              <item name="_pars" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
       <pane id="Scope" />
       <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
-    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg3.txt" />
+    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg.txt" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../Class/_pars/fncrc_1.txt" />
     <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///Users/amit/Desktop/Dropbox/Python/TF/Conv_net_gpu.py" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
@@ -483,7 +518,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="155" y="155" width="1215" height="670" extended-state="0" />
+    <frame x="101" y="85" width="1215" height="670" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22948074" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -893,20 +928,6 @@ py.show()</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg2.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="1" column="12" lean-forward="false" selection-start-line="1" selection-start-column="12" selection-end-line="1" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg3.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="1" column="12" lean-forward="false" selection-start-line="1" selection-start-column="12" selection-end-line="1" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Conv_layers.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -952,9 +973,17 @@ py.show()</expression-string>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/_pars/fncrc.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="23" column="18" lean-forward="false" selection-start-line="23" selection-start-column="18" selection-end-line="23" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/run_conv.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2250">
+        <state relative-caret-position="277">
           <caret line="159" column="10" lean-forward="false" selection-start-line="159" selection-start-column="10" selection-end-line="159" selection-end-column="10" />
           <folding />
         </state>
@@ -962,7 +991,7 @@ py.show()</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/Conv_sparse_aux.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
+        <state relative-caret-position="617">
           <caret line="189" column="46" lean-forward="false" selection-start-line="189" selection-start-column="46" selection-end-line="189" selection-end-column="46" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
@@ -970,10 +999,18 @@ py.show()</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_pars/fncrc.txt">
+    <entry file="file://$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg3.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="23" column="18" lean-forward="false" selection-start-line="23" selection-start-column="18" selection-end-line="23" selection-end-column="18" />
+        <state relative-caret-position="-77">
+          <caret line="1" column="12" lean-forward="false" selection-start-line="1" selection-start-column="12" selection-end-line="1" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg2.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="23" lean-forward="false" selection-start-line="16" selection-start-column="23" selection-end-line="16" selection-end-column="23" />
           <folding />
         </state>
       </provider>
