@@ -118,7 +118,7 @@ def parse_text_file(net_name, NETPARS, lname='layers', dump=False):
         f = open(net_name + '.txt', 'r')
         for line in f:
             if (dump):
-                print(line, end="")
+                print(line)
             line = str.strip(line, ' ')
             ll = str.split(line, '#')
             if (len(ll) > 1):
@@ -162,7 +162,7 @@ def dump_pars(NETPARS):
                 if (key == 'layers'):
                     print(l, )
                 else:
-                    print(l, " ", end="")
+                    print(l, " ")
 
 def process_parameters(net):
     PARS = {}
