@@ -31,7 +31,7 @@ else:
     except:
         print('GIT failed')
     try:
-        commands.getoutput('ssh yaliamit@midway2.rcc.uchicago.edu \'cd Desktop/Dropbox/Python; git pull \'',shell=True)
+        commands.check_output('ssh yaliamit@midway2.rcc.uchicago.edu \'cd Desktop/Dropbox/Python; git pull \'',shell=True)
     except:
         print('pull failed')
 
@@ -43,7 +43,7 @@ else:
     while (ny != ''):
         time.sleep(10)
         try:
-            ss = commands.getoutput('scp yaliamit@midway2.rcc.uchicago.edu:Desktop/Dropbox/Python/TF/' +
+            ss = commands.check_output('scp yaliamit@midway2.rcc.uchicago.edu:Desktop/Dropbox/Python/TF/' +
                                     OUTNAME + ' ' + lOUTNAME,shell=True)
             print(ss)
             ny=''
@@ -51,7 +51,7 @@ else:
             ny='no'
             print('Initial copy fialed')
         print(ss)
-    while (commands.getoutput('grep DONE ' + lOUTNAME)==''):
+    while (commands.check_output('grep DONE ' + lOUTNAME)==''):
         time.sleep(10)
         try:
             ss = commands.check_output('grep DONE ' + lOUTNAME, shell=True)
@@ -61,7 +61,7 @@ else:
         except:
             done = False
         try:
-            commands.getoutput(
+            commands.check_output(
                 'scp yaliamit@midway2.rcc.uchicago.edu:Desktop/Dropbox/Python/TF/' + OUTNAME + ' ' + lOUTNAME,
                             shell=True)
         except:
