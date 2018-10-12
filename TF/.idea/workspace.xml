@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ef2eb448-6413-411f-9ec4-6f9aac3066f7" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/TF.iml" afterPath="$PROJECT_DIR$/.idea/TF.iml" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg2.txt" afterPath="$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg2.txt" />
       <change beforePath="$PROJECT_DIR$/_scripts/runrcc.py" afterPath="$PROJECT_DIR$/_scripts/runrcc.py" />
-      <change beforePath="$PROJECT_DIR$/run_conv.py" afterPath="$PROJECT_DIR$/run_conv.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -47,8 +42,20 @@
       <file leaf-file-name="runrcc.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/_scripts/runrcc.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-88">
-              <caret line="12" column="12" lean-forward="false" selection-start-line="12" selection-start-column="12" selection-end-line="12" selection-end-column="12" />
+            <state relative-caret-position="-187">
+              <caret line="6" column="30" lean-forward="true" selection-start-line="6" selection-start-column="30" selection-end-line="6" selection-end-column="30" />
+              <folding>
+                <element signature="e#0#29#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ttt.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/_scripts/ttt.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="135">
+              <caret line="9" column="4" lean-forward="true" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="4" />
               <folding>
                 <element signature="e#0#29#0" expanded="true" />
               </folding>
@@ -59,22 +66,10 @@
       <file leaf-file-name="runber.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/_scripts/runber.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="96">
-              <caret line="23" column="24" lean-forward="true" selection-start-line="23" selection-start-column="24" selection-end-line="23" selection-end-column="24" />
+            <state relative-caret-position="191">
+              <caret line="43" column="0" lean-forward="false" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
               <folding>
                 <element signature="e#0#29#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Conv_net_gpu.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Conv_net_gpu.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1770">
-              <caret line="122" column="23" lean-forward="false" selection-start-line="122" selection-start-column="20" selection-end-line="122" selection-end-column="23" />
-              <folding>
-                <element signature="e#0#23#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -216,6 +211,7 @@
         <option value="$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg2.txt" />
         <option value="$PROJECT_DIR$/run_conv.py" />
         <option value="$PROJECT_DIR$/_scripts/runrcc.py" />
+        <option value="$PROJECT_DIR$/_scripts/ttt.py" />
       </list>
     </option>
   </component>
@@ -302,7 +298,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.runrcc">
+  <component name="RunManager" selected="Python.runber">
     <configuration name="Conv_net_gpu" type="PythonConfigurationType" factoryName="Python">
       <output_file path="$PROJECT_DIR$/OUTPUTloc.txt" is_save="true" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -318,24 +314,6 @@
       <module name="TF" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Conv_net_gpu.py" />
       <option name="PARAMETERS" value="../Class/_pars/fncrc" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-    </configuration>
-    <configuration name="mrunber" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="/anaconda2/envs/myenv/bin/python3.6" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/_scripts" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="TF" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/_scripts/mrunber.py" />
-      <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -365,13 +343,13 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/_scripts" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="TF" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/runber.py" />
-      <option name="PARAMETERS" value="../Class/_pars/fncrc_deep_tryR_nores OUTh" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/_scripts/runber.py" />
+      <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -407,6 +385,24 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="TF" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/try.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="ttt" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/_scripts" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="TF" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/_scripts/ttt.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -537,18 +533,18 @@
     <list size="6">
       <item index="0" class="java.lang.String" itemvalue="Python.Conv_net_gpu" />
       <item index="1" class="java.lang.String" itemvalue="Python.try" />
-      <item index="2" class="java.lang.String" itemvalue="Python.runber" />
-      <item index="3" class="java.lang.String" itemvalue="Python.mrunber" />
-      <item index="4" class="java.lang.String" itemvalue="Python.run_conv" />
-      <item index="5" class="java.lang.String" itemvalue="Python.runrcc" />
+      <item index="2" class="java.lang.String" itemvalue="Python.run_conv" />
+      <item index="3" class="java.lang.String" itemvalue="Python.runrcc" />
+      <item index="4" class="java.lang.String" itemvalue="Python.ttt" />
+      <item index="5" class="java.lang.String" itemvalue="Python.runber" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.runrcc" />
-        <item index="1" class="java.lang.String" itemvalue="Python.run_conv" />
-        <item index="2" class="java.lang.String" itemvalue="Python.try" />
-        <item index="3" class="java.lang.String" itemvalue="Python.mrunber" />
-        <item index="4" class="java.lang.String" itemvalue="Python.runber" />
+        <item index="0" class="java.lang.String" itemvalue="Python.runber" />
+        <item index="1" class="java.lang.String" itemvalue="Python.ttt" />
+        <item index="2" class="java.lang.String" itemvalue="Python.runrcc" />
+        <item index="3" class="java.lang.String" itemvalue="Python.run_conv" />
+        <item index="4" class="java.lang.String" itemvalue="Python.try" />
       </list>
     </recent_temporary>
   </component>
@@ -581,10 +577,10 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4404332" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.38624337" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.38586956" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24864864" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4692029" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.35326087" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -631,8 +627,18 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/_scripts/runrcc.py</url>
-          <line>37</line>
+          <line>38</line>
           <option name="timeStamp" value="158" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/_scripts/runber.py</url>
+          <line>50</line>
+          <option name="timeStamp" value="159" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/_scripts/runber.py</url>
+          <line>43</line>
+          <option name="timeStamp" value="160" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -645,7 +651,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="159" />
+      <option name="time" value="161" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -719,13 +725,6 @@ py.show()</expression-string>
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Conv_net_gpu.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="331" column="18" lean-forward="false" selection-start-line="331" selection-start-column="18" selection-end-line="331" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1052,10 +1051,20 @@ py.show()</expression-string>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/_scripts/ttt.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="4" lean-forward="true" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="4" />
+          <folding>
+            <element signature="e#0#29#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/_scripts/runber.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="23" column="24" lean-forward="true" selection-start-line="23" selection-start-column="24" selection-end-line="23" selection-end-column="24" />
+        <state relative-caret-position="191">
+          <caret line="43" column="0" lean-forward="false" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
           <folding>
             <element signature="e#0#29#0" expanded="true" />
           </folding>
@@ -1064,8 +1073,8 @@ py.show()</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/_scripts/runrcc.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-88">
-          <caret line="12" column="12" lean-forward="false" selection-start-line="12" selection-start-column="12" selection-end-line="12" selection-end-column="12" />
+        <state relative-caret-position="-187">
+          <caret line="6" column="30" lean-forward="true" selection-start-line="6" selection-start-column="30" selection-end-line="6" selection-end-column="30" />
           <folding>
             <element signature="e#0#29#0" expanded="true" />
           </folding>

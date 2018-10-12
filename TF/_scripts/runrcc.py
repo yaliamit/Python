@@ -25,6 +25,7 @@ else:
         commands.check_output('rm ' + lOUTNAME, shell=True)
     except:
         print('Failed rm')
+
     try:
         commands.check_output('../Class/GIT.sh',shell=True)
     except:
