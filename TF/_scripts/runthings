@@ -1,1 +1,1 @@
-python run_conv.py _pars/fncrc>OUT10_h.txt
+python run_conv.py _pars/fncrc>OUT10a_RR.txt
