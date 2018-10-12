@@ -10,7 +10,7 @@ l=len(sys.argv)
 outname=sys.argv[-1]
 OUTNAME=outname+'.txt'
 lOUTNAME='_OUTPUTS/'+outname+'-rcc.txt'
-ss='python _run_conv.py '+' '.join(sys.argv[1:l-1])+'>'+OUTNAME
+ss='python run_conv.py '+' '.join(sys.argv[1:l-1])+'>'+OUTNAME
 if 'loc' in outname:
     os.system(ss)
 else:
