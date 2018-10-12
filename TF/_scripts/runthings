@@ -1,1 +1,1 @@
-python _run_conv.py _pars/fncrc>OUTtry.txt
+python run_conv.py _pars/fncrc>OUTtry.txt

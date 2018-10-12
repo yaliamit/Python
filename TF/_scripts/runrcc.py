@@ -14,7 +14,7 @@ ss='python run_conv.py '+' '.join(sys.argv[1:l-1])+'>'+OUTNAME
 if 'loc' in outname:
     os.system(ss)
 else:
-    f=open('runthings','w')
+    f=open('_scripts/runthings','w')
     f.write(ss+'\n')
     f.close()
 
