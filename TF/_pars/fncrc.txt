@@ -10,7 +10,7 @@ num_train:50000
 #eta_schedule:(10.,.0001)
 dep_fac:1.
 hinge:1.
-force_global_prob:(1.,1.)
+force_global_prob:(1.,0.)
 #sparse:conv1R,
 #non_trainable:conv1,
 #re_randomize:conv1aR,
