@@ -145,8 +145,7 @@ with tf.device(gpu_device):
         # Run on test set before starting to train
         run_epoch(test,-1,type='Test')
 
-        #SDS=\
-        Conv_sparse_aux.get_weight_stats(SS,update=True)
+        SDS=Conv_sparse_aux.get_weight_stats(SS,update=True)
 
         for i in range(PARS['num_epochs_sparse']):  # number of epochs
                 run_epoch(train,i,type='Train',shift=shift)
