@@ -15,4 +15,4 @@
 module load cuda/9.0
 module load Anaconda3/5.0.1
 source activate DL_GPU_cuda_9.0
-CUDA_LAUNCH_BLOCKING=2 device=gpu ./runthings
+CUDA_LAUNCH_BLOCKING=2 device=gpu _scripts/runthings
