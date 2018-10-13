@@ -2,7 +2,7 @@ seed:45239
 num_epochs:100
 data_set:cifar10
 batch_size:50
-eta_init:.01
+eta_init:.1
 eta_sparse_init:.1
 debug:False
 num_train:50000
@@ -25,8 +25,8 @@ name:conv2R;parent:drop1;filter_size:(3,3);num_filters:64;non_linearity:tanh
 name:conv2aR;parent:conv2R;filter_size:(3,3);num_filters:64;non_linearity:tanh
 name:concatsum2;parent:[conv2R,conv2aR]
 name:pool2;parent:concatsum2;pool_size:(2,2);stride:(2,2);mode:max
-#name:drop2;drop:.5;parent:pool2
-name:conv3R;parent:pool2;filter_size:(2,2);num_filters:64;non_linearity:tanh
+name:drop2;drop:.5;parent:pool2
+name:conv3R;parent:drop2;filter_size:(2,2);num_filters:64;non_linearity:tanh
 name:conv3aR;parent:conv3R;filter_size:(2,2);num_filters:64;non_linearity:tanh
 name:concatsum3;parent:[conv3R,conv3aR]
 name:pool3;parent:concatsum3;pool_size:(2,2);stride:(2,2);mode:max
