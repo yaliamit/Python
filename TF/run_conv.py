@@ -103,6 +103,8 @@ with tf.device(gpu_device):
                 run_epoch(val,i,type='Val')
                 sys.stdout.flush()
 
+        # For those layers that are converted to sparse, either use current values or if they
+        # are in rerandomize - reinitialize them.
         if ('sparse' in PARS):
             WRS, sparse_shape=get_parameters_s(VS,PARS['sparse'],TS,re_randomize=re_randomize)
             WR=get_parameters(VS,PARS)
@@ -117,6 +119,8 @@ with tf.device(gpu_device):
       PARS['step_size']=PARS['eta_sparse_init']
       if ('sparse_batch_size' in PARS):
           PARS['batch_size']=PARS['sparse_batch_size']
+      if ('sparse_global_prob' in PARS):
+          PARS['force_global_prob']=PARS['sparse_global_prob']
       Rstep_size = list(PARS['force_global_prob'])[1] * PARS['step_size']
       print('Rstep_size', Rstep_size)
       PARS['Rstep_size'] = Rstep_size
