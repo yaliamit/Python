@@ -107,7 +107,7 @@ with tf.device(gpu_device):
         # are in rerandomize - reinitialize them.
         if ('sparse' in PARS):
             WRS, sparse_shape=get_parameters_s(VS,PARS['sparse'],TS,re_randomize=re_randomize)
-            WR=get_parameters(VS,PARS)
+            WR=get_parameters(VS,PARS, re_randomize=re_randomize)
 
         # Final test accuracy
         else:

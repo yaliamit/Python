@@ -30,6 +30,13 @@ def re_initialize(shape):
 
     return Wout, Rout
 
+def re_initialize_dense(shape):
+    std=np.sqrt(6./(shape[0]+shape[1]))
+    Wout=np.float32(np.random.uniform(-std,std,shape))
+    Rout=np.float32(np.random.uniform(-std,std,shape))
+
+    return Wout, Rout
+
 # Create dictionary of future sparse layer parameters with name given by layer name
 def get_parameters_s(VSIN,SP,TS, re_randomize=None):
 
@@ -46,14 +53,21 @@ def get_parameters_s(VSIN,SP,TS, re_randomize=None):
             sparse_shape[sp] = find_ts(sp, TS).get_shape().as_list()[1:3]
     return(WRS,sparse_shape)
 
-def get_parameters(VSIN,PARS):
+def get_parameters(VSIN,PARS, re_randomize=None):
 
     WR={}
     for i,l in enumerate(PARS['layers']):
 
         if ('conv' in l['name'] or 'dens' in l['name']):
             Win,Rin=find_wr(l['name'],VSIN)
-            WR[l['name']]=[Win.eval(),Rin.eval()]
+            wrs = [Win.eval(), Rin.eval()]
+            if l['name'] in re_randomize:
+                if ('conv' in l['name']):
+                    Win,Rin = re_initialize(Win.shape.as_list())
+                else:
+                    Win, Rin = re_initialize_dense(Win.shape.as_list())
+                wrs = [Win, Rin]
+            WR[l['name']]=wrs
 
     return(WR)
 
@@ -112,7 +126,7 @@ def recreate_network(PARS,x,y_,Train,WR=None,SP=None):
                                 name, T = get_name(ts)
                                 if l['parent'] in name and not 'Equal' in name:
                                     parent=T
-                # Convolutional layer
+                # First check if this is one of the new sparse layers - create it with existing parameter values.
                 if (SP is not None and l['name'] in PARS['sparse']):
                     Win=SP[l['name']][0]
                     Rin=SP[l['name']][1]
@@ -136,6 +150,7 @@ def recreate_network(PARS,x,y_,Train,WR=None,SP=None):
                     with tf.variable_scope(scope_name):
                         num_units=(Win.dense_shape[0]).eval()
                         TS.append(sparse_fully_connected_layer(parent,PARS['batch_size'],PARS['nonlin_scale'], num_units=num_units, num_features=l['num_filters'], prob=prob,scale=scale, Win=Win,Rin=Rin, Fin=Fin))
+                # Otherwise create regular layer either from scratch or with existing parameters.
                 else:
                     if ('conv' in l['name']):
                         Win=None
