@@ -17,7 +17,7 @@ re_randomize:conv0aR,conv2R,conv2aR,conv3R,conv3aR,newdensp,newdensf
 num_epochs_sparse:1000
 #shift:25
 force_global_prob:(1.,1.)
-sparse_global_prob:(1.,1.)
+sparse_global_prob:(1.,0.)
 name:input1
 name:conv0R;parent:input1;filter_size:(3,3);num_filters:16;non_linearity:tanh
 name:conv0aR;parent:conv0R;filter_size:(3,3);num_filters:16;non_linearity:tanh
