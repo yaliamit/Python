@@ -1,6 +1,23 @@
 import tensorflow as tf
 import numpy as np
 
+def convert_vals_to_sparse(SPV):
+    SP=None
+    if (SPV is not None):
+      SP={}
+      for key,value in SPV.items():
+        WW=[]
+        for i in range(2):
+            INDS=tf.convert_to_tensor(value[i][0],dtype=np.int64)
+            VALS=tf.convert_to_tensor(value[i][1], dtype=np.float32)
+            ndims=tf.convert_to_tensor(value[i][2],dtype=np.int64)
+            A=tf.SparseTensor(indices=INDS,values=VALS,dense_shape=ndims)
+            # if (i==1):
+            #     A=tf.sparse_transpose(A)
+            WW.append(A)
+
+        SP[key]=WW
+    return SP
 
 
 def convert_conv_to_sparse(dshape,WR,sess,prob=None):
@@ -111,6 +128,41 @@ def get_sparse_parameters(VS):
         if ('sparse' in v.name):
             SS.append(v)
     return(SS)
+
+def get_sparse_parameters_eval(VGS,PARS):
+    SPV=None
+
+    if ('sparse' in PARS):
+     SPV={}
+     count=0
+     lcount=0
+     for sp in PARS['sparse']:
+        for v in VGS:
+            if sp in v.name:
+             rw=v.name.split('/')[1][0]
+             if rw is not 'F':
+               if 'dims' in v.name:
+                tdims=v.eval()
+                lcount+=1
+               elif 'vals' in v.name:
+                tvals=v.eval()
+                lcount+=1
+               elif 'inds' in v.name:
+                tinds=v.eval()
+                lcount+=1
+               if (lcount==3):
+                 if rw == 'W':
+                   W=[tinds,tvals,tdims]
+                   count+=1
+                 elif rw =='R':
+                   R=[tinds,tvals,tdims]
+                   count+=1
+                 lcount=0
+
+            if (count==2):
+                SPV[sp]=[W,R]
+                count=0
+    return SPV
 
 def convert_conv_layers_to_sparse(sparse_shape, WRS, sess, PARS):
     SP = {}

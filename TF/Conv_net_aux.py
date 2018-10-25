@@ -1,6 +1,11 @@
 #import parse_net_pars as pp
 import subprocess as commands
-
+import Conv_net_gpu
+import Conv_net_aux
+import tensorflow as tf
+from Conv_data import get_data, rotate_dataset_rand
+import numpy as np
+import time
 
 def process_param_line(line):
     # Split parameter line on :
@@ -167,13 +172,24 @@ def dump_pars(NETPARS):
 def process_parameters(net):
     PARS = {}
     parse_text_file(net, PARS, lname='layers', dump=True)
-    PARS['step_size'] = PARS['eta_init']
-    Rstep_size = list(PARS['force_global_prob'])[1] * PARS['step_size']
-    print('Rstep_size', Rstep_size)
-    PARS['Rstep_size'] = Rstep_size
+    #PARS['step_size'] = PARS['eta_init']
+    PARS['Rstep_size'] = list(PARS['force_global_prob'])[1] * PARS['step_size']
+    print('Rstep_size', PARS['Rstep_size'])
     PARS['nonlin_scale'] = .5
 
     return PARS
+def sparse_process_parameters(PARS):
+      PARS['step_size']=PARS['sparse_step_size']
+      if ('sparse_batch_size' in PARS):
+          PARS['batch_size']=PARS['sparse_batch_size']
+      if ('sparse_global_prob' in PARS):
+          PARS['force_global_prob']=PARS['sparse_global_prob']
+      PARS['Rstep_size'] = list(PARS['force_global_prob'])[1] * PARS['step_size']
+      print('Rstep_size', PARS['Rstep_size'])
+      shift = None
+      if ('shift' in PARS):
+          shift = PARS['shift']
+      return(shift)
 
 def print_results(type,epoch,lo,ac):
     print("Final results: epoch", str(epoch))
@@ -230,3 +246,61 @@ def plot_OUTPUT(name='OUTPUT',code='',first=None,last=None):
     py.legend(loc=4)
 
     py.show()
+
+def setup_net(PARS,OPS,  WR=None, SP=None, non_trainable=None):
+    # Create the network architecture with the above placeholdes as the inputs.
+    # TS is a list of tensors or tensors + a list of associated parameters (pool size etc.)
+    loss, accuracy, TS = Conv_net_gpu.recreate_network(PARS, OPS['x'], OPS['y_'], OPS['Train'],WR=WR,SP=SP)
+    VS = tf.trainable_variables()
+    VS.reverse()
+
+    dW_OPs, lall = Conv_net_gpu.back_prop(loss, accuracy, TS, VS, OPS['x'], PARS,non_trainable=non_trainable)
+
+
+    OPS['loss']=loss
+    OPS['accuracy']=accuracy
+    OPS['TS']=TS
+    OPS['VS']=VS
+    OPS['dW_OPs']=dW_OPs
+    OPS['lall']=lall
+
+def run_epoch(train,i,OPS,PARS,sess,type='Train',shift=None):
+    t1 = time.time()
+    # Randomly shuffle the training data
+    ii = np.arange(0, train[0].shape[0], 1)
+    if (type=='Train'):
+        np.random.shuffle(ii)
+    tr = train[0][ii]
+    if (shift is not None and type=='Train'):
+        tr=rotate_dataset_rand(tr,shift=shift,gr=0)
+
+    y = train[1][ii]
+    lo = 0.
+    acc = 0.
+    ca = 0.
+    batch_size=PARS['batch_size']
+    for j in np.arange(0, len(y), batch_size):
+        batch = (tr[j:j + batch_size], y[j:j + batch_size])
+        if (type=='Train'):
+            grad = sess.run(OPS['dW_OPs'], feed_dict={OPS['x']: batch[0], OPS['y_']: batch[1], OPS['Train']: True})
+            acc += grad[-2]
+            lo += grad[-1]
+        else:
+            act, lot = sess.run([OPS['accuracy'], OPS['loss']], feed_dict={OPS['x']: batch[0], OPS['y_']: batch[1], OPS['Train']: False})
+            acc += act
+            lo += lot
+        ca += 1
+
+    print('Epoch time', time.time() - t1)
+    Conv_net_aux.print_results(type, i, lo/ca, acc/ca)
+    return acc / ca, lo / ca
+
+def finalize(test,OPS,PARS,net,sess):
+            ac, lo= run_epoch(test,0,OPS,PARS,sess,type='Test')
+            print('step,','0,', 'aggegate accuracy,', ac)
+            saver = tf.train.Saver()
+            save_path = saver.save(sess, "tmp/model_" + net.split('/')[1])
+            print("Model saved in path: %s" % save_path)
+
+
+

@@ -2,11 +2,10 @@ seed:45239
 num_epochs:2
 data_set:cifar100
 batch_size:50
-eta_init:.15
+step_size:.1
 debug:False
 num_train:5000
-#eta_schedule:(100.,.01,120,.001)
-dep_fac:10.
+off_class_fac:10.
 hinge:True
 force_global_prob:(1.,-1.)
 name:input1

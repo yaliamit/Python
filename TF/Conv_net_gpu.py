@@ -16,6 +16,7 @@ def find_wr(name,VS):
     W=None
     R=None
     for vs in VS:
+      if ('sparse' not in vs.name):
         if (name in vs.name):
             if ('W' in vs.name):
                 W=vs
@@ -60,14 +61,15 @@ def get_parameters(VSIN,PARS, re_randomize=None):
 
         if ('conv' in l['name'] or 'dens' in l['name']):
             Win,Rin=find_wr(l['name'],VSIN)
-            wrs = [Win.eval(), Rin.eval()]
-            if l['name'] in re_randomize:
-                if ('conv' in l['name']):
-                    Win,Rin = re_initialize(Win.shape.as_list())
-                else:
-                    Win, Rin = re_initialize_dense(Win.shape.as_list())
-                wrs = [Win, Rin]
-            WR[l['name']]=wrs
+            if (Win is not None):
+                wrs = [Win.eval(), Rin.eval()]
+                if re_randomize is not None and l['name'] in re_randomize:
+                    if ('conv' in l['name']):
+                        Win,Rin = re_initialize(Win.shape.as_list())
+                    else:
+                        Win, Rin = re_initialize_dense(Win.shape.as_list())
+                    wrs = [Win, Rin]
+                WR[l['name']]=wrs
 
     return(WR)
 
@@ -227,7 +229,7 @@ def recreate_network(PARS,x,y_,Train,WR=None,SP=None):
                  shp[1]=shp[1]-1
                  res=tf.reshape(res,shape=shp)
                  res=tf.reduce_sum(tf.nn.relu(1.+res),axis=1)
-                 loss=tf.reduce_mean(cor+PARS['dep_fac']*res/(PARS['n_classes']-1),name="hinge")
+                 loss=tf.reduce_mean(cor+PARS['off_class_fac']*res/(PARS['n_classes']-1),name="hinge")
                else:
                  # Softmax-logistic loss
                  loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=TS[-1]),name="sm")
