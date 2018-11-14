@@ -3,7 +3,7 @@ num_epochs:1
 num_epochs_sparse:3
 data_set:mnist
 batch_size:500
-step_size:.1
+step_size:.001
 sparse_step_size:.1
 debug:False
 num_train:5000
