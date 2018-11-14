@@ -1,5 +1,4 @@
 # Run the training
-import time
 import sys
 import numpy as np
 import tensorflow as tf
@@ -7,10 +6,7 @@ import Conv_net_gpu
 import Conv_sparse_aux
 import  Conv_net_aux
 from Conv_net_aux import run_epoch
-from Conv_data import get_data, rotate_dataset_rand
-
-
-
+from Conv_data import get_data
 
 
 ###
@@ -19,13 +15,15 @@ from Conv_data import get_data, rotate_dataset_rand
 
 net = sys.argv[1]
 gpu_device=None
+
+# Tells you which gpu to use.
 if (len(sys.argv)>2):
     print(sys.argv[2])
     gpu_device='/device:GPU:'+sys.argv[2]
 print('gpu_device',gpu_device)
 print('net', net)
 
-
+# Process parameters from a text file ( as in _pars )
 PARS=Conv_net_aux.process_parameters(net)
 train, val, test, dim = get_data(PARS)
 if ('re_randomize' in PARS): re_randomize=PARS['re_randomize']
@@ -98,7 +96,7 @@ with tf.device(gpu_device):
         # Run on test set before starting to train
         run_epoch(test,-1,OPS,PARS,sess,type='Test')
 
-
+        # Get some stats on weights.
         SDS=Conv_sparse_aux.get_weight_stats(SS,update=True)
         if (not 'SDS' in PARS or not PARS['SDS']):
             SDS=None

@@ -218,7 +218,7 @@ def generate_some_images(tt,inp):
             canvas.print_figure(s, dpi=80)
 
 
-
+# Compare filters at different spatial locations to see if they are similar after running the sparse version.
 def compare_params_sparse(sp, sh, VS, WR):
     for v in VS:
         if (sp in v.name and 'W' in v.name):
