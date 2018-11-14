@@ -1,0 +1,150 @@
+====> Epoch: 0 Reconstruction loss: 168.6168
+====> Epoch: 0 Classification loss: 1.2681
+====> Epoch: 0 Classification accuracy: 52.9748
+====> Epoch:0 Test reconstruction loss: 124.2501
+====> Epoch:0 Test accuracy: 85.9375
+====> Epoch: 1 Reconstruction loss: 115.9402
+====> Epoch: 1 Classification loss: 0.3602
+====> Epoch: 1 Classification accuracy: 88.0909
+====> Epoch:1 Test reconstruction loss: 105.9522
+====> Epoch:1 Test accuracy: 90.9355
+====> Epoch: 2 Reconstruction loss: 105.0682
+====> Epoch: 2 Classification loss: 0.2650
+====> Epoch: 2 Classification accuracy: 91.3462
+====> Epoch:2 Test reconstruction loss: 99.9183
+====> Epoch:2 Test accuracy: 92.5481
+====> Epoch: 3 Reconstruction loss: 100.1190
+====> Epoch: 3 Classification loss: 0.2257
+====> Epoch: 3 Classification accuracy: 92.8235
+====> Epoch:3 Test reconstruction loss: 96.7972
+====> Epoch:3 Test accuracy: 93.6799
+====> Epoch: 4 Reconstruction loss: 97.1397
+====> Epoch: 4 Classification loss: 0.2029
+====> Epoch: 4 Classification accuracy: 93.4963
+====> Epoch:4 Test reconstruction loss: 98.7667
+====> Epoch:4 Test accuracy: 92.5681
+====> Epoch: 5 Reconstruction loss: 95.1489
+====> Epoch: 5 Classification loss: 0.1872
+====> Epoch: 5 Classification accuracy: 94.0054
+====> Epoch:5 Test reconstruction loss: 92.8831
+====> Epoch:5 Test accuracy: 94.5312
+====> Epoch: 6 Reconstruction loss: 93.6308
+====> Epoch: 6 Classification loss: 0.1755
+====> Epoch: 6 Classification accuracy: 94.2308
+====> Epoch:6 Test reconstruction loss: 92.2504
+====> Epoch:6 Test accuracy: 94.5413
+====> Epoch: 7 Reconstruction loss: 92.2216
+====> Epoch: 7 Classification loss: 0.1648
+====> Epoch: 7 Classification accuracy: 94.8117
+====> Epoch:7 Test reconstruction loss: 93.1209
+====> Epoch:7 Test accuracy: 94.6715
+====> Epoch: 8 Reconstruction loss: 91.1085
+====> Epoch: 8 Classification loss: 0.1576
+====> Epoch: 8 Classification accuracy: 94.9369
+====> Epoch:8 Test reconstruction loss: 89.5968
+====> Epoch:8 Test accuracy: 95.3025
+====> Epoch: 9 Reconstruction loss: 90.1848
+====> Epoch: 9 Classification loss: 0.1479
+====> Epoch: 9 Classification accuracy: 95.2758
+====> Epoch:9 Test reconstruction loss: 89.7096
+====> Epoch:9 Test accuracy: 95.3125
+====> Epoch: 10 Reconstruction loss: 89.4266
+====> Epoch: 10 Classification loss: 0.1407
+====> Epoch: 10 Classification accuracy: 95.5145
+====> Epoch:10 Test reconstruction loss: 89.6124
+====> Epoch:10 Test accuracy: 95.5729
+====> Epoch: 11 Reconstruction loss: 88.6519
+====> Epoch: 11 Classification loss: 0.1381
+====> Epoch: 11 Classification accuracy: 95.5796
+====> Epoch:11 Test reconstruction loss: 88.7323
+====> Epoch:11 Test accuracy: 95.6030
+====> Epoch: 12 Reconstruction loss: 87.9163
+====> Epoch: 12 Classification loss: 0.1318
+====> Epoch: 12 Classification accuracy: 95.8300
+====> Epoch:12 Test reconstruction loss: 88.3431
+====> Epoch:12 Test accuracy: 95.4227
+====> Epoch: 13 Reconstruction loss: 87.3460
+====> Epoch: 13 Classification loss: 0.1278
+====> Epoch: 13 Classification accuracy: 95.9852
+====> Epoch:13 Test reconstruction loss: 86.8207
+====> Epoch:13 Test accuracy: 95.7833
+====> Epoch: 14 Reconstruction loss: 86.6965
+====> Epoch: 14 Classification loss: 0.1241
+====> Epoch: 14 Classification accuracy: 96.0387
+====> Epoch:14 Test reconstruction loss: 86.9803
+====> Epoch:14 Test accuracy: 95.8233
+====> Epoch: 15 Reconstruction loss: 86.1370
+====> Epoch: 15 Classification loss: 0.1213
+====> Epoch: 15 Classification accuracy: 96.1722
+====> Epoch:15 Test reconstruction loss: 86.0523
+====> Epoch:15 Test accuracy: 95.7732
+====> Epoch: 16 Reconstruction loss: 85.5601
+====> Epoch: 16 Classification loss: 0.1185
+====> Epoch: 16 Classification accuracy: 96.3625
+====> Epoch:16 Test reconstruction loss: 85.4137
+====> Epoch:16 Test accuracy: 96.2440
+====> Epoch: 17 Reconstruction loss: 84.9717
+====> Epoch: 17 Classification loss: 0.1140
+====> Epoch: 17 Classification accuracy: 96.3542
+====> Epoch:17 Test reconstruction loss: 85.4103
+====> Epoch:17 Test accuracy: 95.7031
+====> Epoch: 18 Reconstruction loss: 84.4133
+====> Epoch: 18 Classification loss: 0.1128
+====> Epoch: 18 Classification accuracy: 96.4343
+====> Epoch:18 Test reconstruction loss: 85.1531
+====> Epoch:18 Test accuracy: 95.9435
+====> Epoch: 19 Reconstruction loss: 83.9158
+====> Epoch: 19 Classification loss: 0.1066
+====> Epoch: 19 Classification accuracy: 96.6580
+====> Epoch:19 Test reconstruction loss: 85.6244
+====> Epoch:19 Test accuracy: 96.2941
+====> Epoch: 20 Reconstruction loss: 83.4598
+====> Epoch: 20 Classification loss: 0.1043
+====> Epoch: 20 Classification accuracy: 96.7398
+====> Epoch:20 Test reconstruction loss: 84.1624
+====> Epoch:20 Test accuracy: 96.1338
+====> Epoch: 21 Reconstruction loss: 82.9740
+====> Epoch: 21 Classification loss: 0.1012
+====> Epoch: 21 Classification accuracy: 96.7081
+====> Epoch:21 Test reconstruction loss: 83.9146
+====> Epoch:21 Test accuracy: 96.4643
+====> Epoch: 22 Reconstruction loss: 82.5896
+====> Epoch: 22 Classification loss: 0.0990
+====> Epoch: 22 Classification accuracy: 96.8767
+====> Epoch:22 Test reconstruction loss: 82.9656
+====> Epoch:22 Test accuracy: 96.2340
+====> Epoch: 23 Reconstruction loss: 82.1938
+====> Epoch: 23 Classification loss: 0.0972
+====> Epoch: 23 Classification accuracy: 96.8867
+====> Epoch:23 Test reconstruction loss: 82.8327
+====> Epoch:23 Test accuracy: 96.3241
+====> Epoch: 24 Reconstruction loss: 81.8342
+====> Epoch: 24 Classification loss: 0.0942
+====> Epoch: 24 Classification accuracy: 96.9868
+====> Epoch:24 Test reconstruction loss: 82.6331
+====> Epoch:24 Test accuracy: 96.4443
+====> Epoch: 25 Reconstruction loss: 81.4819
+====> Epoch: 25 Classification loss: 0.0941
+====> Epoch: 25 Classification accuracy: 96.9952
+====> Epoch:25 Test reconstruction loss: 82.4646
+====> Epoch:25 Test accuracy: 96.6346
+====> Epoch: 26 Reconstruction loss: 81.1464
+====> Epoch: 26 Classification loss: 0.0923
+====> Epoch: 26 Classification accuracy: 97.0102
+====> Epoch:26 Test reconstruction loss: 82.2400
+====> Epoch:26 Test accuracy: 96.3442
+====> Epoch: 27 Reconstruction loss: 80.8595
+====> Epoch: 27 Classification loss: 0.0874
+====> Epoch: 27 Classification accuracy: 97.2506
+====> Epoch:27 Test reconstruction loss: 81.9584
+====> Epoch:27 Test accuracy: 96.6346
+====> Epoch: 28 Reconstruction loss: 80.5230
+====> Epoch: 28 Classification loss: 0.0869
+====> Epoch: 28 Classification accuracy: 97.2289
+====> Epoch:28 Test reconstruction loss: 81.7166
+====> Epoch:28 Test accuracy: 96.3141
+====> Epoch: 29 Reconstruction loss: 80.3126
+====> Epoch: 29 Classification loss: 0.0867
+====> Epoch: 29 Classification accuracy: 97.3291
+====> Epoch:29 Test reconstruction loss: 81.5555
+====> Epoch:29 Test accuracy: 96.6947
