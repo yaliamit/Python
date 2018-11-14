@@ -2,8 +2,7 @@ seed:45239
 num_epochs:10
 data_set:mnist
 batch_size:500
-step_size:.1
-sparse_step_size:.1
+step_size:.001
 debug:False
 num_train:50000
 off_class_fac:1.
