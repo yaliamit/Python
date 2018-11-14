@@ -1,0 +1,17 @@
+seed:45239
+num_epochs:10
+data_set:mnist
+batch_size:500
+step_size:.1
+sparse_step_size:.1
+debug:False
+num_train:50000
+off_class_fac:1.
+hinge:False
+force_global_prob:(1.,-1.)
+name:input1
+name:newdensp1;num_units:256;non_linearity:tanh;parent:input1
+name:newdensp2;num_units:256;non_linearity:tanh;parent:newdensp1
+name:newdensp3;num_units:256;non_linearity:tanh;parent:newdensp2
+name:newdensp4;num_units:256;non_linearity:tanh;parent:newdensp3
+name:newdensf;num_units:10;non_linearity:soft_max;parent:newdensp3;final:final
