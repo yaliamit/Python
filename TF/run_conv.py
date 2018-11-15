@@ -70,7 +70,7 @@ with tf.device(gpu_device):
 
     # Recreate graph with existing value of parameters
     if ('sparse' in PARS):
-      shift=Conv_net_aux.sparse_process_parameters(PARS)
+      Conv_net_aux.sparse_process_parameters(PARS)
 
       SDS = None
       tf.reset_default_graph()
@@ -102,7 +102,7 @@ with tf.device(gpu_device):
             SDS=None
 
         for i in range(PARS['num_epochs_sparse']):  # number of epochs
-                run_epoch(train,i,OPS,PARS,sess,type='Train',shift=shift)
+                run_epoch(train,i,OPS,PARS,sess,type='Train_sparse')
                 # transpose W or R for sparse layer computed once for each epoch
                 # NOT for each batch - still works fine.
                 Conv_sparse_aux.F_transpose_and_clip(SS,sess,SDS)

@@ -15,6 +15,7 @@ sparse:conv1R,
 #non_trainable:conv1,
 #re_randomize:conv1R,newdensp,newdensf
 #shift:15
+saturation:True
 name:input1
 name:conv1R;num_filters:8;filter_size:(5,5);non_linearity:tanh;parent:input1
 #name:conv1aR;num_filters:32;filter_size:(3,3);non_linearity:tanh;parent:conv1

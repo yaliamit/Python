@@ -9,7 +9,7 @@ net='_pars/fncrc'
 PARS=process_parameters(net)
 train, val, test, dim = get_data(PARS)
 
-Xtr=rotate_dataset_rand(train[0][0:100],shift=25,flip=False,gr=1)
+Xtr=rotate_dataset_rand(train[0][0:100],shift=0,flip=False,saturation=True,gr=1)
 
 
 # print(tf.__version__)

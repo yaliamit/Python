@@ -186,10 +186,8 @@ def sparse_process_parameters(PARS):
           PARS['force_global_prob']=PARS['sparse_global_prob']
       PARS['Rstep_size'] = list(PARS['force_global_prob'])[1] * PARS['step_size']
       print('Rstep_size', PARS['Rstep_size'])
-      shift = None
-      if ('shift' in PARS):
-          shift = PARS['shift']
-      return(shift)
+
+
 
 def print_results(type,epoch,lo,ac):
     print("Final results: epoch", str(epoch))
@@ -264,15 +262,21 @@ def setup_net(PARS,OPS,  WR=None, SP=None, non_trainable=None):
     OPS['dW_OPs']=dW_OPs
     OPS['lall']=lall
 
-def run_epoch(train,i,OPS,PARS,sess,type='Train',shift=None):
+def run_epoch(train,i,OPS,PARS,sess,type='Train'):
     t1 = time.time()
+    shift=None
+    saturation=None
     # Randomly shuffle the training data
     ii = np.arange(0, train[0].shape[0], 1)
-    if (type=='Train'):
+    if ('Train' in type):
         np.random.shuffle(ii)
     tr = train[0][ii]
-    if (shift is not None and type=='Train'):
-        tr=rotate_dataset_rand(tr,shift=shift,gr=0)
+    if ('shift' in PARS or 'saturation' in PARS and type=='Train_sparse'):
+        if ('shift' in PARS):
+            shift=PARS['shift']
+        if ('saturation' in PARS):
+            saturation=PARS['saturation']
+        tr=rotate_dataset_rand(tr,shift=shift,saturation=saturation,gr=0)
 
     y = train[1][ii]
     lo = 0.
@@ -281,7 +285,7 @@ def run_epoch(train,i,OPS,PARS,sess,type='Train',shift=None):
     batch_size=PARS['batch_size']
     for j in np.arange(0, len(y), batch_size):
         batch = (tr[j:j + batch_size], y[j:j + batch_size])
-        if (type=='Train'):
+        if ('Train' in type):
             grad = sess.run(OPS['dW_OPs'], feed_dict={OPS['x']: batch[0], OPS['y_']: batch[1], OPS['Train']: True})
             acc += grad[-2]
             lo += grad[-1]
