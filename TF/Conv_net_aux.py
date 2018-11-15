@@ -264,14 +264,15 @@ def setup_net(PARS,OPS,  WR=None, SP=None, non_trainable=None):
 
 def run_epoch(train,i,OPS,PARS,sess,type='Train'):
     t1 = time.time()
-    shift=None
-    saturation=None
+
     # Randomly shuffle the training data
     ii = np.arange(0, train[0].shape[0], 1)
     if ('Train' in type):
         np.random.shuffle(ii)
     tr = train[0][ii]
     if ('shift' in PARS or 'saturation' in PARS and type=='Train_sparse'):
+        shift=0
+        saturation=False
         if ('shift' in PARS):
             shift=PARS['shift']
         if ('saturation' in PARS):

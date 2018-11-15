@@ -4,9 +4,6 @@
     <list default="true" id="ef2eb448-6413-411f-9ec4-6f9aac3066f7" name="Default" comment="For RCC">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Conv_net_aux.py" afterPath="$PROJECT_DIR$/Conv_net_aux.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/_pars/fncrc.txt" afterPath="$PROJECT_DIR$/_pars/fncrc.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/run_conv.py" afterPath="$PROJECT_DIR$/run_conv.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/try.py" afterPath="$PROJECT_DIR$/try.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -25,10 +22,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="run_conv.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="run_conv.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/run_conv.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.33258426">
+            <state vertical-scroll-proportion="-19.925926">
               <caret line="104" column="66" selection-start-line="104" selection-start-column="66" selection-end-line="104" selection-end-column="66" />
               <folding>
                 <element signature="e#19#29#0" expanded="true" />
@@ -69,24 +66,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Conv_net_aux.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Conv_net_aux.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Conv_net_aux.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-17.592592">
-              <caret line="286" column="59" selection-start-line="286" selection-start-column="59" selection-end-line="286" selection-end-column="59" />
+            <state vertical-scroll-proportion="0.5280899">
+              <caret line="274" column="8" selection-start-line="274" selection-start-column="8" selection-end-line="274" selection-end-column="8" />
               <folding>
                 <element signature="e#29#58#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="OUT10_h_R_sp-br.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/_OUTPUTS/_fncrc/OUT10_h_R_sp-br.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -189,9 +176,9 @@
         <option value="$PROJECT_DIR$/_pars/fncrc_deep_tryR_avg2.txt" />
         <option value="$PROJECT_DIR$/_pars/ftry.txt" />
         <option value="$PROJECT_DIR$/try.py" />
-        <option value="$PROJECT_DIR$/Conv_net_aux.py" />
         <option value="$PROJECT_DIR$/run_conv.py" />
         <option value="$PROJECT_DIR$/_pars/fncrc.txt" />
+        <option value="$PROJECT_DIR$/Conv_net_aux.py" />
       </list>
     </option>
   </component>
@@ -1106,6 +1093,14 @@ py.show()</expression-string>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/_pars/fncrc.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="16" column="1" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Conv_data.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1116,30 +1111,22 @@ py.show()</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Conv_net_aux.py">
+    <entry file="file://$PROJECT_DIR$/run_conv.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-17.592592">
-          <caret line="286" column="59" selection-start-line="286" selection-start-column="59" selection-end-line="286" selection-end-column="59" />
+        <state vertical-scroll-proportion="-19.925926">
+          <caret line="104" column="66" selection-start-line="104" selection-start-column="66" selection-end-line="104" selection-end-column="66" />
           <folding>
-            <element signature="e#29#58#0" expanded="true" />
+            <element signature="e#19#29#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_pars/fncrc.txt">
+    <entry file="file://$PROJECT_DIR$/Conv_net_aux.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="16" column="1" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/run_conv.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33258426">
-          <caret line="104" column="66" selection-start-line="104" selection-start-column="66" selection-end-line="104" selection-end-column="66" />
+        <state vertical-scroll-proportion="0.5280899">
+          <caret line="274" column="8" selection-start-line="274" selection-start-column="8" selection-end-line="274" selection-end-column="8" />
           <folding>
-            <element signature="e#19#29#0" expanded="true" />
+            <element signature="e#29#58#0" expanded="true" />
           </folding>
         </state>
       </provider>
