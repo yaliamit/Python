@@ -1,6 +1,6 @@
 seed:45239
 num_epochs:1
-num_epochs_sparse:30
+num_epochs_sparse:200
 data_set:cifar10
 batch_size:200
 sparse_batch_size:50
