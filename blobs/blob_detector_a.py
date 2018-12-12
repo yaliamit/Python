@@ -123,12 +123,9 @@ with tf.Session() as sess:
     #     generate_image_from_estimate(PARS,HYY[ind],train[0][ind])
 
     HY=run_epoch(test, 0, type='Test')
-    HYY = np.concatenate(HY)
-    HYS = HYY[:,:,:,2]>0
-
-    inds = [10, 20, 30, 40, 50, 60, 70, 80]
-    for ind in inds:
-        generate_image_from_estimate(PARS, HYY[ind], test[0][ind])
-
-
-    print("Hello")
+    # HYY = np.concatenate(HY)
+    # HYS = HYY[:,:,:,2]>0
+    #
+    # inds = [10, 20, 30, 40, 50, 60, 70, 80]
+    # for ind in inds:
+    #     generate_image_from_estimate(PARS, HYY[ind], test[0][ind])
