@@ -1,9 +1,7 @@
-pydev debugger: process 23240 is connecting
-
-/Users/amit/anaconda2/envs/myenv/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: compiletime version 3.5 of module 'tensorflow.python.framework.fast_tensor_util' does not match runtime version 3.6
+/anaconda2/envs/myenv/lib/python3.6/importlib/_bootstrap.py:219: RuntimeWarning: compiletime version 3.5 of module 'tensorflow.python.framework.fast_tensor_util' does not match runtime version 3.6
   return f(*args, **kwds)
 Using TensorFlow backend.
-batch_size:100
+batch_size:500
 
 step_size:.01
 
@@ -11,9 +9,9 @@ num_epochs:30
 
 num_train:10000
 
-num_test:100
+num_test:1000
 
-num_val:100
+num_val:1000
 
 image_dim:32.
 
@@ -47,8 +45,8 @@ name:dense1;num_units:192;parent:pool2
 
 name:reshape1;new_shape:(8,8,3);parent:dense1;final:final
 
-2018-12-12 10:49:27.335207: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
 Hello
+2018-12-12 16:24:38.226807: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
 Hello
 Hello
 Hello
@@ -56,329 +54,147 @@ Hello
 Hello
 Hello
 joint_parent {}
-Tensor("conv1_relu/Relu:0", shape=(100, 32, 32, 4), dtype=float32)
-Tensor("pool1/MaxPool:0", shape=(100, 16, 16, 4), dtype=float32)
-Tensor("conv2_relu/Relu:0", shape=(100, 16, 16, 32), dtype=float32)
-Tensor("pool2/MaxPool:0", shape=(100, 8, 8, 32), dtype=float32)
-Tensor("dense1/add:0", shape=(100, 192), dtype=float32)
-Tensor("reshape1/Reshape:0", shape=(100, 8, 8, 3), dtype=float32)
-Backend MacOSX is interactive backend. Turning interactive mode on.
-Epoch time 2.953979253768921
+Tensor("conv1_relu/Relu:0", shape=(500, 32, 32, 4), dtype=float32)
+Tensor("pool1/MaxPool:0", shape=(500, 16, 16, 4), dtype=float32)
+Tensor("conv2_relu/Relu:0", shape=(500, 16, 16, 32), dtype=float32)
+Tensor("pool2/MaxPool:0", shape=(500, 8, 8, 32), dtype=float32)
+Tensor("dense1/add:0", shape=(500, 192), dtype=float32)
+Tensor("reshape1/Reshape:0", shape=(500, 8, 8, 3), dtype=float32)
+Epoch time 2.120316982269287
 Final results: epoch 0
-Training dist:			1.875971
-Training acc:			0.975222
-Training loss:			20.226293
-Epoch time 2.8071930408477783
+Training dist:			2.055400
+Training acc:			0.975369
+Training loss:			26.225276
+Epoch time 0.11895585060119629
 Final results: epoch 0
-Val dist:			1.466363
-Val acc:			0.831551
-Val loss:			13.889721
-Epoch time 2.8959858417510986
+Val dist:			1.938860
+Val acc:			1.000000
+Val loss:			21.461655
+Epoch time 1.9679348468780518
 Final results: epoch 1
-Training dist:			1.153864
-Training acc:			0.591550
-Training loss:			9.779210
-Epoch time 0.01430201530456543
+Training dist:			1.922494
+Training acc:			1.000000
+Training loss:			20.598529
+Epoch time 0.08214688301086426
 Final results: epoch 1
-Val dist:			1.047528
-Val acc:			0.475936
-Val loss:			8.792673
-Epoch time 3.316828966140747
+Val dist:			1.802561
+Val acc:			1.000000
+Val loss:			18.152514
+Epoch time 2.062098979949951
 Final results: epoch 2
-Training dist:			0.878706
-Training acc:			0.353793
-Training loss:			6.551507
-Epoch time 0.013538837432861328
+Training dist:			1.593859
+Training acc:			0.972871
+Training loss:			15.320516
+Epoch time 0.0967550277709961
 Final results: epoch 2
-Val dist:			0.867120
-Val acc:			0.318182
-Val loss:			6.585084
-Epoch time 3.119088888168335
+Val dist:			1.364048
+Val acc:			0.843702
+Val loss:			12.503449
+Epoch time 1.932460069656372
 Final results: epoch 3
-Training dist:			0.767188
-Training acc:			0.258685
-Training loss:			5.210706
-Epoch time 0.01459813117980957
+Training dist:			1.185983
+Training acc:			0.717220
+Training loss:			10.674228
+Epoch time 0.08290290832519531
 Final results: epoch 3
-Val dist:			0.819282
-Val acc:			0.299465
-Val loss:			5.651100
-Epoch time 3.2708990573883057
+Val dist:			1.102740
+Val acc:			0.618977
+Val loss:			9.510372
+Epoch time 1.9461429119110107
 Final results: epoch 4
-Training dist:			0.685263
-Training acc:			0.204776
-Training loss:			4.371834
-Epoch time 0.012763023376464844
+Training dist:			0.973126
+Training acc:			0.535835
+Training loss:			8.318106
+Epoch time 0.08182716369628906
 Final results: epoch 4
-Val dist:			0.738311
-Val acc:			0.184492
-Val loss:			4.985896
-Epoch time 3.3482611179351807
+Val dist:			0.948820
+Val acc:			0.445205
+Val loss:			7.772080
+Epoch time 1.9995877742767334
 Final results: epoch 5
-Training dist:			0.648301
-Training acc:			0.178529
-Training loss:			3.926663
-Epoch time 0.014105081558227539
+Training dist:			0.841866
+Training acc:			0.426932
+Training loss:			6.888806
+Epoch time 0.08891010284423828
 Final results: epoch 5
-Val dist:			0.772991
-Val acc:			0.189840
-Val loss:			4.782925
-Epoch time 3.3879401683807373
+Val dist:			0.837581
+Val acc:			0.399159
+Val loss:			6.626304
+Epoch time 1.9677619934082031
 Final results: epoch 6
-Training dist:			0.608926
-Training acc:			0.158713
-Training loss:			3.529084
-Epoch time 0.016871929168701172
+Training dist:			0.767252
+Training acc:			0.357365
+Training loss:			5.987355
+Epoch time 0.08414316177368164
 Final results: epoch 6
-Val dist:			0.703611
-Val acc:			0.203209
-Val loss:			4.488833
-Epoch time 3.6503188610076904
+Val dist:			0.797028
+Val acc:			0.337785
+Val loss:			5.901206
+Epoch time 2.0008912086486816
 Final results: epoch 7
-Training dist:			0.575208
-Training acc:			0.143414
-Training loss:			3.214797
-Epoch time 0.013861894607543945
+Training dist:			0.728145
+Training acc:			0.305246
+Training loss:			5.392702
+Epoch time 0.08295989036560059
 Final results: epoch 7
-Val dist:			0.716599
-Val acc:			0.144385
-Val loss:			4.491181
-Epoch time 3.493677854537964
+Val dist:			0.730173
+Val acc:			0.297801
+Val loss:			5.316711
+Epoch time 1.976477861404419
 Final results: epoch 8
-Training dist:			0.557893
-Training acc:			0.129560
-Training loss:			3.004924
-Epoch time 0.012775182723999023
+Training dist:			0.676887
+Training acc:			0.270287
+Training loss:			4.854191
+Epoch time 0.08696413040161133
 Final results: epoch 8
-Val dist:			0.688538
-Val acc:			0.176471
-Val loss:			4.060616
-Epoch time 3.209001302719116
+Val dist:			0.721054
+Val acc:			0.286315
+Val loss:			5.009343
+Epoch time 1.9530150890350342
 Final results: epoch 9
-Training dist:			0.541924
-Training acc:			0.119666
-Training loss:			2.832974
-Epoch time 0.013956785202026367
+Training dist:			0.661317
+Training acc:			0.243850
+Training loss:			4.545739
+Epoch time 0.08222174644470215
 Final results: epoch 9
-Val dist:			0.686876
-Val acc:			0.133690
-Val loss:			4.097658
-Epoch time 3.029973030090332
+Val dist:			0.693656
+Val acc:			0.230812
+Val loss:			4.665687
+Epoch time 1.965527057647705
 Final results: epoch 10
-Training dist:			0.525192
-Training acc:			0.115898
-Training loss:			2.688261
-Epoch time 0.014225244522094727
+Training dist:			0.627806
+Training acc:			0.221870
+Training loss:			4.220349
+Epoch time 0.08447813987731934
 Final results: epoch 10
-Val dist:			0.649979
-Val acc:			0.133690
-Val loss:			3.848715
-Epoch time 3.018360137939453
+Val dist:			0.659909
+Val acc:			0.214116
+Val loss:			4.359700
+Epoch time 2.0928821563720703
 Final results: epoch 11
-Training dist:			0.510643
-Training acc:			0.107748
-Training loss:			2.535990
-Epoch time 0.013491153717041016
+Training dist:			0.611202
+Training acc:			0.205183
+Training loss:			3.986635
+Epoch time 0.08790087699890137
 Final results: epoch 11
-Val dist:			0.669710
-Val acc:			0.106952
-Val loss:			3.789757
-Epoch time 3.0346920490264893
-Final results: epoch 12
-Training dist:			0.515495
-Training acc:			0.103147
-Training loss:			2.488659
-Epoch time 0.013661861419677734
-Final results: epoch 12
-Val dist:			0.651851
-Val acc:			0.109626
-Val loss:			3.782271
-Epoch time 2.9760680198669434
-Final results: epoch 13
-Training dist:			0.488227
-Training acc:			0.097800
-Training loss:			2.326170
-Epoch time 0.01190495491027832
-Final results: epoch 13
-Val dist:			0.647001
-Val acc:			0.128342
-Val loss:			3.576590
-Epoch time 3.074954032897949
-Final results: epoch 14
-Training dist:			0.476637
-Training acc:			0.091583
-Training loss:			2.219852
-Epoch time 0.013235807418823242
-Final results: epoch 14
-Val dist:			0.611443
-Val acc:			0.120321
-Val loss:			3.404979
-Epoch time 3.6015024185180664
-Final results: epoch 15
-Training dist:			0.473789
-Training acc:			0.086641
-Training loss:			2.145691
-Epoch time 0.016472816467285156
-Final results: epoch 15
-Val dist:			0.611842
-Val acc:			0.120321
-Val loss:			3.384243
-Epoch time 3.69996976852417
-Final results: epoch 16
-Training dist:			0.469592
-Training acc:			0.083614
-Training loss:			2.083899
-Epoch time 0.013856172561645508
-Final results: epoch 16
-Val dist:			0.660778
-Val acc:			0.120321
-Val loss:			3.558942
-Epoch time 3.521657943725586
-Final results: epoch 17
-Training dist:			0.473998
-Training acc:			0.080712
-Training loss:			2.052537
-Epoch time 0.01471400260925293
-Final results: epoch 17
-Val dist:			0.615886
-Val acc:			0.117647
-Val loss:			3.331403
-Epoch time 3.3318371772766113
-Final results: epoch 18
-Training dist:			0.452201
-Training acc:			0.074335
-Training loss:			1.927672
-Epoch time 0.014856100082397461
-Final results: epoch 18
-Val dist:			0.625077
-Val acc:			0.149733
-Val loss:			3.454931
-Epoch time 3.468863010406494
-Final results: epoch 19
-Training dist:			0.446754
-Training acc:			0.073331
-Training loss:			1.878306
-Epoch time 0.014539957046508789
-Final results: epoch 19
-Val dist:			0.638021
-Val acc:			0.120321
-Val loss:			3.468770
-Epoch time 3.401236057281494
-Final results: epoch 20
-Training dist:			0.451902
-Training acc:			0.069496
-Training loss:			1.852641
-Epoch time 0.014972925186157227
-Final results: epoch 20
-Val dist:			0.583937
-Val acc:			0.122995
-Val loss:			3.255904
-Epoch time 3.4843878746032715
-Final results: epoch 21
-Training dist:			0.442267
-Training acc:			0.066485
-Training loss:			1.783189
-Epoch time 0.016689062118530273
-Final results: epoch 21
-Val dist:			0.645614
-Val acc:			0.133690
-Val loss:			3.308055
-Epoch time 3.423708200454712
-Final results: epoch 22
-Training dist:			0.433653
-Training acc:			0.063077
-Training loss:			1.719172
-Epoch time 0.01584601402282715
-Final results: epoch 22
-Val dist:			0.652788
-Val acc:			0.114973
-Val loss:			3.434959
-Epoch time 3.2713050842285156
-Final results: epoch 23
-Training dist:			0.448052
-Training acc:			0.060783
-Training loss:			1.727982
-Epoch time 0.014106988906860352
-Final results: epoch 23
-Val dist:			0.615102
-Val acc:			0.114973
-Val loss:			3.288410
-Epoch time 3.4844117164611816
-Final results: epoch 24
-Training dist:			0.429994
-Training acc:			0.059419
-Training loss:			1.647804
-Epoch time 0.0143890380859375
-Final results: epoch 24
-Val dist:			0.597214
-Val acc:			0.101604
-Val loss:			3.229266
-Epoch time 3.7430732250213623
-Final results: epoch 25
-Training dist:			0.419780
-Training acc:			0.057634
-Training loss:			1.592530
-Epoch time 0.017250776290893555
-Final results: epoch 25
-Val dist:			0.639092
-Val acc:			0.112299
-Val loss:			3.282272
-Epoch time 3.4825050830841064
-Final results: epoch 26
-Training dist:			0.426956
-Training acc:			0.054978
-Training loss:			1.588294
-Epoch time 0.015905141830444336
-Final results: epoch 26
-Val dist:			0.616172
-Val acc:			0.114973
-Val loss:			3.182889
-Epoch time 4.189327001571655
-Final results: epoch 27
-Training dist:			0.421032
-Training acc:			0.052498
-Training loss:			1.528645
-Epoch time 0.03299593925476074
-Final results: epoch 27
-Val dist:			0.630918
-Val acc:			0.122995
-Val loss:			3.262652
-Epoch time 3.9831531047821045
-Final results: epoch 28
-Training dist:			0.422914
-Training acc:			0.050403
-Training loss:			1.511039
-Epoch time 0.012378931045532227
-Final results: epoch 28
-Val dist:			0.625589
-Val acc:			0.098930
-Val loss:			3.227559
-Epoch time 2.9936161041259766
-Final results: epoch 29
-Training dist:			0.416219
-Training acc:			0.048642
-Training loss:			1.466321
-Epoch time 0.014183282852172852
-Final results: epoch 29
-Val dist:			0.631791
-Val acc:			0.128342
-Val loss:			3.236888
-Epoch time 1.4553909301757812
-Final results: epoch 0
-Test dist:			0.405609
-Test acc:			0.051271
-Test loss:			1.376966
-Epoch time 0.012660026550292969
-Final results: epoch 0
-Test dist:			0.629833
-Test acc:			0.151786
-Test loss:			3.229047
-Hello
-Hello
-Hello
-Hello
-Hello
-Hello
-Hello
-Hello
-Hello
+Val dist:			0.669364
+Val acc:			0.213545
+Val loss:			4.261255
+Traceback (most recent call last):
+  File "/Users/amit/Desktop/Dropbox/Python/blobs/blob_detector_a.py", line 114, in <module>
+    run_epoch(train,i)
+  File "/Users/amit/Desktop/Dropbox/Python/blobs/blob_detector_a.py", line 31, in run_epoch
+    training_:True})
+  File "/anaconda2/envs/myenv/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 877, in run
+    run_metadata_ptr)
+  File "/anaconda2/envs/myenv/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1100, in _run
+    feed_dict_tensor, options, run_metadata)
+  File "/anaconda2/envs/myenv/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1272, in _do_run
+    run_metadata)
+  File "/anaconda2/envs/myenv/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1278, in _do_call
+    return fn(*args)
+  File "/anaconda2/envs/myenv/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1263, in _run_fn
+    options, feed_dict, fetch_list, target_list, run_metadata)
+  File "/anaconda2/envs/myenv/lib/python3.6/site-packages/tensorflow/python/client/session.py", line 1350, in _call_tf_sessionrun
+    run_metadata)
+KeyboardInterrupt

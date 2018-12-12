@@ -115,7 +115,6 @@ def recreate_network(PARS, x_, y_, training_):
                 with tf.variable_scope(l['name']):
                     out = tf.reshape(parent, [-1,]+list(l['new_shape']))
                     TS.append(out)
-        print("Hello")
     with tf.variable_scope('loss'):
         # Hinge loss
         if (PARS['hinge']):
