@@ -1,7 +1,7 @@
 batch_size:500
 step_size:.01
 num_epochs:100
-num_train:50000
+num_train:200000
 num_test:1000
 num_val:1000
 image_dim:32.
