@@ -1,1 +1,0 @@
-python source/start_class.py net=_pars/fncrc_deep_tryR_nores output=OUT_nores>OUT_nores.txt

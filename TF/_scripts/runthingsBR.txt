@@ -1,1 +1,0 @@
-/opt/anaconda/anaconda3/bin/python run_conv.py  1 >/Users/amit/Desktop/Dropbox/Python/TF/_scripts/runber.py.txt
