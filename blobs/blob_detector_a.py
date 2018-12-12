@@ -116,12 +116,12 @@ with tf.Session() as sess:
             run_epoch(val, i, type='Val')
             sys.stdout.flush()
 
-
+    print('Running final result of Training')
     run_epoch(train,0,type='Test')
 
     # for ind in inds:
     #     generate_image_from_estimate(PARS,HYY[ind],train[0][ind])
-
+    print('Running final result on Test')
     HY=run_epoch(test, 0, type='Test')
     # HYY = np.concatenate(HY)
     # HYS = HYY[:,:,:,2]>0

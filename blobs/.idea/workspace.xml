@@ -54,24 +54,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="blob_detector_a.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="blob_detector_a.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/blob_detector_a.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="458">
-              <caret line="131" column="0" selection-start-line="131" selection-start-column="0" selection-end-line="131" selection-end-column="0" />
+            <state relative-caret-position="143">
+              <caret line="110" column="86" selection-start-line="110" selection-start-column="86" selection-end-line="110" selection-end-column="86" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
-                <marker date="1544654493000" expanded="true" signature="0:264" ph="import ..." />
+                <marker date="1544654640000" expanded="true" signature="0:264" ph="import ..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="blob1.txt" pinned="false" current-in-tab="false">
+      <file leaf-file-name="blob1.txt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/_pars/blob1.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="11" selection-start-line="3" selection-start-column="11" selection-end-line="3" selection-end-column="11" />
+            <state relative-caret-position="30">
+              <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -118,9 +118,9 @@
         <option value="$PROJECT_DIR$/_scripts/runber.py" />
         <option value="$PROJECT_DIR$/_scripts/runrcc.py" />
         <option value="$PROJECT_DIR$/network.py" />
-        <option value="$PROJECT_DIR$/_pars/blob1.txt" />
         <option value="$PROJECT_DIR$/_scripts/mrunber.py" />
         <option value="$PROJECT_DIR$/blob_detector_a.py" />
+        <option value="$PROJECT_DIR$/_pars/blob1.txt" />
       </list>
     </option>
   </component>
@@ -588,7 +588,7 @@ py.show()</expression-string>
           <caret line="120" column="9" selection-start-line="120" selection-start-column="9" selection-end-line="120" selection-end-column="9" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <marker date="1544654493000" expanded="true" signature="0:264" ph="import ..." />
+            <marker date="1544654640000" expanded="true" signature="0:264" ph="import ..." />
           </folding>
         </state>
       </provider>
@@ -624,7 +624,7 @@ py.show()</expression-string>
           <caret line="120" column="9" selection-start-line="120" selection-start-column="9" selection-end-line="120" selection-end-column="9" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <marker date="1544654493000" expanded="true" signature="0:264" ph="import ..." />
+            <marker date="1544654640000" expanded="true" signature="0:264" ph="import ..." />
           </folding>
         </state>
       </provider>
@@ -660,7 +660,7 @@ py.show()</expression-string>
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <marker date="1544654493000" expanded="true" signature="0:264" ph="import ..." />
+            <marker date="1544654640000" expanded="true" signature="0:264" ph="import ..." />
           </folding>
         </state>
       </provider>
@@ -874,14 +874,6 @@ py.show()</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_pars/blob1.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="11" selection-start-line="3" selection-start-column="11" selection-end-line="3" selection-end-column="11" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/_scripts/init.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -914,12 +906,20 @@ py.show()</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/blob_detector_a.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="458">
-          <caret line="131" column="0" selection-start-line="131" selection-start-column="0" selection-end-line="131" selection-end-column="0" />
+        <state relative-caret-position="143">
+          <caret line="110" column="86" selection-start-line="110" selection-start-column="86" selection-end-line="110" selection-end-column="86" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <marker date="1544654493000" expanded="true" signature="0:264" ph="import ..." />
+            <marker date="1544654640000" expanded="true" signature="0:264" ph="import ..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_pars/blob1.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>
