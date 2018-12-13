@@ -27,7 +27,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="runber.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="runber.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/_scripts/runber.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="247">
@@ -39,11 +39,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="blob1.txt" pinned="false" current-in-tab="false">
+      <file leaf-file-name="blob1.txt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/_pars/blob1.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="30">
-              <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+              <caret line="2" column="12" lean-forward="false" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
               <folding />
             </state>
           </provider>
@@ -91,9 +91,9 @@
         <option value="$PROJECT_DIR$/_scripts/runrcc.py" />
         <option value="$PROJECT_DIR$/network.py" />
         <option value="$PROJECT_DIR$/blob_detector_a.py" />
-        <option value="$PROJECT_DIR$/_pars/blob1.txt" />
         <option value="$PROJECT_DIR$/_scripts/mrunber.py" />
         <option value="$PROJECT_DIR$/_scripts/runber.py" />
+        <option value="$PROJECT_DIR$/_pars/blob1.txt" />
       </list>
     </option>
   </component>
@@ -124,6 +124,11 @@
             <path>
               <item name="blobs" type="b2602c69:ProjectViewProjectNode" />
               <item name="blobs" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="blobs" type="b2602c69:ProjectViewProjectNode" />
+              <item name="blobs" type="462c0819:PsiDirectoryNode" />
+              <item name="_pars" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="blobs" type="b2602c69:ProjectViewProjectNode" />
@@ -754,14 +759,6 @@ py.show()</expression-string>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/blob_detector_a.py" />
-    <entry file="file://$PROJECT_DIR$/_pars/blob1.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="13" lean-forward="false" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/_scripts/mrunber.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -784,6 +781,14 @@ py.show()</expression-string>
           <folding>
             <element signature="e#0#29#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_pars/blob1.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="12" lean-forward="false" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
+          <folding />
         </state>
       </provider>
     </entry>
