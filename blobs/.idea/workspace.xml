@@ -28,11 +28,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="blob1.txt" pinned="false" current-in-tab="false">
+      <file leaf-file-name="blob1.txt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/_pars/blob1.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
-              <caret line="21" column="38" selection-start-line="21" selection-start-column="38" selection-end-line="21" selection-end-column="38" />
+            <state relative-caret-position="90">
+              <caret line="6" column="12" selection-start-line="6" selection-start-column="12" selection-end-line="6" selection-end-column="12" />
               <folding />
             </state>
           </provider>
@@ -58,7 +58,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="blobs.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="blobs.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/blobs.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="172">
@@ -117,8 +117,8 @@
         <option value="$PROJECT_DIR$/_scripts/runber.py" />
         <option value="$PROJECT_DIR$/network.py" />
         <option value="$PROJECT_DIR$/generate_images.py" />
-        <option value="$PROJECT_DIR$/_pars/blob1.txt" />
         <option value="$PROJECT_DIR$/blobs.py" />
+        <option value="$PROJECT_DIR$/_pars/blob1.txt" />
       </list>
     </option>
   </component>
@@ -833,14 +833,6 @@ py.show()</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_pars/blob1.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="38" selection-start-line="21" selection-start-column="38" selection-end-line="21" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Box Sync/URFB/run_conv.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="367">
@@ -856,6 +848,14 @@ py.show()</expression-string>
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_pars/blob1.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="12" selection-start-line="6" selection-start-column="12" selection-end-line="6" selection-end-column="12" />
+          <folding />
         </state>
       </provider>
     </entry>

@@ -2,7 +2,7 @@ batch_size:500
 model:BL
 step_size:.01
 num_epochs:30
-num_train:1000000
+num_train:100000
 num_test:1000
 num_val:1000
 image_dim:64.
