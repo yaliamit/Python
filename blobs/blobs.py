@@ -68,6 +68,7 @@ def run_epoch(train, PLH,OPS,PARS,sess,i, type='Training',mode='blob'):
             print(type + " dist:\t\t\t{:.6f}".format(disto / ca))
         print(type + " acc:\t\t\t{:.6f}".format(acco / ca))
         print(type + " loss:\t\t\t{:.6f}".format(cso/ca))
+        sys.stdout.flush()
         return(HY)
 
 
@@ -235,6 +236,8 @@ def run_new():
         saver = tf.train.Saver()
         save_path = saver.save(sess, "_tmp/" + PARS['model'])
         print("Model saved in path: %s" % save_path)
+        print("DONE")
+        sys.stdout.flush()
 
 
 
