@@ -217,7 +217,7 @@ def run_new():
         OPS['cs']=cs; OPS['accuracy']=accuracy; OPS['TS']=TS; OPS['train_step']=train_step
 
         sess.run(tf.global_variables_initializer())
-
+        #HH=sess.run([TS,],feed_dict={PLH['x_']: train[0][0:500], PLH['y_']: train[1][0:500]})
         for i in range(num_epochs):  # number of epochs
             run_epoch(train,PLH,OPS,PARS,sess,i)
             if (np.mod(i, 1) == 0):

@@ -2,7 +2,7 @@ batch_size:500
 model:BL
 step_size:.01
 num_epochs:30
-num_train:1000
+num_train:10000
 num_test:1000
 num_val:1000
 image_dim:64.
@@ -19,5 +19,5 @@ name:pool1;pool_size:(2, 2);stride:(2, 2);parent:conv1
 name:conv2;num_filters:32;filter_size:(3,3);non_linearity:relu;parent:pool1
 name:pool2;pool_size:(2, 2);stride:(2, 2);parent:conv2
 #name:drop1;drop:0.5;parent:pool2
-name:dense1;num_units:192;parent:pool2
+name:dense1;num_units:768;parent:pool2
 name:reshape1;new_shape:(16,16,3);parent:dense1;final:final
