@@ -84,6 +84,9 @@ def recreate_network(PARS, x_, y_, training_):
                 if ('non_linearity' in l):
                     scope_name=l['name']+'_'+l['non_linearity']
                 with tf.variable_scope(scope_name):
+                     #flattened=tf.contrib.layers.flatten(parent)
+                     #flattened=flattened[:,:,tf.newaxis]
+                     #out=tf.contrib.layers.fully_connected(parent,num_outputs=num_units,activation_fn=None,trainable=True)
                      out = fully_connected_layer(parent, num_features=num_units)
                      if ('non_linearity' in l):
                         if(l['non_linearity'] == 'relu'):
@@ -115,6 +118,7 @@ def recreate_network(PARS, x_, y_, training_):
                 with tf.variable_scope(l['name']):
                     out = tf.reshape(parent, [-1,]+list(l['new_shape']))
                     TS.append(out)
+    last_layer = TS[-1]
     with tf.variable_scope('loss'):
         # Hinge loss
         if (PARS['hinge']):
@@ -128,22 +132,26 @@ def recreate_network(PARS, x_, y_, training_):
             res = tf.reduce_sum(tf.nn.relu(1. + res), axis=1)
             loss = tf.reduce_mean(cor + PARS['off_class_fac'] * res / (PARS['n_classes'] - 1), name="hinge")
         elif ('blob' in PARS):
-            last_layer = TS[-1]
-            loss = tf.reduce_mean(
-               tf.reduce_sum(-y_[:, :, :, 2] * last_layer[:, :, :, 2] +
-                             tf.math.softplus(last_layer[:, :, :, 2]), axis=[1, 2]))
+
+            ya=y_[:,:,:,2]
+            ly=last_layer[:,:,:,2]
+            ls1=tf.reduce_sum(-ya * ly +
+                          tf.math.softplus(ly), axis=[1, 2])
+            loss = tf.reduce_mean(ls1)
+
             loss = loss + tf.reduce_mean(
                tf.reduce_sum((y_[:, :, :, 0] - last_layer[:, :, :, 0]) *
                              (y_[:, :, :, 0] - last_layer[:, :, :, 0]) * y_[:, :, :, 2]
                              + (y_[:, :, :, 1] - last_layer[:, :, :, 1]) *
                              (y_[:, :, :, 1] - last_layer[:, :, :, 1]) * y_[:, :, :, 2],
                              axis=[1, 2]))
+            loss=tf.identity(loss,name="LOSS")
         else:
             # Softmax-logistic loss
-            loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=TS[-1]), name="sm")
+            loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=TS[-1]), name="LOSS")
 
     # Accuracy computation
-    last_layer = TS[-1]
+    last_layer = tf.identity(TS[-1],name="LAST")
     if (PARS['hinge']):
         with tf.variable_scope('helpers'):
             correct_prediction = tf.equal(tf.argmax(last_layer, 1), tf.argmax(y_, 1))
@@ -152,15 +160,16 @@ def recreate_network(PARS, x_, y_, training_):
         with tf.variable_scope('helpers'):
             accuracy = []
             hy = tf.cast(tf.greater(last_layer[:, :, :, 2], 0),dtype=tf.float32)
-            accuracy.append(tf.reduce_sum(tf.abs(hy - y_[:, :, :, 2]) * y_[:, :, :,2])
-                            / tf.reduce_sum(y_[:, :, :, 2]))
-            accuracy.append(tf.reduce_sum((tf.abs(last_layer[:, :, :, 0] - y_[:, :, :, 0]) +
+            ac=tf.reduce_sum(tf.abs(hy - y_[:, :, :, 2]) * y_[:, :, :,2]) \
+               / tf.reduce_sum(y_[:, :, :, 2])
+            accuracy.append(tf.identity(ac,name="ACC"))
+            ac=tf.reduce_sum((tf.abs(last_layer[:, :, :, 0] - y_[:, :, :, 0]) +
                                            np.abs(last_layer[:, :, :, 1] - y_[:, :, :, 1]))
-                                          * y_[:, :, :, 2]) /tf.reduce_sum(y_[:,:,:,2]))
-
+                                          * y_[:, :, :, 2]) /tf.reduce_sum(y_[:,:,:,2])
+            accuracy.append(tf.identity(ac,name="DIST"))
     print('joint_parent', joint_parent)
     # joint_parent contains information on layers that are parents to two other layers which affects the gradient propagation.
     PARS['joint_parent'] = joint_parent
     for t in TS:
         print(t)
-    return loss, accuracy, TS
+    return loss, accuracy, last_layer

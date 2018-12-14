@@ -10,9 +10,25 @@ def make_blobs(mux,muy,sigma,image_dim):
     g = np.zeros(x.shape)
     for mx, my in zip(mux, muy):
         g = g + np.exp(-(((x - mx) ** 2 + (y - my) ** 2) / (2.0 * sigma ** 2)))
+        #g = np.maximum(g,np.exp(-(((x - mx) ** 2 + (y - my) ** 2) / (2.0 * sigma ** 2))))
     g = np.reshape(g, g.shape + (1,))
 
     return(g)
+
+def clean_b(mux,muy):
+    ij=np.ones(mux.shape[0], dtype=bool)
+    for i in range(mux.shape[0]):
+        for j in range(mux.shape[0]):
+            if (i != j and ij[i] and ij[j]):
+                if np.sqrt((mux[i]-mux[j])*(mux[i]-mux[j])+(muy[i]-muy[j])*(muy[i]-muy[j])<coarse_disp*2./3.):
+                    ij[j]=False
+                    mux[i]=.5*(mux[i]+mux[j])
+                    muy[i]=.5*(muy[i]+muy[j])
+
+    mux=mux[ij==1]
+    muy=muy[ij==1]
+    return(mux,muy)
+
 
 def generate_image(PARS,num_blobs=1):
 
@@ -36,8 +52,8 @@ def generate_image(PARS,num_blobs=1):
         mux.append(newmux)
         muy.append(newmuy)
     g = make_blobs(mux, muy, PARS['sigma'], image_dim)
-
-
+    #py.imshow(g[:,:,0])
+    #py.show()
     mux = np.array(mux) #* np.float32(image_dim / 2) + image_dim / 2
     muy = np.array(muy) #* np.float32(image_dim / 2) + image_dim / 2
     muxc = np.floor(mux / coarse_disp)
@@ -45,7 +61,7 @@ def generate_image(PARS,num_blobs=1):
     mucs0 = np.int32(np.array([muxc, muyc, np.zeros(muxc.shape)]))
     mucs1 = np.int32(np.array([muxc, muyc, np.ones(muxc.shape)]))
 
-    gc = np.zeros((8, 8, 3))
+    gc = np.zeros((np.int32(image_dim/coarse_disp),np.int32(image_dim/coarse_disp), 3))
     gc[tuple(mucs0)] = (mux - (coarse_disp / 2 + coarse_disp * muxc))
     gc[tuple(mucs1)] = (muy - (coarse_disp / 2 + coarse_disp * muyc))
     #print('Mean and sd of displacements:',np.mean(np.concatenate([gc[tuple(mucs0)],gc[tuple(mucs1)]])),
@@ -67,6 +83,10 @@ def generate_image_from_estimate(PARS,hy,orig_image):
 
     mux=ii*coarse_disp+coarse_disp/2 + hy[tuple(I0)]
     muy=jj*coarse_disp+coarse_disp/2 + hy[tuple(I1)]
+
+    # clean up close detections
+    #mux,muy=clean_b(mux,muy)
+
 
     g=make_blobs(list(mux),list(muy),PARS['sigma'],image_dim)
 

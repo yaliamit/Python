@@ -1,12 +1,13 @@
 batch_size:500
+model:BL
 step_size:.01
-num_epochs:500
-num_train:200000
+num_epochs:30
+num_train:1000000
 num_test:1000
 num_val:1000
-image_dim:32.
+image_dim:128.
 coarse_disp:4.
-max_num_blobs:6
+max_num_blobs:96
 sigma:5.
 blob_dist:8
 keep_prob:.9

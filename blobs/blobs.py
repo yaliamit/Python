@@ -5,13 +5,15 @@ import time
 import sys
 from generate_images import generate_image, generate_image_from_estimate
 from Conv_net_aux import plot_OUTPUT, process_parameters
-from network import recreate_network, conv_layer, fully_connected_layer
+from network import recreate_network
 
 
 
-def run_epoch(train, i, type='Training',mode='blob'):
+def run_epoch(train, PLH,OPS,PARS,sess,i, type='Training',mode='blob'):
         t1 = time.time()
         # Randomly shuffle the training data
+        batch_size=PARS['batch_size']
+        step_size=PARS['step_size']
         ii=np.arange(0,train[0].shape[0],1)
         if (type=='Training'):
             np.random.shuffle(ii)
@@ -27,14 +29,16 @@ def run_epoch(train, i, type='Training',mode='blob'):
             batch = (tr[j:j + batch_size], y[j:j + batch_size])
             if (mode=='blob'):
                 if (type=='Training'):
-                    csi,acc,_=sess.run([cs, accuracy, train_step], feed_dict={x_: batch[0], y_: batch[1], lr_: step_size,
-                                           training_:True})
+                    csi,acc,_=sess.run([OPS['cs'], OPS['accuracy'], OPS['train_step']], 
+                                       feed_dict={PLH['x_']: batch[0], PLH['y_']: batch[1], PLH['lr_']: step_size,
+                                           PLH['training_']:True})
                     acco+=acc[0]
                     disto+=acc[1]
                     cso+=csi
                 else:
-                    csi, acc, ts = sess.run([cs, accuracy,TS[-1]], feed_dict={x_: batch[0], y_: batch[1], lr_: step_size,
-                                                                  training_: False})
+                    csi, acc, ts = sess.run([OPS['cs'], OPS['accuracy'],OPS['TS']], 
+                                            feed_dict={PLH['x_']: batch[0], PLH['y_']: batch[1], PLH['lr_']: step_size,
+                                                                  PLH['training_']: False})
                     acco+=acc[0]
                     disto+=acc[1]
                     cso+=csi
@@ -42,13 +46,17 @@ def run_epoch(train, i, type='Training',mode='blob'):
                         HY.append(ts)
             elif(mode=='Class'):
                 if (type=='Training'):
-                    csi,acc,_=sess.run([cs, accuracy, train_step], feed_dict={x_: batch[0], y_: batch[1], lr_: step_size,
-                                           training_:True})
+                    csi,acc,_=sess.run([OPS['cs'], OPS['accuracy'], OPS['train_step']],
+                                       feed_dict={PLH['x_']: batch[0], PLH['y_']: batch[1], PLH['lr_']: step_size,
+                                                  PLH['training_']: True})
+    
                     acco+=acc
                     cso+=csi
                 else:
-                    csi, acc, ts = sess.run([cs, accuracy], feed_dict={x_: batch[0], y_: batch[1], lr_: step_size,
-                                             training_: False})
+                    csi, acc, ts = sess.run([OPS['cs'], OPS['accuracy']],
+                                            feed_dict={PLH['x_']: batch[0], PLH['y_']: batch[1], PLH['lr_']: step_size,
+                                                       PLH['training_']: False})
+                                            
                     acco+=acc
                     cso += csi
 
@@ -66,7 +74,7 @@ def run_epoch(train, i, type='Training',mode='blob'):
 def make_data(num,PARS):
     G=[]
     GC=[]
-    num_blobs = np.int32(np.floor(np.random.rand(num) * max_num_blobs) + 1)
+    num_blobs = np.int32(np.floor(np.random.rand(num) * PARS['max_num_blobs']) + 1)
 
     for nb in num_blobs:
         g,gc=generate_image(PARS,num_blobs=nb)
@@ -75,57 +83,188 @@ def make_data(num,PARS):
 
     return([np.array(G),np.array(GC)])
 
-PARS={}
 
-PARS=process_parameters('_pars/blob1')
+def reload():
+    tf.reset_default_graph()
+    PARS = {}
 
-cdim=PARS['image_dim']/PARS['coarse_disp']
-nchannels=1
-minimizer="Adam"
+    PARS = process_parameters('_pars/blob1')
 
-num_epochs=PARS['num_epochs']
-batch_size=PARS['batch_size']
-image_dim=PARS['image_dim']
+    cdim = PARS['image_dim'] / PARS['coarse_disp']
+    nchannels = 1
+    minimizer = "Adam"
 
-max_num_blobs=PARS['max_num_blobs']
-step_size=PARS['step_size']
+    num_epochs = PARS['num_epochs']
+    batch_size = PARS['batch_size']
+    image_dim = PARS['image_dim']
 
-train=make_data(PARS['num_train'],PARS)
-val=make_data(PARS['num_val'],PARS)
-test=make_data(PARS['num_test'],PARS)
+    train = make_data(PARS['num_train'], PARS)
+    val = make_data(PARS['num_val'], PARS)
+    test = make_data(PARS['num_test'], PARS)
+    with tf.Session() as sess:
+        # Get data
+        # Load model info
+        saver = tf.train.import_meta_graph('_tmp/' + PARS['model'] + '.meta')
+        saver.restore(sess, '_tmp/' + PARS['model'])
+        graph = tf.get_default_graph()
+        # Setup the placeholders from the stored model.
+        PLH = {}
+        PLH['x_'] = graph.get_tensor_by_name('x_:0')
+        PLH['y_'] = graph.get_tensor_by_name('y_:0')
+        PLH['lr_'] = graph.get_tensor_by_name('lr_:0')
+        PLH['training_'] = graph.get_tensor_by_name('training_:0')
 
-tf.reset_default_graph()
 
-x_ = tf.placeholder(tf.float32, [batch_size, image_dim, image_dim, nchannels])
-y_ = tf.placeholder(tf.float32, shape=[batch_size,cdim,cdim,3],name="y")
-lr_ = tf.placeholder(tf.float32, shape=[],name="learning_rate")
-training_ = tf.placeholder(tf.bool, name="Train")
+        accuracy=[]
+        accuracy.append(graph.get_tensor_by_name('helpers/ACC:0'))
+        accuracy.append(graph.get_tensor_by_name('helpers/DIST:0'))
+        cs = graph.get_tensor_by_name('loss/LOSS:0')
+        TS = graph.get_tensor_by_name('LAST:0')
+        OPS={}
+        OPS['cs']=cs;OPS['accuracy']=accuracy;OPS['TS']=TS
+
+        # Get the minimization operation from the stored model
+        #if (Train):
+        #    train_step_new = tf.get_collection("optimizer")[0]
+
+        HY = run_epoch(test,PLH,OPS,PARS,sess, 0, type='Test')
+
+def make_batch(test,old_dim,coarse_disp):
+
+    tbatch=[]
+    for t in test[0]:
+        for i in np.arange(0,t.shape[0],old_dim):
+            for j in np.arange(0,t.shape[1],old_dim):
+                tbatch.append(t[i:i+old_dim,j:j+old_dim,:])
+
+    tbatch=np.array(tbatch)
+    cbatch=[]
+    coarse_dim=np.int32(old_dim/coarse_disp)
+    for t in test[1]:
+        for i in np.arange(0,t.shape[0],coarse_dim):
+            for j in np.arange(0,t.shape[1],coarse_dim):
+                cbatch.append(t[i:i+coarse_dim,j:j+coarse_dim,:])
+    cbatch=np.array(cbatch)
+    batch=[tbatch,cbatch]
+    return(batch)
 
 
-with tf.Session() as sess:
+def paste_batch(HYY,old_dim,new_dim,coarse_disp):
 
-    cs,accuracy,TS=recreate_network(PARS,x_,y_,training_)
-    if (minimizer == "Adam"):
-        train_step = tf.train.AdamOptimizer(learning_rate=lr_).minimize(cs)
-    elif (minimizer == "SGD"):
-        train_step = tf.train.GradientDescentOptimizer(learning_rate=lr_).minimize(cs)
-    sess.run(tf.global_variables_initializer())
-    for i in range(num_epochs):  # number of epochs
-        run_epoch(train,i)
-        if (np.mod(i, 1) == 0):
-            run_epoch(val, i, type='Val')
-            sys.stdout.flush()
+    num_per=np.int32(new_dim/old_dim)
+    num_per2=num_per*num_per
 
-    print('Running final result of Training')
-    run_epoch(train,0,type='Test')
+    cnew_dim=np.int32(new_dim/coarse_disp)
+    cold_dim=np.int32(old_dim/coarse_disp)
 
-    # for ind in inds:
-    #     generate_image_from_estimate(PARS,HYY[ind],train[0][ind])
-    print('Running final result on Test')
-    HY=run_epoch(test, 0, type='Test')
-    # HYY = np.concatenate(HY)
-    # HYS = HYY[:,:,:,2]>0
-    #
-    # inds = [10, 20, 30, 40, 50, 60, 70, 80]
-    # for ind in inds:
-    #     generate_image_from_estimate(PARS, HYY[ind], test[0][ind])
+    HY=[]
+    for i in np.arange(0,len(HYY),num_per2):
+        hy=np.zeros((cnew_dim,cnew_dim,3))
+        nb=np.zeros((new_dim,new_dim,1))
+        # j=0
+        # for x in np.arange(0,new_dim,old_dim):
+        #     for y in np.arange(0,new_dim,old_dim):
+        #         nb[x:x+old_dim,y:y+old_dim,0]=batch[0][i+j][:,:,0]
+        #         j+=1
+
+        j=0
+        for y in np.arange(0,cnew_dim,cold_dim):
+            for x in np.arange(0, cnew_dim, cold_dim):
+                for k in range(3):
+                    hy[x:x+cold_dim,y:y+cold_dim,k]=HYY[i+j][:,:,k]
+                j+=1
+        HY.append(hy)
+
+    return(HY)
+
+
+
+
+def run_new():
+    PARS={}
+    
+    PARS=process_parameters('_pars/blob1')
+    
+    cdim=PARS['image_dim']/PARS['coarse_disp']
+    nchannels=1
+    minimizer="Adam"
+    
+    num_epochs=PARS['num_epochs']
+    batch_size=PARS['batch_size']
+    image_dim=PARS['image_dim']
+
+    
+    train=make_data(PARS['num_train'],PARS)
+    val=make_data(PARS['num_val'],PARS)
+    test=make_data(PARS['num_test'],PARS)
+    
+    tf.reset_default_graph()
+    PLH={}
+    PLH['x_'] = tf.placeholder(tf.float32, [None, image_dim, image_dim, nchannels],name="x_")
+    PLH['y_'] = tf.placeholder(tf.float32, shape=[None,cdim,cdim,3],name="y_")
+    PLH['training_'] = tf.placeholder(tf.bool, name="training_")
+    PLH['lr_']=tf.placeholder(tf.float32,name="lr_")
+    
+    with tf.Session() as sess:
+    
+        cs,accuracy,TS=recreate_network(PARS,PLH['x_'],PLH['y_'],PLH['training_'])
+        if (minimizer == "Adam"):
+            train_step = tf.train.AdamOptimizer(learning_rate=PLH['lr_']).minimize(cs)
+        elif (minimizer == "SGD"):
+            train_step = tf.train.GradientDescentOptimizer(learning_rate=PLH['lr_']).minimize(cs)
+        OPS={}
+        OPS['cs']=cs; OPS['accuracy']=accuracy; OPS['TS']=TS; OPS['train_step']=train_step
+
+        sess.run(tf.global_variables_initializer())
+
+        for i in range(num_epochs):  # number of epochs
+            run_epoch(train,PLH,OPS,PARS,sess,i)
+            if (np.mod(i, 1) == 0):
+                run_epoch(val, PLH,OPS,PARS,sess,i, type='Val')
+                sys.stdout.flush()
+    
+        print('Running final result of Training')
+        run_epoch(train,PLH,OPS,PARS,sess,0,type='Test')
+    
+        # for ind in inds:
+        #     generate_image_from_estimate(PARS,HYY[ind],train[0][ind])
+        print('Running final result on Test')
+        HY=run_epoch(test,PLH,OPS,PARS,sess, 0, type='Test')
+    
+        tf.add_to_collection("optimizer", train_step)
+        saver = tf.train.Saver()
+        save_path = saver.save(sess, "_tmp/" + PARS['model'])
+        print("Model saved in path: %s" % save_path)
+
+
+
+
+        # Test bigger images.
+        # old_dim=np.int32(PARS['image_dim'])
+        # PARS['image_dim']=64
+        # PARS['max_num_blobs']=6
+        # PARS['num_test']=10
+        # test = make_data(PARS['num_test'], PARS)
+        # batch=make_batch(test,old_dim,np.int32(PARS['coarse_disp']))
+        # PARS['batch_size']=batch[0].shape[0]
+        #
+        # HY=run_epoch(batch,PLH,OPS,PARS,sess, 0, type='Test')
+        #
+        # HYY = np.array(HY[0])
+        # # PARS['image_dim']=32
+        # # inds = range(len(HYY))
+        # # for ind in inds:
+        # #     generate_image_from_estimate(PARS, HYY[ind], batch[0][ind])
+        # # PARS['image_dim']=64
+        # HYA=paste_batch(HYY, old_dim, PARS['image_dim'],PARS['coarse_disp'])
+        # #HYS = HYY[:,:,:,2]>0
+        # #
+        # inds = range(len(HYA))
+        # for ind in inds:
+        #      generate_image_from_estimate(PARS, HYA[ind], test[0][ind])
+
+
+
+
+run_new()
+#reload()
