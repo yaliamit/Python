@@ -2,14 +2,16 @@ batch_size:500
 model:BL
 step_size:.01
 num_epochs:30
-num_train:1000000
-num_test:5000
-num_val:5000
+num_train:100000
+num_test:1000
+num_val:1000
 image_dim:32.
 coarse_disp:4.
 max_num_blobs:6
-sigma:5.
+sigma:(5.,5.)
+Amps:(1.,1.)
 blob_dist:8
+num_blob_pars:5
 hinge:False
 blob:True
 name:input1
@@ -18,5 +20,5 @@ name:pool1;pool_size:(2, 2);stride:(2, 2);parent:conv1
 name:conv2;num_filters:32;filter_size:(3,3);non_linearity:relu;parent:pool1
 name:pool2;pool_size:(2, 2);stride:(2, 2);parent:conv2
 #name:drop1;drop:0.5;parent:pool2
-name:dense1;num_units:192;parent:pool2
+name:dense1;num_units:192;parent:pool2;pre:pre
 name:reshape1;new_shape:(8,8,3);parent:dense1;final:final

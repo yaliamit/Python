@@ -193,7 +193,7 @@ def run_new():
     num_epochs=PARS['num_epochs']
     batch_size=PARS['batch_size']
     image_dim=PARS['image_dim']
-
+    num_blob_pars=PARS['num_blob_pars']
     
     train=make_data(PARS['num_train'],PARS)
     val=make_data(PARS['num_val'],PARS)
@@ -202,7 +202,7 @@ def run_new():
     tf.reset_default_graph()
     PLH={}
     PLH['x_'] = tf.placeholder(tf.float32, [None, image_dim, image_dim, nchannels],name="x_")
-    PLH['y_'] = tf.placeholder(tf.float32, shape=[None,cdim,cdim,3],name="y_")
+    PLH['y_'] = tf.placeholder(tf.float32, shape=[None,cdim,cdim,num_blob_pars],name="y_")
     PLH['training_'] = tf.placeholder(tf.bool, name="training_")
     PLH['lr_']=tf.placeholder(tf.float32,name="lr_")
     

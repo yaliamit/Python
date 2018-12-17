@@ -3,13 +3,14 @@ import pylab as py
 import Conv_net_aux
 
 
-def make_blobs(mux,muy,sigma,image_dim):
+def make_blobs(mux,muy,sigmas, Amps, image_dim):
     #x, y = np.meshgrid(np.linspace(-1,1,image_dim), np.linspace(-1,1,image_dim))
     x, y = np.meshgrid(range(np.int32(image_dim)), range(np.int32(image_dim)))
 
     g = np.zeros(x.shape)
-    for mx, my in zip(mux, muy):
-        g = g + np.exp(-(((x - mx) ** 2 + (y - my) ** 2) / (2.0 * sigma ** 2)))
+    for mx, my, si, a in zip(mux, muy,sigmas,Amps):
+        #print(mx,my,si,a)
+        g = g + a*np.exp(-(((x - mx) ** 2 + (y - my) ** 2) / (2.0 * si ** 2)))
         #g = np.maximum(g,np.exp(-(((x - mx) ** 2 + (y - my) ** 2) / (2.0 * sigma ** 2))))
     g = np.reshape(g, g.shape + (1,))
 
@@ -36,8 +37,6 @@ def generate_image(PARS,num_blobs=1):
     coarse_disp=PARS['coarse_disp']
     mux=[]
     muy=[]
-    #mux.append(np.random.rand(1)*2-1)
-    #muy.append(np.random.rand(1)*2-1)
 
     mux.append(np.random.rand(1)*image_dim)
     muy.append(np.random.rand(1)*image_dim)
@@ -51,7 +50,11 @@ def generate_image(PARS,num_blobs=1):
         #print('diss',dist)
         mux.append(newmux)
         muy.append(newmuy)
-    g = make_blobs(mux, muy, PARS['sigma'], image_dim)
+
+    sigmas=PARS['sigma'][0]+np.random.rand(num_blobs)*(PARS['sigma'][1]-PARS['sigma'][0])
+    As=PARS['Amps'][0]+np.random.rand(num_blobs)*(PARS['Amps'][1]-PARS['Amps'][0])
+
+    g = make_blobs(mux, muy, sigmas, As, image_dim)
     #py.imshow(g[:,:,0])
     #py.show()
     mux = np.array(mux) #* np.float32(image_dim / 2) + image_dim / 2
@@ -60,13 +63,18 @@ def generate_image(PARS,num_blobs=1):
     muyc = np.floor(muy / coarse_disp)
     mucs0 = np.int32(np.array([muxc, muyc, np.zeros(muxc.shape)]))
     mucs1 = np.int32(np.array([muxc, muyc, np.ones(muxc.shape)]))
+    mucs2 = np.int32(np.array([muxc, muyc, 2*np.ones(muxc.shape)]))
+    mucs3 = np.int32(np.array([muxc, muyc, 3*np.ones(muxc.shape)]))
 
-    gc = np.zeros((np.int32(image_dim/coarse_disp),np.int32(image_dim/coarse_disp), 3))
+    gc = np.zeros((np.int32(image_dim/coarse_disp),np.int32(image_dim/coarse_disp), PARS['num_blob_pars']))
     gc[tuple(mucs0)] = (mux - (coarse_disp / 2 + coarse_disp * muxc))
     gc[tuple(mucs1)] = (muy - (coarse_disp / 2 + coarse_disp * muyc))
+    gc[tuple(mucs2)] = sigmas[:,np.newaxis]
+    gc[tuple(mucs3)] = As[:,np.newaxis]
     #print('Mean and sd of displacements:',np.mean(np.concatenate([gc[tuple(mucs0)],gc[tuple(mucs1)]])),
     #      np.std(np.concatenate([gc[tuple(mucs0)], gc[tuple(mucs1)]])))
-    gc[:,:,2]=np.logical_or(gc[:,:,0] != 0, gc[:,:,1]!=0)
+
+    gc[:,:,4]=np.logical_or(gc[:,:,0] != 0, gc[:,:,1]!=0)
     return(g,gc)
 
 def generate_image_from_estimate(PARS,hy,orig_image):

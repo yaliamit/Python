@@ -78,6 +78,11 @@ def recreate_network(PARS, x_, y_, training_):
                 scope_name = l['name']
                 if ('final' in l):
                     num_units = PARS['n_classes']
+                elif ('pre' in l):
+                    shp=x_.get_shape().as_list()
+                    num_units=np.int32(shp[1]/PARS['coarse_disp'])*\
+                              np.int32(shp[2]/PARS['coarse_disp'])*\
+                              PARS['num_blob_pars']
                 else:
                     num_units=l['num_units']
 
@@ -115,9 +120,16 @@ def recreate_network(PARS, x_, y_, training_):
                         name, T = get_name(TS[-1])
                         joint_parent[name] = j_parent
         elif ('reshape' in l['name']):
+            if ('final' in l):
+                with tf.variable_scope(l['name']):
+                    shp = x_.get_shape().as_list()
+                    shape=[-1,np.int32(shp[1]/PARS['coarse_disp']),np.int32(shp[2]/PARS['coarse_disp']
+                                                                                 ), PARS['num_blob_pars']]
+                    out=tf.reshape(parent,shape)
+            else:
                 with tf.variable_scope(l['name']):
                     out = tf.reshape(parent, [-1,]+list(l['new_shape']))
-                    TS.append(out)
+            TS.append(out)
     last_layer = TS[-1]
     with tf.variable_scope('loss'):
         # Hinge loss
@@ -132,19 +144,21 @@ def recreate_network(PARS, x_, y_, training_):
             res = tf.reduce_sum(tf.nn.relu(1. + res), axis=1)
             loss = tf.reduce_mean(cor + PARS['off_class_fac'] * res / (PARS['n_classes'] - 1), name="hinge")
         elif ('blob' in PARS):
-
-            ya=y_[:,:,:,2]
-            ly=last_layer[:,:,:,2]
+            nbp=PARS['num_blob_pars']-1
+            ya=y_[:,:,:,nbp]
+            ly=last_layer[:,:,:,nbp]
             ls1=tf.reduce_sum(-ya * ly +
                           tf.math.softplus(ly), axis=[1, 2])
             loss = tf.reduce_mean(ls1)
-
-            loss = loss + tf.reduce_mean(
-               tf.reduce_sum((y_[:, :, :, 0] - last_layer[:, :, :, 0]) *
-                             (y_[:, :, :, 0] - last_layer[:, :, :, 0]) * y_[:, :, :, 2]
-                             + (y_[:, :, :, 1] - last_layer[:, :, :, 1]) *
-                             (y_[:, :, :, 1] - last_layer[:, :, :, 1]) * y_[:, :, :, 2],
-                             axis=[1, 2]))
+            temp=tf.zeros_like(y_[:,:,:,0])
+            for j in range(nbp):
+                temp=temp+(y_[:, :, :, j] - last_layer[:, :, :, j])*(y_[:, :, :, j] - last_layer[:, :, :, j]) * y_[:, :, :, 2]
+            loss = loss + tf.reduce_mean(tf.reduce_sum(temp,axis=[1,2]))
+               #tf.reduce_sum((y_[:, :, :, 0] - last_layer[:, :, :, 0]) *
+               #              (y_[:, :, :, 0] - last_layer[:, :, :, 0]) * y_[:, :, :, 2]
+               #              + (y_[:, :, :, 1] - last_layer[:, :, :, 1]) *
+               #              (y_[:, :, :, 1] - last_layer[:, :, :, 1]) * y_[:, :, :, 2],
+               #              axis=[1, 2]))
             loss=tf.identity(loss,name="LOSS")
         else:
             # Softmax-logistic loss
@@ -158,10 +172,11 @@ def recreate_network(PARS, x_, y_, training_):
             accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32), name="ACC")
     elif(PARS['blob']):
         with tf.variable_scope('helpers'):
+            nbp = PARS['num_blob_pars'] - 1
             accuracy = []
-            hy = tf.cast(tf.greater(last_layer[:, :, :, 2], 0),dtype=tf.float32)
-            ac=tf.reduce_sum(tf.abs(hy - y_[:, :, :, 2]) * y_[:, :, :,2]) \
-               / tf.reduce_sum(y_[:, :, :, 2])
+            hy = tf.cast(tf.greater(last_layer[:, :, :, nbp], 0),dtype=tf.float32)
+            ac=tf.reduce_sum(tf.abs(hy - y_[:, :, :, nbp]) * y_[:, :, :,nbp]) \
+               / tf.reduce_sum(y_[:, :, :, nbp])
             accuracy.append(tf.identity(ac,name="ACC"))
             ac=tf.reduce_sum((tf.abs(last_layer[:, :, :, 0] - y_[:, :, :, 0]) +
                                            np.abs(last_layer[:, :, :, 1] - y_[:, :, :, 1]))
