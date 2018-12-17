@@ -10,7 +10,6 @@ coarse_disp:4.
 max_num_blobs:6
 sigma:5.
 blob_dist:8
-keep_prob:.9
 hinge:False
 blob:True
 name:input1

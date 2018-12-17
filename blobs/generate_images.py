@@ -85,7 +85,7 @@ def generate_image_from_estimate(PARS,hy,orig_image):
     muy=jj*coarse_disp+coarse_disp/2 + hy[tuple(I1)]
 
     # clean up close detections
-    #mux,muy=clean_b(mux,muy)
+    mux,muy=clean_b(mux,muy)
 
 
     g=make_blobs(list(mux),list(muy),PARS['sigma'],image_dim)
