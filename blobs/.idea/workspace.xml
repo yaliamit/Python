@@ -20,8 +20,8 @@
       <file leaf-file-name="generate_images.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/generate_images.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-261">
-              <caret line="131" column="0" lean-forward="true" selection-start-line="131" selection-start-column="0" selection-end-line="131" selection-end-column="0" />
+            <state relative-caret-position="295">
+              <caret line="202" column="0" lean-forward="false" selection-start-line="202" selection-start-column="0" selection-end-line="202" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -30,8 +30,8 @@
       <file leaf-file-name="blob1.txt" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/_pars/blob1.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="43">
-              <caret line="4" column="16" lean-forward="false" selection-start-line="4" selection-start-column="16" selection-end-line="4" selection-end-column="16" />
+            <state relative-caret-position="44">
+              <caret line="3" column="12" lean-forward="false" selection-start-line="3" selection-start-column="12" selection-end-line="3" selection-end-column="12" />
               <folding />
             </state>
           </provider>
@@ -40,10 +40,11 @@
       <file leaf-file-name="blobs.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/blobs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2185">
-              <caret line="5" column="104" lean-forward="false" selection-start-line="5" selection-start-column="104" selection-end-line="5" selection-end-column="104" />
+            <state relative-caret-position="146">
+              <caret line="208" column="1" lean-forward="false" selection-start-line="208" selection-start-column="1" selection-end-line="208" selection-end-column="1" />
               <folding>
-                <marker date="1545165994296" expanded="true" signature="371:2988" ph="..." />
+                <element signature="e#0#23#0" expanded="true" />
+                <marker date="1545174588541" expanded="true" signature="371:3154" ph="..." />
               </folding>
             </state>
           </provider>
@@ -62,11 +63,11 @@
       <file leaf-file-name="network.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/network.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="182">
-              <caret line="182" column="39" lean-forward="true" selection-start-line="182" selection-start-column="39" selection-end-line="182" selection-end-column="39" />
+            <state relative-caret-position="69">
+              <caret line="179" column="57" lean-forward="false" selection-start-line="179" selection-start-column="57" selection-end-line="179" selection-end-column="57" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
-                <marker date="1545165735768" expanded="true" signature="1487:5883" ph="..." />
+                <marker date="1545174568893" expanded="true" signature="1487:5883" ph="..." />
               </folding>
             </state>
           </provider>
@@ -107,15 +108,15 @@
         <option value="$PROJECT_DIR$/blob_detector_a.py" />
         <option value="$PROJECT_DIR$/_scripts/mrunber.py" />
         <option value="$PROJECT_DIR$/_scripts/runber.py" />
+        <option value="$PROJECT_DIR$/generate_images.py" />
         <option value="$PROJECT_DIR$/network.py" />
         <option value="$PROJECT_DIR$/blobs.py" />
-        <option value="$PROJECT_DIR$/generate_images.py" />
         <option value="$PROJECT_DIR$/_pars/blob1.txt" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="75" />
+    <option name="x" value="212" />
     <option name="y" value="23" />
     <option name="width" value="1205" />
     <option name="height" value="712" />
@@ -440,7 +441,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="75" y="23" width="1205" height="712" extended-state="0" />
+    <frame x="212" y="23" width="1205" height="712" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1722973" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -452,7 +453,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2494043" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17340067" sideWeight="0.6278846" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.5286195" sideWeight="0.6278846" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -483,33 +484,8 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/generate_images.py</url>
-          <line>185</line>
+          <line>202</line>
           <option name="timeStamp" value="46" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/blobs.py</url>
-          <line>201</line>
-          <option name="timeStamp" value="104" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/blobs.py</url>
-          <line>159</line>
-          <option name="timeStamp" value="106" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/blobs.py</url>
-          <line>136</line>
-          <option name="timeStamp" value="107" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/blobs.py</url>
-          <line>163</line>
-          <option name="timeStamp" value="110" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/blobs.py</url>
-          <line>167</line>
-          <option name="timeStamp" value="111" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -522,58 +498,54 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="115" />
+      <option name="time" value="116" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateCodeFragment">
       <expression>
+        <expression-string>np.max(orig_image[:,:,0])</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>np.max(g[:,:,0])</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>max(orig_image[:,:,0])</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>print('muy',np.array([muy,muyt]))</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>print(np.array([muy,muyt]))</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>print(np.array([mux,muxt]))</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>print([mux,muxt])</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>print(mux)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
         <expression-string>print(sh)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>sh</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>import pylab as py
-py.imshow(g)
-py.show()</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>sigma</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>import pylab as py
-py.imshow(g[:,:,0])
-py.show()</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>print(train[1][50,:,:,0])</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>print((HYY[50,:,:,0])*HYS[50,:,:])</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>print((HYY[50,:,:,1])*HYS[50,:,:])</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>print((HYY[50,:,:,1]))</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
@@ -811,39 +783,40 @@ py.show()</expression-string>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/generate_images.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="295">
+          <caret line="202" column="0" lean-forward="false" selection-start-line="202" selection-start-column="0" selection-end-line="202" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/network.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="182">
-          <caret line="182" column="39" lean-forward="true" selection-start-line="182" selection-start-column="39" selection-end-line="182" selection-end-column="39" />
+        <state relative-caret-position="69">
+          <caret line="179" column="57" lean-forward="false" selection-start-line="179" selection-start-column="57" selection-end-line="179" selection-end-column="57" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
-            <marker date="1545165735768" expanded="true" signature="1487:5883" ph="..." />
+            <marker date="1545174568893" expanded="true" signature="1487:5883" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/blobs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2185">
-          <caret line="5" column="104" lean-forward="false" selection-start-line="5" selection-start-column="104" selection-end-line="5" selection-end-column="104" />
+        <state relative-caret-position="146">
+          <caret line="208" column="1" lean-forward="false" selection-start-line="208" selection-start-column="1" selection-end-line="208" selection-end-column="1" />
           <folding>
-            <marker date="1545165994296" expanded="true" signature="371:2988" ph="..." />
+            <element signature="e#0#23#0" expanded="true" />
+            <marker date="1545174588541" expanded="true" signature="371:3154" ph="..." />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/generate_images.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-261">
-          <caret line="131" column="0" lean-forward="true" selection-start-line="131" selection-start-column="0" selection-end-line="131" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/_pars/blob1.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="43">
-          <caret line="4" column="16" lean-forward="false" selection-start-line="4" selection-start-column="16" selection-end-line="4" selection-end-column="16" />
+        <state relative-caret-position="44">
+          <caret line="3" column="12" lean-forward="false" selection-start-line="3" selection-start-column="12" selection-end-line="3" selection-end-column="12" />
           <folding />
         </state>
       </provider>

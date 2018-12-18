@@ -153,15 +153,8 @@ def generate_image(PARS,num_blobs=1):
     gc[:,:,4]=np.logical_or(gc[:,:,0] != 0, gc[:,:,1]!=0)
     return(g,gc)
 
-def generate_image_from_estimate(PARS,hy,orig_image):
-
-    coarse_disp=PARS['coarse_disp']
-    image_dim=PARS['image_dim']
-    hys = hy[:,:,PARS['num_blob_pars']-1]>0
-    [ii, jj] = np.where(hys > 0)
-    l=len(ii)
-
-
+def extract_mus(hy,ii,jj,coarse_disp):
+    l = len(ii)
     I0 = np.int32(np.concatenate([np.array(ii).reshape((1,-1)), np.array(jj).reshape((1,-1)), np.zeros((1,l))]))
     I1 = np.int32(np.concatenate([np.array(ii).reshape((1,-1)), np.array(jj).reshape((1,-1)), np.ones((1,l))]))
     mux=ii*coarse_disp+coarse_disp/2 + hy[tuple(I0)]
@@ -174,14 +167,38 @@ def generate_image_from_estimate(PARS,hy,orig_image):
     sigmas=hy[tuple(I)]
     I = np.int32(np.concatenate([np.array(ii).reshape((1,-1)), np.array(jj).reshape((1,-1)), 3*np.ones((1,l))]))
     As = hy[tuple(I)]
+    return(mux,muy,sigmas,As)
+
+def generate_image_from_estimate(PARS,hy,orig_image,orig_data):
+
+    coarse_disp=PARS['coarse_disp']
+    image_dim=PARS['image_dim']
+    hys = hy[:,:,PARS['num_blob_pars']-1]>0
+    [ii, jj] = np.where(hys > 0)
+
+
+    mux,muy,sigmas,As=extract_mus(hy,ii,jj,coarse_disp)
 
 
     g=make_blobs(list(mux),list(muy),list(sigmas),list(As),image_dim)
+    [It,Jt]=np.where(orig_data[:,:,4]==1)
+    muxt,muyt,sigmast,Ast=extract_mus(orig_data,It,Jt,coarse_disp)
+    origg=make_blobs(list(muxt),list(muyt),list(sigmast),list(Ast),image_dim)
+    print('mux')
+    print(np.array([mux, muxt]))
+    print('muy')
+    print(np.array([muy, muyt]))
+    print('sigmas')
+    print(np.array([sigmas, sigmast]))
+    print('As')
+    print(np.array([As, Ast]))
 
-    py.subplot(1,2,1)
+    py.subplot(1,3,1)
     py.imshow(g[:,:,0])
-    py.subplot(1,2,2)
+    py.subplot(1,3,2)
     py.imshow(orig_image[:,:,0])
+    py.subplot(1, 3, 3)
+    py.imshow(origg[:, :, 0])
     py.show()
     print("Hello")
 

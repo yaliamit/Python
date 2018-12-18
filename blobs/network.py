@@ -172,9 +172,12 @@ def recreate_network(PARS, x_, y_, training_):
             ya = y_[:, :, :, nbp]
             accuracy = []
             hy = tf.cast(tf.greater(last_layer[:, :, :, nbp], 0),dtype=tf.float32)
-            ac=tf.reduce_sum(tf.abs(hy - ya) * ya) \
+            acn=tf.reduce_sum(tf.abs(hy - ya) * ya) \
                / tf.reduce_sum(ya)
-            accuracy.append(tf.identity(ac,name="ACC"))
+            acp = tf.reduce_sum(tf.abs(hy - ya) * (1-ya)) \
+                  / tf.reduce_sum(1-ya)
+            accuracy.append(tf.identity(acn,name="ACCN"))
+            accuracy.append(tf.identity(acp,name="ACCP"))
             temp = tf.zeros_like(y_[:, :, :, 0])
             for j in range(nbp):
                 temp = temp + (y_[:, :, :, j] - last_layer[:, :, :, j]) * (y_[:, :, :, j] - last_layer[:, :, :, j]) * ya

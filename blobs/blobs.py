@@ -21,6 +21,8 @@ def run_epoch(train, PLH,OPS,PARS,sess,i, type='Training',mode='blob'):
         y = train[1][ii]
         cso=0
         acco=0
+        accon=0
+        accop=0
         disto=0
         ca=0
         HY=[]
@@ -32,15 +34,17 @@ def run_epoch(train, PLH,OPS,PARS,sess,i, type='Training',mode='blob'):
                     csi,acc,_=sess.run([OPS['cs'], OPS['accuracy'], OPS['train_step']], 
                                        feed_dict={PLH['x_']: batch[0], PLH['y_']: batch[1], PLH['lr_']: step_size,
                                            PLH['training_']:True})
-                    acco+=acc[0]
-                    disto+=acc[1]
+                    accon+=acc[0]
+                    accop+=acc[1]
+                    disto+=acc[2]
                     cso+=csi
                 else:
                     csi, acc, ts = sess.run([OPS['cs'], OPS['accuracy'],OPS['TS']], 
                                             feed_dict={PLH['x_']: batch[0], PLH['y_']: batch[1], PLH['lr_']: step_size,
                                                                   PLH['training_']: False})
-                    acco+=acc[0]
-                    disto+=acc[1]
+                    accon+=acc[0]
+                    accop+=acc[1]
+                    disto+=acc[2]
                     cso+=csi
                     if (type=='Test'):
                         HY.append(ts)
@@ -66,7 +70,8 @@ def run_epoch(train, PLH,OPS,PARS,sess,i, type='Training',mode='blob'):
         print("Final results: epoch", str(i))
         if (mode=='blob'):
             print(type + " dist:\t\t\t{:.6f}".format(disto / ca))
-        print(type + " acc:\t\t\t{:.6f}".format(acco / ca))
+        print(type + " accn:\t\t\t{:.6f}".format(accon / ca))
+        print(type + " accp:\t\t\t{:.6f}".format(accop / ca))
         print(type + " loss:\t\t\t{:.6f}".format(cso/ca))
         sys.stdout.flush()
         return(HY)
@@ -146,7 +151,9 @@ def reload(PARS):
 
 
         accuracy=[]
-        accuracy.append(graph.get_tensor_by_name('helpers/ACC:0'))
+
+        accuracy.append(graph.get_tensor_by_name('helpers/ACCN:0'))
+        accuracy.append(graph.get_tensor_by_name('helpers/ACCP:0'))
         accuracy.append(graph.get_tensor_by_name('helpers/DIST:0'))
         cs = graph.get_tensor_by_name('loss/LOSS:0')
         TS = graph.get_tensor_by_name('LAST:0')
@@ -166,7 +173,7 @@ def reload(PARS):
         # #
         inds = range(len(HYA))
         for ind in inds:
-           generate_image_from_estimate(PARS, HYA[ind], test[0][ind])
+           generate_image_from_estimate(PARS, HYA[ind], test[0][ind],test[1][ind])
 
 
 
