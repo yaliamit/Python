@@ -152,13 +152,9 @@ def recreate_network(PARS, x_, y_, training_):
             loss = tf.reduce_mean(ls1)
             temp=tf.zeros_like(y_[:,:,:,0])
             for j in range(nbp):
-                temp=temp+(y_[:, :, :, j] - last_layer[:, :, :, j])*(y_[:, :, :, j] - last_layer[:, :, :, j]) * y_[:, :, :, 2]
-            loss = loss + tf.reduce_mean(tf.reduce_sum(temp,axis=[1,2]))
-               #tf.reduce_sum((y_[:, :, :, 0] - last_layer[:, :, :, 0]) *
-               #              (y_[:, :, :, 0] - last_layer[:, :, :, 0]) * y_[:, :, :, 2]
-               #              + (y_[:, :, :, 1] - last_layer[:, :, :, 1]) *
-               #              (y_[:, :, :, 1] - last_layer[:, :, :, 1]) * y_[:, :, :, 2],
-               #              axis=[1, 2]))
+                temp=temp+(y_[:, :, :, j] - last_layer[:, :, :, j])*(y_[:, :, :, j] - last_layer[:, :, :, j]) * ya
+            loss1=tf.reduce_mean(tf.reduce_sum(temp,axis=[1,2]))
+            loss = loss + loss1
             loss=tf.identity(loss,name="LOSS")
         else:
             # Softmax-logistic loss
@@ -173,14 +169,16 @@ def recreate_network(PARS, x_, y_, training_):
     elif(PARS['blob']):
         with tf.variable_scope('helpers'):
             nbp = PARS['num_blob_pars'] - 1
+            ya = y_[:, :, :, nbp]
             accuracy = []
             hy = tf.cast(tf.greater(last_layer[:, :, :, nbp], 0),dtype=tf.float32)
-            ac=tf.reduce_sum(tf.abs(hy - y_[:, :, :, nbp]) * y_[:, :, :,nbp]) \
-               / tf.reduce_sum(y_[:, :, :, nbp])
+            ac=tf.reduce_sum(tf.abs(hy - ya) * ya) \
+               / tf.reduce_sum(ya)
             accuracy.append(tf.identity(ac,name="ACC"))
-            ac=tf.reduce_sum((tf.abs(last_layer[:, :, :, 0] - y_[:, :, :, 0]) +
-                                           np.abs(last_layer[:, :, :, 1] - y_[:, :, :, 1]))
-                                          * y_[:, :, :, 2]) /tf.reduce_sum(y_[:,:,:,2])
+            temp = tf.zeros_like(y_[:, :, :, 0])
+            for j in range(nbp):
+                temp = temp + (y_[:, :, :, j] - last_layer[:, :, :, j]) * (y_[:, :, :, j] - last_layer[:, :, :, j]) * ya
+            ac=tf.reduce_mean(tf.sqrt(tf.reduce_sum(temp, axis=[1, 2])/tf.reduce_sum(ya,axis=[1,2])))
             accuracy.append(tf.identity(ac,name="DIST"))
     print('joint_parent', joint_parent)
     # joint_parent contains information on layers that are parents to two other layers which affects the gradient propagation.

@@ -3,6 +3,80 @@ import pylab as py
 import Conv_net_aux
 
 
+def generate_bigger_images(PARS):
+    old_dim = np.int32(PARS['image_dim'])
+    PARS['old_dim'] = old_dim
+    PARS['image_dim'] = np.int32(PARS['big_image_dim'])
+    dim_ratio = PARS['image_dim'] / old_dim
+    PARS['max_num_blobs'] = PARS['max_num_blobs'] * dim_ratio * dim_ratio
+    PARS['num_test'] = PARS['big_num_test']
+    test = make_data(PARS['num_test'], PARS)
+    test_batch = make_batch(test, old_dim, np.int32(PARS['coarse_disp']))
+    PARS['batch_size'] = np.minimum(PARS['batch_size'], test_batch[0].shape[0])
+
+    return (test, test_batch)
+    #
+
+
+def make_batch(test, old_dim, coarse_disp):
+    tbatch = []
+    for t in test[0]:
+        for i in np.arange(0, t.shape[0], old_dim):
+            for j in np.arange(0, t.shape[1], old_dim):
+                tbatch.append(t[i:i + old_dim, j:j + old_dim, :])
+
+    tbatch = np.array(tbatch)
+    cbatch = []
+    coarse_dim = np.int32(old_dim / coarse_disp)
+    for t in test[1]:
+        for i in np.arange(0, t.shape[0], coarse_dim):
+            for j in np.arange(0, t.shape[1], coarse_dim):
+                cbatch.append(t[i:i + coarse_dim, j:j + coarse_dim, :])
+    cbatch = np.array(cbatch)
+    batch = [tbatch, cbatch]
+    return (batch)
+
+
+def paste_batch(HYY, old_dim, new_dim, coarse_disp, nbp):
+    num_per = np.int32(new_dim / old_dim)
+    num_per2 = num_per * num_per
+
+    cnew_dim = np.int32(new_dim / coarse_disp)
+    cold_dim = np.int32(old_dim / coarse_disp)
+
+    HY = []
+    for i in np.arange(0, len(HYY), num_per2):
+        hy = np.zeros((cnew_dim, cnew_dim, nbp))
+        nb = np.zeros((new_dim, new_dim, 1))
+        # j=0
+        # for x in np.arange(0,new_dim,old_dim):
+        #     for y in np.arange(0,new_dim,old_dim):
+        #         nb[x:x+old_dim,y:y+old_dim,0]=batch[0][i+j][:,:,0]
+        #         j+=1
+
+        j = 0
+        for y in np.arange(0, cnew_dim, cold_dim):
+            for x in np.arange(0, cnew_dim, cold_dim):
+                for k in range(nbp):
+                    hy[x:x + cold_dim, y:y + cold_dim, k] = HYY[i + j][:, :, k]
+                j += 1
+        HY.append(hy)
+
+    return (HY)
+
+
+def make_data(num,PARS):
+    G=[]
+    GC=[]
+    num_blobs = np.int32(np.floor(np.random.rand(num) * PARS['max_num_blobs']) + 1)
+
+    for nb in num_blobs:
+        g,gc=generate_image(PARS,num_blobs=nb)
+        G.append(np.float32(g))
+        GC.append(np.float32(gc))
+
+    return([np.array(G),np.array(GC)])
+
 def make_blobs(mux,muy,sigmas, Amps, image_dim):
     #x, y = np.meshgrid(np.linspace(-1,1,image_dim), np.linspace(-1,1,image_dim))
     x, y = np.meshgrid(range(np.int32(image_dim)), range(np.int32(image_dim)))
@@ -16,19 +90,21 @@ def make_blobs(mux,muy,sigmas, Amps, image_dim):
 
     return(g)
 
-def clean_b(mux,muy):
+def clean_b(ii,jj,mux,muy,coarse_disp):
     ij=np.ones(mux.shape[0], dtype=bool)
     for i in range(mux.shape[0]):
         for j in range(mux.shape[0]):
             if (i != j and ij[i] and ij[j]):
-                if np.sqrt((mux[i]-mux[j])*(mux[i]-mux[j])+(muy[i]-muy[j])*(muy[i]-muy[j])<coarse_disp*2./3.):
+                if np.sqrt((mux[i]-mux[j])*(mux[i]-mux[j])+(muy[i]-muy[j])*(muy[i]-muy[j])<coarse_disp):
                     ij[j]=False
                     mux[i]=.5*(mux[i]+mux[j])
                     muy[i]=.5*(muy[i]+muy[j])
 
     mux=mux[ij==1]
     muy=muy[ij==1]
-    return(mux,muy)
+    ii=ii[ij==1]
+    jj=jj[ij==1]
+    return(ii,jj,mux,muy)
 
 
 def generate_image(PARS,num_blobs=1):
@@ -81,22 +157,26 @@ def generate_image_from_estimate(PARS,hy,orig_image):
 
     coarse_disp=PARS['coarse_disp']
     image_dim=PARS['image_dim']
-    hys = hy[:,:,2]>0
+    hys = hy[:,:,PARS['num_blob_pars']-1]>0
     [ii, jj] = np.where(hys > 0)
     l=len(ii)
+
+
     I0 = np.int32(np.concatenate([np.array(ii).reshape((1,-1)), np.array(jj).reshape((1,-1)), np.zeros((1,l))]))
     I1 = np.int32(np.concatenate([np.array(ii).reshape((1,-1)), np.array(jj).reshape((1,-1)), np.ones((1,l))]))
-
-
-
     mux=ii*coarse_disp+coarse_disp/2 + hy[tuple(I0)]
     muy=jj*coarse_disp+coarse_disp/2 + hy[tuple(I1)]
 
     # clean up close detections
-    mux,muy=clean_b(mux,muy)
+    ii,jj,mux,muy=clean_b(ii,jj,mux,muy,coarse_disp)
+    l = len(ii)
+    I = np.int32(np.concatenate([np.array(ii).reshape((1,-1)), np.array(jj).reshape((1,-1)), 2*np.ones((1,l))]))
+    sigmas=hy[tuple(I)]
+    I = np.int32(np.concatenate([np.array(ii).reshape((1,-1)), np.array(jj).reshape((1,-1)), 3*np.ones((1,l))]))
+    As = hy[tuple(I)]
 
 
-    g=make_blobs(list(mux),list(muy),PARS['sigma'],image_dim)
+    g=make_blobs(list(mux),list(muy),list(sigmas),list(As),image_dim)
 
     py.subplot(1,2,1)
     py.imshow(g[:,:,0])
