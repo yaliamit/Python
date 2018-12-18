@@ -85,19 +85,25 @@ def make_data(num,PARS):
     return([np.array(G),np.array(GC)])
 
 
+def generate_bigger_images(PARS):
+
+        old_dim=np.int32(PARS['image_dim'])
+        PARS['old_dim']=old_dim
+        PARS['image_dim']=np.int32(PARS['big_image_dim'])
+        dim_ratio=PARS['image_dim']/old_dim
+        PARS['max_num_blobs']=PARS['max_num_blobs']*old_dim*old_dim
+        PARS['num_test']=PARS['big_num_test']
+        test = make_data(PARS['num_test'], PARS)
+        test_batch=make_batch(test,old_dim,np.int32(PARS['coarse_disp']))
+        PARS['batch_size']=np.minimum(PARS['batch_size'],test_batch[0].shape[0])
+
+        return(test_batch)
+        #
+
+
 def reload():
     tf.reset_default_graph()
-    PARS = {}
 
-    PARS = process_parameters('_pars/blob1')
-
-    cdim = PARS['image_dim'] / PARS['coarse_disp']
-    nchannels = 1
-    minimizer = "Adam"
-
-    num_epochs = PARS['num_epochs']
-    batch_size = PARS['batch_size']
-    image_dim = PARS['image_dim']
 
     train = make_data(PARS['num_train'], PARS)
     val = make_data(PARS['num_val'], PARS)
@@ -127,8 +133,22 @@ def reload():
         # Get the minimization operation from the stored model
         #if (Train):
         #    train_step_new = tf.get_collection("optimizer")[0]
-
+        test=generate_image(PARS)
         HY = run_epoch(test,PLH,OPS,PARS,sess, 0, type='Test')
+        #
+        HYY = np.array(HY[0])
+        PARS['image_dim']=PARS['old_dim']
+        inds = range(len(HYY))
+        for ind in inds:
+             generate_image_from_estimate(PARS, HYY[ind], test[0][ind])
+        PARS['image_dim']=PARS['big_image_dim']
+        HYA=paste_batch(HYY, PARS['old_dim'], PARS['image_dim'],PARS['coarse_disp'])
+        # #HYS = HYY[:,:,:,2]>0
+        # #
+        inds = range(len(HYA))
+        for ind in inds:
+           generate_image_from_estimate(PARS, HYA[ind], test[0][ind])
+
 
 def make_batch(test,old_dim,coarse_disp):
 
@@ -181,20 +201,8 @@ def paste_batch(HYY,old_dim,new_dim,coarse_disp):
 
 
 
-def run_new():
-    PARS={}
-    
-    PARS=process_parameters('_pars/blob1')
-    
-    cdim=PARS['image_dim']/PARS['coarse_disp']
-    nchannels=1
-    minimizer="Adam"
-    
-    num_epochs=PARS['num_epochs']
-    batch_size=PARS['batch_size']
-    image_dim=PARS['image_dim']
-    num_blob_pars=PARS['num_blob_pars']
-    
+def run_new(PARS):
+
     train=make_data(PARS['num_train'],PARS)
     val=make_data(PARS['num_val'],PARS)
     test=make_data(PARS['num_test'],PARS)
@@ -242,32 +250,34 @@ def run_new():
 
 
 
-        # Test bigger images.
-        # old_dim=np.int32(PARS['image_dim'])
-        # PARS['image_dim']=64
-        # PARS['max_num_blobs']=6
-        # PARS['num_test']=10
-        # test = make_data(PARS['num_test'], PARS)
-        # batch=make_batch(test,old_dim,np.int32(PARS['coarse_disp']))
-        # PARS['batch_size']=batch[0].shape[0]
-        #
-        # HY=run_epoch(batch,PLH,OPS,PARS,sess, 0, type='Test')
-        #
-        # HYY = np.array(HY[0])
-        # # PARS['image_dim']=32
-        # # inds = range(len(HYY))
-        # # for ind in inds:
-        # #     generate_image_from_estimate(PARS, HYY[ind], batch[0][ind])
-        # # PARS['image_dim']=64
-        # HYA=paste_batch(HYY, old_dim, PARS['image_dim'],PARS['coarse_disp'])
-        # #HYS = HYY[:,:,:,2]>0
-        # #
-        # inds = range(len(HYA))
-        # for ind in inds:
-        #      generate_image_from_estimate(PARS, HYA[ind], test[0][ind])
 
 
 
 
-run_new()
-#reload()
+net = sys.argv[1]
+gpu_device=None
+
+# Tells you which gpu to use.
+# if (len(sys.argv)>2):
+#     print(sys.argv[2])
+#     gpu_device='/device:GPU:'+sys.argv[2]
+# print('gpu_device',gpu_device)
+print('net', net)
+
+PARS = {}
+
+PARS = process_parameters(net)
+
+cdim = PARS['image_dim'] / PARS['coarse_disp']
+nchannels = 1
+minimizer = "Adam"
+
+num_epochs = PARS['num_epochs']
+batch_size = PARS['batch_size']
+image_dim = PARS['image_dim']
+
+PARS = process_parameters('_pars/blob1')
+num_blob_pars = PARS['num_blob_pars']
+
+run_new(PARS)
+#reload(PARS)
