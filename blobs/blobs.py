@@ -205,5 +205,5 @@ image_dim = PARS['image_dim']
 PARS = process_parameters('_pars/blob1')
 num_blob_pars = PARS['num_blob_pars']
 
-#run_new(PARS)
-reload(PARS)
+run_new(PARS)
+#reload(PARS)
