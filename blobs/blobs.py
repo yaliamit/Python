@@ -123,7 +123,7 @@ def run_new(PARS):
     
         tf.add_to_collection("optimizer", train_step)
         saver = tf.train.Saver()
-        save_path = saver.save(sess, "_tmp/" + PARS['model'])
+        save_path = saver.save(sess, "_blobs/" + PARS['model'])
         print("Model saved in path: %s" % save_path)
         print("DONE")
         sys.stdout.flush()
@@ -139,8 +139,8 @@ def reload(PARS):
     with tf.Session() as sess:
         # Get data
         # Load model info
-        saver = tf.train.import_meta_graph('_tmp/' + PARS['model'] + '.meta')
-        saver.restore(sess, '_tmp/' + PARS['model'])
+        saver = tf.train.import_meta_graph('_blobs/' + PARS['model'] + '.meta')
+        saver.restore(sess, '_blobs/' + PARS['model'])
         graph = tf.get_default_graph()
         # Setup the placeholders from the stored model.
         PLH = {}
@@ -205,5 +205,5 @@ image_dim = PARS['image_dim']
 PARS = process_parameters('_pars/blob1')
 num_blob_pars = PARS['num_blob_pars']
 
-run_new(PARS)
-#reload(PARS)
+#run_new(PARS)
+reload(PARS)

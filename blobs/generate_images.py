@@ -47,13 +47,6 @@ def paste_batch(HYY, old_dim, new_dim, coarse_disp, nbp):
     HY = []
     for i in np.arange(0, len(HYY), num_per2):
         hy = np.zeros((cnew_dim, cnew_dim, nbp))
-        nb = np.zeros((new_dim, new_dim, 1))
-        # j=0
-        # for x in np.arange(0,new_dim,old_dim):
-        #     for y in np.arange(0,new_dim,old_dim):
-        #         nb[x:x+old_dim,y:y+old_dim,0]=batch[0][i+j][:,:,0]
-        #         j+=1
-
         j = 0
         for y in np.arange(0, cnew_dim, cold_dim):
             for x in np.arange(0, cnew_dim, cold_dim):
@@ -161,7 +154,7 @@ def extract_mus(hy,ii,jj,coarse_disp):
     muy=jj*coarse_disp+coarse_disp/2 + hy[tuple(I1)]
 
     # clean up close detections
-    ii,jj,mux,muy=clean_b(ii,jj,mux,muy,coarse_disp)
+    ii,jj,mux,muy=clean_b(ii,jj,mux,muy,coarse_disp/2)
     l = len(ii)
     I = np.int32(np.concatenate([np.array(ii).reshape((1,-1)), np.array(jj).reshape((1,-1)), 2*np.ones((1,l))]))
     sigmas=hy[tuple(I)]
