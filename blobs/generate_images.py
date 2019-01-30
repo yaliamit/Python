@@ -154,7 +154,7 @@ def extract_mus(hy,ii,jj,coarse_disp):
     muy=jj*coarse_disp+coarse_disp/2 + hy[tuple(I1)]
 
     # clean up close detections
-    ii,jj,mux,muy=clean_b(ii,jj,mux,muy,coarse_disp/2)
+    ii,jj,mux,muy=clean_b(ii,jj,mux,muy,coarse_disp)
     l = len(ii)
     I = np.int32(np.concatenate([np.array(ii).reshape((1,-1)), np.array(jj).reshape((1,-1)), 2*np.ones((1,l))]))
     sigmas=hy[tuple(I)]

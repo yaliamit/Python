@@ -48,6 +48,7 @@ def run_epoch(train, PLH,OPS,PARS,sess,i, type='Training',mode='blob'):
                     cso+=csi
                     if (type=='Test'):
                         HY.append(ts)
+
             elif(mode=='Class'):
                 if (type=='Training'):
                     csi,acc,_=sess.run([OPS['cs'], OPS['accuracy'], OPS['train_step']],
@@ -66,7 +67,6 @@ def run_epoch(train, PLH,OPS,PARS,sess,i, type='Training',mode='blob'):
 
             ca+=1
         print('Epoch time', time.time() - t1)
-
         print("Final results: epoch", str(i))
         if (mode=='blob'):
             print(type + " dist:\t\t\t{:.6f}".format(disto / ca))
@@ -155,6 +155,8 @@ def reload(PARS):
         accuracy.append(graph.get_tensor_by_name('helpers/ACCN:0'))
         accuracy.append(graph.get_tensor_by_name('helpers/ACCP:0'))
         accuracy.append(graph.get_tensor_by_name('helpers/DIST:0'))
+        accuracy.append(graph.get_tensor_by_name('helpers/TEMPS:0'))
+
         cs = graph.get_tensor_by_name('loss/LOSS:0')
         TS = graph.get_tensor_by_name('LAST:0')
         OPS={}

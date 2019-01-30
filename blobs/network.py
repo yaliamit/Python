@@ -172,6 +172,7 @@ def recreate_network(PARS, x_, y_, training_):
             ya = y_[:, :, :, nbp]
             accuracy = []
             hy = tf.cast(tf.greater(last_layer[:, :, :, nbp], 0),dtype=tf.float32)
+
             acn=tf.reduce_sum(tf.abs(hy - ya) * ya) \
                / tf.reduce_sum(ya)
             acp = tf.reduce_sum(tf.abs(hy - ya) * (1-ya)) \
@@ -179,10 +180,15 @@ def recreate_network(PARS, x_, y_, training_):
             accuracy.append(tf.identity(acn,name="ACCN"))
             accuracy.append(tf.identity(acp,name="ACCP"))
             temp = tf.zeros_like(y_[:, :, :, 0])
+            yas=tf.reduce_sum(ya,axis=[1,2])
+            iyas=tf.where(tf.greater(yas,0))
+            yas=tf.squeeze(tf.gather(yas,iyas,axis=0))
             for j in range(nbp):
                 temp = temp + (y_[:, :, :, j] - last_layer[:, :, :, j]) * (y_[:, :, :, j] - last_layer[:, :, :, j]) * ya
-            ac=tf.reduce_mean(tf.sqrt(tf.reduce_sum(temp, axis=[1, 2])/tf.reduce_sum(ya,axis=[1,2])))
+            temps=tf.squeeze(tf.gather(temp,iyas,axis=0))
+            ac=tf.reduce_mean(tf.reduce_sum(tf.sqrt(temps),axis=[1,2])/yas)
             accuracy.append(tf.identity(ac,name="DIST"))
+
     print('joint_parent', joint_parent)
     # joint_parent contains information on layers that are parents to two other layers which affects the gradient propagation.
     PARS['joint_parent'] = joint_parent
