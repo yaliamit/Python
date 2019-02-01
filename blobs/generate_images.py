@@ -149,7 +149,7 @@ def generate_image(PARS,num_blobs=1):
     gc[:,:,PARS['num_blob_pars']-1]=np.logical_or(gc[:,:,0] != 0, gc[:,:,1]!=0)
     return(g,gc)
 
-def extract_mus(hy,ii,jj,coarse_disp):
+def extract_mus(hy,ii,jj,coarse_disp,PARS):
     l = len(ii)
     I0 = np.int32(np.concatenate([np.array(ii).reshape((1,-1)), np.array(jj).reshape((1,-1)), np.zeros((1,l))]))
     I1 = np.int32(np.concatenate([np.array(ii).reshape((1,-1)), np.array(jj).reshape((1,-1)), np.ones((1,l))]))
@@ -158,11 +158,18 @@ def extract_mus(hy,ii,jj,coarse_disp):
 
     # clean up close detections
     ii,jj,mux,muy=clean_b(ii,jj,mux,muy,coarse_disp)
+
     l = len(ii)
-    I = np.int32(np.concatenate([np.array(ii).reshape((1,-1)), np.array(jj).reshape((1,-1)), 2*np.ones((1,l))]))
-    sigmas=hy[tuple(I)]
-    I = np.int32(np.concatenate([np.array(ii).reshape((1,-1)), np.array(jj).reshape((1,-1)), 3*np.ones((1,l))]))
-    As = hy[tuple(I)]
+    if (hy.shape[-1]>3):
+        I = np.int32(np.concatenate([np.array(ii).reshape((1,-1)), np.array(jj).reshape((1,-1)), 2*np.ones((1,l))]))
+        sigmas=hy[tuple(I)]
+    else:
+        sigmas=PARS['sigma'][0]*np.ones(l)
+    if (hy.shape[-1]>4):
+        I = np.int32(np.concatenate([np.array(ii).reshape((1,-1)), np.array(jj).reshape((1,-1)), 3*np.ones((1,l))]))
+        As = hy[tuple(I)]
+    else:
+        As=PARS['Amps'][0]*np.ones(l)
     return(mux,muy,sigmas,As)
 
 def generate_image_from_estimate(PARS,hy,orig_image,orig_data):
@@ -175,12 +182,12 @@ def generate_image_from_estimate(PARS,hy,orig_image,orig_data):
     [ii, jj] = np.where(hys > 0)
 
 
-    mux,muy,sigmas,As=extract_mus(hy,ii,jj,coarse_disp)
+    mux,muy,sigmas,As=extract_mus(hy,ii,jj,coarse_disp,PARS)
 
 
     g=make_blobs(list(mux),list(muy),list(sigmas),list(As),image_dim)
-    [It,Jt]=np.where(orig_data[:,:,4]==1)
-    muxt,muyt,sigmast,Ast=extract_mus(orig_data,It,Jt,coarse_disp)
+    [It,Jt]=np.where(orig_data[:,:,PARS['num_blob_pars']-1]==1)
+    muxt,muyt,sigmast,Ast=extract_mus(orig_data,It,Jt,coarse_disp,PARS)
     origg=make_blobs(list(muxt),list(muyt),list(sigmast),list(Ast),image_dim)
     print('mux')
     print(np.array([mux, muxt]))
@@ -190,14 +197,19 @@ def generate_image_from_estimate(PARS,hy,orig_image,orig_data):
     print(np.array([sigmas, sigmast]))
     print('As')
     print(np.array([As, Ast]))
+    fig=py.figure(1)
 
-    py.subplot(1,3,1)
-    py.imshow(g[:,:,0])
-    py.title("Reconstruction")
-    py.subplot(1,3,2)
+    #py.subplot(1,3,1)
+    #py.imshow(g[:,:,0])
+    #py.title("Reconstruction")
+    ax = fig.add_subplot(1, 2, 1)
+    #py.subplot(1,3,2)
     py.title("Original")
     py.imshow(orig_image[:,:,0])
-    py.subplot(1, 3, 3)
+    for mx,my,s in zip(mux,muy,sigmas):
+        circle=py.Circle((mx,my),radius=s,color="r",fill=False)
+        ax.add_artist(circle)
+    py.subplot(1, 2, 2)
     py.title("Orig R")
     py.imshow(origg[:, :, 0])
     py.show()
