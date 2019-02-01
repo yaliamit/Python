@@ -132,7 +132,7 @@ def run_new(PARS):
 def reload(PARS):
     tf.reset_default_graph()
 
-
+    test, test_batch = generate_bigger_images(PARS)
     # train = make_data(PARS['num_train'], PARS)
     # val = make_data(PARS['num_val'], PARS)
     # test = make_data(PARS['num_test'], PARS)
@@ -155,7 +155,7 @@ def reload(PARS):
         accuracy.append(graph.get_tensor_by_name('helpers/ACCN:0'))
         accuracy.append(graph.get_tensor_by_name('helpers/ACCP:0'))
         accuracy.append(graph.get_tensor_by_name('helpers/DIST:0'))
-        accuracy.append(graph.get_tensor_by_name('helpers/TEMPS:0'))
+
 
         cs = graph.get_tensor_by_name('loss/LOSS:0')
         TS = graph.get_tensor_by_name('LAST:0')
@@ -165,14 +165,16 @@ def reload(PARS):
         # Get the minimization operation from the stored model
         #if (Train):
         #    train_step_new = tf.get_collection("optimizer")[0]
-        test,test_batch=generate_bigger_images(PARS)
+        #test,test_batch=generate_bigger_images(PARS)
         HY = run_epoch(test_batch,PLH,OPS,PARS,sess, 0, type='Test')
         #
         HYY = np.array(HY[0])
-        #PARS['image_dim']=PARS['big_image_dim']
+        PARS['image_dim']=PARS['big_image_dim']
         HYA=paste_batch(HYY, PARS['old_dim'], PARS['image_dim'],PARS['coarse_disp'],PARS['num_blob_pars'])
         # #HYS = HYY[:,:,:,2]>0
         # #
+        #HYA=HYY
+        #test=test_batch
         inds = range(len(HYA))
         for ind in inds:
            generate_image_from_estimate(PARS, HYA[ind], test[0][ind],test[1][ind])

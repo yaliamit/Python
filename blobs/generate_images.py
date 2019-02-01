@@ -28,12 +28,13 @@ def make_batch(test, old_dim, coarse_disp):
     tbatch = np.array(tbatch)
     cbatch = []
     coarse_dim = np.int32(old_dim / coarse_disp)
-    for t in test[1]:
-        for i in np.arange(0, t.shape[0], coarse_dim):
-            for j in np.arange(0, t.shape[1], coarse_dim):
-                cbatch.append(t[i:i + coarse_dim, j:j + coarse_dim, :])
+    for tt in test[1]:
+        for j in np.arange(0, tt.shape[1], coarse_dim):
+            for i in np.arange(0, tt.shape[0], coarse_dim):
+                cbatch.append(tt[i:i + coarse_dim, j:j + coarse_dim, :])
     cbatch = np.array(cbatch)
     batch = [tbatch, cbatch]
+
     return (batch)
 
 
@@ -71,12 +72,10 @@ def make_data(num,PARS):
     return([np.array(G),np.array(GC)])
 
 def make_blobs(mux,muy,sigmas, Amps, image_dim):
-    #x, y = np.meshgrid(np.linspace(-1,1,image_dim), np.linspace(-1,1,image_dim))
     x, y = np.meshgrid(range(np.int32(image_dim)), range(np.int32(image_dim)))
 
     g = np.zeros(x.shape)
     for mx, my, si, a in zip(mux, muy,sigmas,Amps):
-        #print(mx,my,si,a)
         g = g + a*np.exp(-(((x - mx) ** 2 + (y - my) ** 2) / (2.0 * si ** 2)))
         #g = np.maximum(g,np.exp(-(((x - mx) ** 2 + (y - my) ** 2) / (2.0 * sigma ** 2))))
     g = np.reshape(g, g.shape + (1,))
@@ -120,7 +119,9 @@ def generate_image(PARS,num_blobs=1):
         mux.append(newmux)
         muy.append(newmuy)
 
+
     sigmas=PARS['sigma'][0]+np.random.rand(num_blobs)*(PARS['sigma'][1]-PARS['sigma'][0])
+
     As=PARS['Amps'][0]+np.random.rand(num_blobs)*(PARS['Amps'][1]-PARS['Amps'][0])
 
     g = make_blobs(mux, muy, sigmas, As, image_dim)
@@ -138,12 +139,14 @@ def generate_image(PARS,num_blobs=1):
     gc = np.zeros((np.int32(image_dim/coarse_disp),np.int32(image_dim/coarse_disp), PARS['num_blob_pars']))
     gc[tuple(mucs0)] = (mux - (coarse_disp / 2 + coarse_disp * muxc))
     gc[tuple(mucs1)] = (muy - (coarse_disp / 2 + coarse_disp * muyc))
-    gc[tuple(mucs2)] = sigmas[:,np.newaxis]
-    gc[tuple(mucs3)] = As[:,np.newaxis]
+    if (PARS['num_blob_pars']>=4):
+        gc[tuple(mucs2)] = sigmas[:,np.newaxis]
+    if (PARS['num_blob_pars']>=5):
+        gc[tuple(mucs3)] = As[:,np.newaxis]
     #print('Mean and sd of displacements:',np.mean(np.concatenate([gc[tuple(mucs0)],gc[tuple(mucs1)]])),
     #      np.std(np.concatenate([gc[tuple(mucs0)], gc[tuple(mucs1)]])))
 
-    gc[:,:,4]=np.logical_or(gc[:,:,0] != 0, gc[:,:,1]!=0)
+    gc[:,:,PARS['num_blob_pars']-1]=np.logical_or(gc[:,:,0] != 0, gc[:,:,1]!=0)
     return(g,gc)
 
 def extract_mus(hy,ii,jj,coarse_disp):
@@ -164,8 +167,10 @@ def extract_mus(hy,ii,jj,coarse_disp):
 
 def generate_image_from_estimate(PARS,hy,orig_image,orig_data):
 
+    image_dim=orig_image.shape[0]
+
     coarse_disp=PARS['coarse_disp']
-    image_dim=PARS['image_dim']
+    #image_dim=PARS['image_dim']
     hys = hy[:,:,PARS['num_blob_pars']-1]>0
     [ii, jj] = np.where(hys > 0)
 
@@ -188,9 +193,12 @@ def generate_image_from_estimate(PARS,hy,orig_image,orig_data):
 
     py.subplot(1,3,1)
     py.imshow(g[:,:,0])
+    py.title("Reconstruction")
     py.subplot(1,3,2)
+    py.title("Original")
     py.imshow(orig_image[:,:,0])
     py.subplot(1, 3, 3)
+    py.title("Orig R")
     py.imshow(origg[:, :, 0])
     py.show()
     print("Hello")
