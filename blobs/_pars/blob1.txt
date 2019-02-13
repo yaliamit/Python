@@ -7,11 +7,13 @@ num_test:1000
 big_num_test:10
 num_val:1000
 image_dim:32
-big_image_dim:64
+big_image_dim:128
 coarse_disp:4.
 max_num_blobs:3
 sigma:(4.8,5.2)
 Amps:(1.,1.)
+background:False
+curve:True
 blob_dist:12
 num_blob_pars:4
 hinge:False

@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 import sys
-from generate_images import make_data, generate_bigger_images, generate_image_from_estimate, paste_batch
+from generate_images import show_images, make_data, generate_bigger_images, generate_image_from_estimate, paste_batch
 from Conv_net_aux import plot_OUTPUT, process_parameters
 from network import recreate_network
 
@@ -85,6 +85,7 @@ def run_epoch(train, PLH,OPS,PARS,sess,i, type='Training',mode='blob'):
 def run_new(PARS):
 
     train=make_data(PARS['num_train'],PARS)
+    #show_images(train[0],num=100)
     val=make_data(PARS['num_val'],PARS)
     test=make_data(PARS['num_test'],PARS)
     
@@ -133,6 +134,7 @@ def reload(PARS):
     tf.reset_default_graph()
 
     test, test_batch = generate_bigger_images(PARS)
+    show_images(test[0])
     # train = make_data(PARS['num_train'], PARS)
     # val = make_data(PARS['num_val'], PARS)
     # test = make_data(PARS['num_test'], PARS)
@@ -178,11 +180,6 @@ def reload(PARS):
         inds = range(len(HYA))
         for ind in inds:
            generate_image_from_estimate(PARS, HYA[ind], test[0][ind],test[1][ind])
-
-
-
-
-
 
 net = sys.argv[1]
 gpu_device=None

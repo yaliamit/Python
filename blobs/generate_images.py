@@ -1,6 +1,23 @@
 import numpy as np
 import pylab as py
-import Conv_net_aux
+
+import scipy.signal as signal
+import scipy.interpolate as inp
+
+def show_images(ims,num=None):
+
+    py.figure(2)
+    if (num is None):
+        num=ims.shape[0]
+    rn=np.int32(np.sqrt(num))
+    cn=np.int32(np.ceil(num/rn))
+    for i in range(num):
+        py.subplot(rn,cn,i+1)
+        py.imshow(ims[i,:,:,0])
+        py.axis('off')
+
+    py.show()
+
 
 
 def generate_bigger_images(PARS):
@@ -82,6 +99,7 @@ def make_blobs(mux,muy,sigmas, Amps, image_dim):
 
     return(g)
 
+# Find  duplicate detections and merge them (if centers are too close.)
 def clean_b(ii,jj,mux,muy,coarse_disp):
     ij=np.ones(mux.shape[0], dtype=bool)
     for i in range(mux.shape[0]):
@@ -98,6 +116,65 @@ def clean_b(ii,jj,mux,muy,coarse_disp):
     jj=jj[ij==1]
     return(ii,jj,mux,muy)
 
+# Make background
+def background(n):
+    im=np.random.randn(n,n)
+
+    a=np.ones((3,3))/9.
+
+    imc=signal.convolve2d(im,a,'same')
+    imc=signal.convolve2d(imc,a,'same')
+    imc=signal.convolve2d(imc,a,'same')
+
+    return(imc)
+
+def make_curve(image_dim):
+
+    n=image_dim
+    dell=4
+
+    num_points=6*np.int32(image_dim/32)
+    num_interp_points=20*np.int32(image_dim/32)
+    theta_range=np.pi/3
+    x=np.int32(np.round(np.random.rand()*n))
+    y=np.int32(np.round(np.random.rand()*n))
+    theta_new=np.random.rand()*2*np.pi
+    dx=np.int32(np.round(np.cos(theta_new)*dell))
+    dy=np.int32(np.round(np.sin(theta_new)*dell))
+
+    C=[]
+    theta_old=theta_new
+    C.append([x,y])
+    x=x+dx
+    y=y+dy
+    C.append([x,y])
+    for i in range(num_points):
+        theta_new=(np.random.rand()-.5)*theta_range+theta_old
+        x = x+np.int32(np.round(np.cos(theta_new) * dell))
+        y = y+np.int32(np.round(np.sin(theta_new) * dell))
+        theta_old = theta_new
+        C.append([x , y ])
+
+
+    C=np.array(C)
+
+    #py.plot(C[:,0],C[:,1])
+    #py.axis([0,n,0,n])
+    npo=C.shape[0]
+    tt0=inp.splrep(range(npo),C[:,0],s=1)
+    tt1=inp.splrep(range(npo),C[:,1],s=1)
+
+    x = np.linspace(0, npo, num_interp_points)
+    y0 = inp.splev(x, tt0)
+    y1 = inp.splev(x,tt1)
+    # py.plot(y0,y1)
+    # py.show()
+
+    l=y0.shape[0]
+    g=make_blobs(y0,y1,np.repeat(2,l), np.repeat(1.,l),n)
+    g=g/np.max(g)
+
+    return(g)
 
 def generate_image(PARS,num_blobs=1):
 
@@ -147,6 +224,16 @@ def generate_image(PARS,num_blobs=1):
     #      np.std(np.concatenate([gc[tuple(mucs0)], gc[tuple(mucs1)]])))
 
     gc[:,:,PARS['num_blob_pars']-1]=np.logical_or(gc[:,:,0] != 0, gc[:,:,1]!=0)
+
+    if ('background' in PARS and PARS['background']):
+        bgd=background(image_dim)
+        bgd=bgd[:,:,np.newaxis]
+        g=np.maximum(g,bgd)
+
+    if ('curve' in PARS and PARS['curve']):
+        cr=make_curve(image_dim)
+        g=np.maximum(g,cr)
+
     return(g,gc)
 
 def extract_mus(hy,ii,jj,coarse_disp,PARS):
@@ -202,18 +289,20 @@ def generate_image_from_estimate(PARS,hy,orig_image,orig_data):
     #py.subplot(1,3,1)
     #py.imshow(g[:,:,0])
     #py.title("Reconstruction")
-    ax = fig.add_subplot(1, 2, 1)
+    py.figure(1)
+    ax = fig.add_subplot(1, 1, 1)
     #py.subplot(1,3,2)
     py.title("Original")
     py.imshow(orig_image[:,:,0])
     for mx,my,s in zip(mux,muy,sigmas):
         circle=py.Circle((mx,my),radius=s,color="r",fill=False)
         ax.add_artist(circle)
-    py.subplot(1, 2, 2)
-    py.title("Orig R")
-    py.imshow(origg[:, :, 0])
+    # py.subplot(1, 2, 2)
+    # py.title("Orig R")
+    # py.imshow(origg[:, :, 0])
     py.show()
     print("Hello")
+    py.close(1)
 
 
 
