@@ -84,7 +84,7 @@ def run_epoch(train, PLH,OPS,PARS,sess,i, type='Training',mode='blob'):
 def run_new(PARS):
 
     train=make_data(PARS['num_train'],PARS)
-    show_images(train[0],num=10)
+    #show_images(train[0],num=10)
     val=make_data(PARS['num_val'],PARS)
     test=make_data(PARS['num_test'],PARS)
     
