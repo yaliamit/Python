@@ -8,7 +8,6 @@ from Conv_net_aux import plot_OUTPUT, process_parameters
 from network import recreate_network
 
 
-
 def run_epoch(train, PLH,OPS,PARS,sess,i, type='Training',mode='blob'):
         t1 = time.time()
         # Randomly shuffle the training data
@@ -85,7 +84,7 @@ def run_epoch(train, PLH,OPS,PARS,sess,i, type='Training',mode='blob'):
 def run_new(PARS):
 
     train=make_data(PARS['num_train'],PARS)
-    #show_images(train[0],num=100)
+    show_images(train[0],num=10)
     val=make_data(PARS['num_val'],PARS)
     test=make_data(PARS['num_test'],PARS)
     
@@ -141,8 +140,8 @@ def reload(PARS):
     with tf.Session() as sess:
         # Get data
         # Load model info
-        saver = tf.train.import_meta_graph('_blobs/' + PARS['model'] + '.meta')
-        saver.restore(sess, '_blobs/' + PARS['model'])
+        saver = tf.train.import_meta_graph('_blobs_clean/' + PARS['model'] + '.meta')
+        saver.restore(sess, '_blobs_clean/' + PARS['model'])
         graph = tf.get_default_graph()
         # Setup the placeholders from the stored model.
         PLH = {}
@@ -184,11 +183,7 @@ def reload(PARS):
 net = sys.argv[1]
 gpu_device=None
 
-# Tells you which gpu to use.
-# if (len(sys.argv)>2):
-#     print(sys.argv[2])
-#     gpu_device='/device:GPU:'+sys.argv[2]
-# print('gpu_device',gpu_device)
+
 print('net', net)
 
 PARS = {}
@@ -203,8 +198,8 @@ num_epochs = PARS['num_epochs']
 batch_size = PARS['batch_size']
 image_dim = PARS['image_dim']
 
-PARS = process_parameters('_pars/blob1')
+PARS = process_parameters(net)
 num_blob_pars = PARS['num_blob_pars']
 
-run_new(PARS)
-#reload(PARS)
+#run_new(PARS)
+reload(PARS)

@@ -1,8 +1,9 @@
 import numpy as np
 import pylab as py
-
+import PyQt5
 import scipy.signal as signal
 import scipy.interpolate as inp
+
 
 def show_images(ims,num=None):
 
@@ -17,6 +18,7 @@ def show_images(ims,num=None):
         py.axis('off')
 
     py.show()
+    print('hello')
 
 
 
@@ -80,13 +82,30 @@ def make_data(num,PARS):
     G=[]
     GC=[]
     num_blobs = np.int32(np.floor(np.random.rand(num) * PARS['max_num_blobs']) + 1)
-
+    gauss_ker=None
+    if ('background' in PARS and PARS['background']):
+        gauss_ker=make_gauss(PARS)
     for nb in num_blobs:
-        g,gc=generate_image(PARS,num_blobs=nb)
+        g,gc=generate_image(PARS,num_blobs=nb,gauss_ker=gauss_ker)
         G.append(np.float32(g))
         GC.append(np.float32(gc))
 
     return([np.array(G),np.array(GC)])
+
+def make_gauss(PARS):
+    image_dim=32
+
+    x, y = np.meshgrid(range(np.int32(image_dim)), range(np.int32(image_dim)))
+
+    g = np.zeros(x.shape)
+    mx=16; my=16; si=.5*(PARS['sigma'][0]+PARS['sigma'][1])
+
+    g = np.exp(-(((x - mx) ** 2 + (y - my) ** 2) / (2.0 * si ** 2)))
+    g=g/np.sum(g)
+    sin=np.int32(np.round(si))
+    gg=PARS['background']*g[16-3*sin:16+3*sin,16-3*sin:16+3*sin]
+
+    return(gg)
 
 def make_blobs(mux,muy,sigmas, Amps, image_dim):
     x, y = np.meshgrid(range(np.int32(image_dim)), range(np.int32(image_dim)))
@@ -117,18 +136,14 @@ def clean_b(ii,jj,mux,muy,coarse_disp):
     return(ii,jj,mux,muy)
 
 # Make background
-def background(n):
-    im=np.random.randn(n,n)
+def background(n,gauss_ker=None):
+    imc=np.random.randn(n,n)
 
-    a=np.ones((3,3))/9.
-
-    imc=signal.convolve2d(im,a,'same')
-    imc=signal.convolve2d(imc,a,'same')
-    imc=signal.convolve2d(imc,a,'same')
+    imc=signal.convolve2d(imc,gauss_ker,'same')
 
     return(imc)
 
-def make_curve(image_dim):
+def make_curve(image_dim,PARS):
 
     n=image_dim
     dell=4
@@ -171,12 +186,12 @@ def make_curve(image_dim):
     # py.show()
 
     l=y0.shape[0]
-    g=make_blobs(y0,y1,np.repeat(2,l), np.repeat(1.,l),n)
+    g=make_blobs(y0,y1,np.repeat(PARS['curve_width'],l), np.repeat(1.,l),n)
     g=g/np.max(g)
 
     return(g)
 
-def generate_image(PARS,num_blobs=1):
+def generate_image(PARS,num_blobs=1,gauss_ker=None):
 
     image_dim=PARS['image_dim']
     coarse_disp=PARS['coarse_disp']
@@ -226,13 +241,14 @@ def generate_image(PARS,num_blobs=1):
     gc[:,:,PARS['num_blob_pars']-1]=np.logical_or(gc[:,:,0] != 0, gc[:,:,1]!=0)
 
     if ('background' in PARS and PARS['background']):
-        bgd=background(image_dim)
+        bgd=background(image_dim,gauss_ker=gauss_ker)
         bgd=bgd[:,:,np.newaxis]
         g=np.maximum(g,bgd)
 
     if ('curve' in PARS and PARS['curve']):
-        cr=make_curve(image_dim)
-        g=np.maximum(g,cr)
+        for c in range(PARS['curve']):
+            cr=make_curve(image_dim,PARS)
+            g=np.maximum(g,cr)
 
     return(g,gc)
 
@@ -284,25 +300,21 @@ def generate_image_from_estimate(PARS,hy,orig_image,orig_data):
     print(np.array([sigmas, sigmast]))
     print('As')
     print(np.array([As, Ast]))
+    print(py.get_backend())
+    py.ion()
     fig=py.figure(1)
-
     #py.subplot(1,3,1)
     #py.imshow(g[:,:,0])
     #py.title("Reconstruction")
-    py.figure(1)
     ax = fig.add_subplot(1, 1, 1)
-    #py.subplot(1,3,2)
     py.title("Original")
     py.imshow(orig_image[:,:,0])
     for mx,my,s in zip(mux,muy,sigmas):
         circle=py.Circle((mx,my),radius=s,color="r",fill=False)
         ax.add_artist(circle)
-    # py.subplot(1, 2, 2)
-    # py.title("Orig R")
-    # py.imshow(origg[:, :, 0])
     py.show()
     print("Hello")
-    py.close(1)
+    #py.close(1)
 
 
 
