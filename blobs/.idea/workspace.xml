@@ -6,7 +6,6 @@
       <change beforePath="$USER_HOME$/Box Sync/URFB/Conv_net_aux.py" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/Conv_net_aux.py" afterDir="false" />
       <change beforePath="$USER_HOME$/Box Sync/URFB/Conv_net_gpu.py" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/Conv_net_gpu.py" afterDir="false" />
       <change beforePath="$USER_HOME$/Box Sync/URFB/_pars/simpnet.txt" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/_pars/simpnet.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/blobs.py" beforeDir="false" afterPath="$PROJECT_DIR$/blobs.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -64,8 +63,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/blobs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="286">
-              <caret line="86" column="5" selection-start-line="86" selection-start-column="5" selection-end-line="86" selection-end-column="5" />
+            <state relative-caret-position="463">
+              <caret line="204" column="1" selection-start-line="204" selection-start-column="1" selection-end-line="204" selection-end-column="1" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -388,12 +387,12 @@
       <workItem from="1550575458985" duration="1366000" />
       <workItem from="1550576871069" duration="965000" />
       <workItem from="1550613874462" duration="1344000" />
-      <workItem from="1550694680603" duration="362000" />
+      <workItem from="1550694680603" duration="413000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="38489000" />
+    <option name="totallyTimeSpent" value="38540000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="733" extended-state="0" />
@@ -643,8 +642,8 @@ py.imshow(g[:,:,0])</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/blobs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="286">
-          <caret line="86" column="5" selection-start-line="86" selection-start-column="5" selection-end-line="86" selection-end-column="5" />
+        <state relative-caret-position="463">
+          <caret line="204" column="1" selection-start-line="204" selection-start-column="1" selection-end-line="204" selection-end-column="1" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
