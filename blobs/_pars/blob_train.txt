@@ -16,7 +16,7 @@ background:0
 curve:0
 curve_width:4.
 blob_dist:12
-num_blob_pars:4
+num_blob_pars:5
 hinge:False
 blob:True
 name:input1

@@ -140,8 +140,8 @@ def reload(PARS):
     with tf.Session() as sess:
         # Get data
         # Load model info
-        saver = tf.train.import_meta_graph('_blobs_clean/' + PARS['model'] + '.meta')
-        saver.restore(sess, '_blobs_clean/' + PARS['model'])
+        saver = tf.train.import_meta_graph(PARS['model'] + '/BL.meta')
+        saver.restore(sess,PARS['model']+'/BL')
         graph = tf.get_default_graph()
         # Setup the placeholders from the stored model.
         PLH = {}
@@ -201,5 +201,5 @@ image_dim = PARS['image_dim']
 PARS = process_parameters(net)
 num_blob_pars = PARS['num_blob_pars']
 
-run_new(PARS)
-#reload(PARS)
+#run_new(PARS)
+reload(PARS)
