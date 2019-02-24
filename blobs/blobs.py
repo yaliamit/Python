@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 import sys
+import subprocess as commands
 from generate_images import show_images, make_data, generate_bigger_images, generate_image_from_estimate, paste_batch
 from Conv_net_aux import plot_OUTPUT, process_parameters
 from network import recreate_network
@@ -123,7 +124,9 @@ def run_new(PARS):
     
         tf.add_to_collection("optimizer", train_step)
         saver = tf.train.Saver()
-        save_path = saver.save(sess, "_blobs/BL")
+        commands.check_output('rm -rf '+PARS['model'],shell=True)
+        commands.check_output('mkdir ' + PARS['model'], shell=True)
+        save_path = saver.save(sess, PARS['model']+'/BL')
         print("Model saved in path: %s" % save_path)
         print("DONE")
         sys.stdout.flush()
