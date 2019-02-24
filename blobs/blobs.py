@@ -123,7 +123,7 @@ def run_new(PARS):
     
         tf.add_to_collection("optimizer", train_step)
         saver = tf.train.Saver()
-        save_path = saver.save(sess, "_blobs/" + PARS['model'])
+        save_path = saver.save(sess, "_blobs/BL")
         print("Model saved in path: %s" % save_path)
         print("DONE")
         sys.stdout.flush()

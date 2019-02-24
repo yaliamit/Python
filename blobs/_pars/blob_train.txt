@@ -1,7 +1,7 @@
 batch_size:500
 model:_blobs_curve
 step_size:.01
-num_epochs:300
+num_epochs:3
 num_train:100000
 num_test:1000
 big_num_test:10
