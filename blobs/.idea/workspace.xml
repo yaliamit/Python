@@ -14,6 +14,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/blobs$runber__1_.coverage" NAME="runber (1) Coverage Results" MODIFIED="1550971893265" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/blobs$blobs.coverage" NAME="blobs Coverage Results" MODIFIED="1550969529986" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/blobs$tt.coverage" NAME="tt Coverage Results" MODIFIED="1550971803953" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_scripts" />
     <SUITE FILE_PATH="coverage/blobs$try.coverage" NAME="try Coverage Results" MODIFIED="1550017137688" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -207,7 +208,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.runber">
+  <component name="RunManager" selected="Python.runber (1)">
     <configuration default="true" type="tests" factoryName="Attests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -271,7 +272,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="generate_images" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="runber (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="blobs" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -284,8 +285,8 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/generate_images.py" />
-      <option name="PARAMETERS" value="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/runber.py" />
+      <option name="PARAMETERS" value="_pars/blob_train OUT" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -362,18 +363,18 @@
     <list>
       <item itemvalue="Python.blob_detector" />
       <item itemvalue="Python.blobs" />
-      <item itemvalue="Python.generate_images" />
       <item itemvalue="Python.try" />
       <item itemvalue="Python.runber" />
       <item itemvalue="Python.tt" />
+      <item itemvalue="Python.runber (1)" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.runber (1)" />
         <item itemvalue="Python.runber" />
         <item itemvalue="Python.tt" />
         <item itemvalue="Python.blobs" />
         <item itemvalue="Python.try" />
-        <item itemvalue="Python.generate_images" />
       </list>
     </recent_temporary>
   </component>
