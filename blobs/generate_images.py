@@ -8,8 +8,10 @@ import scipy.interpolate as inp
 def show_images(ims,num=None):
 
     py.figure(2)
+    py.figure(figsize=(10, 10))
     if (num is None):
         num=ims.shape[0]
+    
     rn=np.int32(np.sqrt(num))
     cn=np.int32(np.ceil(num/rn))
     for i in range(num):
@@ -21,6 +23,19 @@ def show_images(ims,num=None):
     print('hello')
 
 
+def add_noise(PARS,gauss_ker,g):
+
+    image_dim=PARS['image_dim']
+    if ('background' in PARS and PARS['background']):
+        bgd=background(image_dim,gauss_ker=gauss_ker)
+        bgd=bgd[:,:,np.newaxis]
+        g=np.maximum(g,bgd)
+
+    if ('curve' in PARS and PARS['curve']):
+        for c in range(PARS['curve']):
+            cr=make_curve(image_dim,PARS)
+            g=np.maximum(g,cr)
+    return(g)
 
 def generate_bigger_images(PARS):
     old_dim = np.int32(PARS['image_dim'])
@@ -86,7 +101,13 @@ def make_data(num,PARS):
     if ('background' in PARS and PARS['background']):
         gauss_ker=make_gauss(PARS)
     for nb in num_blobs:
-        g,gc=generate_image(PARS,num_blobs=nb,gauss_ker=gauss_ker)
+        g,gc=generate_image(PARS,num_blobs=nb)
+        gnoise=add_noise(PARS,gauss_ker,g)
+        if ('corr' in PARS and PARS['corr']):
+            g=np.stack([g,gnoise])
+            gc=np.stack([gc,gc])
+        else:
+            g=gnoise
         G.append(np.float32(g))
         GC.append(np.float32(gc))
 
@@ -191,7 +212,7 @@ def make_curve(image_dim,PARS):
 
     return(g)
 
-def generate_image(PARS,num_blobs=1,gauss_ker=None):
+def generate_image(PARS,num_blobs=1):
 
     image_dim=PARS['image_dim']
     coarse_disp=PARS['coarse_disp']
@@ -239,16 +260,6 @@ def generate_image(PARS,num_blobs=1,gauss_ker=None):
     #      np.std(np.concatenate([gc[tuple(mucs0)], gc[tuple(mucs1)]])))
 
     gc[:,:,PARS['num_blob_pars']-1]=np.logical_or(gc[:,:,0] != 0, gc[:,:,1]!=0)
-
-    if ('background' in PARS and PARS['background']):
-        bgd=background(image_dim,gauss_ker=gauss_ker)
-        bgd=bgd[:,:,np.newaxis]
-        g=np.maximum(g,bgd)
-
-    if ('curve' in PARS and PARS['curve']):
-        for c in range(PARS['curve']):
-            cr=make_curve(image_dim,PARS)
-            g=np.maximum(g,cr)
 
     return(g,gc)
 

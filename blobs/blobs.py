@@ -26,6 +26,9 @@ def run_epoch(train, PLH,OPS,PARS,sess,i, type='Training',mode='blob'):
         disto=0
         ca=0
         HY=[]
+        thresh=0
+        if (type=='Test'):
+            thresh=PARS['thresh']
         # Run disjoint batches on shuffled data
         for j in np.arange(0, len(y), batch_size):
             batch = (tr[j:j + batch_size], y[j:j + batch_size])
@@ -33,15 +36,16 @@ def run_epoch(train, PLH,OPS,PARS,sess,i, type='Training',mode='blob'):
                 if (type=='Training'):
                     csi,acc,_=sess.run([OPS['cs'], OPS['accuracy'], OPS['train_step']], 
                                        feed_dict={PLH['x_']: batch[0], PLH['y_']: batch[1], PLH['lr_']: step_size,
-                                           PLH['training_']:True})
+                                           PLH['training_']:True, PLH['thresh_']:thresh})
                     accon+=acc[0]
                     accop+=acc[1]
                     disto+=acc[2]
                     cso+=csi
                 else:
+
                     csi, acc, ts = sess.run([OPS['cs'], OPS['accuracy'],OPS['TS']], 
                                             feed_dict={PLH['x_']: batch[0], PLH['y_']: batch[1], PLH['lr_']: step_size,
-                                                                  PLH['training_']: False})
+                                                                  PLH['training_']: False,PLH['thresh_']:thresh})
                     accon+=acc[0]
                     accop+=acc[1]
                     disto+=acc[2]
@@ -85,7 +89,7 @@ def run_epoch(train, PLH,OPS,PARS,sess,i, type='Training',mode='blob'):
 def run_new(PARS):
 
     train=make_data(PARS['num_train'],PARS)
-    #show_images(train[0],num=10)
+    #show_images(train[0],num=100)
     val=make_data(PARS['num_val'],PARS)
     test=make_data(PARS['num_test'],PARS)
     
@@ -95,10 +99,11 @@ def run_new(PARS):
     PLH['y_'] = tf.placeholder(tf.float32, shape=[None,cdim,cdim,num_blob_pars],name="y_")
     PLH['training_'] = tf.placeholder(tf.bool, name="training_")
     PLH['lr_']=tf.placeholder(tf.float32,name="lr_")
+    PLH['thresh_']=tf.placeholder(tf.float32,name="thresh_")
     
     with tf.Session() as sess:
     
-        cs,accuracy,TS=recreate_network(PARS,PLH['x_'],PLH['y_'],PLH['training_'])
+        cs,accuracy,TS=recreate_network(PARS,PLH['x_'],PLH['y_'],PLH['training_'],PLH['thresh_'])
         if (minimizer == "Adam"):
             train_step = tf.train.AdamOptimizer(learning_rate=PLH['lr_']).minimize(cs)
         elif (minimizer == "SGD"):
@@ -152,7 +157,7 @@ def reload(PARS):
         PLH['y_'] = graph.get_tensor_by_name('y_:0')
         PLH['lr_'] = graph.get_tensor_by_name('lr_:0')
         PLH['training_'] = graph.get_tensor_by_name('training_:0')
-
+        PLH['thresh_'] = tf.placeholder(tf.float32, name="thresh_")
 
         accuracy=[]
 

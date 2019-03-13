@@ -1,7 +1,7 @@
 batch_size:500
 model:_blobs_curve
 step_size:.01
-num_epochs:300
+num_epochs:100
 num_train:100000
 num_test:1000
 big_num_test:10
@@ -19,6 +19,7 @@ blob_dist:12
 num_blob_pars:5
 hinge:False
 blob:True
+thresh:0
 name:input1
 name:conv1;num_filters:4;filter_size:(3,3);non_linearity:relu;parent:input1
 name:pool1;pool_size:(2, 2);stride:(2, 2);parent:conv1

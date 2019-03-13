@@ -37,100 +37,107 @@ def fully_connected_layer(input,num_features):
     fc = tf.matmul(input_flattened, W_fc) + b_fc
     return(fc)
 
-def recreate_network(PARS, x_, y_, training_):
+
+def get_parent(l, TS, x_):
+    shp = x_.get_shape().as_list()
+    if ('input' in l['parent']):
+        if (len(shp)==4):
+            parent=tf.expand_dims(x_,axis=0)
+        else:
+            parent=x_
+    else:
+        # Get list of parents
+        if (type(l['parent']) == list):
+            parent = []
+            for s in l['parent']:
+                for ts in TS:
+                    name, T = get_name(ts)
+                    if s in name:
+                        parent.append(T)
+        # Get single parent
+        else:
+            for ts in TS:
+                name, T = get_name(ts)
+                if l['parent'] in name:
+                    parent=T
+    return(parent)
+
+def get_numunits(l,PARS,shp):
+        if ('final' in l):
+            num_units = PARS['n_classes']
+        elif ('pre' in l):
+            num_units=np.int32(shp[-3]/PARS['coarse_disp'])*\
+                      np.int32(shp[-2]/PARS['coarse_disp'])*\
+                      PARS['num_blob_pars']
+        else:
+            num_units=l['num_units']
+        return(num_units)
+
+
+def recreate_network(PARS, x_, y_, training_, thresh_):
     TS = []
     joint_parent = {}
+    shp = x_.get_shape().as_list()
     for i, l in enumerate(PARS['layers']):
         parent = None
         if ('parent' in l):
-            if ('input' in l['parent']):
-                parent = x_
-            else:
-                # Get list of parents
-                if (type(l['parent']) == list):
-                    parent = []
-                    for s in l['parent']:
-                        for ts in TS:
-                            name, T = get_name(ts)
-                            if s in name:
-                                parent.append(T)
-                # Get single parent
-                else:
-                    for ts in TS:
-                        name, T = get_name(ts)
-                        if l['parent'] in name:
-                            parent = T
-        if ('conv' in l['name']):
-            scope_name = l['name']
-            if ('non_linearity' in l):
-                scope_name = l['name'] + '_' + l['non_linearity']
-            with tf.variable_scope(scope_name):
-                if('non_linearity' in l):
-                    out = conv_layer(parent, filter_size=list(l['filter_size']),
-                                     num_features=l['num_filters'])
-                    if (l['non_linearity'] == 'relu'):
-                        out = tf.nn.relu(out)
-                    elif (l['non_linearity'] == 'tanh'):
-                        out = tf.clip_by_value(PARS['nonlin_scale'] * out, -1., 1.)
-            TS.append(out)
+            parent=get_parent(l,TS, x_)
+            npa=np.array(parent.get_shape().as_list())[0]
+        scope_name = l['name']
+        if ('non_linearity' in l):
+            scope_name = l['name'] + '_' + l['non_linearity']
+        out=[]
+        with tf.variable_scope(scope_name):
+            if ('conv' in l['name']):
+                for i in range(npa):
+                    out.append(conv_layer(parent[i,:,:,:,:], filter_size=list(l['filter_size']),
+                                         num_features=l['num_filters']))
             # Dense layer
-        elif ('dens' in l['name']):
-                scope_name = l['name']
-                if ('final' in l):
-                    num_units = PARS['n_classes']
-                elif ('pre' in l):
-                    shp=x_.get_shape().as_list()
-                    num_units=np.int32(shp[1]/PARS['coarse_disp'])*\
-                              np.int32(shp[2]/PARS['coarse_disp'])*\
-                              PARS['num_blob_pars']
-                else:
-                    num_units=l['num_units']
-
-                if ('non_linearity' in l):
-                    scope_name=l['name']+'_'+l['non_linearity']
-                with tf.variable_scope(scope_name):
-                     #flattened=tf.contrib.layers.flatten(parent)
-                     #flattened=flattened[:,:,tf.newaxis]
-                     #out=tf.contrib.layers.fully_connected(parent,num_outputs=num_units,activation_fn=None,trainable=True)
-                     out = fully_connected_layer(parent, num_features=num_units)
-                     if ('non_linearity' in l):
-                        if(l['non_linearity'] == 'relu'):
-                            out=tf.nn.relu(out)
-                        elif(l['non_linearity'] == 'tanh'):
-                            out= tf.clip_by_value(PARS['nonlin_scale'] * out, -1., 1.)
-                TS.append(out)
-
+            elif ('dens' in l['name']):
+                num_units=get_numunits(l,PARS,shp)
+                for i in range(npa):
+                    out.append(fully_connected_layer(parent[i,], num_features=num_units))
             # Pooling layer
-        elif ('pool' in l['name']):
-                with tf.variable_scope(l['name']):
-                    out=tf.nn.max_pool(parent, ksize=[1,l['pool_size'][0],l['pool_size'][1],1], strides=[1,l['stride'][0],l['stride'][1],1], padding='SAME')
-                    TS.append(out)
+            elif ('pool' in l['name']):
+                for i in range(npa):
+                    out.append(tf.nn.max_pool(parent[i,:,:,:,:], ksize=[1,l['pool_size'][0],l['pool_size'][1],1], strides=[1,l['stride'][0],
+                                                        l['stride'][1],1], padding='SAME'))
             # Drop layer
-        elif ('drop' in l['name']):
-                with tf.variable_scope(l['name']):
-                    out=tf.layers.dropout(input, rate=l['drop'], training=training_)
-                    TS.append(out)
-        elif ('concatsum' in l['name']):
-                with tf.variable_scope(l['name']):
-                    out = tf.add(parent[0], parent[1])
-                    TS.append(out)
-                    # This is a sum layer hold its joint_parent with another other layer
-                    j_parent = find_joint_parent(l, l['parent'], PARS)
-                    if (j_parent is not None):
-                        name, T = get_name(TS[-1])
-                        joint_parent[name] = j_parent
-        elif ('reshape' in l['name']):
-            if ('final' in l):
-                with tf.variable_scope(l['name']):
-                    shp = x_.get_shape().as_list()
-                    shape=[-1,np.int32(shp[1]/PARS['coarse_disp']),np.int32(shp[2]/PARS['coarse_disp']
-                                                                                 ), PARS['num_blob_pars']]
-                    out=tf.reshape(parent,shape)
-            else:
-                with tf.variable_scope(l['name']):
-                    out = tf.reshape(parent, [-1,]+list(l['new_shape']))
+            elif ('drop' in l['name']):
+                for i in range(npa):
+                    out.append(tf.layers.dropout(parent[i,:,:,:,:], rate=l['drop'], training=training_))
+            # Sum two layers - used for resent
+            elif ('concatsum' in l['name']):
+                for i in range(npa):
+                    out.append(tf.add(parent[0][i,:,:,:,:], parent[1][i,:,:,:,:]))
+                # This is a sum layer hold its joint_parent with another other layer
+                j_parent = find_joint_parent(l, l['parent'], PARS)
+                if (j_parent is not None):
+                    name, T = get_name(TS[-1])
+                    joint_parent[name] = j_parent
+            elif ('reshape' in l['name']):
+                if ('final' in l):
+                        shape=[-1,np.int32(shp[-3]/PARS['coarse_disp']),np.int32(shp[-2]/PARS['coarse_disp'])
+                                                           , PARS['num_blob_pars']]
+                        for i in range(npa):
+                            out.append(tf.reshape(parent[i,],shape))
+                else:
+                        for i in range(npa):
+                            out.append(tf.reshape(parent[i,:,:,:,:], [-1,]+list(l['new_shape'])))
+            if ('non_linearity' in l):
+                if (l['non_linearity'] == 'relu'):
+                    out = tf.nn.relu(out)
+                elif (l['non_linearity'] == 'tanh'):
+                    out = tf.clip_by_value(PARS['nonlin_scale'] * out, -1., 1.)
+
+            if (type(out) == list):
+                    out=tf.stack(out)
+
+        if ('input' not in l['name']):
             TS.append(out)
     last_layer = TS[-1]
+    if (len(last_layer.get_shape().as_list())> len(shp)):
+        last_layer=last_layer[0,]
     with tf.variable_scope('loss'):
         # Hinge loss
         if (PARS['hinge']):
@@ -161,7 +168,7 @@ def recreate_network(PARS, x_, y_, training_):
             loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=TS[-1]), name="LOSS")
 
     # Accuracy computation
-    last_layer = tf.identity(TS[-1],name="LAST")
+    last_layer = tf.identity(last_layer,name="LAST")
     if (PARS['hinge']):
         with tf.variable_scope('helpers'):
             correct_prediction = tf.equal(tf.argmax(last_layer, 1), tf.argmax(y_, 1))
@@ -171,7 +178,7 @@ def recreate_network(PARS, x_, y_, training_):
             nbp = PARS['num_blob_pars'] - 1
             ya = y_[:, :, :, nbp]
             accuracy = []
-            hy = tf.cast(tf.greater(last_layer[:, :, :, nbp], 0),dtype=tf.float32)
+            hy = tf.cast(tf.greater(last_layer[:, :, :, nbp], thresh_),dtype=tf.float32)
 
             acn=tf.reduce_sum(tf.abs(hy - ya) * ya) \
                / tf.reduce_sum(ya)
