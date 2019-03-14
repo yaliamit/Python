@@ -216,5 +216,7 @@ image_dim = PARS['image_dim']
 PARS = process_parameters(net)
 num_blob_pars = PARS['num_blob_pars']
 
-#run_new(PARS)
-reload(PARS)
+if ('train' in net):
+    run_new(PARS)
+else:
+    reload(PARS)
