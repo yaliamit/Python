@@ -119,12 +119,16 @@ def make_gauss(PARS):
     x, y = np.meshgrid(range(np.int32(image_dim)), range(np.int32(image_dim)))
 
     g = np.zeros(x.shape)
-    mx=16; my=16; si=.5*(PARS['sigma'][0]+PARS['sigma'][1])
+    mx=16; my=16; si=PARS['noise_sigma']
 
-    g = np.exp(-(((x - mx) ** 2 + (y - my) ** 2) / (2.0 * si ** 2)))
-    g=g/np.sum(g)
-    sin=np.int32(np.round(si))
-    gg=PARS['background']*g[16-3*sin:16+3*sin,16-3*sin:16+3*sin]
+    if (si==0):
+        g[16,16]=1.
+        sin=1
+    else:
+        g = np.exp(-(((x - mx) ** 2 + (y - my) ** 2) / (2.0 * si ** 2)))
+        g=g/np.sqrt(np.sum(g*g))
+        sin=np.int32(np.round(3*si))
+    gg=PARS['background']*g[16-sin:16+sin,16-sin:16+sin]
 
     return(gg)
 
@@ -292,7 +296,7 @@ def generate_image_from_estimate(PARS,hy,orig_image,orig_data):
 
     coarse_disp=PARS['coarse_disp']
     #image_dim=PARS['image_dim']
-    hys = hy[:,:,PARS['num_blob_pars']-1]>0
+    hys = hy[:,:,PARS['num_blob_pars']-1]>PARS['thresh']
     [ii, jj] = np.where(hys > 0)
 
 

@@ -7,6 +7,7 @@ import subprocess as commands
 from generate_images import show_images, make_data, generate_bigger_images, generate_image_from_estimate, paste_batch
 from Conv_net_aux import plot_OUTPUT, process_parameters
 from network import recreate_network
+import pylab as py
 
 
 def run_epoch(train, PLH,OPS,PARS,sess,i, type='Training',mode='blob'):
@@ -157,7 +158,7 @@ def reload(PARS):
         PLH['y_'] = graph.get_tensor_by_name('y_:0')
         PLH['lr_'] = graph.get_tensor_by_name('lr_:0')
         PLH['training_'] = graph.get_tensor_by_name('training_:0')
-        PLH['thresh_'] = tf.placeholder(tf.float32, name="thresh_")
+        PLH['thresh_'] = graph.get_tensor_by_name('thresh_:0')
 
         accuracy=[]
 
@@ -170,7 +171,13 @@ def reload(PARS):
         TS = graph.get_tensor_by_name('LAST:0')
         OPS={}
         OPS['cs']=cs;OPS['accuracy']=accuracy;OPS['TS']=TS
-
+        vars=[]
+        for v in tf.trainable_variables():
+            vars.append(sess.run(v))
+        for i in range(4):
+            py.subplot(1,4,i+1)
+            py.imshow(vars[0][:,:,0,i])
+        py.show()
         # Get the minimization operation from the stored model
         #if (Train):
         #    train_step_new = tf.get_collection("optimizer")[0]
@@ -209,5 +216,5 @@ image_dim = PARS['image_dim']
 PARS = process_parameters(net)
 num_blob_pars = PARS['num_blob_pars']
 
-run_new(PARS)
-#reload(PARS)
+#run_new(PARS)
+reload(PARS)
