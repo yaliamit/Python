@@ -1,5 +1,5 @@
 seed:45239
-num_epochs:100
+num_epochs:1000
 non_trainable:newdensp,
 nval:1000
 data_set:mnist
