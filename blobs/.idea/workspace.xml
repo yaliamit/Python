@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b0a43a12-b84a-4e4c-a6df-2c878dbf68c8" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/_pars/simpnet_test.txt" beforeDir="false" afterPath="$PROJECT_DIR$/_pars/simpnet_test.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blobs.py" beforeDir="false" afterPath="$PROJECT_DIR$/blobs.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -28,7 +26,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/blobs.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="251">
@@ -61,11 +59,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/_pars/simpnet_test.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="14" selection-start-line="2" selection-start-column="14" selection-end-line="2" selection-end-column="14" />
+            <state relative-caret-position="15">
+              <caret line="1" column="12" selection-start-line="1" selection-start-column="12" selection-end-line="1" selection-end-column="12" />
             </state>
           </provider>
         </entry>
@@ -469,15 +467,16 @@
       <workItem from="1552228904246" duration="873000" />
       <workItem from="1552511516758" duration="2747000" />
       <workItem from="1552588177477" duration="5177000" />
-      <workItem from="1554997623183" duration="5356000" />
+      <workItem from="1554997623183" duration="5488000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="69373000" />
+    <option name="totallyTimeSpent" value="69505000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1600" height="751" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Project" order="0" visible="true" weight="0.27086008" />
       <window_info id="Structure" order="1" weight="0.25288832" />
@@ -838,13 +837,6 @@ for i in range(4):
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_pars/simpnet_test.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="14" selection-start-line="2" selection-start-column="14" selection-end-line="2" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Box Sync/URFB/Conv_data.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="101">
@@ -859,6 +851,13 @@ for i in range(4):
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_pars/simpnet_test.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="12" selection-start-line="1" selection-start-column="12" selection-end-line="1" selection-end-column="12" />
         </state>
       </provider>
     </entry>
