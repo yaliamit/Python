@@ -33,7 +33,7 @@ def run_epoch(train, PLH,OPS,PARS,sess,i, type='Training'):
         ca=0
         HY=[]
         thresh=0
-        if (type=='Test'):
+        if (type=='Test' and mode=='blob'):
             thresh=PARS['thresh']
         # Run disjoint batches on shuffled data
         for j in np.arange(0, len(y), batch_size):
