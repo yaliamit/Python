@@ -4,9 +4,9 @@ non_trainable:newdensp,
 nval:1000
 data_set:mnist
 batch_size:500
-step_size:.001
+step_size:1.
 debug:False
-minimizer:Adam
+minimizer:SGD
 num_train:60000
 off_class_fac:1.
 hinge:False
@@ -18,5 +18,5 @@ name:input1
 #name:pool1;pool_size:(3, 3);stride:(3, 3);parent:conv1R
 #name:drop1;drop:0.8;parent:pool1
 name:newdensp;num_units:2000;non_linearity:relu;parent:input1
-name:drop2;drop:0.;parent:newdensp
+name:drop2;drop:0.5;parent:newdensp
 name:newdensf;num_units:10;non_linearity:soft_max;parent:drop2;final:final
