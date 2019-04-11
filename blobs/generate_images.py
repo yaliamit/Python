@@ -94,24 +94,27 @@ def paste_batch(HYY, old_dim, new_dim, coarse_disp, nbp):
 
 
 def make_data(num,PARS):
-    G=[]
-    GC=[]
-    num_blobs = np.int32(np.floor(np.random.rand(num) * PARS['max_num_blobs']) + 1)
-    gauss_ker=None
-    if ('background' in PARS and PARS['background']):
-        gauss_ker=make_gauss(PARS)
-    for nb in num_blobs:
-        g,gc=generate_image(PARS,num_blobs=nb)
-        gnoise=add_noise(PARS,gauss_ker,g)
-        if ('corr' in PARS and PARS['corr']):
-            g=np.stack([g,gnoise])
-            gc=np.stack([gc,gc])
-        else:
-            g=gnoise
-        G.append(np.float32(g))
-        GC.append(np.float32(gc))
 
-    return([np.array(G),np.array(GC)])
+    if ('blob' in PARS):
+        G=[]
+        GC=[]
+        num_blobs = np.int32(np.floor(np.random.rand(num) * PARS['max_num_blobs']) + 1)
+        gauss_ker=None
+        if ('background' in PARS and PARS['background']):
+            gauss_ker=make_gauss(PARS)
+        for nb in num_blobs:
+            g,gc=generate_image(PARS,num_blobs=nb)
+            gnoise=add_noise(PARS,gauss_ker,g)
+            if ('corr' in PARS and PARS['corr']):
+                g=np.stack([g,gnoise])
+                gc=np.stack([gc,gc])
+            else:
+                g=gnoise
+            G.append(np.float32(g))
+            GC.append(np.float32(gc))
+
+        return([np.array(G),np.array(GC)])
+
 
 def make_gauss(PARS):
     image_dim=32

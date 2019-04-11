@@ -78,6 +78,7 @@ def recreate_network(PARS, x_, y_, training_, thresh_):
     TS = []
     joint_parent = {}
     shp = x_.get_shape().as_list()
+    shp_y=y_.get_shape().as_list()
     for i, l in enumerate(PARS['layers']):
         parent = None
         if ('parent' in l):
@@ -105,7 +106,7 @@ def recreate_network(PARS, x_, y_, training_, thresh_):
             # Drop layer
             elif ('drop' in l['name']):
                 for i in range(npa):
-                    out.append(tf.layers.dropout(parent[i,:,:,:,:], rate=l['drop'], training=training_))
+                    out.append(tf.layers.dropout(parent[i], rate=l['drop'], training=training_))
             # Sum two layers - used for resent
             elif ('concatsum' in l['name']):
                 for i in range(npa):
@@ -136,8 +137,12 @@ def recreate_network(PARS, x_, y_, training_, thresh_):
         if ('input' not in l['name']):
             TS.append(out)
     last_layer = TS[-1]
-    if (len(last_layer.get_shape().as_list())> len(shp)):
-        last_layer=last_layer[0,]
+    if ('blob' in PARS):
+        if len(last_layer.get_shape().as_list())> len(shp):
+            last_layer=last_layer[0,]
+    else:
+        if len(last_layer.get_shape().as_list())> len(shp_y):
+            last_layer = last_layer[0,]
     with tf.variable_scope('loss'):
         # Hinge loss
         if (PARS['hinge']):
@@ -169,11 +174,8 @@ def recreate_network(PARS, x_, y_, training_, thresh_):
 
     # Accuracy computation
     last_layer = tf.identity(last_layer,name="LAST")
-    if (PARS['hinge']):
-        with tf.variable_scope('helpers'):
-            correct_prediction = tf.equal(tf.argmax(last_layer, 1), tf.argmax(y_, 1))
-            accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32), name="ACC")
-    elif(PARS['blob']):
+
+    if('blob' in PARS):
         with tf.variable_scope('helpers'):
             nbp = PARS['num_blob_pars'] - 1
             ya = y_[:, :, :, nbp]
@@ -195,6 +197,10 @@ def recreate_network(PARS, x_, y_, training_, thresh_):
             temps=tf.squeeze(tf.gather(temp,iyas,axis=0))
             ac=tf.reduce_mean(tf.reduce_sum(tf.sqrt(temps),axis=[1,2])/yas)
             accuracy.append(tf.identity(ac,name="DIST"))
+    else:
+        with tf.variable_scope('helpers'):
+            correct_prediction = tf.equal(tf.argmax(last_layer, 1), tf.argmax(y_, 1))
+            accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32), name="ACC")
 
     print('joint_parent', joint_parent)
     # joint_parent contains information on layers that are parents to two other layers which affects the gradient propagation.

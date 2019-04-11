@@ -2,17 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b0a43a12-b84a-4e4c-a6df-2c878dbf68c8" name="Default" comment="">
-      <change beforePath="$USER_HOME$/Box Sync/URFB/.idea/URFB.iml" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/.idea/URFB.iml" afterDir="false" />
-      <change beforePath="$USER_HOME$/Box Sync/URFB/.idea/misc.xml" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$USER_HOME$/Box Sync/URFB/Conv_net_aux.py" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/Conv_net_aux.py" afterDir="false" />
-      <change beforePath="$USER_HOME$/Box Sync/URFB/Conv_net_gpu.py" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/Conv_net_gpu.py" afterDir="false" />
-      <change beforePath="$USER_HOME$/Box Sync/URFB/_pars/simpnet.txt" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/_pars/simpnet.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/blobs.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/blobs.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/_pars/simpnet_test.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../neurons/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../neurons/wave.py" afterDir="false" />
+      <change beforePath="$USER_HOME$/Box Sync/URFB/Conv_data.py" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/Conv_data.py" afterDir="false" />
+      <change beforePath="$USER_HOME$/Box Sync/URFB/Conv_layers.py" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/Conv_layers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Heqing/CTVAE/aff.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Heqing/STVAE/aff.out" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Heqing/TVAE/aff.out" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_pars/blob_train.txt" beforeDir="false" afterPath="$PROJECT_DIR$/_pars/blob_train.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/blobs.py" beforeDir="false" afterPath="$PROJECT_DIR$/blobs.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generate_images.py" beforeDir="false" afterPath="$PROJECT_DIR$/generate_images.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/network.py" beforeDir="false" afterPath="$PROJECT_DIR$/network.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -22,7 +23,7 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/blobs$runber__1_.coverage" NAME="runber (1) Coverage Results" MODIFIED="1550971984976" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/blobs$blobs.coverage" NAME="blobs Coverage Results" MODIFIED="1552590086551" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/blobs$blobs.coverage" NAME="blobs Coverage Results" MODIFIED="1555002269917" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/blobs$tt.coverage" NAME="tt Coverage Results" MODIFIED="1550971803953" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_scripts" />
     <SUITE FILE_PATH="coverage/blobs$try.coverage" NAME="try Coverage Results" MODIFIED="1550017137688" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/blobs$runber.coverage" NAME="runber Coverage Results" MODIFIED="1550971859486" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_scripts" />
@@ -36,23 +37,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/generate_images.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="113">
-              <caret line="22" selection-start-line="22" selection-end-line="22" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/blobs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="138">
-              <caret line="184" selection-start-line="184" selection-end-line="184" />
+            <state relative-caret-position="154">
+              <caret line="140" column="44" selection-start-line="140" selection-start-column="44" selection-end-line="140" selection-end-column="44" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -63,17 +52,26 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/network.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="274">
-              <caret line="97" column="16" selection-start-line="97" selection-start-column="16" selection-end-line="97" selection-end-column="16" />
+            <state relative-caret-position="1988">
+              <caret line="187" column="39" lean-forward="true" selection-start-line="187" selection-start-column="39" selection-end-line="187" selection-end-column="39" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/_pars/blob_train.txt">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/_pars/simpnet_test.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="1" column="24" selection-start-line="1" selection-start-column="24" selection-end-line="1" selection-end-column="24" />
+            <state relative-caret-position="30">
+              <caret line="2" column="6" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/Box Sync/URFB/Conv_data.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="39">
+              <caret line="173" selection-start-line="173" selection-end-line="173" />
             </state>
           </provider>
         </entry>
@@ -81,8 +79,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/_pars/blob_test.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="15" column="13" lean-forward="true" selection-start-line="14" selection-end-line="15" selection-end-column="13" />
+            <state relative-caret-position="-187">
+              <caret column="14" selection-start-column="14" selection-end-column="14" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/Box Sync/URFB/_pars/simpnet.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="285">
+              <caret line="19" lean-forward="true" selection-start-line="18" selection-end-line="19" />
             </state>
           </provider>
         </entry>
@@ -111,6 +118,12 @@
       <find>extract_mus</find>
       <find>num_</find>
       <find>corr</find>
+      <find>make_data</find>
+      <find>get_data</find>
+      <find>PAR</find>
+      <find>nch</find>
+      <find>shp</find>
+      <find>get_mnist</find>
     </findStrings>
     <replaceStrings>
       <replace>model</replace>
@@ -128,7 +141,6 @@
         <option value="$USER_HOME$/Box Sync/URFB/Conv_net_aux.py" />
         <option value="$PROJECT_DIR$/_scripts/runrcc.py" />
         <option value="$PROJECT_DIR$/blob_detector_a.py" />
-        <option value="$PROJECT_DIR$/_scripts/mrunber.py" />
         <option value="$USER_HOME$/Box Sync/URFB/Conv_net_gpu.py" />
         <option value="$PROJECT_DIR$/try.py" />
         <option value="$PROJECT_DIR$/_pars/blob1.txt" />
@@ -136,11 +148,14 @@
         <option value="$PROJECT_DIR$/runber.py" />
         <option value="$PROJECT_DIR$/_scripts/ttt.py" />
         <option value="$PROJECT_DIR$/_scripts/runber.py" />
-        <option value="$PROJECT_DIR$/network.py" />
-        <option value="$PROJECT_DIR$/generate_images.py" />
-        <option value="$PROJECT_DIR$/_pars/blob_test.txt" />
-        <option value="$PROJECT_DIR$/blobs.py" />
         <option value="$PROJECT_DIR$/_pars/blob_train.txt" />
+        <option value="$PROJECT_DIR$/_scripts/mrunber.py" />
+        <option value="$PROJECT_DIR$/_pars/blob_test.txt" />
+        <option value="$PROJECT_DIR$/generate_images.py" />
+        <option value="$PROJECT_DIR$/network.py" />
+        <option value="$PROJECT_DIR$/_pars/simpnet_test.txt" />
+        <option value="$USER_HOME$/Box Sync/URFB/Conv_data.py" />
+        <option value="$PROJECT_DIR$/blobs.py" />
       </list>
     </option>
   </component>
@@ -207,9 +222,9 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/_pars" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/_blobs" />
-      <recent name="$PROJECT_DIR$/_pars" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -280,7 +295,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/blobs.py" />
-      <option name="PARAMETERS" value="_pars/blob_test" />
+      <option name="PARAMETERS" value="_pars/simpnet_test" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -433,24 +448,25 @@
       <workItem from="1552228772182" duration="89000" />
       <workItem from="1552228904246" duration="873000" />
       <workItem from="1552511516758" duration="2747000" />
-      <workItem from="1552588177477" duration="1950000" />
+      <workItem from="1552588177477" duration="5177000" />
+      <workItem from="1554997623183" duration="4548000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="60790000" />
+    <option name="totallyTimeSpent" value="68565000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1600" height="751" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" order="0" visible="true" weight="0.1508344" />
-      <window_info id="Structure" order="1" weight="0.25" />
+      <window_info id="Project" order="0" visible="true" weight="0.27086008" />
+      <window_info id="Structure" order="1" weight="0.25288832" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.270073" />
-      <window_info anchor="bottom" id="Debug" order="3" visible="true" weight="0.24842767" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.5361635" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39308175" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -463,7 +479,7 @@
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" x="226" y="62" width="1001" height="618" id="SciView" internal_type="SLIDING" order="3" weight="0.73234916" />
+      <window_info anchor="right" x="226" y="62" width="1001" height="618" id="SciView" internal_type="SLIDING" order="3" weight="0.37676507" />
       <window_info anchor="right" id="Database" order="4" />
     </layout>
   </component>
@@ -497,28 +513,63 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/blobs.py</url>
-          <line>134</line>
+          <line>156</line>
           <option name="timeStamp" value="33" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/network.py</url>
-          <line>123</line>
+          <line>124</line>
           <option name="timeStamp" value="48" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/generate_images.py</url>
-          <line>330</line>
-          <option name="timeStamp" value="52" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/blobs.py</url>
-          <line>148</line>
+          <line>170</line>
           <option name="timeStamp" value="53" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/blobs.py</url>
-          <line>184</line>
+          <line>206</line>
           <option name="timeStamp" value="56" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/blobs.py</url>
+          <line>51</line>
+          <option name="timeStamp" value="71" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/blobs.py</url>
+          <line>15</line>
+          <option name="timeStamp" value="74" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/blobs.py</url>
+          <line>127</line>
+          <option name="timeStamp" value="78" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/blobs.py</url>
+          <line>110</line>
+          <option name="timeStamp" value="79" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/Box Sync/URFB/Conv_data.py</url>
+          <line>173</line>
+          <option name="timeStamp" value="80" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/blobs.py</url>
+          <line>112</line>
+          <option name="timeStamp" value="81" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/blobs.py</url>
+          <line>138</line>
+          <option name="timeStamp" value="83" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/blobs.py</url>
+          <line>140</line>
+          <option name="timeStamp" value="84" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -532,6 +583,36 @@
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateCodeFragment">
+      <expression>
+        <expression-string>print(batch[1][0,:])</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>print(ts[0,:])</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>print(vars[0][:,:,0,3])</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>print(vars[0][:,:,0,2])</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>print(vars[0][:,:,0,1])</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>print(vars[0][:,:,0,0])</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>import pylab as py
 for i in range(4):
@@ -557,36 +638,6 @@ for i in range(4):
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
-      <expression>
-        <expression-string>print(vars[0][:,:,0,0])</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>vars=sess.run(var)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>var = [v for v in tf.trainable_variables() if 'conv1' in name</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>print(gg)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>np.sum(g)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>np.sum(g*g)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
     </expressions>
   </component>
   <component name="editorHistoryManager">
@@ -597,13 +648,6 @@ for i in range(4):
     <entry file="file:///anaconda2/envs/myenv/lib/python3.6/site-packages/tensorflow/python/framework/ops.py" />
     <entry file="file://$PROJECT_DIR$/blob_detector.py" />
     <entry file="file://$PROJECT_DIR$/_pars/blob1.py" />
-    <entry file="file://$USER_HOME$/Box Sync/URFB/_pars/simpnet.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="27" column="74" selection-start-line="18" selection-end-line="27" selection-end-column="74" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/conv_net_gpu.py" />
     <entry file="file://$USER_HOME$/Box Sync/URFB/Conv_layers.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -621,13 +665,6 @@ for i in range(4):
     </entry>
     <entry file="file:///anaconda2/envs/myenv/lib/python3.6/site-packages/tensorflow/python/client/session.py" />
     <entry file="file://$PROJECT_DIR$/blob_detector_a.py" />
-    <entry file="file://$PROJECT_DIR$/_scripts/mrunber.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-413">
-          <caret line="29" selection-start-line="29" selection-end-line="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda2/envs/myenv/lib/python3.6/importlib/_bootstrap.py" />
     <entry file="file://$USER_HOME$/anaconda2/envs/myenv/lib/python3.6/site-packages/numpy/core/numeric.py" />
     <entry file="file://$USER_HOME$/anaconda2/envs/myenv/lib/python3.6/site-packages/bezier/curve.py" />
@@ -642,13 +679,6 @@ for i in range(4):
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Box Sync/URFB/Conv_net_aux.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="169">
-          <caret line="218" column="47" selection-start-line="218" selection-start-column="47" selection-end-line="218" selection-end-column="47" />
         </state>
       </provider>
     </entry>
@@ -670,19 +700,6 @@ for i in range(4):
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Box Sync/URFB/Conv_data.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/_scripts/runber.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1260">
-          <caret line="88" selection-start-line="88" selection-end-line="88" />
-          <folding>
-            <element signature="e#0#29#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/_scripts/ttt.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
@@ -690,13 +707,6 @@ for i in range(4):
           <folding>
             <element signature="e#0#29#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Box Sync/URFB/Conv_net_gpu.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4185">
-          <caret line="283" column="46" selection-start-line="283" selection-start-column="46" selection-end-line="283" selection-end-column="46" />
         </state>
       </provider>
     </entry>
@@ -719,54 +729,113 @@ for i in range(4):
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Box Sync/URFB/run_conv.py">
+    <entry file="file://$PROJECT_DIR$/_scripts/runber.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="21">
-          <caret line="27" column="34" selection-start-line="27" selection-start-column="34" selection-end-line="27" selection-end-column="34" />
+        <state relative-caret-position="1215">
+          <caret line="85" column="81" selection-start-line="79" selection-start-column="4" selection-end-line="85" selection-end-column="81" />
           <folding>
-            <element signature="e#19#29#0" expanded="true" />
+            <element signature="e#0#29#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/network.py">
+    <entry file="file://$PROJECT_DIR$/_scripts/mrunber.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="274">
-          <caret line="97" column="16" selection-start-line="97" selection-start-column="16" selection-end-line="97" selection-end-column="16" />
+        <state relative-caret-position="900">
+          <caret line="64" column="21" selection-start-line="64" selection-start-column="21" selection-end-line="64" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_pars/blob_train.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="12" selection-start-line="7" selection-start-column="12" selection-end-line="7" selection-end-column="12" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/generate_images.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="113">
-          <caret line="22" selection-start-line="22" selection-end-line="22" />
+        <state relative-caret-position="497">
+          <caret line="116" selection-start-line="116" selection-end-line="116" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/blobs.py">
+    <entry file="file://$USER_HOME$/Box Sync/URFB/run_conv.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="184" selection-start-line="184" selection-end-line="184" />
+        <state relative-caret-position="291">
+          <caret line="43" column="8" lean-forward="true" selection-start-line="43" selection-start-column="8" selection-end-line="43" selection-end-column="89" />
           <folding>
-            <element signature="e#0#23#0" expanded="true" />
+            <element signature="e#19#29#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Box Sync/URFB/Conv_net_aux.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="937">
+          <caret line="285" column="21" selection-start-line="285" selection-start-column="18" selection-end-line="285" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.7/site-packages/tensorflow/python/ops/array_ops.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="83">
+          <caret line="653" selection-start-line="653" selection-end-line="653" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Box Sync/URFB/_pars/simpnet.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="19" lean-forward="true" selection-start-line="18" selection-end-line="19" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/_pars/blob_test.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="15" column="13" lean-forward="true" selection-start-line="14" selection-end-line="15" selection-end-column="13" />
+        <state relative-caret-position="-187">
+          <caret column="14" selection-start-column="14" selection-end-column="14" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_pars/blob_train.txt">
+    <entry file="file://$USER_HOME$/Box Sync/URFB/Conv_net_gpu.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="24" selection-start-line="1" selection-start-column="24" selection-end-line="1" selection-end-column="24" />
+        <state relative-caret-position="509">
+          <caret line="274" column="50" lean-forward="true" selection-start-line="274" selection-start-column="50" selection-end-line="274" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/network.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1988">
+          <caret line="187" column="39" lean-forward="true" selection-start-line="187" selection-start-column="39" selection-end-line="187" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_pars/simpnet_test.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="6" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Box Sync/URFB/Conv_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="39">
+          <caret line="173" selection-start-line="173" selection-end-line="173" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/blobs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="154">
+          <caret line="140" column="44" selection-start-line="140" selection-start-column="44" selection-end-line="140" selection-end-column="44" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
