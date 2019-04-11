@@ -123,7 +123,18 @@ def run_new(PARS):
     
         cs,accuracy,TS=recreate_network(PARS,PLH['x_'],PLH['y_'],PLH['training_'],PLH['thresh_'])
         tvars = tf.trainable_variables()
-        g_vars = [var for var in tvars if 'newdensf' in var.name]
+        g_vars=tvars
+        if ('non_trainable' in PARS):
+            g_vars=[]
+            for var in tvars:
+                inn=True
+                for nt in PARS['non_trainable']:
+                    if nt in var.name:
+                        inn=False
+                        break
+                if inn:
+                    g_vars.append(var)
+            #g_vars = [var for var in tvars if 'newdensf' in var.name]
 
         if (minimizer == "Adam"):
             train_step = tf.train.AdamOptimizer(learning_rate=PLH['lr_']).minimize(cs,var_list=g_vars)

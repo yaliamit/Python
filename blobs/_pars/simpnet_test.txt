@@ -1,5 +1,6 @@
 seed:45239
 num_epochs:500
+non_trainable:
 nval:0
 data_set:mnist
 batch_size:500
