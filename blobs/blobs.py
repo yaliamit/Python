@@ -89,10 +89,28 @@ def run_epoch(train, PLH,OPS,PARS,sess,i, type='Training'):
         sys.stdout.flush()
         return(HY)
 
+def get_stats():
 
+    tvars = tf.trainable_variables()
+    for t in tvars:
+        if 'W' in t.name:
+            W=t.eval()
+            print(t.name,np.max(W),np.min(W),np.std(W))
 
-
-
+def get_trainable(PARS):
+        tvars = tf.trainable_variables()
+        g_vars=tvars
+        if ('non_trainable' in PARS):
+            g_vars=[]
+            for var in tvars:
+                inn=True
+                for nt in PARS['non_trainable']:
+                    if nt in var.name:
+                        inn=False
+                        break
+                if inn:
+                    g_vars.append(var)
+        return g_vars
 
 
 def run_new(PARS):
@@ -122,19 +140,8 @@ def run_new(PARS):
     with tf.Session() as sess:
     
         cs,accuracy,TS=recreate_network(PARS,PLH['x_'],PLH['y_'],PLH['training_'],PLH['thresh_'])
-        tvars = tf.trainable_variables()
-        g_vars=tvars
-        if ('non_trainable' in PARS):
-            g_vars=[]
-            for var in tvars:
-                inn=True
-                for nt in PARS['non_trainable']:
-                    if nt in var.name:
-                        inn=False
-                        break
-                if inn:
-                    g_vars.append(var)
-            #g_vars = [var for var in tvars if 'newdensf' in var.name]
+        g_vars=get_trainable(PARS)
+
 
         if (minimizer == "Adam"):
             train_step = tf.train.AdamOptimizer(learning_rate=PLH['lr_']).minimize(cs,var_list=g_vars)
@@ -143,10 +150,9 @@ def run_new(PARS):
         OPS={}
         OPS['cs']=cs; OPS['accuracy']=accuracy; OPS['TS']=TS; OPS['train_step']=train_step
 
-
-
         sess.run(tf.global_variables_initializer())
-        #HH=sess.run([TS,],feed_dict={PLH['x_']: train[0][0:500], PLH['y_']: train[1][0:500]})
+
+        get_stats()
         for i in range(num_epochs):  # number of epochs
             run_epoch(train,PLH,OPS,PARS,sess,i)
             if (np.mod(i, 1) == 0 and val[0] is not None):

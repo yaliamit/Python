@@ -27,12 +27,16 @@ def conv_layer(input,filter_size=[3,3],num_features=[1]):
     conv = tf.nn.conv2d(input, W, strides=[1, 1, 1, 1], padding='SAME')+b
     return conv
 
-def fully_connected_layer(input,num_features):
+def fully_connected_layer(input,num_features,type=None):
     # Make sure input is flattened.
     flat_dim=np.int32(np.array(input.get_shape().as_list())[1:].prod())
     input_flattened = tf.reshape(input, shape=[-1,flat_dim])
     shape=[flat_dim,num_features]
-    W_fc = tf.get_variable('W',shape=shape)
+    if (type=='normal'):
+        W=np.float32(np.random.normal(0,1./(np.sqrt(flat_dim+num_features)),shape))
+        W_fc = tf.get_variable('W',initializer=W)
+    else:
+        W_fc = tf.get_variable('W',shape=shape)
     b_fc = tf.get_variable('b',shape=[num_features],initializer=tf.zeros_initializer)
     fc = tf.matmul(input_flattened, W_fc) + b_fc
     return(fc)
@@ -97,7 +101,7 @@ def recreate_network(PARS, x_, y_, training_, thresh_):
             elif ('dens' in l['name']):
                 num_units=get_numunits(l,PARS,shp)
                 for i in range(npa):
-                    out.append(fully_connected_layer(parent[i,], num_features=num_units))
+                    out.append(fully_connected_layer(parent[i,], num_features=num_units,type='normal'))
             # Pooling layer
             elif ('pool' in l['name']):
                 for i in range(npa):

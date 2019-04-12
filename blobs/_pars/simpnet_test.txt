@@ -1,12 +1,12 @@
 seed:45239
 num_epochs:1000
 non_trainable:newdensp,
-nval:0
+nval:5000
 data_set:mnist
 batch_size:500
-step_size:1.
+step_size:.001
 debug:False
-minimizer:SGD
+minimizer:Adam
 num_train:60000
 off_class_fac:1.
 hinge:False
