@@ -33,7 +33,7 @@ def fully_connected_layer(input,num_features,type=None):
     input_flattened = tf.reshape(input, shape=[-1,flat_dim])
     shape=[flat_dim,num_features]
     if (type=='normal'):
-        W=np.float32(np.random.normal(0,1./(np.sqrt(flat_dim+num_features)),shape))
+        W=np.float32(np.random.normal(0,3./(np.sqrt(flat_dim+num_features)),shape))
         W_fc = tf.get_variable('W',initializer=W)
     else:
         W_fc = tf.get_variable('W',shape=shape)
