@@ -2,10 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b0a43a12-b84a-4e4c-a6df-2c878dbf68c8" name="Default" comment="">
+      <change beforePath="$USER_HOME$/Box Sync/URFB/Conv_layers.py" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/Conv_layers.py" afterDir="false" />
       <change beforePath="$USER_HOME$/Box Sync/URFB/Conv_net_aux.py" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/Conv_net_aux.py" afterDir="false" />
-      <change beforePath="$USER_HOME$/Box Sync/URFB/_pars/simpnet_test.txt" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/_pars/simpnet_test.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_pars/simpnet_test.txt" beforeDir="false" afterPath="$PROJECT_DIR$/_pars/simpnet_test.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/network.py" beforeDir="false" afterPath="$PROJECT_DIR$/network.py" afterDir="false" />
+      <change beforePath="$USER_HOME$/Box Sync/URFB/Conv_net_gpu.py" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/Conv_net_gpu.py" afterDir="false" />
+      <change beforePath="$USER_HOME$/Box Sync/URFB/_pars/simpnet.txt" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/_pars/simpnet.txt" afterDir="false" />
+      <change beforePath="$USER_HOME$/Box Sync/URFB/run_conv.py" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/run_conv.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -33,8 +35,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/Box Sync/URFB/run_conv.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="166">
-              <caret line="47" column="30" lean-forward="true" selection-start-line="47" selection-start-column="30" selection-end-line="47" selection-end-column="30" />
+            <state relative-caret-position="181">
+              <caret line="48" column="30" lean-forward="true" selection-start-line="48" selection-start-column="30" selection-end-line="48" selection-end-column="30" />
               <folding>
                 <element signature="e#19#29#0" expanded="true" />
               </folding>
@@ -75,8 +77,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/Box Sync/URFB/Conv_net_gpu.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-193">
-              <caret line="274" column="50" lean-forward="true" selection-start-line="274" selection-start-column="50" selection-end-line="274" selection-end-column="50" />
+            <state relative-caret-position="2">
+              <caret line="287" column="46" lean-forward="true" selection-start-line="287" selection-start-column="46" selection-end-line="287" selection-end-column="46" />
             </state>
           </provider>
         </entry>
@@ -94,7 +96,7 @@
         <entry file="file://$USER_HOME$/Box Sync/URFB/Conv_net_aux.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="819">
-              <caret line="338" column="34" lean-forward="true" selection-start-line="338" selection-start-column="34" selection-end-line="338" selection-end-column="34" />
+              <caret line="336" column="34" lean-forward="true" selection-start-line="336" selection-start-column="34" selection-end-line="336" selection-end-column="34" />
               <folding>
                 <element signature="e#29#58#0" expanded="true" />
               </folding>
@@ -479,12 +481,12 @@
       <workItem from="1554997623183" duration="6008000" />
       <workItem from="1555004931460" duration="315000" />
       <workItem from="1555006467121" duration="1011000" />
-      <workItem from="1555079540384" duration="4573000" />
+      <workItem from="1555079540384" duration="4807000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="75924000" />
+    <option name="totallyTimeSpent" value="76158000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1600" height="794" extended-state="0" />
@@ -495,7 +497,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.49189985" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.46980855" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.38586158" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -534,7 +536,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="python-line">
           <url>file://$USER_HOME$/Box Sync/URFB/Conv_net_gpu.py</url>
-          <line>289</line>
+          <line>293</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -825,8 +827,8 @@ cwd = os.getcwd()</expression-string>
     </entry>
     <entry file="file://$USER_HOME$/Box Sync/URFB/run_conv.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="166">
-          <caret line="47" column="30" lean-forward="true" selection-start-line="47" selection-start-column="30" selection-end-line="47" selection-end-column="30" />
+        <state relative-caret-position="181">
+          <caret line="48" column="30" lean-forward="true" selection-start-line="48" selection-start-column="30" selection-end-line="48" selection-end-column="30" />
           <folding>
             <element signature="e#19#29#0" expanded="true" />
           </folding>
@@ -836,7 +838,7 @@ cwd = os.getcwd()</expression-string>
     <entry file="file://$USER_HOME$/Box Sync/URFB/Conv_net_aux.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="819">
-          <caret line="338" column="34" lean-forward="true" selection-start-line="338" selection-start-column="34" selection-end-line="338" selection-end-column="34" />
+          <caret line="336" column="34" lean-forward="true" selection-start-line="336" selection-start-column="34" selection-end-line="336" selection-end-column="34" />
           <folding>
             <element signature="e#29#58#0" expanded="true" />
           </folding>
@@ -845,8 +847,8 @@ cwd = os.getcwd()</expression-string>
     </entry>
     <entry file="file://$USER_HOME$/Box Sync/URFB/Conv_net_gpu.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-193">
-          <caret line="274" column="50" lean-forward="true" selection-start-line="274" selection-start-column="50" selection-end-line="274" selection-end-column="50" />
+        <state relative-caret-position="2">
+          <caret line="287" column="46" lean-forward="true" selection-start-line="287" selection-start-column="46" selection-end-line="287" selection-end-column="46" />
         </state>
       </provider>
     </entry>
