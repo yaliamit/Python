@@ -3,7 +3,7 @@
   <component name="NewModuleRootManager">
     <content url="file://$USER_HOME$/Box Sync/URFB" />
     <content url="file://$MODULE_DIR$" />
-    <orderEntry type="jdk" jdkName="Python 3.7.1 (~/anaconda3/bin/python)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.6 (myenv)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TestRunnerService">

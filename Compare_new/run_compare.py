@@ -1,4 +1,4 @@
-import mnist
+.import mnist
 import numpy as np
 import theano
 import theano.sparse as sparse

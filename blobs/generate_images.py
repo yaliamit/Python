@@ -3,7 +3,45 @@ import pylab as py
 import PyQt5
 import scipy.signal as signal
 import scipy.interpolate as inp
+from Conv_data import get_data
 
+def add_nois(train,sigma):
+    nois = np.random.normal(size=train[0].shape) * sigma
+    trainn = train[0]+nois
+    return trainn
+
+def add_coordinate(train, val, test, PARS):
+    if ('noise_sigma' in PARS and PARS['noise_sigma']>=0):
+        trainn = add_nois(train, PARS['noise_sigma'])
+        valn = add_nois(val, PARS['noise_sigma'])
+        testn = add_nois(test, PARS['noise_sigma'])
+        if ('corr' in PARS and PARS['corr']):
+            train = (np.array([train[0], trainn]), train[1])
+            val=(np.array([val[0],valn]),val[1])
+            test=(np.array([test[0],testn]),test[1])
+        else:
+            train=(np.expand_dims(trainn, axis=0),train[1])
+            test=(np.expand_dims(testn,axis=0),test[1])
+            val=(np.expand_dims(valn,axis=0),val[1])
+    else:
+        train = (np.expand_dims(train[0], axis=0), train[1])
+        val = (np.expand_dims(val[0],axis=0), val[1])
+        test = (np.expand_dims(test[0],axis=0), test[1])
+    return train,val,test
+
+
+def acquire_data(PARS,type='class'):
+    if ('blob' in PARS):
+
+        train=make_data(PARS['num_train'],PARS)
+        #show_images(train[0],num=100)
+        val=make_data(PARS['num_val'],PARS)
+        test=make_data(PARS['num_test'],PARS)
+        image_dim = PARS['image_dim']
+    else:
+        train, val, test, image_dim = get_data(PARS)
+        train, val, test = add_coordinate(train,val,test,PARS)
+    return train, val, test, image_dim
 
 def show_images(ims,num=None):
 
@@ -27,8 +65,8 @@ def add_noise(PARS,gauss_ker,g):
 
     image_dim=PARS['image_dim']
     if ('background' in PARS and PARS['background']):
-        bgd=background(image_dim,gauss_ker=gauss_ker)
-        bgd=bgd[:,:,np.newaxis]
+        bgd=background(image_dim,gauss_ker,PARS['nchannels'])
+
         g=np.maximum(g,bgd)
 
     if ('curve' in PARS and PARS['curve']):
@@ -46,7 +84,7 @@ def generate_bigger_images(PARS):
     PARS['num_test'] = PARS['big_num_test']
     test = make_data(PARS['num_test'], PARS)
     test_batch = make_batch(test, old_dim, np.int32(PARS['coarse_disp']))
-    PARS['batch_size'] = np.minimum(PARS['batch_size'], test_batch[0].shape[0])
+    PARS['batch_size'] = np.minimum(PARS['batch_size'], test_batch[0].shape[1])
 
     return (test, test_batch)
     #
@@ -54,12 +92,12 @@ def generate_bigger_images(PARS):
 
 def make_batch(test, old_dim, coarse_disp):
     tbatch = []
-    for t in test[0]:
+    for t in test[0][0]:
         for i in np.arange(0, t.shape[0], old_dim):
             for j in np.arange(0, t.shape[1], old_dim):
                 tbatch.append(t[i:i + old_dim, j:j + old_dim, :])
 
-    tbatch = np.array(tbatch)
+    tbatch = np.expand_dims(np.array(tbatch),axis=0)
     cbatch = []
     coarse_dim = np.int32(old_dim / coarse_disp)
     for tt in test[1]:
@@ -107,13 +145,20 @@ def make_data(num,PARS):
             gnoise=add_noise(PARS,gauss_ker,g)
             if ('corr' in PARS and PARS['corr']):
                 g=np.stack([g,gnoise])
-                gc=np.stack([gc,gc])
+                #gc=np.stack([gc,gc])
             else:
                 g=gnoise
             G.append(np.float32(g))
             GC.append(np.float32(gc))
+        G=np.array(G)
 
-        return([np.array(G),np.array(GC)])
+        GC=np.array(GC)
+        if len(G.shape)==5:
+            G=G.transpose((1,0,2,3,4))
+        else:
+            G = np.expand_dims(G, axis=0)
+            #GC=GC.transpose((1,0,2,3,4))
+        return(G,GC)
 
 
 def make_gauss(PARS):
@@ -131,18 +176,28 @@ def make_gauss(PARS):
         g = np.exp(-(((x - mx) ** 2 + (y - my) ** 2) / (2.0 * si ** 2)))
         g=g/np.sqrt(np.sum(g*g))
         sin=np.int32(np.round(3*si))
-    gg=PARS['background']*g[16-sin:16+sin,16-sin:16+sin]
-
+    gg=PARS['background']*g[16-sin:16+sin+1,16-sin:16+sin+1]
+    s=gg.shape+(PARS['nchannels'],)
+    gg=np.dot(np.ones((PARS['nchannels'],1)),gg.ravel().reshape((1,-1))).transpose().reshape(s)
     return(gg)
 
-def make_blobs(mux,muy,sigmas, Amps, image_dim):
+
+cols=[[1.,0,0],[0.,1.,0],[0,0,1.]]
+
+def make_blobs(mux,muy,sigmas, Amps, image_dim, nchannels=1):
     x, y = np.meshgrid(range(np.int32(image_dim)), range(np.int32(image_dim)))
 
-    g = np.zeros(x.shape)
+    g = np.zeros(x.shape+(nchannels,))
     for mx, my, si, a in zip(mux, muy,sigmas,Amps):
-        g = g + a*np.exp(-(((x - mx) ** 2 + (y - my) ** 2) / (2.0 * si ** 2)))
+        gt = a*np.exp(-(((x - mx) ** 2 + (y - my) ** 2) / (2.0 * si ** 2)))
+        if (nchannels==3):
+            col=np.array(cols[np.int32(np.floor(np.random.rand()*3))]).reshape(3,1)
+            gt=np.dot(col,gt.ravel().reshape((1,-1))).transpose().reshape(g.shape)
+        else:
+            gt=gt.reshape(gt.shape+(1,))
+        g = g + gt
         #g = np.maximum(g,np.exp(-(((x - mx) ** 2 + (y - my) ** 2) / (2.0 * sigma ** 2))))
-    g = np.reshape(g, g.shape + (1,))
+    #g = np.reshape(g, g.shape + (1,))
 
     return(g)
 
@@ -164,10 +219,11 @@ def clean_b(ii,jj,mux,muy,coarse_disp):
     return(ii,jj,mux,muy)
 
 # Make background
-def background(n,gauss_ker=None):
-    imc=np.random.randn(n,n)
+def background(n,gauss_ker,nchannels):
+    imc=np.random.randn(n,n,nchannels)
 
-    imc=signal.convolve2d(imc,gauss_ker,'same')
+    for i in range(nchannels):
+        imc[:,:,i]=signal.convolve2d(imc[:,:,i],gauss_ker[:,:,i],'same')
 
     return(imc)
 
@@ -214,7 +270,7 @@ def make_curve(image_dim,PARS):
     # py.show()
 
     l=y0.shape[0]
-    g=make_blobs(y0,y1,np.repeat(PARS['curve_width'],l), np.repeat(1.,l),n)
+    g=make_blobs(y0,y1,np.repeat(PARS['curve_width'],l), np.repeat(1.,l),n,nchannels=PARS['nchannels'])
     g=g/np.max(g)
 
     return(g)
@@ -244,7 +300,7 @@ def generate_image(PARS,num_blobs=1):
 
     As=PARS['Amps'][0]+np.random.rand(num_blobs)*(PARS['Amps'][1]-PARS['Amps'][0])
 
-    g = make_blobs(mux, muy, sigmas, As, image_dim)
+    g = make_blobs(mux, muy, sigmas, As, image_dim, PARS['nchannels'])
     #py.imshow(g[:,:,0])
     #py.show()
     mux = np.array(mux) #* np.float32(image_dim / 2) + image_dim / 2
@@ -306,10 +362,10 @@ def generate_image_from_estimate(PARS,hy,orig_image,orig_data):
     mux,muy,sigmas,As=extract_mus(hy,ii,jj,coarse_disp,PARS)
 
 
-    g=make_blobs(list(mux),list(muy),list(sigmas),list(As),image_dim)
+    g=make_blobs(list(mux),list(muy),list(sigmas),list(As),image_dim, PARS['nchannels'])
     [It,Jt]=np.where(orig_data[:,:,PARS['num_blob_pars']-1]==1)
     muxt,muyt,sigmast,Ast=extract_mus(orig_data,It,Jt,coarse_disp,PARS)
-    origg=make_blobs(list(muxt),list(muyt),list(sigmast),list(Ast),image_dim)
+
     print('mux')
     print(np.array([mux, muxt]))
     print('muy')
@@ -321,12 +377,10 @@ def generate_image_from_estimate(PARS,hy,orig_image,orig_data):
     print(py.get_backend())
     py.ion()
     fig=py.figure(1)
-    #py.subplot(1,3,1)
-    #py.imshow(g[:,:,0])
-    #py.title("Reconstruction")
+
     ax = fig.add_subplot(1, 1, 1)
     py.title("Original")
-    py.imshow(orig_image[:,:,0])
+    py.imshow(orig_image[0,:,:,0])
     for mx,my,s in zip(mux,muy,sigmas):
         circle=py.Circle((mx,my),radius=s,color="r",fill=False)
         ax.add_artist(circle)

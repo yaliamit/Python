@@ -12,17 +12,17 @@ import matplotlib.pyplot as plt
 
 # Import all the different architecture / model
 #   Standard Variational Autoencoder
-import vae.var_auto_encoder as vae  
+import var_auto_encoder as vae
 # Transformer Variational Autoencoder, affine transformation, no prior on spatial
-import tvae_1.prev_transf_var_auto_encoder as tvae
+import prev_transf_var_auto_encoder as tvae
 # Transformer Variational Autoencoder, affine transformation, diagonal normal prior on spatial
-import tvae_aff_mu_sig.tvae as tvae_aff_mu_sig 
-import tvae_aff_sig.tvae as tvae_aff_sig
+import tvae_aff_mu_sig.tvae as tvae_aff_mu_sig
+from  tvae_aff_sig import tvae as tvae_aff_sig
 # Transformer Variational Autoencoder, affine transformation reparametrized with 5 d.o.f, diagonal normal prior on spatial
 import tvae_aff_mu_sig_repar.tvae as tvae_aff_mu_sig_repar
 # Transformer Variational Autoencoder, TPS transformation, no prior on spatial
 import tps_vae.tps_vae as tps_vae
-import tvae_1_sig.prev_transf_var_auto_encoder_3 as tvae_sig_3
+import prev_transf_var_auto_encoder_3 as tvae_sig_3
 import conv_tvae.tvae as conv_tvae
 import conv_vae.vae as conv_vae
 # import tvae_1_mu_sig.tvae as tvae_mu_sig
