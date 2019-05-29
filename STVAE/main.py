@@ -1,13 +1,14 @@
 import torch
-from torch import nn, optim
 from torchvision import transforms, datasets
 from models import STVAE
 import numpy as np
 import subprocess as commands
 import pylab as py
 from torchvision.utils import save_image
-
+import os
 import argparse
+
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 parser = argparse.ArgumentParser(
     description='Variational Autoencoder with Spatial Transformation'
@@ -70,16 +71,17 @@ torch.save(model.state_dict(), 'output/'+args.type+'_'+args.transformation+'_'+s
 
 
 x=model.sample_from_z_prior(theta=torch.zeros(6))
+aa=x.numpy().squeeze()
 
-aa=np.array(x.data).squeeze()
+
 py.figure(figsize=(10, 10))
 for t in range(100):
     py.subplot(10,10,t+1)
     py.imshow(aa[t],cmap='gray')
     py.axis('off')
 
-py.show()
-print('hello')
+#py.show()
+#print('hello')
 py.savefig('output/fig_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers))
 
 #bt = commands.check_output('mv OUTPUT.txt OUTPUT_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.txt',shell=True)

@@ -117,7 +117,7 @@ class STVAE(nn.Module):
 
     def sample_from_z_prior(self,theta=None):
         s = torch.randn(self.bsz, self.s_dim).to(self.dv)
-        theta=theta.to(self.dv)
+        #theta=theta.to(self.dv)
         if (self.type=='stvae' or self.type=='vae'):
             s=self.s2s(s)
         z = s.narrow(1, self.u_dim, self.z_dim)
@@ -135,9 +135,9 @@ class STVAE(nn.Module):
             else:
                 self.theta=u+self.id
                 grid = self.gridGen(self.theta+self.id)
-            x = F.grid_sample(x.view(-1,self.h,self.w).unsqueeze(1), grid)
+            x = F.grid_sample(x.view(-1,self.h,self.w).unsqueeze(1), grid).detach()
         else:
-            x=x.view(-1,self.h,self.w)
+            x=x.view(-1,self.h,self.w).detach()
         return x
 
     def loss_V(self, recon_x, x, mu, logvar):
