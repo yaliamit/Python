@@ -82,5 +82,5 @@ py.show()
 print('hello')
 py.savefig('output/fig_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers))
 
-bt = commands.check_output('mv OUTPUT.txt OUTPUT_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.txt',shell=True)
+#bt = commands.check_output('mv OUTPUT.txt OUTPUT_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.txt',shell=True)
 
