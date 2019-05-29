@@ -24,7 +24,7 @@ parser.add_argument('--gpu', default=False, action='store_true',help='whether to
 parser.add_argument('--seed', type=int, default=1111, help='random seed (default: 1111)')
 parser.add_argument('--num_train',type=int,default=10000,help='num train (default: 10000)')
 parser.add_argument('--mb_size',type=int,default=500,help='mb_size (default: 500)')
-parser.add_argument('--model',type=int,default='base',help='model (default: base)')
+parser.add_argument('--model',default='base',help='model (default: base)')
 
 args = parser.parse_args()
 print(args)
