@@ -33,7 +33,7 @@ use_gpu = args.gpu and torch.cuda.is_available()
 
 torch.manual_seed(args.seed)
 
-device = torch.device("cuda" if use_gpu else "cpu")
+device = torch.device("cuda:1" if use_gpu else "cpu")
 
 kwargs = {'num_workers': 1, 'pin_memory': True} if use_gpu else {}
 # add 'download=True' when use it for the first time
