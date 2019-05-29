@@ -117,7 +117,7 @@ class STVAE(nn.Module):
 
     def sample_from_z_prior(self,theta=None):
         s = torch.randn(self.bsz, self.s_dim).to(self.dv)
-        #theta=theta.to(self.dv)
+        theta=theta.to(self.dv)
         if (self.type=='stvae' or self.type=='vae'):
             s=self.s2s(s)
         z = s.narrow(1, self.u_dim, self.z_dim)
