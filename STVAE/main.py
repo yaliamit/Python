@@ -71,7 +71,7 @@ torch.save(model.state_dict(), 'output/'+args.type+'_'+args.transformation+'_'+s
 
 
 x=model.sample_from_z_prior(theta=torch.zeros(6))
-aa=x.numpy().squeeze()
+aa=x.cpu().numpy().squeeze()
 
 
 py.figure(figsize=(10, 10))
