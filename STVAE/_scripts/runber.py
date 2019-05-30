@@ -26,7 +26,7 @@ lOUTNAME='_OUTPUTS/'+outname+'-br.txt'
 #     except:
 #         print('gpu 1 info failed')
 
-ss='/opt/anaconda/anaconda3/bin/python main.py $(cat'+' '+sys.argv[1]+') '+' '.join(sys.argv[2:l-1]) + ' >'+OUTNAME
+ss='/opt/anaconda3_beta/bin/python main.py $(cat'+' '+sys.argv[1]+') '+' '.join(sys.argv[2:l-1]) + ' >'+OUTNAME
 if 'loc' in outname:
     os.system(ss)
 else:
