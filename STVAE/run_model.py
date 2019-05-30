@@ -4,16 +4,19 @@ from torchvision import transforms, datasets
 import numpy as np
 import pylab as py
 import argparse
+import os
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
+
 parser = argparse.ArgumentParser(
     description='Variational Autoencoder with Spatial Transformation'
 )
 
 parser.add_argument('--transformation', default='aff',help='type of transformation: aff or tps')
-parser.add_argument('--type', default='vae',help='type of transformation: aff or tps')
+parser.add_argument('--type', default='tvae',help='type of transformation: aff or tps')
 parser.add_argument('--sdim', type=int, default=16, help='dimension of s')
 parser.add_argument('--zdim', type=int, default=10, help='dimension of z')
 parser.add_argument('--hdim', type=int, default=256, help='dimension of h')
-parser.add_argument('--num_hlayers', type=int, default=0, help='number of hlayers')
+parser.add_argument('--num_hlayers', type=int, default=1, help='number of hlayers')
 parser.add_argument('--nepoch', type=int, default=10, help='number of training epochs')
 parser.add_argument('--gpu', default=False, action='store_true',help='whether to run in the GPU')
 parser.add_argument('--seed', type=int, default=1111, help='random seed (default: 1111)')
@@ -46,11 +49,12 @@ te = torch.utils.data.DataLoader(dataset=mnist_te,
 
 
 model1 = STVAE(h, w, device, args).to(device)
-model1.load_state_dict(torch.load('output/'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.pt'))
+model1.load_state_dict(torch.load('bak/output/'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.pt'))
 model1.eval()
 
 model1.test(te,0)
-x=model1.sample_from_z_prior(theta=None)
+theta=torch.zeros(6)
+x=model1.sample_from_z_prior(theta=theta)
 
 py.figure(figsize=(10, 10))
 aa=np.array(x.data).squeeze()
