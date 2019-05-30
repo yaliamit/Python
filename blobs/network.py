@@ -363,7 +363,7 @@ def run_epoch(train, PLH, OPS, PARS, sess, i, type='Training'):
                                                        PLH['training_']: False, PLH['index_']: ind, PLH['global_L2_fac_']:glf})
                 acco += acc
                 cso += csi
-                l2cso += ts[0]
+                #l2cso += ts[0]
             ca += 1
 
         print('Epoch time', time.time() - t1)
@@ -376,6 +376,6 @@ def run_epoch(train, PLH, OPS, PARS, sess, i, type='Training'):
         else:
             print(type + " accn:\t\t\t{:.6f}".format(acco / ca))
             print(type + " loss:\t\t\t{:.6f}".format(cso / ca))
-            print(type + " L2Loss:\t\t\t{:.6f}".format(l2cso/ca))
+            #print(type + " L2Loss:\t\t\t{:.6f}".format(l2cso/ca))
         sys.stdout.flush()
         return (HY)

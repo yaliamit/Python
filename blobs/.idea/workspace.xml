@@ -2,15 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b0a43a12-b84a-4e4c-a6df-2c878dbf68c8" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/_pars/deep_test.txt" afterDir="false" />
       <change beforePath="$USER_HOME$/Box Sync/URFB/Conv_data.py" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/Conv_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Compare_new/run_compare.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Compare_new/run_compare.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/blobs.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/blobs.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$USER_HOME$/Box Sync/URFB/Conv_layers.py" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/Conv_layers.py" afterDir="false" />
+      <change beforePath="$USER_HOME$/Box Sync/URFB/Conv_net_aux.py" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/Conv_net_aux.py" afterDir="false" />
+      <change beforePath="$USER_HOME$/Box Sync/URFB/Conv_net_gpu.py" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/Conv_net_gpu.py" afterDir="false" />
+      <change beforePath="$USER_HOME$/Box Sync/URFB/_pars/simpnet.txt" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/_pars/simpnet.txt" afterDir="false" />
+      <change beforePath="$USER_HOME$/Box Sync/URFB/_pars/simpnet_exp.txt" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/_pars/simpnet_exp.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_pars/blob_train.txt" beforeDir="false" afterPath="$PROJECT_DIR$/_pars/blob_train.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/_pars/simpnet_test.txt" beforeDir="false" afterPath="$PROJECT_DIR$/_pars/simpnet_test.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blobs.py" beforeDir="false" afterPath="$PROJECT_DIR$/blobs.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generate_images.py" beforeDir="false" afterPath="$PROJECT_DIR$/generate_images.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/network.py" beforeDir="false" afterPath="$PROJECT_DIR$/network.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -21,7 +21,7 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/blobs$runber__1_.coverage" NAME="runber (1) Coverage Results" MODIFIED="1550971984976" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/blobs$blobs.coverage" NAME="blobs Coverage Results" MODIFIED="1556830360729" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/blobs$blobs.coverage" NAME="blobs Coverage Results" MODIFIED="1559186164580" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/blobs$tt.coverage" NAME="tt Coverage Results" MODIFIED="1550971803953" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_scripts" />
     <SUITE FILE_PATH="coverage/blobs$try.coverage" NAME="try Coverage Results" MODIFIED="1555005184541" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/blobs$runber.coverage" NAME="runber Coverage Results" MODIFIED="1550971859486" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_scripts" />
@@ -39,7 +39,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/blobs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="555">
+            <state relative-caret-position="-286">
               <caret line="46" selection-start-line="46" selection-end-line="46" />
             </state>
           </provider>
@@ -48,8 +48,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/_pars/simpnet_test.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="25" column="40" selection-start-line="25" selection-start-column="40" selection-end-line="25" selection-end-column="40" />
+            <state relative-caret-position="150">
+              <caret line="10" column="11" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/_pars/deep_test.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="135">
+              <caret line="9" column="11" selection-start-line="9" selection-start-column="11" selection-end-line="9" selection-end-column="11" />
             </state>
           </provider>
         </entry>
@@ -66,8 +75,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/network.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="899">
-              <caret line="98" column="24" selection-start-line="98" selection-start-column="24" selection-end-line="98" selection-end-column="24" />
+            <state relative-caret-position="215">
+              <caret line="376" selection-start-line="376" selection-end-line="376" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -159,14 +168,15 @@
         <option value="$PROJECT_DIR$/_pars/blob_train.txt" />
         <option value="$PROJECT_DIR$/generate_images.py" />
         <option value="$PROJECT_DIR$/blobs.py" />
-        <option value="$PROJECT_DIR$/network.py" />
         <option value="$PROJECT_DIR$/_pars/simpnet_test.txt" />
+        <option value="$PROJECT_DIR$/_pars/deep_test.txt" />
+        <option value="$PROJECT_DIR$/network.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="256" />
-    <option name="y" value="40" />
+    <option name="x" value="111" />
+    <option name="y" value="25" />
     <option name="width" value="1169" />
     <option name="height" value="725" />
   </component>
@@ -296,7 +306,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/blobs.py" />
-      <option name="PARAMETERS" value="_pars/simpnet_test" />
+      <option name="PARAMETERS" value="_pars/deep_test" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -468,23 +478,24 @@
       <workItem from="1557423084779" duration="175000" />
       <workItem from="1557498824546" duration="265000" />
       <workItem from="1557772272070" duration="533000" />
+      <workItem from="1559185595688" duration="637000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="121848000" />
+    <option name="totallyTimeSpent" value="122485000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="256" y="40" width="1169" height="725" extended-state="0" />
+    <frame x="111" y="25" width="1169" height="725" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" id="Project" order="0" visible="true" weight="0.27595386" />
+      <window_info id="Project" order="0" visible="true" weight="0.2803904" />
       <window_info id="Structure" order="1" weight="0.25288832" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.39016393" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.3622951" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.37213114" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -785,20 +796,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/blobs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="555">
-          <caret line="46" selection-start-line="46" selection-end-line="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/_pars/simpnet_test.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="25" column="40" selection-start-line="25" selection-start-column="40" selection-end-line="25" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Box Sync/URFB/Conv_data.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2790">
@@ -816,10 +813,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/_pars/simpnet_test.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="11" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_pars/deep_test.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="11" selection-start-line="9" selection-start-column="11" selection-end-line="9" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/blobs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-286">
+          <caret line="46" selection-start-line="46" selection-end-line="46" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/network.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="899">
-          <caret line="98" column="24" selection-start-line="98" selection-start-column="24" selection-end-line="98" selection-end-column="24" />
+        <state relative-caret-position="215">
+          <caret line="376" selection-start-line="376" selection-end-line="376" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
