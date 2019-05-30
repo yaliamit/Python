@@ -50,7 +50,7 @@ else:
 
 
 
-    os.system('ssh amit@marx.uchicago.edu "ssh amit@bernie.uchicago.edu \'cd /ga/amit/Python/STVAE; ./runthingsBR.txt & \' & " & ')
+    os.system('ssh amit@marx.uchicago.edu "ssh amit@bernie.uchicago.edu \'cd /ga/amit/Python/STVAE; ./runthingsBR.txt \' & " & ')
 
     ny='no'
     while (ny != ''):
