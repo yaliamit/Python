@@ -24,10 +24,9 @@ parser.add_argument('--zdim', type=int, default=10, help='dimension of z')
 parser.add_argument('--hdim', type=int, default=256, help='dimension of h')
 parser.add_argument('--num_hlayers', type=int, default=1, help='number of hlayers')
 parser.add_argument('--nepoch', type=int, default=100, help='number of training epochs')
-#parser.add_argument('--gpu', type=bool, default=False, action='store_true',help='whether to run in the GPU')
 parser.add_argument('--gpu', type=bool, default=False,help='whether to run in the GPU')
 parser.add_argument('--seed', type=int, default=1111, help='random seed (default: 1111)')
-parser.add_argument('--num_train',type=int,default=10000,help='num train (default: 10000)')
+parser.add_argument('--num_train',type=int,default=60000,help='num train (default: 10000)')
 parser.add_argument('--mb_size',type=int,default=500,help='mb_size (default: 500)')
 parser.add_argument('--model',default='base',help='model (default: base)')
 
@@ -41,25 +40,13 @@ device = torch.device("cuda:1" if use_gpu else "cpu")
 print(device)
 print(use_gpu)
 kwargs = {'num_workers': 8, 'pin_memory': True} if use_gpu else {}
-# add 'download=True' when use it for the first time
-#mnist_tr = datasets.MNIST(root='../MNIST/', transform=transforms.ToTensor(),download=True)
-#mnist_tr.data=mnist_tr.train_data[0:args.num_train]
-h=28 #mnist_tr.train_data.shape[1]
-w=28 #mnist_tr.train_data.shape[2]
-#mnist_te = datasets.MNIST(root='../MNIST/', train=False, transform=transforms.ToTensor(),download=True)
-# tr = torch.utils.data.DataLoader(dataset=mnist_tr,
-#                                 batch_size=args.mb_size,
-#                                 shuffle=True,
-#                                 drop_last=True, **kwargs)
-# te = torch.utils.data.DataLoader(dataset=mnist_te,
-#                                 batch_size=args.mb_size,
-#                                 shuffle=True,
-#                                 drop_last=True, **kwargs)
 
 PARS={}
 PARS['data_set']='mnist'
 PARS['num_train']=args.num_train
 train, val, test, image_dim = get_data(PARS)
+h=train[0].shape[1]
+w=train[0].shape[2]
 
 model = STVAE(h, w,  device, args).to(device)
 #l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
@@ -77,11 +64,6 @@ for epoch in range(args.nepoch):
 
 
 torch.save(model.state_dict(), 'output/'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.pt')
-#model1 = STVAE(h, w, device, args).to(device)
-#model1.load_state_dict(torch.load('output/'+args.type+'_'+args.transformation+'.pt'))
-#model1.eval()
-
-
 
 if (not use_gpu):
     x = model.sample_from_z_prior(theta=torch.zeros(6))

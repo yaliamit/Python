@@ -93,7 +93,10 @@ class STVAE(nn.Module):
 
     def forward(self, inputs):
         s_mu, s_var = self.forward_encoder(inputs.view(-1, self.x_dim))
-        s = self.sample_s(s_mu, s_var)
+        if (self.type is not 'ae'):
+            s = self.sample_s(s_mu, s_var)
+        else:
+            s=s_mu
         # Apply linear transformation to entire sampled vector.
         if (self.type=='stvae' or self.type=='vae'):
             s = self.s2s(s)
