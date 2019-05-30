@@ -8,6 +8,7 @@ from torchvision.utils import save_image
 import os
 import sys
 import argparse
+import time
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
@@ -62,9 +63,12 @@ model = STVAE(h, w,  device, args).to(device)
 
 for epoch in range(args.nepoch):
     #scheduler.step()
+    t1=time.time()
     model.train_epoch(tr,epoch)
     model.test(te,epoch)
+    print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
     sys.stdout.flush()
+
 
 
 torch.save(model.state_dict(), 'output/'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.pt')
