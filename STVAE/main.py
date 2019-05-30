@@ -76,6 +76,6 @@ if (not use_gpu):
     #py.show()
     #print('hello')
     py.savefig('output/fig_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers))
-
+print("DONE")
 #bt = commands.check_output('mv OUTPUT.txt OUTPUT_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.txt',shell=True)
 
