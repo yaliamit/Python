@@ -85,7 +85,9 @@ def compute_loss(last_layer, y_, L2loss, PARS):
         loss = loss + loss1 + L2loss
         loss = tf.identity(loss, name="LOSS")
     elif ('AE' in PARS):
-        loss=tf.reduce_mean(tf.reduce_sum((last_layer-y_)*(last_layer-y_)))
+        ya=tf.reshape(y_,[-1,last_layer.shape.as_list()[2]])
+        la=tf.reshape(last_layer,[-1,last_layer.shape.as_list()[2]])
+        loss=tf.reduce_mean(tf.reduce_sum((la-ya)*(la-ya),axis=1))
     else:
         # Softmax-logistic loss
         ui = tf.greater(tf.reduce_sum(y_, 1), 0)
@@ -262,11 +264,11 @@ def recreate_network(PARS, PLH):
                             out.append(tf.reshape(parent[i,:,:,:,:], [-1,]+list(l['new_shape'])))
             if ('non_linearity' in l):
                 if (l['non_linearity'] == 'relu'):
-                  for ou in out:
-                    ou = tf.nn.relu(ou)
+                  for i in range(npa):
+                    out[i] = tf.nn.relu(out[i])
                 elif (l['non_linearity'] == 'tanh'):
-                  for ou in out:
-                    ou = tf.clip_by_value(PARS['nonlin_scale'] * ou, -1., 1.)
+                  for i in range(npa):
+                    out[i] = tf.clip_by_value(PARS['nonlin_scale'] * out[i], -1., 1.)
 
             if (type(out) == list):
                     out=tf.stack(out)
@@ -285,7 +287,9 @@ def recreate_network(PARS, PLH):
 
     # Accuracy computation
     last_layer = tf.identity(last_layer,name="LAST")
-    accuracy=compute_accuracy(last_layer,y_,PLH['thresh_'],PARS)
+    accuracy=tf.constant(0.)
+    if ('AE' not in PARS):
+       accuracy=compute_accuracy(last_layer,y_,PLH['thresh_'],PARS)
 
 
     print('joint_parent', joint_parent)
@@ -293,7 +297,7 @@ def recreate_network(PARS, PLH):
     PARS['joint_parent'] = joint_parent
     for t in TS:
         print(t)
-    return loss, accuracy, last_layer
+    return loss, accuracy, TS
 
 
 
@@ -357,11 +361,11 @@ def run_epoch(train, PLH, OPS, PARS, sess, i, type='Training'):
                     csi, acc, ts, _ = sess.run([OPS['cs'], OPS['accuracy'], OPS['TS'], OPS['train_step']],
                                                feed_dict={PLH['x_']: batch[0], PLH['y_']: batch[0],
                                                           PLH['lr_']: PARS['step_size'],
-                                                          PLH['training_']: True, PLH['index_']: ind, PLH['global_L2_fac_']:glf})
+                                                          PLH['training_']: True})
                 else:
                     csi, acc, ts = sess.run([OPS['cs'], OPS['accuracy'], OPS['TS']],
-                                            feed_dict={PLH['x_']: batch[0], PLH['y_']: batch[1], PLH['lr_']: PARS['step_size'],
-                                                       PLH['training_']: False, PLH['index_']: ind, PLH['global_L2_fac_']:glf})
+                                            feed_dict={PLH['x_']: batch[0], PLH['y_']: batch[0], PLH['lr_']: PARS['step_size'],
+                                                       PLH['training_']: False})
                 acco += acc
                 cso += csi
             elif (mode == 'Class'):

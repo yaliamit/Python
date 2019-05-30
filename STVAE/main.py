@@ -9,6 +9,7 @@ import os
 import sys
 import argparse
 import time
+from Conv_data import get_data
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
@@ -55,6 +56,10 @@ te = torch.utils.data.DataLoader(dataset=mnist_te,
                                 shuffle=True,
                                 drop_last=True, **kwargs)
 
+PARS={}
+PARS['dataset']='mnist'
+PARS['num_train']=args.num_train
+train, val, test, image_dim = get_data(PARS)
 
 model = STVAE(h, w,  device, args).to(device)
 #l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
