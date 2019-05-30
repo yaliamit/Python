@@ -1,13 +1,13 @@
 seed:45239
 model:try
-num_epochs:20
+num_epochs:100
 nval:5000
 data_set:mnist
 batch_size:500
 step_size:.001
 debug:False
 minimizer:Adam
-num_train:10000
+num_train:60000
 noise_sigma:0
 corr:False
 cl_range:4
