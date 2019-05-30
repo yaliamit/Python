@@ -84,6 +84,8 @@ def compute_loss(last_layer, y_, L2loss, PARS):
         loss1 = tf.reduce_mean(tf.reduce_sum(temp, axis=[1, 2]))
         loss = loss + loss1 + L2loss
         loss = tf.identity(loss, name="LOSS")
+    elif ('AE' in PARS):
+        loss=tf.reduce_mean(tf.reduce_sum((last_layer-y_)*(last_layer-y_)))
     else:
         # Softmax-logistic loss
         ui = tf.greater(tf.reduce_sum(y_, 1), 0)
@@ -300,6 +302,8 @@ def run_epoch(train, PLH, OPS, PARS, sess, i, type='Training'):
         mode = 'Class'
         if ('blob' in PARS):
             mode = 'blob'
+        if ('AE' in PARS):
+            mode='AE'
         # The version of the data that gets classified after the two laters are compared
         ind = 0 # The clean version
         if ('corr' in PARS and PARS['corr'] and type != 'Training'):
@@ -348,7 +352,18 @@ def run_epoch(train, PLH, OPS, PARS, sess, i, type='Training'):
                 disto += acc[2]
 
                 cso += csi
-
+            elif (mode=='AE'):
+                if (type == 'Training'):
+                    csi, acc, ts, _ = sess.run([OPS['cs'], OPS['accuracy'], OPS['TS'], OPS['train_step']],
+                                               feed_dict={PLH['x_']: batch[0], PLH['y_']: batch[0],
+                                                          PLH['lr_']: PARS['step_size'],
+                                                          PLH['training_']: True, PLH['index_']: ind, PLH['global_L2_fac_']:glf})
+                else:
+                    csi, acc, ts = sess.run([OPS['cs'], OPS['accuracy'], OPS['TS']],
+                                            feed_dict={PLH['x_']: batch[0], PLH['y_']: batch[1], PLH['lr_']: PARS['step_size'],
+                                                       PLH['training_']: False, PLH['index_']: ind, PLH['global_L2_fac_']:glf})
+                acco += acc
+                cso += csi
             elif (mode == 'Class'):
 
                 batch, glf = adapt_batch(PARS, batch, i)

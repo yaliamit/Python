@@ -20,6 +20,8 @@ def get_place_holders(PARS,image_dim):
     if ('blob' in PARS):
         cdim = PARS['image_dim'] / PARS['coarse_disp']
         PLH['y_'] = tf.placeholder(tf.float32, shape=[None,cdim,cdim,PARS['num_blob_pars']],name="y_")
+    elif ('AE' in PARS):
+        PLH['y_'] = tf.placeholder(tf.float32, [2, None, image_dim, image_dim, PARS['nchannels']], name="y_")
     else:
         PLH['y_'] = tf.placeholder(tf.float32, shape=[None, PARS['n_classes']], name="y")
     PLH['training_'] = tf.placeholder(tf.bool, name="training_")
