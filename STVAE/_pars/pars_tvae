@@ -1,6 +1,6 @@
 --transformation=aff
 --type=tvae
-—-sdim=16
+--sdim=16
 --zdim=10
 --hdim=256
 --num_hlayers=1
