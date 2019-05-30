@@ -6,6 +6,7 @@ import subprocess as commands
 import pylab as py
 from torchvision.utils import save_image
 import os
+import sys
 import argparse
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
@@ -62,6 +63,7 @@ for epoch in range(args.nepoch):
     #scheduler.step()
     model.train_epoch(tr,epoch)
     model.test(te,epoch)
+    sys.stdout.flush()
 
 
 torch.save(model.state_dict(), 'output/'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.pt')
