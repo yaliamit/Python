@@ -2,6 +2,7 @@ import torch
 import torch.nn.functional as F
 from torch import nn, optim
 from tps import TPSGridGen
+import numpy as np
 
 class STVAE(nn.Module):
 
@@ -160,11 +161,22 @@ class STVAE(nn.Module):
         test_recon_loss /= (len(te) * self.bsz)
         print('====> Epoch:{} Test reconstruction loss: {:.4f}'.format(epoch, test_recon_loss))
 
-    def train_epoch(self, tr, epoch):
+    def train_epoch(self, train, epoch,type='test'):
         self.train()
         tr_recon_loss = 0
-
-        for _, (data, target) in enumerate(tr):
+        ii = np.arange(0, train[0].shape[0], 1)
+        if ('train' in type):
+            np.random.shuffle(ii)
+        tr = train[0][ii]
+        y = train[1][ii]
+        lo = 0.
+        acc = 0.
+        ca = 0.
+        batch_size = self.bsz
+        for j in np.arange(0, len(y), batch_size):
+            data = torch.from_numpy(tr[j:j + batch_size]).float()
+            target = torch.from_numpy(y[j:j + batch_size]).float()
+        #for _, (data, target) in enumerate(tr):
             data = data.to(self.dv)
             target = target.to(self.dv)
             self.optimizer.zero_grad()
@@ -177,4 +189,4 @@ class STVAE(nn.Module):
             self.optimizer.step()
 
         print('====> Epoch: {} Reconstruction loss: {:.4f}'.format(
-            epoch, tr_recon_loss / (len(tr) * self.bsz)))
+            epoch, tr_recon_loss / len(tr)))

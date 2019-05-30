@@ -42,22 +42,22 @@ print(device)
 print(use_gpu)
 kwargs = {'num_workers': 8, 'pin_memory': True} if use_gpu else {}
 # add 'download=True' when use it for the first time
-mnist_tr = datasets.MNIST(root='../MNIST/', transform=transforms.ToTensor(),download=True)
-mnist_tr.data=mnist_tr.train_data[0:args.num_train]
-h=mnist_tr.train_data.shape[1]
-w=mnist_tr.train_data.shape[2]
-mnist_te = datasets.MNIST(root='../MNIST/', train=False, transform=transforms.ToTensor(),download=True)
-tr = torch.utils.data.DataLoader(dataset=mnist_tr,
-                                batch_size=args.mb_size,
-                                shuffle=True,
-                                drop_last=True, **kwargs)
-te = torch.utils.data.DataLoader(dataset=mnist_te,
-                                batch_size=args.mb_size,
-                                shuffle=True,
-                                drop_last=True, **kwargs)
+#mnist_tr = datasets.MNIST(root='../MNIST/', transform=transforms.ToTensor(),download=True)
+#mnist_tr.data=mnist_tr.train_data[0:args.num_train]
+h=28 #mnist_tr.train_data.shape[1]
+w=28 #mnist_tr.train_data.shape[2]
+#mnist_te = datasets.MNIST(root='../MNIST/', train=False, transform=transforms.ToTensor(),download=True)
+# tr = torch.utils.data.DataLoader(dataset=mnist_tr,
+#                                 batch_size=args.mb_size,
+#                                 shuffle=True,
+#                                 drop_last=True, **kwargs)
+# te = torch.utils.data.DataLoader(dataset=mnist_te,
+#                                 batch_size=args.mb_size,
+#                                 shuffle=True,
+#                                 drop_last=True, **kwargs)
 
 PARS={}
-PARS['dataset']='mnist'
+PARS['data_set']='mnist'
 PARS['num_train']=args.num_train
 train, val, test, image_dim = get_data(PARS)
 
@@ -69,8 +69,8 @@ model = STVAE(h, w,  device, args).to(device)
 for epoch in range(args.nepoch):
     #scheduler.step()
     t1=time.time()
-    model.train_epoch(tr,epoch)
-    model.test(te,epoch)
+    model.train_epoch(train,epoch,type='train')
+    model.train_epoch(val,epoch)
     print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
     sys.stdout.flush()
 
