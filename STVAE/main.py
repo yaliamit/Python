@@ -39,7 +39,7 @@ torch.manual_seed(args.seed)
 device = torch.device("cuda:1" if use_gpu else "cpu")
 print(device)
 print(use_gpu)
-kwargs = {'num_workers': 1, 'pin_memory': True} if use_gpu else {}
+kwargs = {'num_workers': 8, 'pin_memory': True} if use_gpu else {}
 # add 'download=True' when use it for the first time
 mnist_tr = datasets.MNIST(root='../MNIST/', transform=transforms.ToTensor(),download=True)
 mnist_tr.data=mnist_tr.train_data[0:args.num_train]
