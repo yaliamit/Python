@@ -56,11 +56,12 @@ model = STVAE(h, w,  device, args).to(device)
 for epoch in range(args.nepoch):
     #scheduler.step()
     t1=time.time()
-    model.train_epoch(train,epoch,type='train')
-    model.train_epoch(val,epoch)
+    model.run_epoch(train,epoch,type='train')
+    model.run_epoch(val,epoch,type='val')
     print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
     sys.stdout.flush()
 
+model.run_epoch(test,epoch,type='test')
 
 
 torch.save(model.state_dict(), 'output/'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.pt')

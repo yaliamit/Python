@@ -149,24 +149,11 @@ class STVAE(nn.Module):
         KLD1 = -0.5 * torch.sum(1 + logvar - mu ** 2 - torch.exp(logvar))  # z
         return BCE, KLD1
 
-    def test(self,te,epoch):
-        self.eval()
-        test_recon_loss = 0
-        with torch.no_grad():
-            for _, (data, target) in enumerate(te):
-                data = data.to(self.dv)
-                target = target.to(self.dv)
-                recon_batch, smu, slogvar = self(data)
-                recon_loss, kl = self.loss_V(recon_batch, data, smu, slogvar)
-                loss = recon_loss + kl
-                test_recon_loss += recon_loss.item()
 
-        test_recon_loss /= (len(te) * self.bsz)
-        print('====> Epoch:{} Test reconstruction loss: {:.4f}'.format(epoch, test_recon_loss))
-
-    def train_epoch(self, train, epoch,type='test'):
+    def run_epoch(self, train, epoch,type='test'):
         self.train()
         tr_recon_loss = 0
+        tr_full_loss=0
         ii = np.arange(0, train[0].shape[0], 1)
         if ('train' in type):
             np.random.shuffle(ii)
@@ -187,9 +174,11 @@ class STVAE(nn.Module):
             recon_loss, kl = self.loss_V(recon_batch, data, smu, slogvar)
 
             loss = recon_loss + kl
-            loss.backward()
+            if (type=='train'):
+                loss.backward()
             tr_recon_loss += recon_loss.item()
+            tr_full_loss+=loss
             self.optimizer.step()
 
-        print('====> Epoch: {} Reconstruction loss: {:.4f}'.format(
-            epoch, tr_recon_loss / len(tr)))
+        print('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}'.format(type,
+            epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
