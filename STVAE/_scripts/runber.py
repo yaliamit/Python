@@ -11,20 +11,20 @@ outname=sys.argv[-1]
 OUTNAME=outname+'.txt'
 lOUTNAME='_OUTPUTS/'+outname+'-br.txt'
 gpu_no=-1
-try:
-    bt=commands.check_output('ssh amit@bernie.uchicago.edu \'nvidia-smi -q --id=0 | grep Performance | cut -d: -f2 | cut -dP -f2\' ', shell=True)
-    if (np.int32(bt)>=5):
-       gpu_no=0
-except:
-    print('gpu 0 info failed')
-if (gpu_no<0):
-    try:
-        bt=commands.check_output("ssh amit@bernie.uchicago.edu \'nvidia-smi -q --id=1 | grep Performance | cut -d: -f2 | cut -dP -f2\' ",shell=True)
-        if (np.int32(bt) >= 5):
-            gpu_no=1
-    except:
-        print('gpu 1 info failed')
-print('gpu',gpu_no)
+# try:
+#     bt=commands.check_output('ssh amit@bernie.uchicago.edu \'nvidia-smi -q --id=0 | grep Performance | cut -d: -f2 | cut -dP -f2\' ', shell=True)
+#     if (np.int32(bt)>=5):
+#        gpu_no=0
+# except:
+#     print('gpu 0 info failed')
+# if (gpu_no<0):
+#     try:
+#         bt=commands.check_output("ssh amit@bernie.uchicago.edu \'nvidia-smi -q --id=1 | grep Performance | cut -d: -f2 | cut -dP -f2\' ",shell=True)
+#         if (np.int32(bt) >= 5):
+#             gpu_no=1
+#     except:
+#         print('gpu 1 info failed')
+# print('gpu',gpu_no)
 
 
 ss='/opt/anaconda3_beta/bin/python main.py $(cat'+' '+sys.argv[1]+') '+' '.join(sys.argv[2:l-1]) + ' >'+OUTNAME
