@@ -61,6 +61,7 @@ for epoch in range(args.nepoch):
     print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
     sys.stdout.flush()
 
+model.run_epoch(train,epoch,type='trest')
 model.run_epoch(test,epoch,type='test')
 
 

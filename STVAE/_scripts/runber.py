@@ -10,21 +10,22 @@ l=len(sys.argv)
 outname=sys.argv[-1]
 OUTNAME=outname+'.txt'
 lOUTNAME='_OUTPUTS/'+outname+'-br.txt'
+gpu_no=-1
+try:
+    bt=commands.check_output('ssh amit@bernie.uchicago.edu \'nvidia-smi -q --id=0 | grep Performance | cut -d: -f2 | cut -dP -f2\' ', shell=True)
+    if (np.int32(bt)>=5):
+       gpu_no=0
+except:
+    print('gpu 0 info failed')
+if (gpu_no<0):
+    try:
+        bt=commands.check_output("ssh amit@bernie.uchicago.edu \'nvidia-smi -q --id=1 | grep Performance | cut -d: -f2 | cut -dP -f2\' ",shell=True)
+        if (np.int32(bt) >= 5):
+            gpu_no=1
+    except:
+        print('gpu 1 info failed')
+print('gpu',gpu_no)
 
-# gpu_no=-1
-# try:
-#     bt=commands.check_output('ssh amit@marx.uchicago.edu "ssh amit@bernie.uchicago.edu \'nvidia-smi -q --id=0 | grep Performance | cut -d: -f2 | cut -dP -f2\' " ', shell=True)
-#     if (np.int32(bt)>=5):
-#        gpu_no=0
-# except:
-#     print('gpu 0 info failed')
-# if (gpu_no<0):
-#     try:
-#         bt=commands.check_output('ssh amit@marx.uchicago.edu "ssh amit@bernie.uchicago.edu \'nvidia-smi -q --id=1 | grep Performance | cut -d: -f2 | cut -dP -f2\' " ',shell=True)
-#         if (np.int32(bt) >= 5):
-#             gpu_no=1
-#     except:
-#         print('gpu 1 info failed')
 
 ss='/opt/anaconda3_beta/bin/python main.py $(cat'+' '+sys.argv[1]+') '+' '.join(sys.argv[2:l-1]) + ' >'+OUTNAME
 if 'loc' in outname:
@@ -77,12 +78,12 @@ else:
         except:
             print('copy failed')
     time.sleep(5)
-    dd = commands.check_output('grep model ' + sys.argv[-2] + '.txt  | cut -d":" -f2', shell=True)
-    dirname = dd.decode("utf-8").strip('\n')
-    commands.check_output('rm -rf ' + dirname, shell=True)
-    commands.check_output('mkdir ' + dirname, shell=True)
-    commands.check_output('scp amit@marx.uchicago.edu:/Volumes/amit/Python/STVAE/'+dirname+'/* ' + dirname + '/.',
-                          shell=True)
-    commands.check_output('cp ' + sys.argv[-2] + '.txt '+dirname+'/.',shell=True)
+    # dd = commands.check_output('grep model ' + sys.argv[-2] + '.txt  | cut -d":" -f2', shell=True)
+    # dirname = dd.decode("utf-8").strip('\n')
+    # commands.check_output('rm -rf ' + dirname, shell=True)
+    # commands.check_output('mkdir ' + dirname, shell=True)
+    # commands.check_output('scp amit@marx.uchicago.edu:/Volumes/amit/Python/STVAE/'+dirname+'/* ' + dirname + '/.',
+    #                       shell=True)
+    # commands.check_output('cp ' + sys.argv[-2] + '.txt '+dirname+'/.',shell=True)
 
 
