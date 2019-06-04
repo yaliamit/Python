@@ -69,7 +69,7 @@ class STVAE(nn.Module):
             self.u2u = nn.Linear(self.u_dim, self.u_dim)
         self.z2h = nn.Linear(self.z_dim, self.h_dim)
 
-        self.optimizer = optim.Adam(self.parameters(),lr=.001)
+        self.optimizer = optim.Adadelta(self.parameters()) #optim.Adam(self.parameters(),lr=.001)
 
 
     def forward_encoder(self, inputs):
