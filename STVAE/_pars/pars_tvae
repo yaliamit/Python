@@ -1,5 +1,5 @@
 --transformation=aff
---type=vae
+--type=ae
 --sdim=16
 --zdim=10
 --hdim=256

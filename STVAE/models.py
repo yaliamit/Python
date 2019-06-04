@@ -25,7 +25,7 @@ class STVAE(nn.Module):
 
         self.tf = args.transformation
         self.type=args.type
-        if self.type!='vae':
+        if 'tvae' in self.type:
             if self.tf == 'aff':
                 self.u_dim = 6
                 idty = torch.cat((torch.eye(2),torch.zeros(2).unsqueeze(1)),dim=1)
@@ -67,11 +67,13 @@ class STVAE(nn.Module):
             self.s2s = nn.Linear(self.s_dim, self.s_dim)
         elif (self.type=='tvae'):
             self.u2u = nn.Linear(self.u_dim, self.u_dim)
+            self.z2z = nn.Linear(self.z_dim, self.z_dim)
+
         self.z2h = nn.Linear(self.z_dim, self.h_dim)
 
         #self.optimizer = optim.Adadelta(self.parameters()) #
         self.optimizer=optim.Adam(self.parameters(),lr=.001)
-
+        print('s_dim',self.s_dim,'u_dim',self.u_dim,'z_dim',self.z_dim,self.type)
 
     def forward_encoder(self, inputs):
         h=self.x2h(inputs)
@@ -98,18 +100,21 @@ class STVAE(nn.Module):
             s = self.sample_s(s_mu, s_var)
         else:
             s=s_mu
-        # Apply linear transformation to entire sampled vector.
-        if (self.type=='stvae' or self.type=='vae'):
+        # Apply linear map to entire sampled vector.
+        if (self.type=='tvae'):
+            u = self.u2u(s.narrow(1, 0, self.u_dim))
+            z = self.z2z(s.narrow(1,self.u_dim,self.z_dim))
+        else: # Apply map separately to each component - transformation and z.
             s = self.s2s(s)
-        # Extract non-transformation part
-        z = s.narrow(1,self.u_dim,self.z_dim)
-        # Create image from it.
+            z = s.narrow(1, self.u_dim, self.z_dim)
+            u=   s.narrow(1, 0, self.u_dim)
+        # Create image
         x = self.forward_decoder(z)
-        if self.type !=  'vae':
-            u = F.tanh(s.narrow(1, 0, self.u_dim))
+
+        # Apply transformation
+        if 'tvae' in self.type:
+            u = F.tanh(u)
             # Apply linear only to dedicated transformation part of sampled vector.
-            if (self.type=='tvae'):
-                u=self.u2u(u)
             if self.tf == 'aff':
                 self.theta = u.view(-1, 2, 3) + self.id
                 grid = F.affine_grid(self.theta, x.view(-1,self.h,self.w).unsqueeze(1).size())
@@ -125,15 +130,17 @@ class STVAE(nn.Module):
         theta=theta.to(self.dv)
         if (self.type=='stvae' or self.type=='vae'):
             s=self.s2s(s)
-        z = s.narrow(1, self.u_dim, self.z_dim)
+            z = s.narrow(1, self.u_dim, self.z_dim)
+            u = s.narrow(1, 0, self.u_dim)
+        else:
+            if theta is not None:
+                u = self.u2u(theta)
+            else:
+                u = self.u2u(s.narrow(1, 0, self.u_dim))
+            z = self.z2z(s.narrow(1, self.u_dim, self.z_dim))
         x = self.forward_decoder(z)
         if self.type != 'vae':
-            u = F.tanh(s.narrow(1, 0, self.u_dim))
-            if self.type=='tvae':
-                if theta is not None:
-                    u=self.u2u(theta)
-                else:
-                    u=self.u2u(u)
+            u = F.tanh(u)
             if self.tf == 'aff':
                 self.theta = u.view(-1, 2, 3) + self.id
                 grid = F.affine_grid(self.theta, x.view(-1, self.h, self.w).unsqueeze(1).size())
