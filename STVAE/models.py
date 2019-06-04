@@ -73,7 +73,10 @@ class STVAE(nn.Module):
         self.z2h = nn.Linear(self.z_dim, self.h_dim)
 
         #self.optimizer = optim.Adadelta(self.parameters()) #
-        self.optimizer=optim.Adam(self.parameters(),lr=.001)
+        if (args.optimizer=='Adam'):
+            self.optimizer=optim.Adam(self.parameters(),lr=.001)
+        elif (args.optimizer=='Adadelta'):
+            self.optimizer = optim.Adadelta(self.parameters())
         print('s_dim',self.s_dim,'u_dim',self.u_dim,'z_dim',self.z_dim,self.type)
 
     def forward_encoder(self, inputs):

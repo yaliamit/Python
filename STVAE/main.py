@@ -29,6 +29,7 @@ parser.add_argument('--seed', type=int, default=1111, help='random seed (default
 parser.add_argument('--num_train',type=int,default=60000,help='num train (default: 10000)')
 parser.add_argument('--mb_size',type=int,default=500,help='mb_size (default: 500)')
 parser.add_argument('--model',default='base',help='model (default: base)')
+parser.add_argument('--optimizer',default='Adam',help='Type of optimiser')
 
 args = parser.parse_args()
 print(args)
