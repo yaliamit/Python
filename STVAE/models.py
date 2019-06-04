@@ -63,11 +63,12 @@ class STVAE(nn.Module):
 
         self.h2smu = nn.Linear(self.h_dim, self.s_dim)
         self.h2svar = nn.Linear(self.h_dim, self.s_dim)
-        if (self.type=='stvae' or self.type=='vae'):
-            self.s2s = nn.Linear(self.s_dim, self.s_dim)
-        elif (self.type=='tvae'):
+
+        if (self.type=='tvae'):
             self.u2u = nn.Linear(self.u_dim, self.u_dim)
             self.z2z = nn.Linear(self.z_dim, self.z_dim)
+        else:
+            self.s2s = nn.Linear(self.s_dim, self.s_dim)
 
         self.z2h = nn.Linear(self.z_dim, self.h_dim)
 
@@ -107,7 +108,7 @@ class STVAE(nn.Module):
         else: # Apply map separately to each component - transformation and z.
             s = self.s2s(s)
             z = s.narrow(1, self.u_dim, self.z_dim)
-            u=   s.narrow(1, 0, self.u_dim)
+            u = s.narrow(1, 0, self.u_dim)
         # Create image
         x = self.forward_decoder(z)
 
