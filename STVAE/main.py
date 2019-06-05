@@ -48,10 +48,18 @@ PARS['num_train']=args.num_train
 train, val, test, image_dim = get_data(PARS)
 h=train[0].shape[1]
 w=train[0].shape[2]
+# mnist_tr = datasets.MNIST(root='../MNIST/', transform=transforms.ToTensor())
+# tr = torch.utils.data.DataLoader(dataset=mnist_tr,
+#                                 batch_size=args.mb_size,
+#                                 shuffle=False,
+#                                 drop_last=True, **kwargs)
 
+# for a in tr:
+#     print(a.shape)
+# #tr=torch.utils.data.Subset(mnist_tr,0)
 model = STVAE(h, w,  device, args).to(device)
 l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
-scheduler = optim.lr_scheduler.LambdaLR(model.optimizer, lr_lambda=l2)
+scheduler = torch.optim.lr_scheduler.LambdaLR(model.optimizer, lr_lambda=l2)
 
 
 for epoch in range(args.nepoch):
