@@ -3,7 +3,7 @@
 --sdim=16
 --zdim=10
 --hdim=256
---num_hlayers=1
+--num_hlayers=0
 --nepoch=100
 --gpu=True
 --seed=1111
