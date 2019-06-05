@@ -50,12 +50,12 @@ h=train[0].shape[1]
 w=train[0].shape[2]
 
 model = STVAE(h, w,  device, args).to(device)
-#l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
-#scheduler = optim.lr_scheduler.LambdaLR(model.optimizer, lr_lambda=l2)
+l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
+scheduler = optim.lr_scheduler.LambdaLR(model.optimizer, lr_lambda=l2)
 
 
 for epoch in range(args.nepoch):
-    #scheduler.step()
+    scheduler.step()
     t1=time.time()
     model.run_epoch(train,epoch,type='train')
     model.run_epoch(val,epoch,type='val')

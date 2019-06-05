@@ -171,14 +171,10 @@ class STVAE(nn.Module):
             np.random.shuffle(ii)
         tr = train[0][ii]
         y = train[1][ii]
-        lo = 0.
-        acc = 0.
-        ca = 0.
         batch_size = self.bsz
         for j in np.arange(0, len(y), batch_size):
             data = torch.from_numpy(tr[j:j + batch_size]).float()
             target = torch.from_numpy(y[j:j + batch_size]).float()
-        #for _, (data, target) in enumerate(tr):
             data = data.to(self.dv)
             target = target.to(self.dv)
             self.optimizer.zero_grad()
