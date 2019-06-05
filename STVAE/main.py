@@ -50,20 +50,38 @@ h=train[0].shape[1]
 w=train[0].shape[2]
 mnist_tr = datasets.MNIST(root='../MNIST/', transform=transforms.ToTensor())
 tr = torch.utils.data.DataLoader(dataset=mnist_tr,
-                                 batch_size=50000,
+                                 batch_size=60000,
                                  shuffle=False,
                                  drop_last=True, **kwargs)
-
+mnist_te = datasets.MNIST(root='../MNIST/',train=False, transform=transforms.ToTensor())
+te = torch.utils.data.DataLoader(dataset=mnist_te,
+                                 batch_size=10000,
+                                 shuffle=False,
+                                 drop_last=True, **kwargs)
+trl=train[1]
+vl=val[1]
+tel=test[1]
+train=[]
+val=[]
+test=[]
 for a in tr:
-     print(a.shape)
+    print(a[0].shape)
+    train.append(np.array(a[0][0:50000]))
+    val.append(np.array(a[0][50000:60000]))
+train.append(trl)
+val.append(vl)
+for a in te:
+    print(a[0].shape)
+    test.append(np.array(a[0]))
+test.append(tel)
 # #tr=torch.utils.data.Subset(mnist_tr,0)
 model = STVAE(h, w,  device, args).to(device)
-l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
-scheduler = torch.optim.lr_scheduler.LambdaLR(model.optimizer, lr_lambda=l2)
+#l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
+#scheduler = torch.optim.lr_scheduler.LambdaLR(model.optimizer, lr_lambda=l2)
 
 
 for epoch in range(args.nepoch):
-    scheduler.step()
+    #scheduler.step()
     t1=time.time()
     model.run_epoch(train,epoch,type='train')
     model.run_epoch(val,epoch,type='val')
