@@ -69,7 +69,8 @@ for a in tr:
     train.append(np.array(a[0][0:(60000//args.mb_size * args.mb_size)]))
     #val.append(np.array(a[0][50000:60000]))
 train.append(trl)
-val.append(vl)
+if (val is not None):
+    val.append(vl)
 for a in te:
     print(a[0].shape)
     test.append(np.array(a[0]))
