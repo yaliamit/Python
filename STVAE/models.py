@@ -71,18 +71,14 @@ class STVAE(nn.Module):
         print('s_dim',self.s_dim,'u_dim',self.u_dim,'z_dim',self.z_dim,self.type)
 
     def forward_encoder(self, inputs):
-        h=self.x2h(inputs)
-        for i in range(self.num_hlayers):
-            h=F.relu(self.h2h(h))
-        u_mu=F.tanh(self.h2umu(h))
-        u_var=F.threshold(self.h2uvar(h),-6,-6)
-        z_mu=self.h2zmu(h)
-        z_var=F.threshold(self.h2zvar(h),-6,-6)
-        # s_mu = self.h2smu(h)
-        # if (self.type=='tvae'):
-        #     s_mu[:,0:self.u_dim] = F.tanh(s_mu.narrow(1,0,self.u_dim))
-        # s_var = F.threshold(self.h2svar(h), -6, -6)
-        return u_mu, u_var, z_mu, z_var #s_mu, s_var
+        h=F.relu(self.x2h(inputs))
+        #for i in range(self.num_hlayers):
+         #   h=F.relu(self.h2h(h))
+        s_mu = self.h2smu(h)
+        if (self.type=='tvae'):
+            s_mu[:,0:self.u_dim] = F.tanh(s_mu.narrow(1,0,self.u_dim))
+            s_var = F.threshold(self.h2svar(h), -6, -6)
+        return s_mu, s_var
 
     def sample(self, mu, logvar, dim):
         eps = torch.randn(self.bsz, dim).to(self.dv)
@@ -90,28 +86,22 @@ class STVAE(nn.Module):
 
     def forward_decoder(self, z):
         h=F.relu(self.z2h(z))
-        for i in range(self.num_hlayers):
-            h=F.relu(self.h2h(h))
+        #for i in range(self.num_hlayers):
+        #    h=F.relu(self.h2h(h))
         x=F.sigmoid(self.h2x(h))
         return x
 
     def forward(self, inputs):
 
-        #s_mu, s_var = self.forward_encoder(inputs.view(-1, self.x_dim))
-        u_mu, u_var, z_mu, z_var = self.forward_encoder(inputs.view(-1, self.x_dim))
-        s_mu=torch.cat((z_mu,u_mu),1)
-        s_var=torch.cat((z_var,u_var),1)
-        if (self.type=='tvae'):
-            u = self.sample(u_mu, u_var, self.u_dim)
-            z = self.sample(z_mu, z_var, self.z_dim)
-        elif (self.type is not 'ae'):
+        s_mu, s_var = self.forward_encoder(inputs.view(-1, self.x_dim))
+        if (self.type is not 'ae'):
             s = self.sample(s_mu, s_var, self.s_dim)
         else:
             s=s_mu
         # Apply linear map to entire sampled vector.
         if (self.type=='tvae'): # Apply map separately to each component - transformation and z.
-            u = self.u2u(u) #self.u2u(s.narrow(1, 0, self.u_dim))
-            #z = s.narrow(1,self.u_dim,self.z_dim) #self.z2z(s.narrow(1,self.u_dim,self.z_dim))
+            u = self.u2u(s.narrow(1, 0, self.u_dim))
+            z = s.narrow(1,self.u_dim,self.z_dim) #self.z2z(s.narrow(1,self.u_dim,self.z_dim))
         else:
             s = self.s2s(s)
             z = s.narrow(1, self.u_dim, self.z_dim)
