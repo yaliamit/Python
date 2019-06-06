@@ -61,7 +61,7 @@ class TVAE(nn.Module):
             #nn.LeakyReLU(0.1),
         #    nn.Linear(self.h_dim, self.x_dim)
         #)
-        
+
         self.h2x=nn.Linear(self.h_dim, self.x_dim)
     def forward_encoder(self, inputs):
         h = F.relu(self.x2h(inputs))

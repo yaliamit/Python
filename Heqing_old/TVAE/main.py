@@ -24,7 +24,8 @@ parser.add_argument('--gpu', type=bool, default=False,
                     help='whether to run in the GPU')
 parser.add_argument('--seed', type=int, default=1111,
                     help='random seed (default: 1111)')
-
+parser.add_argument('--mb_size', type=int, default=100,
+                    help='batch size (default: 100)')
 args = parser.parse_args()
 
 use_gpu = args.gpu and torch.cuda.is_available()
@@ -33,7 +34,7 @@ torch.manual_seed(args.seed)
 
 device = torch.device("cuda:1" if use_gpu else "cpu")
 
-mb_size = 100 # batch size
+mb_size = args.mb_size
 h = 28
 w = 28
 x_dim = h * w # image size
