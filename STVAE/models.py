@@ -82,9 +82,7 @@ class STVAE(nn.Module):
     def forward_decoder(self, z):
         h=F.relu(self.z2h(z))
         for i in range(self.num_hlayers):
-            h=self.h2h(h)
-            if (i<self.num_hlayers-1):
-                h=F.relu(h)
+            h=F.relu(self.h2h(h))
         x=F.sigmoid(self.h2x(h))
         return x
 
