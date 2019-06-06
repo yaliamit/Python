@@ -14,7 +14,7 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('--transformation', default='aff',
                     help='type of transformation: aff or tps')
-parser.add_argument('--zdim', type=int, help='dimension of z',default=20)
+parser.add_argument('--zdim', type=int, help='dimension of z')
 parser.add_argument('--udim', type=int, help='dimension of u')
 parser.add_argument('--nepoch', type=int, default=40, help='number of training epochs')
 parser.add_argument('--save', default='output/model.pt')

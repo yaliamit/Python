@@ -62,12 +62,12 @@ trl=train[1]
 vl=val[1]
 tel=test[1]
 train=[]
-val=[]
+val=None
 test=[]
 for a in tr:
     print(a[0].shape)
-    train.append(np.array(a[0][0:50000]))
-    val.append(np.array(a[0][50000:60000]))
+    train.append(np.array(a[0][0:(60000//args.mb_size * args.mb_size)]))
+    #val.append(np.array(a[0][50000:60000]))
 train.append(trl)
 val.append(vl)
 for a in te:
@@ -84,7 +84,8 @@ for epoch in range(args.nepoch):
     #scheduler.step()
     t1=time.time()
     model.run_epoch(train,epoch,type='train')
-    model.run_epoch(val,epoch,type='val')
+    if (val is not None):
+        model.run_epoch(val,epoch,type='val')
     print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
     sys.stdout.flush()
 
