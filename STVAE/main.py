@@ -62,11 +62,11 @@ for epoch in range(args.nepoch):
     t1=time.time()
     model.run_epoch(train,epoch,type='train')
     if (val is not None and val):
-        model.run_epoch([val[0][0:500],val[1][0:500]],epoch,type='val')
+        model.run_epoch(val,epoch,type='val')
         #model.run_epoch([val[0][0:500], val[1][0:500]], epoch, type='val')
     print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
     sys.stdout.flush()
-model.run_epoch([val[0][0:500],val[1][0:500]],epoch,type='val')
+
 model.run_epoch(train,epoch,type='trest')
 model.run_epoch(test,epoch,type='test')
 

@@ -41,26 +41,12 @@ class STVAE(nn.Module):
 
 
         self.z_dim = self.s_dim-self.u_dim
+        
         self.s2s=None
         self.u2u=None
-
-        self.x2h = nn.Sequential(
-            nn.Linear(self.x_dim, self.h_dim),
-            nn.ReLU()
-        )
-
-        self.h2he = nn.Sequential(
-            nn.Linear(self.h_dim, self.h_dim),
-            nn.ReLU()
-        )
-
-        self.h2hd = nn.Sequential(
-            nn.ReLU(),
-            nn.Linear(self.h_dim, self.h_dim)
-        )
-
+        self.x2h = nn.Linear(self.x_dim, self.h_dim),
+        self.h2h=nn.Linear(self.h_dim, self.h_dim),
         self.h2x=nn.Linear(self.h_dim, self.x_dim)
-
         self.h2smu = nn.Linear(self.h_dim, self.s_dim)
         self.h2svar = nn.Linear(self.h_dim, self.s_dim)
 
@@ -80,9 +66,11 @@ class STVAE(nn.Module):
         print('s_dim',self.s_dim,'u_dim',self.u_dim,'z_dim',self.z_dim,self.type)
 
     def forward_encoder(self, inputs):
+        nn.Linear(self.x_dim, self.h_dim),
+        nn.ReLU()
         h=self.x2h(inputs)
         for i in range(self.num_hlayers):
-            h=self.h2he(h)
+            h=F.relu(self.h2h(h))
         s_mu = self.h2smu(h)
         if (self.type=='tvae'):
             s_mu[:,0:self.u_dim] = F.tanh(s_mu.narrow(1,0,self.u_dim))
@@ -96,7 +84,9 @@ class STVAE(nn.Module):
     def forward_decoder(self, z):
         h=F.relu(self.z2h(z))
         for i in range(self.num_hlayers):
-            h=self.h2hd(h)
+            h=self.h2h(h)
+            if (i<self.num_layers-1):
+                h=F.relu(h)
         x=F.sigmoid(self.h2x(h))
         return x
 
