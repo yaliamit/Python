@@ -48,12 +48,12 @@ PARS['num_train']=args.num_train
 train, val, test, image_dim = get_data(PARS)
 h=train[0].shape[1]
 w=train[0].shape[2]
-mnist_tr = datasets.MNIST(root='../MNIST/', transform=transforms.ToTensor())
+mnist_tr = datasets.MNIST(root='../MNIST', download=True,transform=transforms.ToTensor())
 tr = torch.utils.data.DataLoader(dataset=mnist_tr,
                                  batch_size=60000,
                                  shuffle=False,
                                  drop_last=True, **kwargs)
-mnist_te = datasets.MNIST(root='../MNIST/',train=False, transform=transforms.ToTensor())
+mnist_te = datasets.MNIST(root='../MNIST/', download=True, train=False, transform=transforms.ToTensor())
 te = torch.utils.data.DataLoader(dataset=mnist_te,
                                  batch_size=10000,
                                  shuffle=False,
