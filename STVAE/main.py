@@ -64,17 +64,19 @@ tel=test[1]
 train=[]
 val=None
 test=[]
+lentr=(60000//args.mb_size * args.mb_size)
+lente=(10000//args.mb_size * args.mb_size)
 for a in tr:
     print(a[0].shape)
-    train.append(np.array(a[0][0:(60000//args.mb_size * args.mb_size)]))
+    train.append(np.array(a[0][0:lentr]))
     #val.append(np.array(a[0][50000:60000]))
-train.append(trl)
+train.append(trl[0:lentr])
 if (val is not None):
     val.append(vl)
 for a in te:
     print(a[0].shape)
-    test.append(np.array(a[0]))
-test.append(tel)
+    test.append(np.array(a[0][0:lente]))
+test.append(tel[0:lente])
 # #tr=torch.utils.data.Subset(mnist_tr,0)
 model = STVAE(h, w,  device, args).to(device)
 #l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
