@@ -90,12 +90,12 @@ w=train[0].shape[2]
 # test.append(tel[0:lente])
 # #tr=torch.utils.data.Subset(mnist_tr,0)
 model = STVAE(h, w,  device, args).to(device)
-#l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
-#scheduler = torch.optim.lr_scheduler.LambdaLR(model.optimizer, lr_lambda=l2)
+l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
+scheduler = torch.optim.lr_scheduler.LambdaLR(model.optimizer, lr_lambda=l2)
 
 
 for epoch in range(args.nepoch):
-    #scheduler.step()
+    scheduler.step()
     t1=time.time()
     model.run_epoch(train,epoch,type='train')
     if (val is not None):
