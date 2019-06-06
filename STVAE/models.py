@@ -94,7 +94,7 @@ class STVAE(nn.Module):
         return mu + torch.exp(logvar/2) * eps
 
     def forward_decoder(self, z):
-        h=self.z2h(z)
+        h=F.relu(self.z2h(z))
         for i in range(self.num_hlayers):
             h=self.h2hd(h)
         x=F.sigmoid(self.h2x(h))
