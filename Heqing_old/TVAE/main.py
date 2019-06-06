@@ -31,7 +31,7 @@ use_gpu = args.gpu and torch.cuda.is_available()
 
 torch.manual_seed(args.seed)
 
-device = torch.device("cuda" if use_gpu else "cpu")
+device = torch.device("cuda:1" if use_gpu else "cpu")
 
 mb_size = 100 # batch size
 h = 28
