@@ -46,38 +46,47 @@ PARS={}
 PARS['data_set']='mnist'
 PARS['num_train']=args.num_train
 PARS['nval']=0
-train, val, test, image_dim = get_data(PARS)
-h=train[0].shape[1]
-w=train[0].shape[2]
-mnist_tr = datasets.MNIST(root='../MNIST', download=True,transform=transforms.ToTensor())
-tr = torch.utils.data.DataLoader(dataset=mnist_tr,
-                                 batch_size=60000,
-                                 shuffle=False,
-                                 drop_last=True, **kwargs)
-mnist_te = datasets.MNIST(root='../MNIST/', download=True, train=False, transform=transforms.ToTensor())
-te = torch.utils.data.DataLoader(dataset=mnist_te,
-                                 batch_size=10000,
-                                 shuffle=False,
-                                 drop_last=True, **kwargs)
-trl=train[1]
-vl=val[1]
-tel=test[1]
-train=[]
 val=None
-test=[]
+traina, vala, testa, image_dim = get_data(PARS)
+h=traina[0].shape[1]
+w=traina[0].shape[2]
 lentr=(60000//args.mb_size * args.mb_size)
 lente=(10000//args.mb_size * args.mb_size)
-for a in tr:
-    print(a[0].shape)
-    train.append(np.array(a[0][0:lentr]))
-    #val.append(np.array(a[0][50000:60000]))
-train.append(trl[0:lentr])
-if (val is not None):
-    val.append(vl)
-for a in te:
-    print(a[0].shape)
-    test.append(np.array(a[0][0:lente]))
-test.append(tel[0:lente])
+
+train=[]
+train.append(traina[0][0:lentr])
+train.append(traina[1][0:lentr])
+test=[]
+test.append(traina[0][0:lente])
+test.append(traina[1][0:lente])
+# mnist_tr = datasets.MNIST(root='../MNIST', download=True,transform=transforms.ToTensor())
+# tr = torch.utils.data.DataLoader(dataset=mnist_tr,
+#                                  batch_size=60000,
+#                                  shuffle=False,
+#                                  drop_last=True, **kwargs)
+# mnist_te = datasets.MNIST(root='../MNIST/', download=True, train=False, transform=transforms.ToTensor())
+# te = torch.utils.data.DataLoader(dataset=mnist_te,
+#                                  batch_size=10000,
+#                                  shuffle=False,
+#                                  drop_last=True, **kwargs)
+# trl=train[1]
+# vl=val[1]
+# tel=test[1]
+# train=[]
+# val=None
+# test=[]
+#
+# for a in tr:
+#     print(a[0].shape)
+#     train.append(np.array(a[0][0:lentr]))
+#     #val.append(np.array(a[0][50000:60000]))
+# train.append(trl[0:lentr])
+# if (val is not None):
+#     val.append(vl)
+# for a in te:
+#     print(a[0].shape)
+#     test.append(np.array(a[0][0:lente]))
+# test.append(tel[0:lente])
 # #tr=torch.utils.data.Subset(mnist_tr,0)
 model = STVAE(h, w,  device, args).to(device)
 #l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
