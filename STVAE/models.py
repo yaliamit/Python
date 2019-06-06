@@ -167,7 +167,7 @@ class STVAE(nn.Module):
         tr_recon_loss = 0
         tr_full_loss=0
         ii = np.arange(0, train[0].shape[0], 1)
-        if ('train' in type):
+        if (type=='train'):
             np.random.shuffle(ii)
         tr = train[0][ii]
         y = train[1][ii]
@@ -177,16 +177,17 @@ class STVAE(nn.Module):
             target = torch.from_numpy(y[j:j + batch_size]).float()
             data = data.to(self.dv)
             target = target.to(self.dv)
-            self.optimizer.zero_grad()
+            if (type=='train'):
+                self.optimizer.zero_grad()
             recon_batch, smu, slogvar = self(data)
             recon_loss, kl = self.loss_V(recon_batch, data, smu, slogvar)
 
             loss = recon_loss + kl
+            tr_recon_loss += recon_loss
+            tr_full_loss += loss
             if (type=='train'):
                 loss.backward()
-            tr_recon_loss += recon_loss.item()
-            tr_full_loss+=loss
-            self.optimizer.step()
+                self.optimizer.step()
 
         print('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}'.format(type,
             epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
