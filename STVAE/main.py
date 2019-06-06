@@ -45,20 +45,21 @@ kwargs = {'num_workers': 8, 'pin_memory': True} if use_gpu else {}
 PARS={}
 PARS['data_set']='mnist'
 PARS['num_train']=args.num_train
-PARS['nval']=0
-val=None
-traina, vala, testa, image_dim = get_data(PARS)
-h=traina[0].shape[1]
-w=traina[0].shape[2]
-lentr=(60000//args.mb_size * args.mb_size)
-lente=(10000//args.mb_size * args.mb_size)
 
-train=[]
-train.append(traina[0][0:lentr])
-train.append(traina[1][0:lentr])
-test=[]
-test.append(traina[0][0:lente])
-test.append(traina[1][0:lente])
+#PARS['nval']=0
+#val=None
+train, val, test, image_dim = get_data(PARS)
+h=train[0].shape[1]
+w=train[0].shape[2]
+# lentr=(args.num_train//args.mb_size * args.mb_size)
+# lente=(10000//args.mb_size * args.mb_size)
+#
+# train=[]
+# train.append(traina[0][0:lentr])
+# train.append(traina[1][0:lentr])
+# test=[]
+# test.append(traina[0][0:lente])
+# test.append(traina[1][0:lente])
 # mnist_tr = datasets.MNIST(root='../MNIST', download=True,transform=transforms.ToTensor())
 # tr = torch.utils.data.DataLoader(dataset=mnist_tr,
 #                                  batch_size=60000,
