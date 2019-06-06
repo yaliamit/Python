@@ -109,10 +109,10 @@ class STVAE(nn.Module):
         # Apply linear map to entire sampled vector.
         if (self.type=='tvae'): # Apply map separately to each component - transformation and z.
             u = self.u2u(s.narrow(1, 0, self.u_dim))
-            z = s.narrow(1,self.u_dim,self.s_dim) #self.z2z(s.narrow(1,self.u_dim,self.z_dim))
+            z = s.narrow(1,self.u_dim,self.z_dim) #self.z2z(s.narrow(1,self.u_dim,self.z_dim))
         else:
             s = self.s2s(s)
-            z = s.narrow(1, self.u_dim, self.s_dim)
+            z = s.narrow(1, self.u_dim, self.z_dim)
             u = s.narrow(1, 0, self.u_dim)
         # Create image
         x = self.forward_decoder(z)
