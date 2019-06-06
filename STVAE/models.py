@@ -44,6 +44,7 @@ class STVAE(nn.Module):
 
         self.s2s=None
         self.u2u=None
+
         self.x2h=nn.Linear(self.x_dim, self.h_dim)
         self.h2h=nn.Linear(self.h_dim, self.h_dim)
         self.h2x=nn.Linear(self.h_dim, self.x_dim)

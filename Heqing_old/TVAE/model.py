@@ -24,12 +24,12 @@ class TVAE(nn.Module):
         """
         encoder: two fc layers
         """
-        self.x2h = nn.Sequential(
-            nn.Linear(self.x_dim, h_dim),
+        #self.x2h = nn.Sequential(
+         #   nn.Linear(self.x_dim, h_dim),
             #nn.LeakyReLU(0.1),
             #nn.Linear(self.h_dim, self.h_dim)
-            )
-
+            #)
+        self.x2h=nn.Linear(self.x_dim, h_dim)
         self.h2zmu = nn.Linear(h_dim, z_dim)
         self.h2zvar = nn.Linear(h_dim, z_dim)
         self.tf = t
@@ -56,12 +56,13 @@ class TVAE(nn.Module):
         """
         decoder: two fc layers
         """
-        self.h2x = nn.Sequential(
-            #nn.Linear(self.h_dim, self.h_dim),
+        #self.h2x = nn.Sequential(
+        #    #nn.Linear(self.h_dim, self.h_dim),
             #nn.LeakyReLU(0.1),
-            nn.Linear(self.h_dim, self.x_dim)
-        )
-
+        #    nn.Linear(self.h_dim, self.x_dim)
+        #)
+        
+        self.h2x=nn.Linear(self.h_dim, self.x_dim)
     def forward_encoder(self, inputs):
         h = F.relu(self.x2h(inputs))
         z_mu = self.h2zmu(h)
