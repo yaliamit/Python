@@ -45,6 +45,7 @@ kwargs = {'num_workers': 8, 'pin_memory': True} if use_gpu else {}
 PARS={}
 PARS['data_set']='mnist'
 PARS['num_train']=args.num_train
+PARS['nval']=0
 train, val, test, image_dim = get_data(PARS)
 h=train[0].shape[1]
 w=train[0].shape[2]
