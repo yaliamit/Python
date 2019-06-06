@@ -56,9 +56,9 @@ class TVAE(nn.Module):
         decoder: two fc layers
         """
         self.h2x = nn.Sequential(
-            nn.Linear(self.h_dim, self.h_dim),
+            #nn.Linear(self.h_dim, self.h_dim),
             #nn.LeakyReLU(0.1),
-            #nn.Linear(self.h_dim, self.x_dim)
+            nn.Linear(self.h_dim, self.x_dim)
         )
 
     def forward_encoder(self, inputs):
