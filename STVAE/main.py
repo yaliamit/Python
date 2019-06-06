@@ -46,8 +46,8 @@ PARS={}
 PARS['data_set']='mnist'
 PARS['num_train']=args.num_train
 
-#PARS['nval']=0
-#val=None
+PARS['nval']=0
+val=None
 train, val, test, image_dim = get_data(PARS)
 h=train[0].shape[1]
 w=train[0].shape[2]
