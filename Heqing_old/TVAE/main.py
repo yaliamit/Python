@@ -2,9 +2,11 @@ import torch
 from torch import nn, optim
 from torchvision import transforms, datasets
 from model import TVAE
+import numpy as np
 import torch.nn.functional as F
 from torchvision.utils import save_image
 from math import pow
+from Conv_data import get_data
 
 import argparse
 
@@ -31,7 +33,7 @@ torch.manual_seed(args.seed)
 
 device = torch.device("cuda" if use_gpu else "cpu")
 
-mb_size = 128 # batch size
+mb_size = 100 # batch size
 h = 28
 w = 28
 x_dim = h * w # image size
@@ -43,17 +45,22 @@ log_interval = 100 # for reporting
 #lr = 1e-3
 
 kwargs = {'num_workers': 1, 'pin_memory': True} if use_gpu else {}
+PARS={}
+PARS['data_set']='mnist'
+PARS['num_train']=60000
+PARS['nval']=0
+train, val, test, image_dim = get_data(PARS)
 # add 'download=True' when use it for the first time
-mnist_tr = datasets.MNIST(root='../MNIST/', transform=transforms.ToTensor())
-mnist_te = datasets.MNIST(root='../MNIST/', train=False, transform=transforms.ToTensor())
-tr = torch.utils.data.DataLoader(dataset=mnist_tr,
-                                batch_size=mb_size,
-                                shuffle=True,
-                                drop_last=True, **kwargs)
-te = torch.utils.data.DataLoader(dataset=mnist_te,
-                                batch_size=mb_size,
-                                shuffle=True,
-                                drop_last=True, **kwargs)
+# mnist_tr = datasets.MNIST(root='../MNIST/', transform=transforms.ToTensor())
+# mnist_te = datasets.MNIST(root='../MNIST/', train=False, transform=transforms.ToTensor())
+# tr = torch.utils.data.DataLoader(dataset=mnist_tr,
+#                                 batch_size=mb_size,
+#                                 shuffle=True,
+#                                 drop_last=True, **kwargs)
+# te = torch.utils.data.DataLoader(dataset=mnist_te,
+#                                 batch_size=mb_size,
+#                                 shuffle=True,
+#                                 drop_last=True, **kwargs)
 
 
 model = TVAE(h, w, h_dim, z_dim, u_dim, mb_size, device, args.transformation).to(device)
@@ -71,12 +78,17 @@ def loss_V(recon_x, x, mu1, logvar1, mu2, logvar2):
 
     return BCE, KLD1 + KLD2
 
-def test(epoch):
-    model.eval()
+def test_epoch(test,model):
+    #model.eval()
     test_recon_loss = 0
     total_correct = 0
     with torch.no_grad():
-        for _, (data, target) in enumerate(te):
+        te = test[0]
+        y = test[1]
+        batch_size = model.bsz
+        for j in np.arange(0, len(y), batch_size):
+            data = torch.from_numpy(te[j:j + batch_size]).float()
+            target = torch.from_numpy(y[j:j + batch_size]).float()
             data = data.to(device)
             target = target.to(device)
             recon_batch, zmu, zlogvar, umu, ulogvar = model(data)
@@ -84,16 +96,25 @@ def test(epoch):
             loss = recon_loss + kl
             test_recon_loss += recon_loss.item()
             
-    test_recon_loss /= (len(te) * mb_size)
+    test_recon_loss /= (len(te))
     print('====> Epoch:{} Test reconstruction loss: {:.4f}'.format(epoch, test_recon_loss))
 
-def train(epoch):
-    model.train()
+def train_epoch(train,model):
+    #model.train()
     tr_recon_loss = 0
     c_loss = 0
     total_correct = 0
+    ii = np.arange(0, train[0].shape[0], 1)
+    if (type == 'train'):
+        np.random.shuffle(ii)
+    tr = train[0][ii]
+    y = train[1][ii]
     
-    for batch_idx, (data, target) in enumerate(tr):
+
+    batch_size = model.bsz
+    for j in np.arange(0, len(y), batch_size):
+        data = torch.from_numpy(tr[j:j + batch_size]).float()
+        target = torch.from_numpy(y[j:j + batch_size]).float()
         data = data.to(device)
         target = target.to(device)
         optimizer.zero_grad()
@@ -105,10 +126,10 @@ def train(epoch):
         optimizer.step()
 
     print('====> Epoch: {} Reconstruction loss: {:.4f}'.format(
-          epoch, tr_recon_loss / (len(tr)*mb_size)))
+          epoch, tr_recon_loss / (len(tr))))
 
 
 for epoch in range(epochs):
     scheduler.step()
-    train(epoch)
-    test(epoch)
+    train_epoch(train,model)
+    test_epoch(test,model)

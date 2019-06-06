@@ -5,6 +5,7 @@ import torch.nn.functional as F
 import numpy as np
 from tps import TPSGridGen
 
+
 class TVAE(nn.Module):
 
     def __init__(self, x_h, x_w, h_dim, z_dim, u_dim, mb_size, device, t='aff'):
