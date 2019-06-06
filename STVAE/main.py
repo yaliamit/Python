@@ -47,8 +47,9 @@ PARS['data_set']='mnist'
 PARS['num_train']=args.num_train
 
 PARS['nval']=0
-val=None
 train, val, test, image_dim = get_data(PARS)
+if (PARS['nval']==0):
+    val=None
 h=train[0].shape[1]
 w=train[0].shape[2]
 # lentr=(args.num_train//args.mb_size * args.mb_size)
@@ -98,7 +99,7 @@ for epoch in range(args.nepoch):
     scheduler.step()
     t1=time.time()
     model.run_epoch(train,epoch,type='train')
-    if (val is not None):
+    if (val is not None and val):
         model.run_epoch([val[0][0:500],val[1][0:500]],epoch,type='val')
         #model.run_epoch([val[0][0:500], val[1][0:500]], epoch, type='val')
     print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
