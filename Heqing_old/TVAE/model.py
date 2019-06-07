@@ -24,15 +24,12 @@ class TVAE(nn.Module):
         """
         encoder: two fc layers
         """
-        self.x2h = nn.Linear(self.x_dim, h_dim)
         #nn.Sequential(
          #   nn.Linear(self.x_dim, h_dim),
             #nn.LeakyReLU(0.1),
             #nn.Linear(self.h_dim, self.h_dim)
          #   )
 
-        self.h2zmu = nn.Linear(h_dim, z_dim)
-        self.h2zvar = nn.Linear(h_dim, z_dim)
         self.tf = t
         if t == 'aff':
             self.u2_dim = 6 # u = Wu' + b
@@ -47,7 +44,11 @@ class TVAE(nn.Module):
             raise ValueError( """An invalid option for transformation type was supplied, options are ['aff' or 'tps']""")
         
         self.id = idty.expand((mb_size,)+idty.size()).to(self.dv)
-            
+
+        self.x2h = nn.Linear(self.x_dim, h_dim)
+        self.h2x = nn.Linear(self.h_dim, self.x_dim)
+        self.h2zmu = nn.Linear(h_dim, z_dim)
+        self.h2zvar = nn.Linear(h_dim, z_dim)
         self.h2umu = nn.Linear(h_dim, self.u1_dim)
         self.h2uvar = nn.Linear(h_dim, self.u1_dim)
 
@@ -57,7 +58,7 @@ class TVAE(nn.Module):
         """
         decoder: two fc layers
         """
-        self.h2x = nn.Linear(self.h_dim, self.x_dim)
+
         #nn.Sequential(
             #nn.Linear(self.h_dim, self.h_dim),
             #nn.LeakyReLU(0.1),
