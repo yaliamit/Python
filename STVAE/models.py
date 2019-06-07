@@ -45,8 +45,9 @@ class STVAE(nn.Module):
         self.s2s=None
         self.u2u=None
 
-
-        #self.h2h=nn.Linear(self.h_dim, self.h_dim)
+        if (self.num_hlayers==1):
+            self.h2he=nn.Linear(self.h_dim, self.h_dim)
+            self.h2hd=nn.Linear(self.h_dim, self.h_dim)
 
         self.h2smu = nn.Linear(self.h_dim, self.s_dim)
         self.h2svar = nn.Linear(self.h_dim, self.s_dim)
@@ -68,12 +69,10 @@ class STVAE(nn.Module):
 
     def forward_encoder(self, inputs):
         h=F.relu(self.x2h(inputs))
-        #for i in range(self.num_hlayers):
-         #   h=F.relu(self.h2h(h))
+        if (self.num_hlayers==1):
+            h=self.Relu(self.h2he(h))
         s_mu = self.h2smu(h)
         s_var=self.h2svar(h)
-        #if (self.type=='tvae'):
-        #    s_mu[:,0:self.u_dim] = F.tanh(s_mu.narrow(1,0,self.u_dim))
         s_var = F.threshold(s_var, -6, -6)
         return s_mu, s_var
 
@@ -83,8 +82,8 @@ class STVAE(nn.Module):
 
     def forward_decoder(self, z):
         h=F.relu(self.z2h(z))
-        #for i in range(self.num_hlayers):
-        #    h=F.relu(self.h2h(h))
+        if (self.num_hlayers==1):
+            h=self.Relu(self.h2hd(h))
         x=F.sigmoid(self.h2x(h))
         return x
 
