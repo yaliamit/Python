@@ -31,7 +31,7 @@ args = parser.parse_args()
 use_gpu = args.gpu and torch.cuda.is_available()
 
 torch.manual_seed(args.seed)
-
+np.random.seed(args.seed)
 device = torch.device("cuda:1" if use_gpu else "cpu")
 
 mb_size = args.mb_size
@@ -106,8 +106,8 @@ def train_epoch(train,model):
     c_loss = 0
     total_correct = 0
     ii = np.arange(0, train[0].shape[0], 1)
-    if (type == 'train'):
-        np.random.shuffle(ii)
+    #if (type == 'train'):
+    np.random.shuffle(ii)
     tr = train[0][ii]
     y = train[1][ii]
     

@@ -36,11 +36,12 @@ print(args)
 use_gpu = args.gpu and torch.cuda.is_available()
 
 torch.manual_seed(args.seed)
+np.random.seed(args.seed)
 
 device = torch.device("cuda:1" if use_gpu else "cpu")
 print(device)
 print(use_gpu)
-kwargs = {'num_workers': 8, 'pin_memory': True} if use_gpu else {}
+#kwargs = {'num_workers': 8, 'pin_memory': True} if use_gpu else {}
 
 PARS={}
 PARS['data_set']='mnist'
@@ -72,17 +73,17 @@ model.run_epoch(test,epoch,type='test')
 
 torch.save(model.state_dict(), 'output/'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.pt')
 
-if (not use_gpu):
-    x = model.sample_from_z_prior(theta=torch.zeros(6))
-    aa = x.cpu().numpy().squeeze()
-    py.figure(figsize=(10, 10))
-    for t in range(100):
-        py.subplot(10,10,t+1)
-        py.imshow(aa[t],cmap='gray')
-        py.axis('off')
-    #py.show()
-    #print('hello')
-    py.savefig('output/fig_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers))
+# if (not use_gpu):
+#     x = model.sample_from_z_prior(theta=torch.zeros(6))
+#     aa = x.cpu().numpy().squeeze()
+#     py.figure(figsize=(10, 10))
+#     for t in range(100):
+#         py.subplot(10,10,t+1)
+#         py.imshow(aa[t],cmap='gray')
+#         py.axis('off')
+#     #py.show()
+#     #print('hello')
+#     py.savefig('output/fig_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers))
 print("DONE")
 #bt = commands.check_output('mv OUTPUT.txt OUTPUT_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.txt',shell=True)
 
