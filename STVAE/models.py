@@ -70,7 +70,7 @@ class STVAE(nn.Module):
     def forward_encoder(self, inputs):
         h=F.relu(self.x2h(inputs))
         if (self.num_hlayers==1):
-            h=F.Relu(self.h2he(h))
+            h=F.relu(self.h2he(h))
         s_mu = self.h2smu(h)
         s_var=self.h2svar(h)
         s_var = F.threshold(s_var, -6, -6)
@@ -83,7 +83,7 @@ class STVAE(nn.Module):
     def forward_decoder(self, z):
         h=F.relu(self.z2h(z))
         if (self.num_hlayers==1):
-            h=F.Relu(self.h2hd(h))
+            h=F.relu(self.h2hd(h))
         x=F.sigmoid(self.h2x(h))
         return x
 
