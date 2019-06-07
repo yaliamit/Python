@@ -26,6 +26,8 @@ parser.add_argument('--seed', type=int, default=1111,
                     help='random seed (default: 1111)')
 parser.add_argument('--mb_size', type=int, default=100,
                     help='batch size (default: 100)')
+parser.add_argument('--num_train', type=int, default=60000,
+                    help='num_train (default: 60000)')
 args = parser.parse_args()
 
 use_gpu = args.gpu and torch.cuda.is_available()
@@ -48,7 +50,7 @@ log_interval = 100 # for reporting
 kwargs = {'num_workers': 1, 'pin_memory': True} if use_gpu else {}
 PARS={}
 PARS['data_set']='mnist'
-PARS['num_train']=60000
+PARS['num_train']=args.num_train
 PARS['nval']=0
 train, val, test, image_dim = get_data(PARS)
 # add 'download=True' when use it for the first time
