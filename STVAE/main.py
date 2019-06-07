@@ -20,7 +20,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument('--transformation', default='aff',help='type of transformation: aff or tps')
 parser.add_argument('--type', default='tvae',help='type of transformation: aff or tps')
 parser.add_argument('--sdim', type=int, default=16, help='dimension of s')
-parser.add_argument('--zdim', type=int, default=10, help='dimension of z')
+parser.add_argument('--zdim', type=int, default=20, help='dimension of z')
 parser.add_argument('--hdim', type=int, default=256, help='dimension of h')
 parser.add_argument('--num_hlayers', type=int, default=1, help='number of hlayers')
 parser.add_argument('--nepoch', type=int, default=100, help='number of training epochs')
@@ -29,7 +29,7 @@ parser.add_argument('--seed', type=int, default=1111, help='random seed (default
 parser.add_argument('--num_train',type=int,default=60000,help='num train (default: 10000)')
 parser.add_argument('--mb_size',type=int,default=500,help='mb_size (default: 500)')
 parser.add_argument('--model',default='base',help='model (default: base)')
-parser.add_argument('--optimizer',default='Adam',help='Type of optimiser')
+parser.add_argument('--optimizer',default='Adadelta',help='Type of optimiser')
 
 args = parser.parse_args()
 print(args)
