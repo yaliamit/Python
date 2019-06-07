@@ -30,9 +30,8 @@ class TVAE(nn.Module):
             #nn.Linear(self.h_dim, self.h_dim)
          #   )
         self.x2h = nn.Linear(self.x_dim, h_dim)
-        self.h2x = nn.Linear(self.h_dim, self.x_dim)
-        self.h2mu=nn.Linear(h_dim,z_dim+self.u1_dim)
-        self.h2var=nn.Linear(h_dim,z_dim+self.u1_dim)
+        #self.h2mu=nn.Linear(h_dim,z_dim+self.u1_dim)
+        #self.h2var=nn.Linear(h_dim,z_dim+self.u1_dim)
         self.h2zmu = nn.Linear(h_dim, z_dim)
         self.h2zvar = nn.Linear(h_dim, z_dim)
         self.tf = t
@@ -49,6 +48,7 @@ class TVAE(nn.Module):
             raise ValueError( """An invalid option for transformation type was supplied, options are ['aff' or 'tps']""")
         
         self.id = idty.expand((mb_size,)+idty.size()).to(self.dv)
+        self.h2x = nn.Linear(self.h_dim, self.x_dim)
 
         self.h2umu = nn.Linear(h_dim, self.u1_dim)
         self.h2uvar = nn.Linear(h_dim, self.u1_dim)
