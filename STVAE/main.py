@@ -19,7 +19,7 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('--transformation', default='aff',help='type of transformation: aff or tps')
 parser.add_argument('--type', default='tvae',help='type of transformation: aff or tps')
-parser.add_argument('--sdim', type=int, default=16, help='dimension of s')
+parser.add_argument('--sdim', type=int, default=26, help='dimension of s')
 parser.add_argument('--zdim', type=int, default=20, help='dimension of z')
 parser.add_argument('--hdim', type=int, default=256, help='dimension of h')
 parser.add_argument('--num_hlayers', type=int, default=1, help='number of hlayers')
