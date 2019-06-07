@@ -45,12 +45,12 @@ class STVAE(nn.Module):
         self.s2s=None
         self.u2u=None
 
-        self.x2h=nn.Linear(self.x_dim, self.h_dim)
+
         #self.h2h=nn.Linear(self.h_dim, self.h_dim)
-        self.h2x=nn.Linear(self.h_dim, self.x_dim)
+
         self.h2smu = nn.Linear(self.h_dim, self.s_dim)
         self.h2svar = nn.Linear(self.h_dim, self.s_dim)
-
+        self.h2x = nn.Linear(self.h_dim, self.x_dim)
         if (self.type=='tvae'):
             self.u2u = nn.Linear(self.u_dim, self.u_dim)
             #self.z2z = nn.Linear(self.z_dim, self.z_dim)
@@ -58,7 +58,7 @@ class STVAE(nn.Module):
             self.s2s = nn.Linear(self.s_dim, self.s_dim)
 
         self.z2h = nn.Linear(self.z_dim, self.h_dim)
-
+        self.x2h = nn.Linear(self.x_dim, self.h_dim)
         #self.optimizer = optim.Adadelta(self.parameters()) #
         if (args.optimizer=='Adam'):
             self.optimizer=optim.Adam(self.parameters(),lr=.001)
@@ -71,9 +71,10 @@ class STVAE(nn.Module):
         #for i in range(self.num_hlayers):
          #   h=F.relu(self.h2h(h))
         s_mu = self.h2smu(h)
+        s_var=self.h2svar(h)
         if (self.type=='tvae'):
             s_mu[:,0:self.u_dim] = F.tanh(s_mu.narrow(1,0,self.u_dim))
-            s_var = F.threshold(self.h2svar(h), -6, -6)
+            s_var = F.threshold(s_var, -6, -6)
         return s_mu, s_var
 
     def sample(self, mu, logvar, dim):

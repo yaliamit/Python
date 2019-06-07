@@ -63,7 +63,7 @@ class TVAE(nn.Module):
         s_var = self.h2var(h)
         z_mu = s_mu.narrow(1, self.u1_dim, self.z_dim)  # h2zmu(h)
         z_var = s_var.narrow(1, self.u1_dim, self.z_dim)  # F.threshold(self.h2zvar(h), -6, -6)
-        u_mu = F.tanh(s_mu.narrow(1, 0, self.u1_dim))  # F.tanh(self.h2umu(h))
+        u_mu = s_mu.narrow(1, 0, self.u1_dim)  # F.tanh(self.h2umu(h))
         u_var = F.threshold(s_var.narrow(1, 0, self.u1_dim), -6, -6)
         #z_mu = self.h2zmu(h)
         #z_var = F.threshold(self.h2zvar(h), -6, -6)
