@@ -21,17 +21,7 @@ class TVAE(nn.Module):
 
         self.dv = device
 
-        """
-        encoder: two fc layers
-        """
-        #nn.Sequential(
-         #   nn.Linear(self.x_dim, h_dim),
-            #nn.LeakyReLU(0.1),
-            #nn.Linear(self.h_dim, self.h_dim)
-         #   )
-        #self.h2mu=nn.Linear(h_dim,z_dim+self.u1_dim)
-        #self.h2var=nn.Linear(h_dim,z_dim+self.u1_dim)
-
+        #
         self.tf = t
         if t == 'aff':
             self.u2_dim = 6 # u = Wu' + b
@@ -46,10 +36,12 @@ class TVAE(nn.Module):
             raise ValueError( """An invalid option for transformation type was supplied, options are ['aff' or 'tps']""")
         
         self.id = idty.expand((mb_size,)+idty.size()).to(self.dv)
-        self.h2zmu = nn.Linear(h_dim, z_dim)
-        self.h2zvar = nn.Linear(h_dim, z_dim)
-        self.h2umu = nn.Linear(h_dim, self.u1_dim)
-        self.h2uvar = nn.Linear(h_dim, self.u1_dim)
+        self.h2mu=nn.Linear(h_dim,z_dim+self.u1_dim)
+        self.h2var=nn.Linear(h_dim,z_dim+self.u1_dim)
+        #self.h2zmu = nn.Linear(h_dim, z_dim)
+        #self.h2zvar = nn.Linear(h_dim, z_dim)
+        #self.h2umu = nn.Linear(h_dim, self.u1_dim)
+        #self.h2uvar = nn.Linear(h_dim, self.u1_dim)
         self.h2x = nn.Linear(self.h_dim, self.x_dim)
 
         self.u2u = nn.Linear(self.u1_dim,self.u2_dim)
@@ -67,10 +59,16 @@ class TVAE(nn.Module):
 
     def forward_encoder(self, inputs):
         h = F.relu(self.x2h(inputs))
-        z_mu = self.h2zmu(h)
-        z_var = F.threshold(self.h2zvar(h), -6, -6)
-        u_mu = F.tanh(self.h2umu(h))
-        u_var = F.threshold(self.h2uvar(h), -6, -6)
+        s_mu = self.h2mu(h)
+        s_var = self.h2var(h)
+        z_mu = s_mu.narrow(1, self.u1_dim, self.z_dim)  # h2zmu(h)
+        z_var = s_var.narrow(1, self.u1_dim, self.z_dim)  # F.threshold(self.h2zvar(h), -6, -6)
+        u_mu = F.tanh(s_mu.narrow(1, 0, self.u1_dim))  # F.tanh(self.h2umu(h))
+        u_var = F.threshold(s_var.narrow(1, 0, self.u1_dim), -6, -6)
+        #z_mu = self.h2zmu(h)
+        #z_var = F.threshold(self.h2zvar(h), -6, -6)
+        #u_mu = F.tanh(self.h2umu(h))
+        #u_var = F.threshold(self.h2uvar(h), -6, -6)
 
         return z_mu, z_var, u_mu, u_var
 
