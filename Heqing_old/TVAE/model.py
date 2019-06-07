@@ -29,7 +29,6 @@ class TVAE(nn.Module):
             #nn.LeakyReLU(0.1),
             #nn.Linear(self.h_dim, self.h_dim)
          #   )
-        self.x2h = nn.Linear(self.x_dim, h_dim)
         #self.h2mu=nn.Linear(h_dim,z_dim+self.u1_dim)
         #self.h2var=nn.Linear(h_dim,z_dim+self.u1_dim)
         self.h2zmu = nn.Linear(h_dim, z_dim)
@@ -55,6 +54,7 @@ class TVAE(nn.Module):
 
         self.u2u = nn.Linear(self.u1_dim,self.u2_dim)
         self.z2h = nn.Linear(z_dim, h_dim)
+        self.x2h = nn.Linear(self.x_dim, h_dim)
 
         """
         decoder: two fc layers
