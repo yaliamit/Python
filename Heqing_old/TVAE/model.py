@@ -47,10 +47,10 @@ class TVAE(nn.Module):
             raise ValueError( """An invalid option for transformation type was supplied, options are ['aff' or 'tps']""")
         
         self.id = idty.expand((mb_size,)+idty.size()).to(self.dv)
-        self.h2x = nn.Linear(self.h_dim, self.x_dim)
 
         self.h2umu = nn.Linear(h_dim, self.u1_dim)
         self.h2uvar = nn.Linear(h_dim, self.u1_dim)
+        self.h2x = nn.Linear(self.h_dim, self.x_dim)
 
         self.u2u = nn.Linear(self.u1_dim,self.u2_dim)
         self.z2h = nn.Linear(z_dim, h_dim)
