@@ -64,6 +64,12 @@ if (PARS['nval']==0):
 h=train[0].shape[1]
 w=train[0].shape[2]
 model = STVAE(h, w,  device, args).to(device)
+
+tot_pars=0
+for keys, vals in model.state_dict().items():
+    print(keys,np.array(vals.shape))
+    tot_pars+=np.prod(np.array(vals.shape))
+print('tot_pars',tot_pars)
 scheduler=None
 if args.wd:
     l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)

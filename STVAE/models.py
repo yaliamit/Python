@@ -55,7 +55,7 @@ class STVAE(nn.Module):
         if (self.type=='tvae'):
             self.u2u = nn.Linear(self.u_dim, self.u_dim)
             #self.z2z = nn.Linear(self.z_dim, self.z_dim)
-        else:
+        elif (self.type=='stvae'):
             self.s2s = nn.Linear(self.s_dim, self.s_dim)
             #self.u2u = nn.Linear(self.u_dim, self.u_dim)
 
@@ -102,8 +102,8 @@ class STVAE(nn.Module):
             z = s.narrow(1,self.u_dim,self.z_dim)
             #self.z2z(z)
         else:
-            #if (self.type == 'stvae'):
-            #    s = self.s2s(s)
+            if (self.type == 'stvae'):
+                s = self.s2s(s)
             z = s.narrow(1, self.u_dim, self.z_dim)
             u = s.narrow(1, 0, self.u_dim)
         # Create image
