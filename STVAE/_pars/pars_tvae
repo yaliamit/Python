@@ -4,7 +4,7 @@
 --zdim=10
 --hdim=256
 --num_hlayers=0
---nepoch=100
+--nepoch=10
 --gpu=True
 --seed=1111
 --num_train=60000
