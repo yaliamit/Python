@@ -56,7 +56,7 @@ if args.cl is not None:
 
 train, val, test, image_dim = get_data(PARS)
 
-
+print('Num Train',train[0].shape[0])
 
 
 if (PARS['nval']==0):
