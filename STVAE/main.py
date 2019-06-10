@@ -30,6 +30,7 @@ parser.add_argument('--num_train',type=int,default=60000,help='num train (defaul
 parser.add_argument('--mb_size',type=int,default=100,help='mb_size (default: 500)')
 parser.add_argument('--model',default='base',help='model (default: base)')
 parser.add_argument('--optimizer',default='Adadelta',help='Type of optimiser')
+parser.add_argument('--optimizer',type=float, default=.001,help='Learning rate')
 
 args = parser.parse_args()
 print(args)

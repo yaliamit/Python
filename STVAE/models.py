@@ -62,7 +62,7 @@ class STVAE(nn.Module):
         self.x2h = nn.Linear(self.x_dim, self.h_dim)
         #self.optimizer = optim.Adadelta(self.parameters()) #
         if (args.optimizer=='Adam'):
-            self.optimizer=optim.Adam(self.parameters(),lr=.001)
+            self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
         elif (args.optimizer=='Adadelta'):
             self.optimizer = optim.Adadelta(self.parameters())
         print('s_dim',self.s_dim,'u_dim',self.u_dim,'z_dim',self.z_dim,self.type)
@@ -98,7 +98,8 @@ class STVAE(nn.Module):
         if (self.type=='tvae'): # Apply map separately to each component - transformation and z.
             u = s.narrow(1,0,self.u_dim)
             u = self.u2u(u)
-            z = s.narrow(1,self.u_dim,self.z_dim) #self.z2z(s.narrow(1,self.u_dim,self.z_dim))
+            z = s.narrow(1,self.u_dim,self.z_dim)
+            #self.z2z(z)
         else:
             #s = self.s2s(s)
             z = s.narrow(1, self.u_dim, self.z_dim)
