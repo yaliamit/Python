@@ -109,7 +109,7 @@ class STVAE(nn.Module):
 
         # Apply transformation
         if 'tvae' in self.type:
-            #u = F.tanh(u)
+            u = F.tanh(u)
             # Apply linear only to dedicated transformation part of sampled vector.
             if self.tf == 'aff':
                 self.theta = u.view(-1, 2, 3) + self.id
