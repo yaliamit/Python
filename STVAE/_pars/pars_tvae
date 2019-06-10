@@ -10,3 +10,4 @@
 --num_train=60000
 --mb_size=500
 --model=base
+--lr=.001

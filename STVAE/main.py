@@ -32,6 +32,8 @@ parser.add_argument('--model',default='base',help='model (default: base)')
 parser.add_argument('--optimizer',default='Adadelta',help='Type of optimiser')
 parser.add_argument('--lr',type=float, default=.001,help='Learning rate (default: .001)')
 parser.add_argument('--wd',type=bool, default=True, help='Use weight decay')
+parser.add_argument('--cl',type=int,default=None,help='class (default: None)')
+
 args = parser.parse_args()
 print(args)
 use_gpu = args.gpu and torch.cuda.is_available()
@@ -49,7 +51,14 @@ PARS['data_set']='mnist'
 PARS['num_train']=args.num_train
 
 PARS['nval']=0
+if args.cl is not None:
+    PARS['one_class']=args.cl
+
 train, val, test, image_dim = get_data(PARS)
+
+
+
+
 if (PARS['nval']==0):
     val=None
 h=train[0].shape[1]
