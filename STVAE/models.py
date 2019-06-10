@@ -160,7 +160,7 @@ class STVAE(nn.Module):
         self.train()
         tr_recon_loss = 0
         tr_full_loss=0
-        numt=train[0].shape
+        numt=train[0].shape[0]
         numt= numt//self.bsz * self.bsz
         ii = np.arange(0, numt, 1)
         if (type=='train'):
