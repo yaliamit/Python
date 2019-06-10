@@ -31,7 +31,7 @@ parser.add_argument('--mb_size',type=int,default=100,help='mb_size (default: 500
 parser.add_argument('--model',default='base',help='model (default: base)')
 parser.add_argument('--optimizer',default='Adadelta',help='Type of optimiser')
 parser.add_argument('--lr',type=float, default=.001,help='Learning rate (default: .001)')
-
+parser.add_argument('--wd',type=bool, default=False, help='Use weight decay')
 args = parser.parse_args()
 print(args)
 use_gpu = args.gpu and torch.cuda.is_available()
@@ -55,12 +55,15 @@ if (PARS['nval']==0):
 h=train[0].shape[1]
 w=train[0].shape[2]
 model = STVAE(h, w,  device, args).to(device)
-l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
-scheduler = torch.optim.lr_scheduler.LambdaLR(model.optimizer, lr_lambda=l2)
+scheduler=None
+if args.wd:
+    l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
+    scheduler = torch.optim.lr_scheduler.LambdaLR(model.optimizer, lr_lambda=l2)
 
 
 for epoch in range(args.nepoch):
-    scheduler.step()
+    if (scheduler is not None):
+        scheduler.step()
     t1=time.time()
     model.run_epoch(train,epoch,type='train')
     if (val is not None and val):

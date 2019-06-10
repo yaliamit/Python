@@ -84,7 +84,7 @@ class STVAE(nn.Module):
         h=F.relu(self.z2h(z))
         if (self.num_hlayers==1):
             h=F.relu(self.h2hd(h))
-        x=F.sigmoid(self.h2x(h))
+        x=torch.sigmoid(self.h2x(h))
         return x
 
     def forward(self, inputs):
