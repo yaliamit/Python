@@ -97,7 +97,7 @@ class STVAE(nn.Module):
         # Apply linear map to entire sampled vector.
         if (self.type=='tvae'): # Apply map separately to each component - transformation and z.
             u = s.narrow(1,0,self.u_dim)
-            u = self.u2u(u)
+            #u = self.u2u(u)
             z = s.narrow(1,self.u_dim,self.z_dim)
             #self.z2z(z)
         else:
@@ -109,7 +109,8 @@ class STVAE(nn.Module):
 
         # Apply transformation
         if 'tvae' in self.type:
-            u = F.tanh(u)
+            #u = F.tanh(u)
+            u = self.u2u(u)
             # Apply linear only to dedicated transformation part of sampled vector.
             if self.tf == 'aff':
                 self.theta = u.view(-1, 2, 3) + self.id
