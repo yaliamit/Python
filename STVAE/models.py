@@ -52,11 +52,12 @@ class STVAE(nn.Module):
         self.h2smu = nn.Linear(self.h_dim, self.s_dim)
         self.h2svar = nn.Linear(self.h_dim, self.s_dim)
         self.h2x = nn.Linear(self.h_dim, self.x_dim)
-        if ('tvae' in self.type):
+        if (self.type=='tvae'):
             self.u2u = nn.Linear(self.u_dim, self.u_dim)
             #self.z2z = nn.Linear(self.z_dim, self.z_dim)
         else:
             self.s2s = nn.Linear(self.s_dim, self.s_dim)
+            self.u2u = nn.Linear(self.u_dim, self.u_dim)
 
         self.z2h = nn.Linear(self.z_dim, self.h_dim)
         self.x2h = nn.Linear(self.x_dim, self.h_dim)
