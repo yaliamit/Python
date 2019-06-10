@@ -60,7 +60,7 @@ if args.wd:
     l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
     scheduler = torch.optim.lr_scheduler.LambdaLR(model.optimizer, lr_lambda=l2)
 
-
+print('scheduler:',scheduler)
 for epoch in range(args.nepoch):
     if (scheduler is not None):
         scheduler.step()
