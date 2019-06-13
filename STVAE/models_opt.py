@@ -41,7 +41,7 @@ class STVAE_OPT(nn.Module):
 
         self.mu_lr=args.mu_lr
         #if 'tvae' in self.type:
-        self.mu_lr=torch.full([self.s_dim],args.mu_lr)
+        self.mu_lr=torch.full([self.s_dim],args.mu_lr).to(self.dv)
         if 'tvae' in self.type:
             self.mu_lr[0:self.u_dim]*=.1
         self.z_dim = self.s_dim-self.u_dim
