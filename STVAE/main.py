@@ -19,11 +19,11 @@ parser = argparse.ArgumentParser(
 )
 
 parser.add_argument('--transformation', default='aff',help='type of transformation: aff or tps')
-parser.add_argument('--type', default='tvae',help='type of transformation: aff or tps')
-parser.add_argument('--sdim', type=int, default=26, help='dimension of s')
-parser.add_argument('--zdim', type=int, default=20, help='dimension of z')
+parser.add_argument('--type', default='vae',help='type of transformation: aff or tps')
+parser.add_argument('--sdim', type=int, default=10, help='dimension of s')
+parser.add_argument('--zdim', type=int, default=10, help='dimension of z')
 parser.add_argument('--hdim', type=int, default=256, help='dimension of h')
-parser.add_argument('--num_hlayers', type=int, default=0, help='number of hlayers')
+parser.add_argument('--num_hlayers', type=int, default=1, help='number of hlayers')
 parser.add_argument('--nepoch', type=int, default=40, help='number of training epochs')
 parser.add_argument('--gpu', type=bool, default=False,help='whether to run in the GPU')
 parser.add_argument('--seed', type=int, default=1111, help='random seed (default: 1111)')
@@ -74,8 +74,9 @@ scheduler=None
 #    scheduler = torch.optim.lr_scheduler.LambdaLR(model.optimizer, lr_lambda=l2)
 
 if (args.run_existing):
+    ex_file='output/' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers) + '.pt'
     model.load_state_dict(
-        torch.load('output/' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers) + '.pt',map_location='cpu'))
+        torch.load(ex_file,map_location='cpu'))
     model.eval()
 
     model.run_epoch(test,0,type='test')
