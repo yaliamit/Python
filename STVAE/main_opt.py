@@ -88,7 +88,7 @@ print('tot_pars',tot_pars)
 
 if (args.run_existing):
     model.load_state_dict(
-        torch.load('output/Opt' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_MM_'+str(args.MM)+'.pt',map_location='cpu'))
+        torch.load('output/Opt_' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_MM_'+str(args.MM)+'.pt',map_location='cpu'))
     model.eval()
 
     model.run_epoch(test,testMU, testLOGVAR,0,args.nti,type='test')
