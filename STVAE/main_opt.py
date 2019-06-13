@@ -12,6 +12,11 @@ import argparse
 import time
 from Conv_data import get_data
 
+def initialize_mus(train):
+    trMU = np.zeros((train[0].shape[0], args.sdim))
+    trLOGVAR = -0.*np.ones((train[0].shape[0], args.sdim))
+    return trMU, trLOGVAR
+
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 parser = argparse.ArgumentParser(
@@ -19,7 +24,7 @@ parser = argparse.ArgumentParser(
 )
 
 parser.add_argument('--transformation', default='aff',help='type of transformation: aff or tps')
-parser.add_argument('--type', default='tvae',help='type of transformation: aff or tps')
+parser.add_argument('--type', default='vae',help='type of transformation: aff or tps')
 parser.add_argument('--sdim', type=int, default=26, help='dimension of s')
 parser.add_argument('--zdim', type=int, default=20, help='dimension of z')
 parser.add_argument('--hdim', type=int, default=256, help='dimension of h')
@@ -32,8 +37,10 @@ parser.add_argument('--mb_size',type=int,default=100,help='mb_size (default: 500
 parser.add_argument('--model',default='base',help='model (default: base)')
 parser.add_argument('--optimizer',default='Adam',help='Type of optimiser')
 parser.add_argument('--lr',type=float, default=.001,help='Learning rate (default: .001)')
+parser.add_argument('--mu_lr',type=float, default=.05,help='Learning rate (default: .05)')
 parser.add_argument('--wd',type=bool, default=True, help='Use weight decay')
 parser.add_argument('--cl',type=int,default=None,help='class (default: None)')
+parser.add_argument('--run_existing',type=bool, default=False, help='Use existing model')
 
 args = parser.parse_args()
 print(args)
@@ -57,6 +64,10 @@ if args.cl is not None:
 
 train, val, test, image_dim = get_data(PARS)
 
+trainMU, trainLOGVAR=initialize_mus(train)
+valMU, valLOGVAR=initialize_mus(val)
+testMU, testLOGVAR=initialize_mus(test)
+
 
 print('Num Train',train[0].shape[0])
 
@@ -65,46 +76,43 @@ if (PARS['nval']==0):
     val=None
 h=train[0].shape[1]
 w=train[0].shape[2]
-model = STVAE(h, w,  device, args).to(device)
-
+model = STVAE_OPT(h, w,  device, args).to(device)
 tot_pars=0
 for keys, vals in model.state_dict().items():
     print(keys,np.array(vals.shape))
     tot_pars+=np.prod(np.array(vals.shape))
 print('tot_pars',tot_pars)
-scheduler=None
-#if args.wd:
-#    l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
-#    scheduler = torch.optim.lr_scheduler.LambdaLR(model.optimizer, lr_lambda=l2)
-
-print('scheduler:',scheduler)
-for epoch in range(args.nepoch):
-    if (scheduler is not None):
-        scheduler.step()
-    t1=time.time()
-    model.run_epoch(train,epoch,type='train')
-    if (val is not None and val):
-        model.run_epoch(val,epoch,type='val')
-    print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
-    sys.stdout.flush()
-
-model.run_epoch(train,epoch,type='trest')
-model.run_epoch(test,epoch,type='test')
 
 
-torch.save(model.state_dict(), 'output/'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.pt')
+if (args.run_existing):
+    model.load_state_dict(
+        torch.load('output/' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers) + '.pt'))
+    model.eval()
+    model.recon_from_zero(train[0][0:2], num_mu_iter=10)
+else:
 
-# if (not use_gpu):
-#     x = model.sample_from_z_prior(theta=torch.zeros(6))
-#     aa = x.cpu().numpy().squeeze()
-#     py.figure(figsize=(10, 10))
-#     for t in range(100):
-#         py.subplot(10,10,t+1)
-#         py.imshow(aa[t],cmap='gray')
-#         py.axis('off')
-#     #py.show()
-#     #print('hello')
-#     py.savefig('output/fig_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers))
-print("DONE")
-#bt = commands.check_output('mv OUTPUT.txt OUTPUT_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.txt',shell=True)
+    scheduler=None
+    #if args.wd:
+    #    l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
+    #    scheduler = torch.optim.lr_scheduler.LambdaLR(model.optimizer, lr_lambda=l2)
+
+    print('scheduler:',scheduler)
+    for epoch in range(args.nepoch):
+        if (scheduler is not None):
+            scheduler.step()
+        t1=time.time()
+        trainMU, trainLOGVAR=model.run_epoch(train,trainMU,trainLOGVAR,epoch,10,type='train')
+        if (val is not None and val):
+            valMU, valLOGVAR=model.run_epoch(val,valMU,valLOGVAR,epoch,10,type='val')
+        print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
+        sys.stdout.flush()
+
+    model.run_epoch(train,trainMU,trainLOGVAR,epoch,10,type='trest')
+    #odel.run_epoch(test,testMU, testLOGVAR,epoch,10,type='test')
+
+    model.recon_from_zero(train[0][0:2],num_mu_iter=50)
+    torch.save(model.state_dict(), 'output/'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.pt')
+
+    print("DONE")
+    #bt = commands.check_output('mv OUTPUT.txt OUTPUT_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.txt',shell=True)
 
