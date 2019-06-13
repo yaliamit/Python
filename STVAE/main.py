@@ -75,7 +75,7 @@ scheduler=None
 
 if (args.run_existing):
     model.load_state_dict(
-        torch.load('output/' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers) + '.pt'))
+        torch.load('output/' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers) + '.pt',map_location='cpu'))
     model.eval()
 
     model.run_epoch(test,0,type='test')
