@@ -85,10 +85,9 @@ for keys, vals in model.state_dict().items():
     tot_pars+=np.prod(np.array(vals.shape))
 print('tot_pars',tot_pars)
 
-
+ex_file='output/Opt_' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_MM_'+str(args.MM)+'.pt'
 if (args.run_existing):
-    model.load_state_dict(
-        torch.load('output/Opt_' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_MM_'+str(args.MM)+'.pt',map_location='cpu'))
+    model.load_state_dict(torch.load(ex_file,map_location='cpu'))
     model.eval()
 
     model.run_epoch(test,testMU, testLOGVAR,0,args.nti,type='test')
@@ -117,8 +116,9 @@ else:
     model.run_epoch(train,trainMU,trainLOGVAR,epoch,10,type='trest')
     model.run_epoch(test,testMU, testLOGVAR,epoch,100,type='test')
 
-    model.recon_from_zero(train[0][0:2],num_mu_iter=50)
-    torch.save(model.state_dict(), 'output/Opt_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'_MM_'+str(args.MM)+'.pt')
+    #model.recon_from_zero(train[0][0:2],num_mu_iter=50)
+    print('writing to ',ex_file)
+    torch.save(model.state_dict(),ex_file)
 
     print("DONE")
     #bt = commands.check_output('mv OUTPUT.txt OUTPUT_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.txt',shell=True)
