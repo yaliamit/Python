@@ -151,6 +151,13 @@ class STVAE_OPT(nn.Module):
 
         return recon_batch, recon_loss, loss
 
+    def sgdloc(self, grads, params):
+
+        for i in range(len(params)):
+            params[i] = params[i] - self.mu_lr * grads[i]
+
+        return params
+
     def iterate_mu_logvar(self, data, mub, logvarb, num_mu_iter):
         muit=0.
         oldloss=0.
@@ -163,12 +170,13 @@ class STVAE_OPT(nn.Module):
             #else:
             #    oldloss=loss
             dd = torch.autograd.grad(loss, [mub, logvarb])
-            mub, logvarb=self.adamloc(dd,[mub,logvarb])
-            #mub = mub - self.mu_lr * dd[0]
-            #logvarb=logvarb-self.mu_lr*dd[1]
+            mub, logvarb=self.sgdloc(dd,[mub,logvarb])
+
+
+
             muit+=1
             #print(muit, loss)
-        self.updates['t_prev']=0
+        #self.updates['t_prev']=0
         return mub, logvarb, loss, recon_loss
 
     def run_epoch(self, train, MU, LOGVAR, epoch,num_mu_iter,type='test'):
