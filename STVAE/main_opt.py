@@ -41,6 +41,7 @@ parser.add_argument('--mu_lr',type=float, default=.05,help='Learning rate (defau
 parser.add_argument('--wd',type=bool, default=True, help='Use weight decay')
 parser.add_argument('--cl',type=int,default=None,help='class (default: None)')
 parser.add_argument('--run_existing',type=bool, default=False, help='Use existing model')
+parser.add_argument('--nti',type=int,default=100,help='num test iterations (default: 100)')
 
 args = parser.parse_args()
 print(args)
@@ -88,6 +89,8 @@ if (args.run_existing):
     model.load_state_dict(
         torch.load('output/' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers) + '.pt'))
     model.eval()
+
+    model.run_epoch(test,testMU, testLOGVAR,0,args.num_test_iters,type='test')
     model.recon_from_zero(train[0][0:2], num_mu_iter=10)
 else:
 
@@ -108,7 +111,7 @@ else:
         sys.stdout.flush()
 
     model.run_epoch(train,trainMU,trainLOGVAR,epoch,10,type='trest')
-    model.run_epoch(test,testMU, testLOGVAR,epoch,50,type='test')
+    model.run_epoch(test,testMU, testLOGVAR,epoch,100,type='test')
 
     model.recon_from_zero(train[0][0:2],num_mu_iter=50)
     torch.save(model.state_dict(), 'output/'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.pt')
