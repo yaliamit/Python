@@ -42,6 +42,7 @@ parser.add_argument('--wd',type=bool, default=True, help='Use weight decay')
 parser.add_argument('--cl',type=int,default=None,help='class (default: None)')
 parser.add_argument('--run_existing',type=bool, default=False, help='Use existing model')
 parser.add_argument('--nti',type=int,default=100,help='num test iterations (default: 100)')
+parser.add_argument('MM',type=bool, default=False, help='Use max max')
 
 args = parser.parse_args()
 print(args)
@@ -87,7 +88,7 @@ print('tot_pars',tot_pars)
 
 if (args.run_existing):
     model.load_state_dict(
-        torch.load('output/' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers) + '.pt'))
+        torch.load('output/' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers) + '.pt',map_location='cpu'))
     model.eval()
 
     model.run_epoch(test,testMU, testLOGVAR,0,args.nti,type='test')
@@ -117,7 +118,7 @@ else:
     model.run_epoch(test,testMU, testLOGVAR,epoch,100,type='test')
 
     model.recon_from_zero(train[0][0:2],num_mu_iter=50)
-    torch.save(model.state_dict(), 'output/'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.pt')
+    torch.save(model.state_dict(), 'output/'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'_MM_'+str(args.MM)+'.pt')
 
     print("DONE")
     #bt = commands.check_output('mv OUTPUT.txt OUTPUT_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.txt',shell=True)

@@ -26,8 +26,11 @@ class STVAE_OPT(nn.Module):
         self.updates['epsilon']=torch.tensor(1e-8).to(self.dv)
         self.updates['t_prev']=torch.tensor(0.).to(self.dv)
         self.updates['lr']=torch.tensor(.01).to(self.dv)
-        self.MU=nn.Parameter(torch.zeros(self.s_dim))
-        self.LOGVAR=nn.Parameter(torch.zeros(self.s_dim))
+        self.MM=args.MM
+        if (self.MM):
+            self.MU=nn.Parameter(torch.zeros(self.s_dim))
+            self.LOGVAR=nn.Parameter(torch.zeros(self.s_dim))
+
         #self.update.to(self.dv)
         """
         encoder: two fc layers
@@ -137,8 +140,10 @@ class STVAE_OPT(nn.Module):
 
     def loss_V(self, recon_x, x, mu, logvar):
         BCE = F.binary_cross_entropy(recon_x.squeeze().view(-1, self.x_dim), x.view(-1, self.x_dim), reduction='sum')
-        KLD1 = 0.5*torch.sum((mu-self.MU)*(mu-self.MU)/torch.exp(self.LOGVAR)+self.LOGVAR)
-        #KLD1 = -0.5 * torch.sum(1 + logvar - mu ** 2 - torch.exp(logvar))  # z
+        if self.MM:
+            KLD1 = 0.5*torch.sum((mu-self.MU)*(mu-self.MU)/torch.exp(self.LOGVAR)+self.LOGVAR)
+        else:
+            KLD1 = -0.5 * torch.sum(1 + logvar - mu ** 2 - torch.exp(logvar))  # z
         return BCE, KLD1
 
     def compute_loss(self,data, mub, logvarb, type):
@@ -246,6 +251,8 @@ class STVAE_OPT(nn.Module):
 
     def sample_from_z_prior(self,theta=None):
         s = torch.randn(self.bsz, self.s_dim).to(self.dv)
+        if self.MM:
+            s=s*torch.exp(self.LOGVAR/2)+self.MU
         theta=theta.to(self.dv)
         if (theta is not None and self.u_dim>0):
             s[:,0:self.u_dim]=theta
@@ -253,6 +260,8 @@ class STVAE_OPT(nn.Module):
         x=self.full_decoder(s)
 
         return x
+
+
 
     def adamloc(self, grads, params):
 
