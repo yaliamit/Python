@@ -144,13 +144,20 @@ class STVAE_OPT(nn.Module):
         return recon_batch, recon_loss, loss
 
     def iterate_mu_logvar(self, data, mub, logvarb, num_mu_iter):
-        for muit in range(num_mu_iter):
+        muit=0.
+        oldloss=0.
+        while  muit < num_mu_iter:
             recon_batch = self.forw(data, mub, logvarb)
             recon_loss, kl = self.loss_V(recon_batch, data, mub, logvarb)
             loss = recon_loss + kl
+            if (muit>1 and loss>oldloss):
+                break
+            else:
+                oldloss=loss
             dd = torch.autograd.grad(loss, [mub, logvarb])
             mub = mub - self.mu_lr * dd[0]
             logvarb=logvarb-self.mu_lr*dd[1]
+            muit+=1
             #print(muit, loss)
         return mub, logvarb, loss, recon_loss
 
