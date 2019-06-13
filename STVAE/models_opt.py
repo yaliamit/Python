@@ -19,6 +19,14 @@ class STVAE_OPT(nn.Module):
         self.num_hlayers=args.num_hlayers
         self.dv=device
 
+        self.beta1=torch.tensor(.9).to(self.dv)
+        self.beta2=torch.tensor(.999).to(self.dv)
+        self.updates={}
+        self.updates['one']=torch.tensor(1.).to(self.dv)
+        self.updates['epsilon']=torch.tensor(1e-8).to(self.dv)
+        self.updates['t_prev']=torch.tensor(0.).to(self.dv)
+        self.updates['lr']=torch.tensor(.001).to(self.dv)
+        #self.update.to(self.dv)
         """
         encoder: two fc layers
         """
@@ -155,10 +163,12 @@ class STVAE_OPT(nn.Module):
             #else:
             #    oldloss=loss
             dd = torch.autograd.grad(loss, [mub, logvarb])
-            mub = mub - self.mu_lr * dd[0]
-            logvarb=logvarb-self.mu_lr*dd[1]
+            mub, logvarb=self.adamloc(dd,[mub,logvarb])
+            #mub = mub - self.mu_lr * dd[0]
+            #logvarb=logvarb-self.mu_lr*dd[1]
             muit+=1
             #print(muit, loss)
+        self.updates['t_prev']=0
         return mub, logvarb, loss, recon_loss
 
     def run_epoch(self, train, MU, LOGVAR, epoch,num_mu_iter,type='test'):
@@ -233,19 +243,21 @@ class STVAE_OPT(nn.Module):
 
     def adamloc(self, grads, params):
 
-        if self.updates['t_prec']==0:
-            self.update['m_prev']=torch.zeros(params.shape[1])
-            self.update['v_prev']=torch.zeros(params.shape[1])
+        if self.updates['t_prev']==0:
+            self.updates['m_prev']=torch.zeros(params[0].shape[1]).to(self.dv)
+            self.updates['v_prev']=torch.zeros(params[0].shape[1]).to(self.dv)
 
         t = self.updates['t_prev'] + 1
-        a_t = self.mu_lr * torch.sqrt(1. - self.beta2 ** t) / (1. - self.beta1 ** t)
-        for params, g_t in zip(params, grads):
+        a_t = self.updates['lr'] * torch.sqrt(self.updates['one'] - self.beta2 ** t) / (self.updates['one'] - self.beta1 ** t)
+        for i in range(len(params)):
+            g_t=grads[i]
             m_t = self.beta1 * self.updates['m_prev'] + (1. - self.beta1) * g_t
             v_t = self.beta2 * self.updates['v_prev'] + (1. - self.beta2) * g_t * g_t
             # STEPS.append(a_t/T.sqrt(v_t)+epsilon)
-            step = a_t * m_t / (torch.sqrt(v_t) + self.epsilon)
+            step = a_t * m_t / (torch.sqrt(v_t) + self.updates['epsilon'])
             self.updates['m_prev'] = m_t
             self.updates['v_prev'] = v_t
-            param = param - step
+            params[i] = params[i] - step
 
         self.updates['t_prev'] = t
+        return params
