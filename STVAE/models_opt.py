@@ -102,8 +102,8 @@ class STVAE_OPT(nn.Module):
             # self.z2z(z)
         else:
             if (self.type == 'stvae'):
-                #s = self.s2s(s)
-                s[:,0:self.u_dim]=s[:,0:self.u_dim]/5.
+                s = self.s2s(s)
+                #s[:,0:self.u_dim]=s[:,0:self.u_dim]/5.
             z = s.narrow(1, self.u_dim, self.z_dim)
             u = s.narrow(1, 0, self.u_dim)
         # Create image
