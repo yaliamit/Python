@@ -151,7 +151,7 @@ class STVAE_OPT(nn.Module):
             dd = torch.autograd.grad(loss, [mub, logvarb])
             mub = mub - self.mu_lr * dd[0]
             logvarb=logvarb-self.mu_lr*dd[1]
-            #print(muit, recon_loss)
+            print(muit, loss)
         return mub, logvarb, loss, recon_loss
 
     def run_epoch(self, train, MU, LOGVAR, epoch,num_mu_iter,type='test'):
