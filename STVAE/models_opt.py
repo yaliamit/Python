@@ -177,8 +177,8 @@ class STVAE_OPT(nn.Module):
             #    break
             #else:
             #    oldloss=loss
-            dd = torch.autograd.grad(loss, [mub])
-            mub,=self.sgdloc(dd,[mub])
+            dd = torch.autograd.grad(loss, [mub,logvarb])
+            mub,logvarb=self.sgdloc(dd,[mub,logvarb])
 
 
 
