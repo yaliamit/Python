@@ -26,6 +26,8 @@ class STVAE_OPT(nn.Module):
         self.updates['epsilon']=torch.tensor(1e-8).to(self.dv)
         self.updates['t_prev']=torch.tensor(0.).to(self.dv)
         self.updates['lr']=torch.tensor(.01).to(self.dv)
+        self.MU=torch.autograd.Variable(torch.zeros(self.s_dim),requires_grad=True)
+        self.LOGVAR=torch.autograd.Variable(torch.zeros(self.s_dim),requires_grad=True)
         #self.update.to(self.dv)
         """
         encoder: two fc layers
@@ -124,10 +126,10 @@ class STVAE_OPT(nn.Module):
 
     def forw(self, inputs,mub,logvarb):
 
-        if (self.type is not 'ae'):
-            s = self.sample(mub, logvarb, self.s_dim)
-        else:
-            s=mub
+        #if (self.type is not 'ae'):
+        #    s = self.sample(mub, logvarb, self.s_dim)
+        #else:
+        s=mub
         x=self.full_decoder(s)
         return x
 
@@ -135,6 +137,7 @@ class STVAE_OPT(nn.Module):
 
     def loss_V(self, recon_x, x, mu, logvar):
         BCE = F.binary_cross_entropy(recon_x.squeeze().view(-1, self.x_dim), x.view(-1, self.x_dim), reduction='sum')
+        #KLD1 = 0.5*((mu-self.MU)*(mu-self.MU)/torch.exp(self.LOGVAR)+self.LOGVAR)
         KLD1 = -0.5 * torch.sum(1 + logvar - mu ** 2 - torch.exp(logvar))  # z
         return BCE, KLD1
 
@@ -177,6 +180,8 @@ class STVAE_OPT(nn.Module):
             muit+=1
             #print(muit, loss)
         #self.updates['t_prev']=0
+        print('mub',torch.mean(mub),torch.std(mub))
+        print('logvarb',torch.mean(logvarb),torch.std(logvarb))
         return mub, logvarb, loss, recon_loss
 
     def run_epoch(self, train, MU, LOGVAR, epoch,num_mu_iter,type='test'):
