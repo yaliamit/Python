@@ -27,7 +27,7 @@ gpu_no=-1
 # print('gpu',gpu_no)
 
 
-ss='/opt/anaconda3_beta/bin/python main.py $(cat'+' '+sys.argv[1]+') '+' '.join(sys.argv[2:l-1]) + ' >'+OUTNAME
+ss='/opt/anaconda3_beta/bin/python '+sys.argv[1]+' $(cat'+' '+sys.argv[2]+') '+' '.join(sys.argv[3:l-1]) + ' >'+OUTNAME
 if 'loc' in outname:
     os.system(ss)
 else:
