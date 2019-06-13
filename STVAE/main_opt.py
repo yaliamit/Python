@@ -42,7 +42,7 @@ parser.add_argument('--wd',type=bool, default=True, help='Use weight decay')
 parser.add_argument('--cl',type=int,default=None,help='class (default: None)')
 parser.add_argument('--run_existing',type=bool, default=False, help='Use existing model')
 parser.add_argument('--nti',type=int,default=100,help='num test iterations (default: 100)')
-parser.add_argument('MM',type=bool, default=False, help='Use max max')
+parser.add_argument('--MM',type=bool, default=False, help='Use max max')
 
 args = parser.parse_args()
 print(args)
