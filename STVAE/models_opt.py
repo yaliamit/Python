@@ -25,7 +25,7 @@ class STVAE_OPT(nn.Module):
         self.updates['one']=torch.tensor(1.).to(self.dv)
         self.updates['epsilon']=torch.tensor(1e-8).to(self.dv)
         self.updates['t_prev']=torch.tensor(0.).to(self.dv)
-        self.updates['lr']=torch.tensor(.001).to(self.dv)
+        self.updates['lr']=torch.tensor(.01).to(self.dv)
         #self.update.to(self.dv)
         """
         encoder: two fc layers
