@@ -5,6 +5,7 @@ import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
 
+
 class TPSGridGen(nn.Module):
     def __init__(self, out_h=28, out_w=28, grid_size=3, device="cpu"):
         super(TPSGridGen, self).__init__()
