@@ -79,8 +79,16 @@ if (args.run_existing):
     model.eval()
 
     model.run_epoch(test,0,type='test')
-    X=model.sample_from_z_prior(theta=torch.zeros(model.bsz,6))
+    theta = torch.zeros(model.bsz, 6)
+    theta=None
+    X=model.sample_from_z_prior(theta)
     XX=X.cpu().detach().numpy()
+    py.figure(figsize=(10, 10))
+    for i in range(100):
+        py.subplot(10,10,i+1)
+        py.imshow(1.-XX[i].reshape((28,28)),cmap='gray')
+        py.axis('off')
+    py.show()
     print("hello")
 else:
     print('scheduler:',scheduler)

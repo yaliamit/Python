@@ -1,6 +1,6 @@
 --transformation=aff
 --type=vae
---sdim=26
+--sdim=10
 --zdim=10
 --hdim=256
 --num_hlayers=1
@@ -8,6 +8,6 @@
 --gpu=True
 --seed=1111
 --num_train=60000
---mb_size=500
+--mb_size=100
 --model=base
 --lr=.001
