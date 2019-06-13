@@ -90,7 +90,7 @@ if (args.run_existing):
         torch.load('output/' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers) + '.pt'))
     model.eval()
 
-    model.run_epoch(test,testMU, testLOGVAR,0,args.num_test_iters,type='test')
+    model.run_epoch(test,testMU, testLOGVAR,0,args.nti,type='test')
     model.recon_from_zero(train[0][0:2], num_mu_iter=10)
 else:
 
