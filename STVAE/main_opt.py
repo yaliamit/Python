@@ -88,7 +88,7 @@ print('tot_pars',tot_pars)
 
 if (args.run_existing):
     model.load_state_dict(
-        torch.load('output/' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_MM_'+str(args.MM)+'.pt',map_location='cpu'))
+        torch.load('output/Opt' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_MM_'+str(args.MM)+'.pt',map_location='cpu'))
     model.eval()
 
     model.run_epoch(test,testMU, testLOGVAR,0,args.nti,type='test')
@@ -118,7 +118,7 @@ else:
     model.run_epoch(test,testMU, testLOGVAR,epoch,100,type='test')
 
     model.recon_from_zero(train[0][0:2],num_mu_iter=50)
-    torch.save(model.state_dict(), 'output/'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'_MM_'+str(args.MM)+'.pt')
+    torch.save(model.state_dict(), 'output/Opt_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'_MM_'+str(args.MM)+'.pt')
 
     print("DONE")
     #bt = commands.check_output('mv OUTPUT.txt OUTPUT_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.txt',shell=True)
