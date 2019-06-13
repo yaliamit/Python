@@ -129,10 +129,10 @@ class STVAE_OPT(nn.Module):
 
     def forw(self, inputs,mub,logvarb):
 
-        #if (self.type is not 'ae'):
-        #    s = self.sample(mub, logvarb, self.s_dim)
-        #else:
-        s=mub
+        if (self.type is not 'ae'):
+            s = self.sample(mub, logvarb, self.s_dim)
+        else:
+            s=mub
         x=self.full_decoder(s)
         return x
 
