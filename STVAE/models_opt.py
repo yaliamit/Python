@@ -19,7 +19,7 @@ class STVAE_OPT(nn.Module):
         self.num_hlayers=args.num_hlayers
         self.dv=device
 
-        self.beta1=torch.tensor(.9).to(self.dv)
+        self.beta1=torch.tensor(.5).to(self.dv)
         self.beta2=torch.tensor(.999).to(self.dv)
         self.updates={}
         self.updates['one']=torch.tensor(1.).to(self.dv)
