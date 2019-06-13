@@ -34,6 +34,7 @@ parser.add_argument('--optimizer',default='Adam',help='Type of optimiser')
 parser.add_argument('--lr',type=float, default=.001,help='Learning rate (default: .001)')
 parser.add_argument('--wd',type=bool, default=True, help='Use weight decay')
 parser.add_argument('--cl',type=int,default=None,help='class (default: None)')
+parser.add_argument('--run_existing',type=bool, default=False, help='Use existing model')
 
 args = parser.parse_args()
 print(args)
@@ -45,7 +46,6 @@ np.random.seed(args.seed)
 device = torch.device("cuda:1" if use_gpu else "cpu")
 print(device)
 print(use_gpu)
-#kwargs = {'num_workers': 8, 'pin_memory': True} if use_gpu else {}
 
 PARS={}
 PARS['data_set']='mnist'
@@ -56,11 +56,7 @@ if args.cl is not None:
     PARS['one_class']=args.cl
 
 train, val, test, image_dim = get_data(PARS)
-
-
 print('Num Train',train[0].shape[0])
-
-
 if (PARS['nval']==0):
     val=None
 h=train[0].shape[1]
@@ -77,34 +73,32 @@ scheduler=None
 #    l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
 #    scheduler = torch.optim.lr_scheduler.LambdaLR(model.optimizer, lr_lambda=l2)
 
-print('scheduler:',scheduler)
-for epoch in range(args.nepoch):
-    if (scheduler is not None):
-        scheduler.step()
-    t1=time.time()
-    model.run_epoch(train,epoch,type='train')
-    if (val is not None and val):
-        model.run_epoch(val,epoch,type='val')
-    print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
-    sys.stdout.flush()
+if (args.run_existing):
+    model.load_state_dict(
+        torch.load('output/' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers) + '.pt'))
+    model.eval()
 
-model.run_epoch(train,epoch,type='trest')
-model.run_epoch(test,epoch,type='test')
+    model.run_epoch(test,0,type='test')
+    X=model.sample_from_z_prior(theta=torch.zeros(model.bsz,6))
+    XX=X.cpu().detach().numpy()
+    print("hello")
+else:
+    print('scheduler:',scheduler)
+    for epoch in range(args.nepoch):
+        if (scheduler is not None):
+            scheduler.step()
+        t1=time.time()
+        model.run_epoch(train,epoch,type='train')
+        if (val is not None and val):
+            model.run_epoch(val,epoch,type='val')
+        print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
+        sys.stdout.flush()
+
+    model.run_epoch(train,epoch,type='trest')
+    model.run_epoch(test,epoch,type='test')
+    torch.save(model.state_dict(), 'output/'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.pt')
 
 
-torch.save(model.state_dict(), 'output/'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.pt')
-
-# if (not use_gpu):
-#     x = model.sample_from_z_prior(theta=torch.zeros(6))
-#     aa = x.cpu().numpy().squeeze()
-#     py.figure(figsize=(10, 10))
-#     for t in range(100):
-#         py.subplot(10,10,t+1)
-#         py.imshow(aa[t],cmap='gray')
-#         py.axis('off')
-#     #py.show()
-#     #print('hello')
-#     py.savefig('output/fig_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers))
 print("DONE")
 #bt = commands.check_output('mv OUTPUT.txt OUTPUT_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.txt',shell=True)
 

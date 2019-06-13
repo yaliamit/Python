@@ -92,6 +92,9 @@ if (args.run_existing):
 
     model.run_epoch(test,testMU, testLOGVAR,0,args.nti,type='test')
     model.recon_from_zero(train[0][0:2], num_mu_iter=10)
+    X = model.sample_from_z_prior(theta=torch.zeros(model.bsz, 6))
+    XX = X.cpu().detach().numpy()
+    print("hello")
 else:
 
     scheduler=None

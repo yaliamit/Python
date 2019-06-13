@@ -213,3 +213,32 @@ class STVAE_OPT(nn.Module):
             mub = mub - (self.mu_lr * dd[0])
 
         return recon_batch
+
+    def sample_from_z_prior(self,theta=None):
+        s = torch.randn(self.bsz, self.s_dim).to(self.dv)
+        theta=theta.to(self.dv)
+        if (theta is not None and self.u_dim>0):
+            s[:,0:self.u_dim]=theta
+
+        x=self.full_decoder(s)
+
+        return x
+
+    def adamloc(self, grads, params):
+
+        if self.updates['t_prec']==0:
+            self.update['m_prev']=torch.zeros(params.shape[1])
+            self.update['v_prev']=torch.zeros(params.shape[1])
+
+        t = self.updates['t_prev'] + 1
+        a_t = self.mu_lr * torch.sqrt(1. - self.beta2 ** t) / (1. - self.beta1 ** t)
+        for params, g_t in zip(params, grads):
+            m_t = self.beta1 * self.updates['m_prev'] + (1. - self.beta1) * g_t
+            v_t = self.beta2 * self.updates['v_prev'] + (1. - self.beta2) * g_t * g_t
+            # STEPS.append(a_t/T.sqrt(v_t)+epsilon)
+            step = a_t * m_t / (torch.sqrt(v_t) + self.epsilon)
+            self.updates['m_prev'] = m_t
+            self.updates['v_prev'] = v_t
+            param = param - step
+
+        self.updates['t_prev'] = t

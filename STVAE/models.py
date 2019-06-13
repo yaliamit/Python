@@ -61,7 +61,6 @@ class STVAE(nn.Module):
 
         self.z2h = nn.Linear(self.z_dim, self.h_dim)
         self.x2h = nn.Linear(self.x_dim, self.h_dim)
-        #self.optimizer = optim.Adadelta(self.parameters()) #
         if (args.optimizer=='Adam'):
             self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
         elif (args.optimizer=='Adadelta'):
@@ -72,9 +71,9 @@ class STVAE(nn.Module):
         h=F.relu(self.x2h(inputs))
         if (self.num_hlayers==1):
             h=F.relu(self.h2he(h))
-        s_mu = self.h2smu(h)
+        s_mu=self.h2smu(h)
         s_var=self.h2svar(h)
-        s_var = F.threshold(s_var, -6, -6)
+        s_var=F.threshold(s_var, -6, -6)
         return s_mu, s_var
 
     def sample(self, mu, logvar, dim):
@@ -89,13 +88,17 @@ class STVAE(nn.Module):
         return x
 
     def forward(self, inputs):
-
         s_mu, s_var = self.forward_encoder(inputs.view(-1, self.x_dim))
         if (self.type is not 'ae'):
             s = self.sample(s_mu, s_var, self.s_dim)
         else:
             s=s_mu
         # Apply linear map to entire sampled vector.
+        x=self.full_decoder(s)
+
+        return x, s_mu, s_var
+
+    def full_decoder(self,s):
         if (self.type=='tvae'): # Apply map separately to each component - transformation and z.
             u = s.narrow(1,0,self.u_dim)
             u = self.u2u(u)
@@ -108,7 +111,13 @@ class STVAE(nn.Module):
             u = s.narrow(1, 0, self.u_dim)
         # Create image
         x = self.forward_decoder(z)
+        # Transform
+        if (self.u_dim>0):
+            x=self.apply_trans(x,u)
 
+        return x
+
+    def apply_trans(self,x,u):
         # Apply transformation
         if 'tvae' in self.type:
             #u = F.tanh(u)
@@ -122,34 +131,8 @@ class STVAE(nn.Module):
                 grid = self.gridGen(self.theta)
             x = F.grid_sample(x.view(-1,self.h,self.w).unsqueeze(1), grid, padding_mode='border')
         x = x.clamp(1e-6, 1-1e-6)
-        return x, s_mu, s_var
-
-    def sample_from_z_prior(self,theta=None):
-        s = torch.randn(self.bsz, self.s_dim).to(self.dv)
-        theta=theta.to(self.dv)
-        if (self.type=='stvae' or self.type=='vae'):
-            s=self.s2s(s)
-            z = s.narrow(1, self.u_dim, self.s_dim)
-            u = s.narrow(1, 0, self.u_dim)
-        else:
-            if theta is not None:
-                u = self.u2u(theta)
-            else:
-                u = self.u2u(s.narrow(1, 0, self.u_dim))
-            z = self.z2z(s.narrow(1, self.u_dim, self.s_dim))
-        x = self.forward_decoder(z)
-        if self.type != 'vae':
-            u = F.tanh(u)
-            if self.tf == 'aff':
-                self.theta = u.view(-1, 2, 3) + self.id
-                grid = F.affine_grid(self.theta, x.view(-1, self.h, self.w).unsqueeze(1).size())
-            else:
-                self.theta=u+self.id
-                grid = self.gridGen(self.theta+self.id)
-            x = F.grid_sample(x.view(-1,self.h,self.w).unsqueeze(1), grid).detach()
-        else:
-            x=x.view(-1,self.h,self.w).detach()
         return x
+
 
     def loss_V(self, recon_x, x, mu, logvar):
         BCE = F.binary_cross_entropy(recon_x.squeeze().view(-1, self.x_dim), x.view(-1, self.x_dim), reduction='sum')
@@ -178,7 +161,6 @@ class STVAE(nn.Module):
                 self.optimizer.zero_grad()
             recon_batch, smu, slogvar = self(data)
             recon_loss, kl = self.loss_V(recon_batch, data, smu, slogvar)
-
             loss = recon_loss + kl
             tr_recon_loss += recon_loss
             tr_full_loss += loss
@@ -188,3 +170,15 @@ class STVAE(nn.Module):
 
         print('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}'.format(type,
             epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
+
+
+
+    def sample_from_z_prior(self,theta=None):
+        s = torch.randn(self.bsz, self.s_dim).to(self.dv)
+        theta=theta.to(self.dv)
+        if (theta is not None and self.u_dim>0):
+            s[:,0:self.u_dim]=theta
+
+        x=self.full_decoder(s)
+
+        return x
