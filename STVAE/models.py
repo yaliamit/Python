@@ -72,12 +72,12 @@ class STVAE(nn.Module):
         if (self.num_hlayers==1):
             h=F.relu(self.h2he(h))
         s_mu=self.h2smu(h)
-        s_var=self.h2svar(h)
+        s_prevar=self.h2svar(h)
         if (self.u_dim>0 and self.type=='tvae'):
-            s_var[:,0:self.u_dim]=F.threshold(s_var[:,0:self.u_dim], -6, -6)
+            s_var=torch.cat([F.threshold(s_prevar.narrow(1,0,self.u_dim), -6, -6), s_prevar.narrow(1,self.u_dim,self.z_dim)],dim=1)
             s_mu=F.tanh(s_mu)
         elif (self.type=='stvae'):
-            s_var = F.threshold(s_var, -6, -6)
+            s_var = F.threshold(s_prevar, -6, -6)
         return s_mu, s_var
 
     def sample(self, mu, logvar, dim):
