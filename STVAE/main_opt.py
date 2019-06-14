@@ -41,7 +41,7 @@ parser.add_argument('--mu_lr',type=float, default=.05,help='Learning rate (defau
 parser.add_argument('--wd',type=bool, default=True, help='Use weight decay')
 parser.add_argument('--cl',type=int,default=None,help='class (default: None)')
 parser.add_argument('--run_existing',type=bool, default=False, help='Use existing model')
-parser.add_argument('--nti',type=int,default=100,help='num test iterations (default: 100)')
+parser.add_argument('--nti',type=int,default=10,help='num test iterations (default: 100)')
 parser.add_argument('--MM',type=bool, default=False, help='Use max max')
 
 args = parser.parse_args()
@@ -94,6 +94,13 @@ if (args.run_existing):
     model.recon_from_zero(train[0][0:2], num_mu_iter=10)
     X = model.sample_from_z_prior(theta=torch.zeros(model.bsz, 6))
     XX = X.cpu().detach().numpy()
+    py.figure(figsize=(20, 20))
+    for i in range(100):
+        py.subplot(10, 10, i + 1)
+        py.imshow(1. - XX[i].reshape((28, 28)), cmap='gray')
+        py.axis('off')
+    py.show()
+    print("hello")
     print("hello")
 else:
 

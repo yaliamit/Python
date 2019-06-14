@@ -84,7 +84,7 @@ if (args.run_existing):
     theta=None
     X=model.sample_from_z_prior(theta)
     XX=X.cpu().detach().numpy()
-    py.figure(figsize=(10, 10))
+    py.figure(figsize=(20,20))
     for i in range(100):
         py.subplot(10,10,i+1)
         py.imshow(1.-XX[i].reshape((28,28)),cmap='gray')
