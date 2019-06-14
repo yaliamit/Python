@@ -14,7 +14,7 @@ from Conv_data import get_data
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
-parser = argparse.ArgumentParser(
+parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
     description='Variational Autoencoder with Spatial Transformation'
 )
 

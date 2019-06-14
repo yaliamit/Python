@@ -173,10 +173,6 @@ class STVAE_OPT(nn.Module):
             recon_batch = self.forw(data, mub, logvarb)
             recon_loss, kl = self.loss_V(recon_batch, data, mub, logvarb)
             loss = recon_loss + kl
-            #if (muit>1 and loss/oldloss>1.1):
-            #    break
-            #else:
-            #    oldloss=loss
             dd = torch.autograd.grad(loss, [mub,logvarb])
             mub,logvarb=self.sgdloc(dd,[mub,logvarb])
 

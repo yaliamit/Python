@@ -19,7 +19,7 @@ def initialize_mus(train):
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
-parser = argparse.ArgumentParser(
+parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
     description='Variational Autoencoder with Spatial Transformation'
 )
 
@@ -43,6 +43,7 @@ parser.add_argument('--cl',type=int,default=None,help='class (default: None)')
 parser.add_argument('--run_existing',type=bool, default=False, help='Use existing model')
 parser.add_argument('--nti',type=int,default=10,help='num test iterations (default: 100)')
 parser.add_argument('--MM',type=bool, default=False, help='Use max max')
+
 
 args = parser.parse_args()
 print(args)
