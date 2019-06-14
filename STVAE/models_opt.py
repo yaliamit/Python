@@ -67,7 +67,7 @@ class STVAE_OPT(nn.Module):
 
         self.h2x = nn.Linear(self.h_dim, self.x_dim)
         if (self.type=='tvae'):
-            self.u2u = nn.Linear(self.u_dim, self.u_dim)
+            self.u2u = nn.Linear(self.u_dim, self.u_dim,bias=False)
         elif (self.type=='stvae' ):
             self.s2s = nn.Linear(self.s_dim, self.s_dim)
 
