@@ -81,7 +81,7 @@ if (args.run_existing):
 
     model.run_epoch(test,0,type='test')
     theta = torch.zeros(model.bsz, 6)
-    theta=None
+    #theta=None
     X=model.sample_from_z_prior(theta)
     XX=X.cpu().detach().numpy()
     py.figure(figsize=(20,20))

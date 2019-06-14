@@ -53,7 +53,7 @@ class STVAE(nn.Module):
         self.h2svar = nn.Linear(self.h_dim, self.s_dim)
         self.h2x = nn.Linear(self.h_dim, self.x_dim)
         if (self.type=='tvae'):
-            self.u2u = nn.Linear(self.u_dim, self.u_dim)
+            self.u2u = nn.Linear(self.u_dim, self.u_dim, bias=False)
             #self.z2z = nn.Linear(self.z_dim, self.z_dim)
         elif (self.type=='stvae'):
             self.s2s = nn.Linear(self.s_dim, self.s_dim)
@@ -141,6 +141,10 @@ class STVAE(nn.Module):
 
 
     def run_epoch(self, train, epoch,type='test'):
+        if (type=='train'):
+            self.train()
+        else:
+            self.eval()
         self.train()
         tr_recon_loss = 0
         tr_full_loss=0
@@ -174,6 +178,7 @@ class STVAE(nn.Module):
 
 
     def sample_from_z_prior(self,theta=None):
+        self.eval()
         s = torch.randn(self.bsz, self.s_dim).to(self.dv)
         if (theta is not None and self.u_dim>0):
             theta = theta.to(self.dv)
