@@ -86,7 +86,7 @@ for keys, vals in model.state_dict().items():
     tot_pars+=np.prod(np.array(vals.shape))
 print('tot_pars',tot_pars)
 
-ex_file='output/Opt_' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_MM_'+str(args.MM)+'.pt'
+ex_file='output/sdim26/Opt_' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_MM_'+str(args.MM)+'.pt'
 if (args.run_existing):
     model.load_state_dict(torch.load(ex_file,map_location='cpu'))
     model.eval()

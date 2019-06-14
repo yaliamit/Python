@@ -72,9 +72,9 @@ scheduler=None
 #if args.wd:
 #    l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
 #    scheduler = torch.optim.lr_scheduler.LambdaLR(model.optimizer, lr_lambda=l2)
+ex_file = 'output/sdim26/' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers) + '.pt'
 
 if (args.run_existing):
-    ex_file='output/' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers) + '.pt'
     model.load_state_dict(
         torch.load(ex_file,map_location='cpu'))
     model.eval()
@@ -105,7 +105,7 @@ else:
 
     model.run_epoch(train,epoch,type='trest')
     model.run_epoch(test,epoch,type='test')
-    torch.save(model.state_dict(), 'output/'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.pt')
+    torch.save(model.state_dict(), ex_file)
 
 
 print("DONE")
