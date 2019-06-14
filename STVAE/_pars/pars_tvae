@@ -1,13 +1,13 @@
 --transformation=aff
 --type=vae
---sdim=10
+--sdim=26
 --zdim=10
 --hdim=256
 --num_hlayers=1
 --nepoch=50
 --gpu=True
 --seed=1111
---num_train=60000
+--num_train=10000
 --mb_size=500
 --model=base
 --lr=.001
