@@ -116,7 +116,7 @@ def train_model(X_train, y_train, X_val, y_val, train_fn, val_fn, num_epochs,
         return best_val
 
 
-num_epochs = 50
+num_epochs = 5
 batch_size = 100
 n_latent = 20
 n_hidden = 256
@@ -130,8 +130,8 @@ print("Loading data...")
 # X_train = np.floor(X_train + 0.5)
 # X_val = np.floor(X_val + 0.5)
 # print(np.unique(X_train))
-#X_train=X_train[0:1000]
-#X_val=X_val[0:1000]
+X_train=X_train[0:1000]
+X_val=X_val[0:1000]
 prod_shape = np.prod(X_train.shape[1:])
 
 input_var = T.tensor4('inputs')

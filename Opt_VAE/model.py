@@ -3,7 +3,7 @@ import math
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-
+from scipy.misc import imsave
 import pylab as py
 
 
@@ -77,10 +77,19 @@ class VAE(nn.Module):
         x = self.decode(z)
         x = torch.clamp(x, 1e-6, 1 - 1e-6)
         XX = x.cpu().detach().numpy()
-        py.figure(figsize=(20, 20))
-        for i in range(100):
-            py.subplot(10, 10, i + 1)
-            py.imshow(1. - XX[i].reshape((28, 28)), cmap='gray')
-            py.axis('off')
-        py.savefig('fig_'+type+'.png')
+        x_mat=[]
+        for i in range(10):
+            x_line=[]
+            for j in range(10):
+                x_line+=[XX[i].reshape((28,28))]
+            x_mat+=[np.concatenate(x_line,axis=0)]
+        manifold = np.concatenate(x_mat, axis=1)
+
+        manifold = 1. - manifold[np.newaxis, :]
+        print(manifold.shape)
+
+        img = np.concatenate([manifold, manifold, manifold], axis=0)
+        img = img.transpose(1, 2, 0)
+        imsave('manifold.jpg', img)
+
         return(x)
