@@ -1,8 +1,8 @@
 --transformation=aff
---type=vae
---sdim=40
+--type=tvae
+--sdim=26
 --zdim=10
---hdim=128
+--hdim=256
 --num_hlayers=1
 --nepoch=50
 --gpu=True
