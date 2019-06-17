@@ -1,6 +1,6 @@
 --transformation=aff
 --type=vae
---sdim=26
+--sdim=40
 --zdim=10
 --hdim=128
 --num_hlayers=1
