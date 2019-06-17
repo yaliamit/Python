@@ -35,7 +35,7 @@ w = 28
 x_dim = h*w
 log_interval = 100 # for reporting
 
-epochs = 50
+epochs = 5
 
 kwargs = {'num_workers': 8, 'pin_memory': True} if use_gpu else {}
 
@@ -223,6 +223,7 @@ if __name__ == '__main__':
         text_file.write("VAE ELBO: %s \n" % test_loss)
 
         opt_model = train_opt_vae(tr_size)
+        opt_model.simul('vae_' + str(tr_size))
         test_recon, test_loss = test_opt(opt_model,500)
 
         text_file.write("VLO recon loss: %s \n" % test_recon)

@@ -3,7 +3,9 @@ import math
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
+
 import pylab as py
+
 
 class VAE(nn.Module):
 
@@ -71,12 +73,11 @@ class VAE(nn.Module):
         return x, z_mu, z_var,z
 
     def simul(self,type):
-
         z = torch.randn(100, self.z_dim).to(self.dv)
         x = self.decode(z)
         x = torch.clamp(x, 1e-6, 1 - 1e-6)
         XX = x.cpu().detach().numpy()
-        py.figure(figsize=(20, 20))
+        fig = py.figure(figsize=(20, 20))
         for i in range(100):
             py.subplot(10, 10, i + 1)
             py.imshow(1. - XX[i].reshape((28, 28)), cmap='gray')
