@@ -100,8 +100,8 @@ if (args.run_existing):
         py.subplot(10, 10, i + 1)
         py.imshow(1. - XX[i].reshape((28, 28)), cmap='gray')
         py.axis('off')
-    py.show()
-    print("hello")
+    #py.show()
+    py.savefig('try.png')
     print("hello")
 else:
 

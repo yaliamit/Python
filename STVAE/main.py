@@ -89,7 +89,7 @@ if (args.run_existing):
         py.subplot(10,10,i+1)
         py.imshow(1.-XX[i].reshape((28,28)),cmap='gray')
         py.axis('off')
-    py.savefig('try.png')
+    py.savefig(args.type+'_'+str(args.num_hlayers)+'.png')
     print("hello")
 else:
     print('scheduler:',scheduler)
