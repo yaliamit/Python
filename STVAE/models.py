@@ -76,8 +76,10 @@ class STVAE(nn.Module):
         if (self.u_dim>0 and self.type=='tvae'):
             s_var=torch.cat([F.threshold(s_prevar.narrow(1,0,self.u_dim), -6, -6), s_prevar.narrow(1,self.u_dim,self.z_dim)],dim=1)
             s_mu=F.tanh(s_mu)
-        else: #if (self.type=='stvae'):
+        elif (self.type=='stvae'):
             s_var = F.threshold(s_prevar, -6, -6)
+        else:
+            s_var=s_prevar
         return s_mu, s_var
 
     def sample(self, mu, logvar, dim):
