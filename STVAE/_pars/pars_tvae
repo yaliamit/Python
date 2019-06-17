@@ -2,7 +2,7 @@
 --type=tvae
 --sdim=26
 --zdim=10
---hdim=256
+--hdim=128
 --num_hlayers=1
 --nepoch=50
 --gpu=True
