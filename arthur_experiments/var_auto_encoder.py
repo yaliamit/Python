@@ -42,6 +42,9 @@ def build_var_autoencoder(
     x2 = lasagne.layers.DenseLayer(
         x1, num_units=n_hidden,
         nonlinearity=lasagne.nonlinearities.rectify)
+    x2 = lasagne.layers.DenseLayer(
+        x2, num_units=n_hidden,
+        nonlinearity=lasagne.nonlinearities.rectify)
     # x2 = lasagne.layers.DropoutLayer(x2, p=drop_prob)
 
     z_mean = lasagne.layers.DenseLayer(
@@ -56,6 +59,9 @@ def build_var_autoencoder(
 
     x3 = lasagne.layers.DenseLayer(
         z, num_units=n_hidden,
+        nonlinearity=lasagne.nonlinearities.rectify)
+    x3 = lasagne.layers.DenseLayer(
+        x3, num_units=n_hidden,
         nonlinearity=lasagne.nonlinearities.rectify)
     #x3 = lasagne.layers.DropoutLayer(x3, p=drop_prob)
     x4 = lasagne.layers.DenseLayer(
