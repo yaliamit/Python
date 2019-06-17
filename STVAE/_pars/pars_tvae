@@ -1,6 +1,6 @@
 --transformation=aff
 --type=vae
---sdim=26
+--sdim=20
 --zdim=10
 --hdim=256
 --num_hlayers=1
@@ -11,3 +11,4 @@
 --mb_size=500
 --model=base
 --lr=.001
+--optimizer=Adadelta
