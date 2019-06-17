@@ -30,7 +30,7 @@ class GaussianSampleLayer(lasagne.layers.MergeLayer):
 
 
 def build_var_autoencoder(
-    input_var=None, input_shape=(None, ), n_latent=2, n_hidden = 128):
+    input_var=None, input_shape=(None, ), n_latent=26, n_hidden = 256):
     drop_prob = 0.
 
     # For 2 latent best result achieved for 128 (both train and test at ~152)
@@ -118,8 +118,8 @@ def train_model(X_train, y_train, X_val, y_val, train_fn, val_fn, num_epochs,
 
 num_epochs = 50
 batch_size = 100
-n_latent = 24
-n_hidden = 512
+n_latent = 26
+n_hidden = 256
 #24 512 -> CE 73
 #24 512 -> CE 74
 
@@ -130,7 +130,8 @@ print("Loading data...")
 # X_train = np.floor(X_train + 0.5)
 # X_val = np.floor(X_val + 0.5)
 # print(np.unique(X_train))
-
+#X_train=X_train[0:1000]
+#X_val=X_val[0:1000]
 prod_shape = np.prod(X_train.shape[1:])
 
 input_var = T.tensor4('inputs')
@@ -231,7 +232,7 @@ img = img.reshape(2 * 28, n * 28, 1)
 img = np.concatenate([img, img, img], axis=2)
 
 from scipy.misc import imsave
-imsave('output/sample_val.jpg', img)
+imsave('sample_val.jpg', img)
 
 
 print("Saving manifold (random generated samples if n_latent != 2 ...")
@@ -270,29 +271,29 @@ print(manifold.shape)
 
 img = np.concatenate([manifold, manifold, manifold], axis=0)
 img = img.transpose(1, 2, 0)
-imsave('output/manifold.jpg', img)
+imsave('manifold.jpg', img)
 
 print("Saving encoding ...")
 
 
-encode_train = np.zeros((X_train.shape[0], n_latent))
-y_enc_train = np.zeros(y_train.shape)
-for i, batch in enumerate(iterate_minibatches(X_train, y_train, 100, shuffle=False)):
-    inputs, targets = batch
-    encode_train[(i * 100): ((i + 1) * 100), :] = encode_fn(inputs)
-    y_enc_train[(i * 100): ((i + 1) * 100)] = targets
-
-encode_val = np.zeros((X_val.shape[0], n_latent))
-y_enc_val = np.zeros(y_val.shape)
-for i, batch in enumerate(iterate_minibatches(X_val, y_val, 100, shuffle=False)):
-    inputs, targets = batch
-    encode_val[(i * 100):((i + 1) * 100), :] = encode_fn(inputs)
-    y_enc_val[(i * 100): ((i + 1) * 100)] = targets
-
-import pandas as pd
-encode_train_df = pd.DataFrame(encode_train)
-encode_val_df = pd.DataFrame(encode_val)
-encode_train_df["y"] = y_enc_train
-encode_val_df["y"] = y_enc_val
-encode_train_df.to_csv("encoded_mnist_train.csv")
-encode_val_df.to_csv("encoded_mnist_val.csv")
+# encode_train = np.zeros((X_train.shape[0], n_latent))
+# y_enc_train = np.zeros(y_train.shape)
+# for i, batch in enumerate(iterate_minibatches(X_train, y_train, 100, shuffle=False)):
+#     inputs, targets = batch
+#     encode_train[(i * 100): ((i + 1) * 100), :] = encode_fn(inputs)
+#     y_enc_train[(i * 100): ((i + 1) * 100)] = targets
+#
+# encode_val = np.zeros((X_val.shape[0], n_latent))
+# y_enc_val = np.zeros(y_val.shape)
+# for i, batch in enumerate(iterate_minibatches(X_val, y_val, 100, shuffle=False)):
+#     inputs, targets = batch
+#     encode_val[(i * 100):((i + 1) * 100), :] = encode_fn(inputs)
+#     y_enc_val[(i * 100): ((i + 1) * 100)] = targets
+#
+# import pandas as pd
+# encode_train_df = pd.DataFrame(encode_train)
+# encode_val_df = pd.DataFrame(encode_val)
+# encode_train_df["y"] = y_enc_train
+# encode_val_df["y"] = y_enc_val
+# encode_train_df.to_csv("encoded_mnist_train.csv")
+# encode_val_df.to_csv("encoded_mnist_val.csv")
