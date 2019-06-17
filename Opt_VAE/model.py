@@ -78,10 +78,12 @@ class VAE(nn.Module):
         x = torch.clamp(x, 1e-6, 1 - 1e-6)
         XX = x.cpu().detach().numpy()
         x_mat=[]
+        t=0
         for i in range(10):
             x_line=[]
             for j in range(10):
-                x_line+=[XX[i].reshape((28,28))]
+                x_line+=[XX[t].reshape((28,28))]
+                t+=1
             x_mat+=[np.concatenate(x_line,axis=0)]
         manifold = np.concatenate(x_mat, axis=1)
 
