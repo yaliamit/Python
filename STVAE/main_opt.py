@@ -115,7 +115,7 @@ else:
         if (scheduler is not None):
             scheduler.step()
         t1=time.time()
-        trainMU, trainLOGVAR=model.run_epoch(train,trainMU,trainLOGVAR,epoch,10,type='train')
+        trainMU, trainLOGVAR=model.run_epoch(train,trainMU,trainLOGVAR,epoch,2,type='train')
         if (val is not None and val):
             model.run_epoch(val,valMU,valLOGVAR,epoch,20,type='val')
         print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
