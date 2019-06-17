@@ -33,7 +33,7 @@ w = 28
 x_dim = h*w
 log_interval = 100 # for reporting
 
-epochs = 5
+epochs = 40
 
 kwargs = {'num_workers': 8, 'pin_memory': True} if use_gpu else {}
 
@@ -116,7 +116,7 @@ def train(epoch,img,model,optimizer):
     model.train()
     data = img.to(device)
     optimizer.zero_grad()
-    recon,zmu,zvar = model(data)
+    recon,zmu,zvar, z = model(data)
     recon_loss, kl = loss_V(recon, data, zmu,torch.exp(0.5*zvar))
     loss = recon_loss +kl 
     loss.backward(retain_graph=True)
@@ -207,8 +207,8 @@ def test_opt_decoder(model,epc):
 
 if __name__ == '__main__': 
     text_file = open("Output.txt", "w")
-    batch_list = [1,2,3,4,5,6,7,8,9,10]
-    for i in range(10):
+    batch_list = [60] #[1,2,3,4,5,6,7,8,9,10]
+    for i in range(1):
         tr_size = batch_list[i]
         text_file.write("tr_size: %s \n" % tr_size)
 
