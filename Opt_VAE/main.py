@@ -35,7 +35,7 @@ w = 28
 x_dim = h*w
 log_interval = 100 # for reporting
 
-epochs = 5
+epochs = 50
 
 kwargs = {'num_workers': 8, 'pin_memory': True} if use_gpu else {}
 
