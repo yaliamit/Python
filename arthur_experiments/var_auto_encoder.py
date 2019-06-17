@@ -118,7 +118,7 @@ def train_model(X_train, y_train, X_val, y_val, train_fn, val_fn, num_epochs,
 
 num_epochs = 50
 batch_size = 100
-n_latent = 26
+n_latent = 20
 n_hidden = 256
 #24 512 -> CE 73
 #24 512 -> CE 74
