@@ -229,7 +229,7 @@ for i in range(n):
         img = np.concatenate([img, img_1], axis=1)
 
 img = img.reshape(2 * 28, n * 28, 1)
-img = np.concatenate([img, img, img], axis=2)
+img = 1.-np.concatenate([img, img, img], axis=2)
 
 from scipy.misc import imsave
 imsave('sample_val.jpg', img)
@@ -266,7 +266,7 @@ for k, i in enumerate(x):
     pred_mat += [np.concatenate(preds_line, axis=0)]
 manifold = np.concatenate(pred_mat, axis=1)
 
-manifold = manifold[np.newaxis, :]
+manifold = 1.-manifold[np.newaxis, :]
 print(manifold.shape)
 
 img = np.concatenate([manifold, manifold, manifold], axis=0)
