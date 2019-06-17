@@ -77,7 +77,7 @@ class VAE(nn.Module):
         x = self.decode(z)
         x = torch.clamp(x, 1e-6, 1 - 1e-6)
         XX = x.cpu().detach().numpy()
-        fig = py.figure(figsize=(20, 20))
+        py.figure(figsize=(20, 20))
         for i in range(100):
             py.subplot(10, 10, i + 1)
             py.imshow(1. - XX[i].reshape((28, 28)), cmap='gray')
