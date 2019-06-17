@@ -16,6 +16,8 @@ import torch.nn.functional as F
 from math import pow
 import numpy as np
 from torch.autograd import Variable
+import os
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 use_gpu = torch.cuda.is_available()
 
@@ -33,7 +35,7 @@ w = 28
 x_dim = h*w
 log_interval = 100 # for reporting
 
-epochs = 40
+epochs = 5
 
 kwargs = {'num_workers': 8, 'pin_memory': True} if use_gpu else {}
 
@@ -213,7 +215,9 @@ if __name__ == '__main__':
         text_file.write("tr_size: %s \n" % tr_size)
 
         vae_model = train_vae(tr_size)
+        vae_model.simul('vae_'+str(tr_size))
         test_recon, test_loss = test(vae_model)
+
 
         text_file.write("VAE recon loss: %s \n" % test_recon)
         text_file.write("VAE ELBO: %s \n" % test_loss)
