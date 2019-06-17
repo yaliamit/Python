@@ -1,12 +1,12 @@
 --transformation=aff
---type=tvae
+--type=vae
 --sdim=26
 --zdim=10
 --hdim=128
 --num_hlayers=1
 --nepoch=50
 --gpu=True
---seed=1111
+--seed=4351111
 --num_train=60000
 --mb_size=500
 --model=base
