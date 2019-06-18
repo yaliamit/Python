@@ -29,7 +29,7 @@ torch.backends.cudnn.deterministic = True
 device = torch.device("cuda" if use_gpu else "cpu")
 
 '''Parameters, adjust here'''
-mb_size = 1000 # batch size
+mb_size = 100 # batch size
 h = 28
 w = 28
 x_dim = h*w
@@ -209,18 +209,18 @@ def test_opt_decoder(model,epc):
 
 if __name__ == '__main__': 
     text_file = open("Output.txt", "w")
-    batch_list = [60] #[1,2,3,4,5,6,7,8,9,10]
+    batch_list = [1] #[1,2,3,4,5,6,7,8,9,10]
     for i in range(1):
         tr_size = batch_list[i]
         text_file.write("tr_size: %s \n" % tr_size)
 
-        vae_model = train_vae(tr_size)
-        vae_model.simul('vae_' + str(tr_size))
-        test_recon, test_loss = test(vae_model)
+        #vae_model = train_vae(tr_size)
+        #vae_model.simul('vae_' + str(tr_size))
+        #test_recon, test_loss = test(vae_model)
 
 
-        text_file.write("VAE recon loss: %s \n" % test_recon)
-        text_file.write("VAE ELBO: %s \n" % test_loss)
+        #text_file.write("VAE recon loss: %s \n" % test_recon)
+        #text_file.write("VAE ELBO: %s \n" % test_loss)
 
         opt_model = train_opt_vae(tr_size)
         opt_model.simul('opt_vae_' + str(tr_size))
