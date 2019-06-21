@@ -92,7 +92,6 @@ if (args.run_existing):
     model.eval()
 
     model.run_epoch(test,testMU, testLOGVAR,0,args.nti,type='test')
-    #model.recon_from_zero(train[0][0:2], num_mu_iter=10)
     X = model.sample_from_z_prior(theta=torch.zeros(model.bsz, 6))
     XX = X.cpu().detach().numpy()
     py.figure(figsize=(20, 20))
@@ -100,8 +99,7 @@ if (args.run_existing):
         py.subplot(10, 10, i + 1)
         py.imshow(1. - XX[i].reshape((28, 28)), cmap='gray')
         py.axis('off')
-    #py.show()
-    py.savefig('try.png')
+    py.savefig('opt_'+args.type + '_' + str(args.num_hlayers) + '.png')
     print("hello")
 else:
 
@@ -115,7 +113,7 @@ else:
         if (scheduler is not None):
             scheduler.step()
         t1=time.time()
-        trainMU, trainLOGVAR=model.run_epoch(train,trainMU,trainLOGVAR,epoch,2,type='train')
+        trainMU, trainLOGVAR=model.run_epoch(train,trainMU,trainLOGVAR,epoch,10,type='train')
         if (val is not None and val):
             model.run_epoch(val,valMU,valLOGVAR,epoch,20,type='val')
         print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
@@ -124,7 +122,7 @@ else:
     model.run_epoch(train,trainMU,trainLOGVAR,epoch,10,type='trest')
     model.run_epoch(test,testMU, testLOGVAR,epoch,100,type='test')
 
-    #model.recon_from_zero(train[0][0:2],num_mu_iter=50)
+
     print('writing to ',ex_file)
     torch.save(model.state_dict(),ex_file)
 
