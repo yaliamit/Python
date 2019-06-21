@@ -210,6 +210,7 @@ class STVAE_OPT(nn.Module):
             mub = mub.to(self.dv)
             logvarb = logvarb.to(self.dv)
 
+
             mub, logvarb, loss, recon_loss=self.iterate_mu_logvar(data,mub,logvarb,num_mu_iter)
             recon_batch, recon_loss, loss = self.compute_loss(data, mub, logvarb, type)
 
