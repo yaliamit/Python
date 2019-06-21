@@ -76,6 +76,8 @@ else:
         except:
             print('copy failed')
     time.sleep(5)
+
+    os.system('ssh amit@marx.uchicago.edu "mv /Volumes/amit/Python/STVAE/output/* /Users/amit/Desktop/Dropbox/Python/STVAE/output/."')
     # dd = commands.check_output('grep model ' + sys.argv[-2] + '.txt  | cut -d":" -f2', shell=True)
     # dirname = dd.decode("utf-8").strip('\n')
     # commands.check_output('rm -rf ' + dirname, shell=True)
