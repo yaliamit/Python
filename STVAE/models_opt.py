@@ -77,6 +77,8 @@ class STVAE_OPT(nn.Module):
             self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
         elif (args.optimizer=='Adadelta'):
             self.optimizer = optim.Adadelta(self.parameters())
+        else:
+            self.optimizer = optim.SGD(lr=args.lr)
         print('s_dim',self.s_dim,'u_dim',self.u_dim,'z_dim',self.z_dim,self.type)
 
 

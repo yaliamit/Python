@@ -1,5 +1,5 @@
 --transformation=aff
---type=tvae
+--type=vae
 --sdim=20
 --zdim=10
 --hdim=256
@@ -10,5 +10,5 @@
 --num_train=60000
 --mb_size=500
 --model=base
---lr=.001
---optimizer=Adadelta
+--lr=.1
+--optimizer=SGD
