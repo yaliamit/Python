@@ -72,7 +72,7 @@ scheduler=None
 #if args.wd:
 #    l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
 #    scheduler = torch.optim.lr_scheduler.LambdaLR(model.optimizer, lr_lambda=l2)
-ex_file = 'output/' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers) + '.pt'
+ex_file = 'output/' + args.type + '_' + args.transformation + '_' +args.optimizer+'_'+ str(args.num_hlayers) + '.pt'
 print(ex_file)
 if (args.run_existing):
     model.load_state_dict(

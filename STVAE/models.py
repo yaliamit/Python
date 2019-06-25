@@ -100,16 +100,7 @@ class STVAE(nn.Module):
         if (self.num_hlayers==1):
             h=F.relu(self.encoder.h2he(h))
         s_mu=self.toNorm.h2smu(h)
-        #s_prevar=self.toNorm.h2svar(h)
         s_var=F.threshold(self.toNorm.h2svar(h),-6,-6)
-
-        #if (self.u_dim>0 and self.type=='tvae'):
-        #    s_var=torch.cat([F.threshold(s_prevar.narrow(1,0,self.u_dim), -6, -6), s_prevar.narrow(1,self.u_dim,self.z_dim)],dim=1)
-        #    s_mu=F.tanh(s_mu)
-        #elif (self.type=='stvae'):
-        #    s_var = F.threshold(s_prevar, -6, -6)
-        #else:
-        #s_var=s_prevar
         return s_mu, s_var
 
 
@@ -121,13 +112,12 @@ class STVAE(nn.Module):
         x = torch.clamp(x, 1e-6, 1 - 1e-6)
         return x
 
-    def full_decoder(self,s):
+    def decoder_and_trans(self,s):
 
         if (self.type=='tvae'): # Apply map separately to each component - transformation and z.
             u = s.narrow(1,0,self.u_dim)
             u = self.u2u(u)
             z = s.narrow(1,self.u_dim,self.z_dim)
-            #self.z2z(z)
         else:
             if (self.type == 'stvae'):
                 s = self.s2s(s)
@@ -138,14 +128,12 @@ class STVAE(nn.Module):
         # Transform
         if (self.u_dim>0):
             x=self.apply_trans(x,u)
-
+        x = x.clamp(1e-6, 1 - 1e-6)
         return x
 
     def apply_trans(self,x,u):
         # Apply transformation
         if 'tvae' in self.type:
-            #u = F.tanh(u)
-            #u = self.u2u(u)
             # Apply linear only to dedicated transformation part of sampled vector.
             if self.tf == 'aff':
                 self.theta = u.view(-1, 2, 3) + self.id
@@ -154,7 +142,7 @@ class STVAE(nn.Module):
                 self.theta = u + self.id
                 grid = self.gridGen(self.theta)
             x = F.grid_sample(x.view(-1,self.h,self.w).unsqueeze(1), grid, padding_mode='border')
-        x = x.clamp(1e-6, 1-1e-6)
+
         return x
 
     def sample(self, mu, logvar, dim):
@@ -169,7 +157,7 @@ class STVAE(nn.Module):
         else:
             s=s_mu
         # Apply linear map to entire sampled vector.
-        x=self.full_decoder(s)
+        x=self.decoder_and_trans(s)
 
         return x, s_mu, s_var
 

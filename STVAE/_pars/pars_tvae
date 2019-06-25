@@ -11,4 +11,4 @@
 --mb_size=500
 --model=base
 --lr=.001
---optimizer=Adadelta
+--optimizer=Adam
