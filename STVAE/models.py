@@ -100,14 +100,16 @@ class STVAE(nn.Module):
         if (self.num_hlayers==1):
             h=F.relu(self.encoder.h2he(h))
         s_mu=self.toNorm.h2smu(h)
-        s_prevar=self.toNorm.h2svar(h)
-        if (self.u_dim>0 and self.type=='tvae'):
-            s_var=torch.cat([F.threshold(s_prevar.narrow(1,0,self.u_dim), -6, -6), s_prevar.narrow(1,self.u_dim,self.z_dim)],dim=1)
-            s_mu=F.tanh(s_mu)
-        elif (self.type=='stvae'):
-            s_var = F.threshold(s_prevar, -6, -6)
-        else:
-            s_var=s_prevar
+        #s_prevar=self.toNorm.h2svar(h)
+        s_var=F.threshold(self.toNorm.h2svar(h),-6,-6)
+
+        #if (self.u_dim>0 and self.type=='tvae'):
+        #    s_var=torch.cat([F.threshold(s_prevar.narrow(1,0,self.u_dim), -6, -6), s_prevar.narrow(1,self.u_dim,self.z_dim)],dim=1)
+        #    s_mu=F.tanh(s_mu)
+        #elif (self.type=='stvae'):
+        #    s_var = F.threshold(s_prevar, -6, -6)
+        #else:
+        #s_var=s_prevar
         return s_mu, s_var
 
 
