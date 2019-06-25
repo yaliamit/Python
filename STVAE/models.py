@@ -4,6 +4,37 @@ from torch import nn, optim
 from tps import TPSGridGen
 import numpy as np
 
+class toNorm(nn.Module):
+    def __init__(self,h_dim,s_dim):
+        super(toNorm,self).__init__()
+        self.h2smu = nn.Linear(h_dim, s_dim)
+        self.h2svar = nn.Linear(h_dim, s_dim)
+
+class fromNorm(nn.Module):
+    def __init__(self,h_dim,z_dim):
+        super(fromNorm,self).__init__()
+        self.z2h = nn.Linear(z_dim, h_dim)
+
+class encoder(nn.Module):
+    def __init__(self,x_dim,h_dim,num_layers):
+        super(encoder,self).__init__()
+        if (num_layers==1):
+            self.h2he = nn.Linear(h_dim, h_dim)
+        self.x2h = nn.Linear(x_dim, h_dim)
+
+class decoder(nn.Module):
+    def __init__(self,x_dim,h_dim,s_dim,u_dim,num_layers):
+        super(decoder,self).__init__()
+        if (num_layers==1):
+            self.h2hd = nn.Linear(h_dim, h_dim)
+        self.h2x = nn.Linear(h_dim, x_dim)
+        if (self.type == 'tvae'):
+            self.u2u = nn.Linear(u_dim, u_dim, bias=False)
+            # self.z2z = nn.Linear(self.z_dim, self.z_dim)
+        elif (self.type == 'stvae'):
+            self.s2s = nn.Linear(s_dim, s_dim)
+
+
 class STVAE(nn.Module):
 
     def __init__(self, x_h, x_w, device, args):
@@ -42,39 +73,34 @@ class STVAE(nn.Module):
 
         self.z_dim = self.s_dim-self.u_dim
 
+
         self.s2s=None
         self.u2u=None
 
-        if (self.num_hlayers==1):
-            self.h2he=nn.Linear(self.h_dim, self.h_dim)
-            self.h2hd=nn.Linear(self.h_dim, self.h_dim)
+        self.toNorm=toNorm(self.h_dim,self.s_dim)
+        self.fromNorm =fromNorm(self.h_dim, self.s_dim)
+        self.encoder=encoder(self.x_dim,self.h_dim,self.num_hlayers)
+        self.decoder=decoder(self.x_dim,self.h_dim,self.s_dim,self.u_dim,self.num_hlayers)
 
-        self.h2smu = nn.Linear(self.h_dim, self.s_dim)
-        self.h2svar = nn.Linear(self.h_dim, self.s_dim)
-        self.h2x = nn.Linear(self.h_dim, self.x_dim)
-        if (self.type=='tvae'):
-            self.u2u = nn.Linear(self.u_dim, self.u_dim, bias=False)
-            #self.z2z = nn.Linear(self.z_dim, self.z_dim)
-        elif (self.type=='stvae'):
-            self.s2s = nn.Linear(self.s_dim, self.s_dim)
-            #self.u2u = nn.Linear(self.u_dim, self.u_dim)
-
-        self.z2h = nn.Linear(self.z_dim, self.h_dim)
-        self.x2h = nn.Linear(self.x_dim, self.h_dim)
         if (args.optimizer=='Adam'):
             self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
         elif (args.optimizer=='Adadelta'):
             self.optimizer = optim.Adadelta(self.parameters())
         else:
-            self.optimizer = optim.SGD(lr=args.lr)
+            self.optimizer = optim.SGD([
+                {'params':self.encoder.parameters()},
+                {'params': self.decoder.parameters()},
+                {'params':self.toNorm.parameters(),'lr':1e-5},
+                {'params': self.fromNorm.parameters(), 'lr': 1e-5}
+                ],lr=args.lr)
         print('s_dim',self.s_dim,'u_dim',self.u_dim,'z_dim',self.z_dim,self.type)
 
     def forward_encoder(self, inputs):
-        h=F.relu(self.x2h(inputs))
+        h=F.relu(self.encoder.x2h(inputs))
         if (self.num_hlayers==1):
-            h=F.relu(self.h2he(h))
-        s_mu=self.h2smu(h)
-        s_prevar=self.h2svar(h)
+            h=F.relu(self.encoder.h2he(h))
+        s_mu=self.toNorm.h2smu(h)
+        s_prevar=self.toNorm.h2svar(h)
         if (self.u_dim>0 and self.type=='tvae'):
             s_var=torch.cat([F.threshold(s_prevar.narrow(1,0,self.u_dim), -6, -6), s_prevar.narrow(1,self.u_dim,self.z_dim)],dim=1)
             s_mu=F.tanh(s_mu)
@@ -84,30 +110,17 @@ class STVAE(nn.Module):
             s_var=s_prevar
         return s_mu, s_var
 
-    def sample(self, mu, logvar, dim):
-        eps = torch.randn(self.bsz, dim).to(self.dv)
-        return mu + torch.exp(logvar/2) * eps
 
     def forward_decoder(self, z):
-        h=F.relu(self.z2h(z))
+        h=F.relu(self.fromNorm.z2h(z))
         if (self.num_hlayers==1):
-            h=F.relu(self.h2hd(h))
-        x=torch.sigmoid(self.h2x(h))
+            h=F.relu(self.decoder.h2hd(h))
+        x=torch.sigmoid(self.decoder.h2x(h))
         x = torch.clamp(x, 1e-6, 1 - 1e-6)
         return x
 
-    def forward(self, inputs):
-        s_mu, s_var = self.forward_encoder(inputs.view(-1, self.x_dim))
-        if (self.type is not 'ae'):
-            s = self.sample(s_mu, s_var, self.s_dim)
-        else:
-            s=s_mu
-        # Apply linear map to entire sampled vector.
-        x=self.full_decoder(s)
-
-        return x, s_mu, s_var
-
     def full_decoder(self,s):
+
         if (self.type=='tvae'): # Apply map separately to each component - transformation and z.
             u = s.narrow(1,0,self.u_dim)
             u = self.u2u(u)
@@ -142,6 +155,21 @@ class STVAE(nn.Module):
         x = x.clamp(1e-6, 1-1e-6)
         return x
 
+    def sample(self, mu, logvar, dim):
+        eps = torch.randn(self.bsz, dim).to(self.dv)
+        return mu + torch.exp(logvar/2) * eps
+
+
+    def forward(self, inputs):
+        s_mu, s_var = self.forward_encoder(inputs.view(-1, self.x_dim))
+        if (self.type is not 'ae'):
+            s = self.sample(s_mu, s_var, self.s_dim)
+        else:
+            s=s_mu
+        # Apply linear map to entire sampled vector.
+        x=self.full_decoder(s)
+
+        return x, s_mu, s_var
 
     def loss_V(self, recon_x, x, mu, logvar):
         BCE = F.binary_cross_entropy(recon_x.squeeze().view(-1, self.x_dim), x.view(-1, self.x_dim), reduction='sum')
