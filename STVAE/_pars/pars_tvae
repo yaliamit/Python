@@ -11,4 +11,4 @@
 --mb_size=500
 --model=base
 --lr=.0001
---optimizer=SGD
+--optimizer=Adam
