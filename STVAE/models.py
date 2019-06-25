@@ -23,15 +23,14 @@ class encoder(nn.Module):
         self.x2h = nn.Linear(x_dim, h_dim)
 
 class decoder(nn.Module):
-    def __init__(self,x_dim,h_dim,s_dim,u_dim,num_layers):
+    def __init__(self,x_dim,h_dim,s_dim,u_dim,num_layers,type):
         super(decoder,self).__init__()
         if (num_layers==1):
             self.h2hd = nn.Linear(h_dim, h_dim)
         self.h2x = nn.Linear(h_dim, x_dim)
-        if (self.type == 'tvae'):
+        if (type == 'tvae'):
             self.u2u = nn.Linear(u_dim, u_dim, bias=False)
-            # self.z2z = nn.Linear(self.z_dim, self.z_dim)
-        elif (self.type == 'stvae'):
+        elif (type == 'stvae'):
             self.s2s = nn.Linear(s_dim, s_dim)
 
 
@@ -78,9 +77,9 @@ class STVAE(nn.Module):
         self.u2u=None
 
         self.toNorm=toNorm(self.h_dim,self.s_dim)
-        self.fromNorm =fromNorm(self.h_dim, self.s_dim)
+        self.fromNorm =fromNorm(self.h_dim, self.z_dim)
         self.encoder=encoder(self.x_dim,self.h_dim,self.num_hlayers)
-        self.decoder=decoder(self.x_dim,self.h_dim,self.s_dim,self.u_dim,self.num_hlayers)
+        self.decoder=decoder(self.x_dim,self.h_dim,self.s_dim,self.u_dim,self.num_hlayers,self.type)
 
         if (args.optimizer=='Adam'):
             self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
@@ -116,11 +115,11 @@ class STVAE(nn.Module):
 
         if (self.type=='tvae'): # Apply map separately to each component - transformation and z.
             u = s.narrow(1,0,self.u_dim)
-            u = self.u2u(u)
+            u = self.decoder.u2u(u)
             z = s.narrow(1,self.u_dim,self.z_dim)
         else:
             if (self.type == 'stvae'):
-                s = self.s2s(s)
+                s = self.decoder.s2s(s)
             z = s.narrow(1, self.u_dim, self.z_dim)
             u = s.narrow(1, 0, self.u_dim)
         # Create image
