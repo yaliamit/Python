@@ -10,5 +10,5 @@
 --num_train=60000
 --mb_size=500
 --model=base
---lr=.001
---optimizer=Adadelta
+--lr=.0001
+--optimizer=SGD
