@@ -35,6 +35,7 @@ parser.add_argument('--model',default='base',help='model (default: base)')
 parser.add_argument('--optimizer',default='Adam',help='Type of optimiser')
 parser.add_argument('--lr',type=float, default=.001,help='Learning rate (default: .001)')
 parser.add_argument('--mu_lr',type=float, default=.02,help='Learning rate (default: .05)')
+parser.add_argument('--num_mu_iter',type=int, default=10,help='Learning rate (default: .05)')
 parser.add_argument('--wd',type=bool, default=True, help='Use weight decay')
 parser.add_argument('--cl',type=int,default=None,help='class (default: None)')
 parser.add_argument('--run_existing',type=bool, default=False, help='Use existing model')
@@ -110,7 +111,7 @@ else:
         if (scheduler is not None):
             scheduler.step()
         t1=time.time()
-        trainMU, trainLOGVAR=model.run_epoch(train,trainMU,trainLOGVAR,epoch,2,type='train')
+        trainMU, trainLOGVAR=model.run_epoch(train,trainMU,trainLOGVAR,epoch,args.num_mu_iter,type='train')
         if (val is not None and val):
             model.run_epoch(val,valMU,valLOGVAR,epoch,20,type='val')
         print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
