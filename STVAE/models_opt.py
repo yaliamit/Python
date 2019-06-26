@@ -45,7 +45,7 @@ class STVAE_OPT(models.STVAE):
 
     def forw(self, inputs,mub,logvarb):
 
-        if (self.type is not 'ae'):
+        if (self.type is not 'ae' and not self.MM):
             s = self.sample(mub, logvarb, self.s_dim)
         else:
             s=mub
@@ -89,8 +89,13 @@ class STVAE_OPT(models.STVAE):
             recon_batch = self.forw(data, mub, logvarb)
             recon_loss, kl = self.loss_V(recon_batch, data, mub, logvarb)
             loss = recon_loss + kl
-            dd = torch.autograd.grad(loss, [mub,logvarb])
-            mub,logvarb=self.sgdloc(dd,[mub,logvarb])
+            if (self.MM):
+                dd = torch.autograd.grad(loss, [mub])
+                mub,=self.sgdloc(dd,[mub])
+            else:
+                dd = torch.autograd.grad(loss, [mub, logvarb])
+                mub,logvarb=self.sgdloc(dd,[mub,logvarb])
+
 
 
 
