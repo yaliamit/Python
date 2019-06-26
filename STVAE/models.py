@@ -227,5 +227,5 @@ def show_sampled_images(model):
         py.subplot(10,10,i+1)
         py.imshow(1.-XX[i].reshape((28,28)),cmap='gray')
         py.axis('off')
-    py.savefig(args.type+'_'+str(args.num_hlayers)+'.png')
+    py.savefig(model.type+'_'+str(model.num_hlayers)+'.png')
     print("hello")
