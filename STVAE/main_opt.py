@@ -1,16 +1,13 @@
 import torch
-from torchvision import transforms, datasets
-from models import STVAE
 from models_opt import STVAE_OPT
 import numpy as np
-import subprocess as commands
 import pylab as py
-from torchvision.utils import save_image
 import os
 import sys
 import argparse
 import time
 from Conv_data import get_data
+from models import show_sampled_images
 
 def initialize_mus(train):
     trMU = np.zeros((train[0].shape[0], args.sdim))
@@ -54,8 +51,7 @@ np.random.seed(args.seed)
 
 device = torch.device("cuda:1" if use_gpu else "cpu")
 print(device)
-print(use_gpu)
-#kwargs = {'num_workers': 8, 'pin_memory': True} if use_gpu else {}
+print('USE_GPU',use_gpu)
 
 PARS={}
 PARS['data_set']='mnist'
@@ -92,15 +88,16 @@ if (args.run_existing):
     model.eval()
 
     model.run_epoch(test,testMU, testLOGVAR,0,args.nti,type='test')
-    X = model.sample_from_z_prior(theta=torch.zeros(model.bsz, 6))
-    XX = X.cpu().detach().numpy()
-    py.figure(figsize=(20, 20))
-    for i in range(100):
-        py.subplot(10, 10, i + 1)
-        py.imshow(1. - XX[i].reshape((28, 28)), cmap='gray')
-        py.axis('off')
-    py.savefig('opt_'+args.type + '_' + str(args.num_hlayers) + '.png')
-    print("hello")
+    show_sampled_images(model)
+    # X = model.sample_from_z_prior(theta=torch.zeros(model.bsz, 6))
+    # XX = X.cpu().detach().numpy()
+    # py.figure(figsize=(20, 20))
+    # for i in range(100):
+    #     py.subplot(10, 10, i + 1)
+    #     py.imshow(1. - XX[i].reshape((28, 28)), cmap='gray')
+    #     py.axis('off')
+    # py.savefig('opt_'+args.type + '_' + str(args.num_hlayers) + '.png')
+    # print("hello")
 else:
 
     scheduler=None

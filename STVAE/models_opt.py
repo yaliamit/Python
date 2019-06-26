@@ -96,11 +96,10 @@ class STVAE_OPT(models.STVAE):
         self.train()
         tr_recon_loss = 0
         tr_full_loss=0
-        numt=train[0].shape[0]
-        numt= numt//self.bsz * self.bsz
+        numt= train[0].shape[0]//self.bsz * self.bsz
         ii = np.arange(0, numt, 1)
-        #if (type=='train'):
-        #    np.random.shuffle(ii)
+        if (type=='train'):
+            np.random.shuffle(ii)
         tr =train[0][ii].transpose(0,3,1,2)
         y = train[1][ii]
         mu= MU[ii]

@@ -1,5 +1,5 @@
 --transformation=aff
---type=tvae
+--type=vae
 --sdim=20
 --hdim=256
 --num_hlayers=1
@@ -10,4 +10,4 @@
 --mb_size=500
 --model=base
 --lr=.001
---optimizer=Adadelta
+--optimizer=Adam

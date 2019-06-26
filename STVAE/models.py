@@ -189,19 +189,16 @@ class STVAE(nn.Module):
         self.train()
         tr_recon_loss = 0
         tr_full_loss=0
-        numt=train[0].shape[0]
-        numt= numt//self.bsz * self.bsz
+        numt = train[0].shape[0] // self.bsz * self.bsz
         ii = np.arange(0, numt, 1)
         if (type=='train'):
             np.random.shuffle(ii)
-        tr = train[0][ii]
+        tr = train[0][ii].transpose(0, 3, 1, 2)
         y = train[1][ii]
 
         for j in np.arange(0, len(y), self.bsz):
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
-            #data = data.to(self.dv)
-            #target = target.to(self.dv)
             recon_loss, loss=self.compute_loss_and_grad(data,type)
             tr_recon_loss += recon_loss
             tr_full_loss += loss
