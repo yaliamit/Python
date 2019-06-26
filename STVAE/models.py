@@ -3,6 +3,7 @@ import torch.nn.functional as F
 from torch import nn, optim
 from tps import TPSGridGen
 import numpy as np
+import pylab as py
 
 class toNorm(nn.Module):
     def __init__(self,h_dim,s_dim):
@@ -165,8 +166,22 @@ class STVAE(nn.Module):
         KLD1 = -0.5 * torch.sum(1 + logvar - mu ** 2 - torch.exp(logvar))  # z
         return BCE, KLD1
 
+    def compute_loss_and_grad(self,data,type):
+        if (type == 'train'):
+            self.optimizer.zero_grad()
+
+        recon_batch, smu, slogvar = self(data)
+        recon_loss, kl = self.loss_V(recon_batch, data, smu, slogvar)
+        loss = recon_loss + kl
+
+        if (type == 'train'):
+            loss.backward()
+            self.optimizer.step()
+
+        return recon_loss, loss
 
     def run_epoch(self, train, epoch,type='test'):
+
         if (type=='train'):
             self.train()
         else:
@@ -181,23 +196,15 @@ class STVAE(nn.Module):
             np.random.shuffle(ii)
         tr = train[0][ii]
         y = train[1][ii]
-        batch_size = self.bsz
-        for j in np.arange(0, len(y), batch_size):
-            data = torch.from_numpy(tr[j:j + batch_size]).float()
-            target = torch.from_numpy(y[j:j + batch_size]).float()
-            data = data.to(self.dv)
-            target = target.to(self.dv)
-            if (type=='train'):
-                self.optimizer.zero_grad()
-            recon_batch, smu, slogvar = self(data)
-            recon_loss, kl = self.loss_V(recon_batch, data, smu, slogvar)
-            loss = recon_loss + kl
+
+        for j in np.arange(0, len(y), self.bsz):
+            data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
+            target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
+            #data = data.to(self.dv)
+            #target = target.to(self.dv)
+            recon_loss, loss=self.compute_loss_and_grad(data,type)
             tr_recon_loss += recon_loss
             tr_full_loss += loss
-            if (type=='train'):
-                loss.backward()
-                self.optimizer.step()
-
         print('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}'.format(type,
             epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
 
@@ -213,3 +220,15 @@ class STVAE(nn.Module):
         x=self.decoder_and_trans(s)
 
         return x
+
+def show_sampled_images(model):
+    theta = torch.zeros(model.bsz, 6)
+    X=model.sample_from_z_prior(theta)
+    XX=X.cpu().detach().numpy()
+    py.figure(figsize=(20,20))
+    for i in range(100):
+        py.subplot(10,10,i+1)
+        py.imshow(1.-XX[i].reshape((28,28)),cmap='gray')
+        py.axis('off')
+    py.savefig(args.type+'_'+str(args.num_hlayers)+'.png')
+    print("hello")

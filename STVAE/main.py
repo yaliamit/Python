@@ -1,16 +1,15 @@
 import torch
-from torchvision import transforms, datasets
 from models import STVAE
-from models_opt import STVAE_OPT
 import numpy as np
-import subprocess as commands
 import pylab as py
-from torchvision.utils import save_image
 import os
 import sys
 import argparse
 import time
 from Conv_data import get_data
+from models import show_sampled_images
+
+
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
@@ -21,7 +20,6 @@ parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
 parser.add_argument('--transformation', default='aff',help='type of transformation: aff or tps')
 parser.add_argument('--type', default='vae',help='type of transformation: aff or tps')
 parser.add_argument('--sdim', type=int, default=10, help='dimension of s')
-parser.add_argument('--zdim', type=int, default=10, help='dimension of z')
 parser.add_argument('--hdim', type=int, default=256, help='dimension of h')
 parser.add_argument('--num_hlayers', type=int, default=1, help='number of hlayers')
 parser.add_argument('--nepoch', type=int, default=40, help='number of training epochs')
@@ -39,7 +37,7 @@ parser.add_argument('--run_existing',action='store_true', help='Use existing mod
 args = parser.parse_args()
 print(args)
 use_gpu = args.gpu and torch.cuda.is_available()
-
+print('USING GPU',use_gpu)
 torch.manual_seed(args.seed)
 np.random.seed(args.seed)
 
@@ -57,6 +55,7 @@ if args.cl is not None:
 
 train, val, test, image_dim = get_data(PARS)
 print('Num Train',train[0].shape[0])
+
 if (PARS['nval']==0):
     val=None
 h=train[0].shape[1]
@@ -72,6 +71,7 @@ scheduler=None
 #if args.wd:
 #    l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
 #    scheduler = torch.optim.lr_scheduler.LambdaLR(model.optimizer, lr_lambda=l2)
+
 ex_file = 'output/' + args.type + '_' + args.transformation + '_' +args.optimizer+'_'+ str(args.num_hlayers) + '.pt'
 print(ex_file)
 if (args.run_existing):
@@ -80,17 +80,7 @@ if (args.run_existing):
     model.eval()
 
     model.run_epoch(test,0,type='test')
-    theta = torch.zeros(model.bsz, 6)
-    #theta=None
-    X=model.sample_from_z_prior(theta)
-    XX=X.cpu().detach().numpy()
-    py.figure(figsize=(20,20))
-    for i in range(100):
-        py.subplot(10,10,i+1)
-        py.imshow(1.-XX[i].reshape((28,28)),cmap='gray')
-        py.axis('off')
-    py.savefig(args.type+'_'+str(args.num_hlayers)+'.png')
-    print("hello")
+    show_sampled_images(model)
 else:
     print('scheduler:',scheduler)
     for epoch in range(args.nepoch):
@@ -109,5 +99,4 @@ else:
 
 
 print("DONE")
-#bt = commands.check_output('mv OUTPUT.txt OUTPUT_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.txt',shell=True)
 

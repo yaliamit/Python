@@ -4,21 +4,14 @@ from torch import nn, optim
 from tps import TPSGridGen
 import numpy as np
 import pylab as py
+import models
 
-class STVAE_OPT(nn.Module):
+class STVAE_OPT(models.STVAE):
 
     def __init__(self, x_h, x_w, device, args):
-        super(STVAE_OPT, self).__init__()
+        super(STVAE_OPT, self).__init__(x_h, x_w, device, args)
 
-        self.x_dim = x_h * x_w # height * width
-        self.h = x_h
-        self.w = x_w
-        self.h_dim = args.hdim # hidden layer
-        self.s_dim = args.sdim # generic latent variable
-        self.bsz = args.mb_size
-        self.num_hlayers=args.num_hlayers
-        self.dv=device
-
+        # Stuff for Adam on optimization of mu's var's for each image
         self.beta1=torch.tensor(.5).to(self.dv)
         self.beta2=torch.tensor(.999).to(self.dv)
         self.updates={}
@@ -31,47 +24,13 @@ class STVAE_OPT(nn.Module):
             self.MU=nn.Parameter(torch.zeros(self.s_dim))
             self.LOGVAR=nn.Parameter(torch.zeros(self.s_dim))
 
-        #self.update.to(self.dv)
-        """
-        encoder: two fc layers
-        """
-
-        self.tf = args.transformation
-        self.type=args.type
-        if 'tvae' in self.type:
-            if self.tf == 'aff':
-                self.u_dim = 6
-                self.idty = torch.cat((torch.eye(2),torch.zeros(2).unsqueeze(1)),dim=1)
-            elif self.tf == 'tps':
-                self.u_dim = 18 # 2 * 3 ** 2
-                self.gridGen = TPSGridGen(out_h=self.h,out_w=self.w,device=self.dv)
-                px = self.gridGen.PX.squeeze(0).squeeze(0).squeeze(0).squeeze(0)
-                py = self.gridGen.PY.squeeze(0).squeeze(0).squeeze(0).squeeze(0)
-                self.idty = torch.cat((px,py))
-            self.id = self.idty.expand((self.bsz,) + self.idty.size()).to(self.dv)
-        else:
-            self.u_dim=0
-
-        self.mu_lr=args.mu_lr
-        #if 'tvae' in self.type:
         self.mu_lr=torch.full([self.s_dim],args.mu_lr).to(self.dv)
         if 'tvae' in self.type:
             self.mu_lr[0:self.u_dim]*=.1
-        self.z_dim = self.s_dim-self.u_dim
+
 
         self.s2s=None
         self.u2u=None
-
-        if (self.num_hlayers==1):
-            self.h2hd=nn.Linear(self.h_dim, self.h_dim)
-
-        self.h2x = nn.Linear(self.h_dim, self.x_dim)
-        if (self.type=='tvae'):
-            self.u2u = nn.Linear(self.u_dim, self.u_dim,bias=False)
-        elif (self.type=='stvae' ):
-            self.s2s = nn.Linear(self.s_dim, self.s_dim)
-
-        self.z2h = nn.Linear(self.z_dim, self.h_dim)
 
         if (args.optimizer=='Adam'):
             self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
@@ -82,51 +41,6 @@ class STVAE_OPT(nn.Module):
         print('s_dim',self.s_dim,'u_dim',self.u_dim,'z_dim',self.z_dim,self.type)
 
 
-    def apply_trans(self,x,u):
-            # Apply transformation
-            # u = F.tanh(u)
-            # u = self.u2u(u)
-            # Apply linear only to dedicated transformation part of sampled vector.
-            if self.tf == 'aff':
-                self.theta = u.view(-1, 2, 3) + self.id
-                grid = F.affine_grid(self.theta, x.view(-1, self.h, self.w).unsqueeze(1).size())
-            elif self.tf == 'tps':
-                self.theta = u + self.id
-                grid = self.gridGen(self.theta)
-            x = F.grid_sample(x.view(-1, self.h, self.w).unsqueeze(1), grid, padding_mode='border')
-            x = x.clamp(1e-6, 1 - 1e-6)
-            return x
-
-    def sample(self, mu, logvar, dim):
-        eps = torch.randn(mu.shape[0], dim).to(self.dv)
-        return mu + torch.exp(logvar/2) * eps
-
-    def forward_decoder(self, z):
-        h=F.relu(self.z2h(z))
-        if (self.num_hlayers==1):
-            h=F.relu(self.h2hd(h))
-        x=torch.sigmoid(self.h2x(h))
-        return x
-
-    def full_decoder(self,s):
-        # Apply linear map to entire sampled vector.
-        if (self.type == 'tvae'):  # Apply map separately to each component - transformation and z.
-            u = s.narrow(1, 0, self.u_dim)
-            u = self.u2u(u)
-            z = s.narrow(1, self.u_dim, self.z_dim)
-            # self.z2z(z)
-        else:
-            if (self.type == 'stvae'):
-                s = self.s2s(s)
-                #s[:,0:self.u_dim]=s[:,0:self.u_dim]/5.
-            z = s.narrow(1, self.u_dim, self.z_dim)
-            u = s.narrow(1, 0, self.u_dim)
-        # Create image
-        x = self.forward_decoder(z)
-        if (self.u_dim>0):
-            x=self.apply_trans(x,u)
-
-        return x
 
 
     def forw(self, inputs,mub,logvarb):
@@ -135,20 +49,11 @@ class STVAE_OPT(nn.Module):
             s = self.sample(mub, logvarb, self.s_dim)
         else:
             s=mub
-        x=self.full_decoder(s)
+        x=self.decoder_and_trans(s)
         return x
 
 
-
-    def loss_V(self, recon_x, x, mu, logvar):
-        BCE = F.binary_cross_entropy(recon_x.squeeze().view(-1, self.x_dim), x.view(-1, self.x_dim), reduction='sum')
-        if self.MM:
-            KLD1 = 0.5*torch.sum((mu-self.MU)*(mu-self.MU)/torch.exp(self.LOGVAR)+self.LOGVAR)
-        else:
-            KLD1 = -0.5 * torch.sum(1 + logvar - mu ** 2 - torch.exp(logvar))  # z
-        return BCE, KLD1
-
-    def compute_loss(self,data, mub, logvarb, type):
+    def compute_loss_and_grad(self,data, mub, logvarb, type):
 
         if (type == 'train'):
             self.optimizer.zero_grad()
