@@ -57,7 +57,6 @@ class STVAE_OPT(models.STVAE):
     def loss_V(self, recon_x, x, mu, logvar):
         BCE = F.binary_cross_entropy(recon_x.squeeze().view(-1, self.x_dim), x.view(-1, self.x_dim), reduction='sum')
         if self.MM:
-            #BCE=BCE/self.bsz
             KLD1 = 0.5*torch.sum((mu-self.MU)*(mu-self.MU)/torch.exp(self.LOGVAR)+self.LOGVAR)
         else:
             KLD1 = -0.5 * torch.sum(1 + logvar - mu ** 2 - torch.exp(logvar))  # z
@@ -69,9 +68,6 @@ class STVAE_OPT(models.STVAE):
             self.optimizer.zero_grad()
         recon_batch = self.forw(data, mub, logvarb)
         recon_loss, kl = self.loss_V(recon_batch, data, mub, logvarb)
-        if (self.MM):
-            recon_loss=recon_loss/self.bsz
-            kl=kl/self.bsz
         loss = recon_loss + kl
         if (type == 'train'):
             loss.backward()
@@ -144,9 +140,6 @@ class STVAE_OPT(models.STVAE):
 
             tr_recon_loss += recon_loss
             tr_full_loss += loss
-            fac=1./len(tr)
-            if (self.MM):
-                fac=fac*self.bsz
         print('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}'.format(type,
             epoch, tr_recon_loss*fac, tr_full_loss*fac))
         return mu,logvar
