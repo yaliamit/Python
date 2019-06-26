@@ -1,7 +1,6 @@
 import torch
 from models_opt import STVAE_OPT
 import numpy as np
-import pylab as py
 import os
 import sys
 import argparse
@@ -10,8 +9,8 @@ from Conv_data import get_data
 from models import show_sampled_images, get_scheduler
 
 def initialize_mus(train):
-    trMU = np.zeros((train[0].shape[0], args.sdim))
-    trLOGVAR = -0.*np.ones((train[0].shape[0], args.sdim))
+    trMU = np.zeros((train[0].shape[0], args.sdim),dtype=np.float32)
+    trLOGVAR = -0.*np.ones((train[0].shape[0], args.sdim),dtype=np.float32)
     return trMU, trLOGVAR
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
@@ -106,7 +105,12 @@ else:
         print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
         sys.stdout.flush()
 
-    model.run_epoch(train,trainMU,trainLOGVAR,epoch,10,type='trest')
+    trainMU, trainLOGVAR=model.run_epoch(train,trainMU,trainLOGVAR,epoch,100,type='trest')
+    if (args.MM):
+        model.MU = torch.nn.Parameter(torch.from_numpy(np.mean(trainMU,axis=0)))
+        model.LOGVAR = torch.nn.Parameter(torch.from_numpy(np.log(np.var(trainMU,axis=0))))
+    trainMU, trainLOGVAR = initialize_mus(train)
+    model.run_epoch(train, trainMU, trainLOGVAR, epoch, 100, type='trest')
     model.run_epoch(test,testMU, testLOGVAR,epoch,100,type='test')
 
 

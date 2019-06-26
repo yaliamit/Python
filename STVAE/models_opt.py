@@ -143,6 +143,7 @@ class STVAE_OPT(models.STVAE):
             epoch, tr_recon_loss/len(tr), tr_full_loss/len(tr)))
         return mu,logvar
 
+
     def recon_from_zero(self,input,num_mu_iter=10):
 
         num_inp=input.shape[0]
