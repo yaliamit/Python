@@ -175,7 +175,7 @@ class STVAE_OPT(models.STVAE):
         if (theta is not None and self.u_dim>0):
             s[:,0:self.u_dim]=theta
 
-        x=self.full_decoder(s)
+        x=self.decoder_and_trans(s)
 
         return x
 

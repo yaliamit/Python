@@ -38,7 +38,7 @@ parser.add_argument('--mu_lr',type=float, default=.05,help='Learning rate (defau
 parser.add_argument('--num_mu_iter',type=int, default=10,help='Learning rate (default: .05)')
 parser.add_argument('--wd',type=bool, default=True, help='Use weight decay')
 parser.add_argument('--cl',type=int,default=None,help='class (default: None)')
-parser.add_argument('--run_existing',type=bool, default=False, help='Use existing model')
+parser.add_argument('--run_existing',action='store_true', help='Use existing model')
 parser.add_argument('--nti',type=int,default=10,help='num test iterations (default: 100)')
 parser.add_argument('--MM',type=bool, default=False, help='Use max max')
 
@@ -100,6 +100,7 @@ else:
             scheduler.step()
         t1=time.time()
         trainMU, trainLOGVAR=model.run_epoch(train,trainMU,trainLOGVAR,epoch,args.num_mu_iter,type='train')
+        print('LOGVAR',torch.max(model.LOGVAR),torch.min(model.LOGVAR))
         if (val is not None and val):
             model.run_epoch(val,valMU,valLOGVAR,epoch,20,type='val')
         print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
