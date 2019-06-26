@@ -53,7 +53,16 @@ class STVAE_OPT(models.STVAE):
         return x
 
 
-    def compute_loss_and_grad(self,data, mub, logvarb, type):
+
+    def loss_V(self, recon_x, x, mu, logvar):
+        BCE = F.binary_cross_entropy(recon_x.squeeze().view(-1, self.x_dim), x.view(-1, self.x_dim), reduction='sum')
+        if self.MM:
+            KLD1 = 0.5*torch.sum((mu-self.MU)*(mu-self.MU)/torch.exp(self.LOGVAR)+self.LOGVAR)
+        else:
+            KLD1 = -0.5 * torch.sum(1 + logvar - mu ** 2 - torch.exp(logvar))  # z
+        return BCE, KLD1
+
+    def compute_loss(self,data, mub, logvarb, type):
 
         if (type == 'train'):
             self.optimizer.zero_grad()
@@ -82,9 +91,6 @@ class STVAE_OPT(models.STVAE):
             loss = recon_loss + kl
             dd = torch.autograd.grad(loss, [mub,logvarb])
             mub,logvarb=self.sgdloc(dd,[mub,logvarb])
-
-
-
             muit+=1
             #print(muit, loss)
         #self.updates['t_prev']=0
@@ -117,8 +123,9 @@ class STVAE_OPT(models.STVAE):
             logvarb = logvarb.to(self.dv)
 
 
-            mub, logvarb, loss, recon_loss=self.iterate_mu_logvar(data,mub,logvarb,num_mu_iter)
-            recon_batch, recon_loss, loss = self.compute_loss_and_grad(data, mub, logvarb, type)
+            for it in range(2):
+                mub, logvarb, loss, recon_loss=self.iterate_mu_logvar(data,mub,logvarb,num_mu_iter)
+                recon_batch, recon_loss, loss = self.compute_loss_and_grad(data, mub, logvarb, type)
 
             mu[j:j + batch_size] = mub.cpu().detach().numpy()
             logvar[j:j + batch_size] = logvarb.cpu().detach().numpy()

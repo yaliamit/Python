@@ -35,7 +35,7 @@ parser.add_argument('--model',default='base',help='model (default: base)')
 parser.add_argument('--optimizer',default='Adam',help='Type of optimiser')
 parser.add_argument('--lr',type=float, default=.001,help='Learning rate (default: .001)')
 parser.add_argument('--mu_lr',type=float, default=.05,help='Learning rate (default: .05)')
-parser.add_argument('--num_mu_iter',type=int, default=10,help='Learning rate (default: .05)')
+parser.add_argument('--num_mu_iter',type=int, default=2,help='Learning rate (default: .05)')
 parser.add_argument('--wd',type=bool, default=True, help='Use weight decay')
 parser.add_argument('--cl',type=int,default=None,help='class (default: None)')
 parser.add_argument('--run_existing',type=bool, default=False, help='Use existing model')
@@ -90,21 +90,9 @@ if (args.run_existing):
 
     model.run_epoch(test,testMU, testLOGVAR,0,args.nti,type='test')
     show_sampled_images(model)
-    # X = model.sample_from_z_prior(theta=torch.zeros(model.bsz, 6))
-    # XX = X.cpu().detach().numpy()
-    # py.figure(figsize=(20, 20))
-    # for i in range(100):
-    #     py.subplot(10, 10, i + 1)
-    #     py.imshow(1. - XX[i].reshape((28, 28)), cmap='gray')
-    #     py.axis('off')
-    # py.savefig('opt_'+args.type + '_' + str(args.num_hlayers) + '.png')
-    # print("hello")
 else:
 
     scheduler=None
-    #if args.wd:
-    #    l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
-    #    scheduler = torch.optim.lr_scheduler.LambdaLR(model.optimizer, lr_lambda=l2)
 
     print('scheduler:',scheduler)
     for epoch in range(args.nepoch):
@@ -125,5 +113,4 @@ else:
     torch.save(model.state_dict(),ex_file)
 
     print("DONE")
-    #bt = commands.check_output('mv OUTPUT.txt OUTPUT_'+args.type+'_'+args.transformation+'_'+str(args.num_hlayers)+'.txt',shell=True)
 
