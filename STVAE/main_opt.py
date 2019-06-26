@@ -99,7 +99,7 @@ else:
             scheduler.step()
         t1=time.time()
         trainMU, trainLOGVAR=model.run_epoch(train,trainMU,trainLOGVAR,epoch,args.num_mu_iter,type='train')
-        print('LOGVAR',torch.max(model.LOGVAR),torch.min(model.LOGVAR))
+        print('LOGVAR',torch.max(model.LOGVAR),torch.min(                                                                           model.LOGVAR))
         if (val is not None and val):
             model.run_epoch(val,valMU,valLOGVAR,epoch,20,type='val')
         print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
@@ -107,9 +107,9 @@ else:
 
     trainMU, trainLOGVAR=model.run_epoch(train,trainMU,trainLOGVAR,epoch,100,type='trest')
     if (args.MM):
-        model.MU = torch.nn.Parameter(torch.from_numpy(np.mean(trainMU,axis=0))).to(model.dv)
-        model.LOGVAR = torch.nn.Parameter(torch.from_numpy(np.log(np.var(trainMU,axis=0)))).to(model.dv)
-
+        model.MU = torch.nn.Parameter(torch.from_numpy(np.mean(trainMU,axis=0)))
+        model.LOGVAR = torch.nn.Parameter(torch.from_numpy(np.log(np.var(trainMU,axis=0))))
+        model.to(device)
     trainMU, trainLOGVAR = initialize_mus(train)
     model.run_epoch(train, trainMU, trainLOGVAR, epoch, 100, type='trest')
     model.run_epoch(test,testMU, testLOGVAR,epoch,100,type='test')
