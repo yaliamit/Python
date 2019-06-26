@@ -118,7 +118,7 @@ class STVAE_OPT(models.STVAE):
 
 
             mub, logvarb, loss, recon_loss=self.iterate_mu_logvar(data,mub,logvarb,num_mu_iter)
-            recon_batch, recon_loss, loss = self.compute_loss(data, mub, logvarb, type)
+            recon_batch, recon_loss, loss = self.compute_loss_and_grad(data, mub, logvarb, type)
 
             mu[j:j + batch_size] = mub.cpu().detach().numpy()
             logvar[j:j + batch_size] = logvarb.cpu().detach().numpy()
