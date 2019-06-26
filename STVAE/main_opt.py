@@ -107,8 +107,9 @@ else:
 
     trainMU, trainLOGVAR=model.run_epoch(train,trainMU,trainLOGVAR,epoch,100,type='trest')
     if (args.MM):
-        model.MU = torch.nn.Parameter(torch.from_numpy(np.mean(trainMU,axis=0)))
-        model.LOGVAR = torch.nn.Parameter(torch.from_numpy(np.log(np.var(trainMU,axis=0))))
+        model.MU = torch.nn.Parameter(torch.from_numpy(np.mean(trainMU,axis=0))).to(model.dv)
+        model.LOGVAR = torch.nn.Parameter(torch.from_numpy(np.log(np.var(trainMU,axis=0)))).to(model.dv)
+
     trainMU, trainLOGVAR = initialize_mus(train)
     model.run_epoch(train, trainMU, trainLOGVAR, epoch, 100, type='trest')
     model.run_epoch(test,testMU, testLOGVAR,epoch,100,type='test')
