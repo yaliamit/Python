@@ -141,7 +141,7 @@ class STVAE_OPT(models.STVAE):
             tr_recon_loss += recon_loss
             tr_full_loss += loss
         print('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}'.format(type,
-            epoch, tr_recon_loss*fac, tr_full_loss*fac))
+            epoch, tr_recon_loss/len(tr), tr_full_loss/len(tr)))
         return mu,logvar
 
     def recon_from_zero(self,input,num_mu_iter=10):
