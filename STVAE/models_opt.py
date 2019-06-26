@@ -62,7 +62,7 @@ class STVAE_OPT(models.STVAE):
             KLD1 = -0.5 * torch.sum(1 + logvar - mu ** 2 - torch.exp(logvar))  # z
         return BCE, KLD1
 
-    def compute_loss(self,data, mub, logvarb, type):
+    def compute_loss_and_grad(self,data, mub, logvarb, type):
 
         if (type == 'train'):
             self.optimizer.zero_grad()
@@ -91,6 +91,9 @@ class STVAE_OPT(models.STVAE):
             loss = recon_loss + kl
             dd = torch.autograd.grad(loss, [mub,logvarb])
             mub,logvarb=self.sgdloc(dd,[mub,logvarb])
+
+
+
             muit+=1
             #print(muit, loss)
         #self.updates['t_prev']=0
