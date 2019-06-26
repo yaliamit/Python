@@ -229,3 +229,12 @@ def show_sampled_images(model):
         py.axis('off')
     py.savefig(model.type+'_'+str(model.num_hlayers)+'.png')
     print("hello")
+
+def get_scheduler(args,model):
+    scheduler=None
+    if args.wd:
+        l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
+        scheduler = torch.optim.lr_scheduler.LambdaLR(model.optimizer, lr_lambda=l2)
+
+    return scheduler
+

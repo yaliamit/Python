@@ -7,7 +7,7 @@ import sys
 import argparse
 import time
 from Conv_data import get_data
-from models import show_sampled_images
+from models import show_sampled_images, get_scheduler
 
 def initialize_mus(train):
     trMU = np.zeros((train[0].shape[0], args.sdim))
@@ -92,7 +92,7 @@ if (args.run_existing):
     show_sampled_images(model)
 else:
 
-    scheduler=None
+    scheduler=get_scheduler(args,model)
 
     print('scheduler:',scheduler)
     for epoch in range(args.nepoch):

@@ -1,9 +1,8 @@
 import torch
 import torch.nn.functional as F
 from torch import nn, optim
-from tps import TPSGridGen
 import numpy as np
-import pylab as py
+
 import models
 
 class STVAE_OPT(models.STVAE):

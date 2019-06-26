@@ -7,7 +7,7 @@ import sys
 import argparse
 import time
 from Conv_data import get_data
-from models import show_sampled_images
+from models import show_sampled_images, get_scheduler
 
 
 
@@ -67,10 +67,8 @@ for keys, vals in model.state_dict().items():
     print(keys,np.array(vals.shape))
     tot_pars+=np.prod(np.array(vals.shape))
 print('tot_pars',tot_pars)
-scheduler=None
-#if args.wd:
-#    l2 = lambda epoch: pow((1.-1. * epoch/args.nepoch),0.9)
-#    scheduler = torch.optim.lr_scheduler.LambdaLR(model.optimizer, lr_lambda=l2)
+scheduler=get_scheduler(args,model)
+
 
 ex_file = 'output/' + args.type + '_' + args.transformation + '_' +args.optimizer+'_'+ str(args.num_hlayers) + '.pt'
 print(ex_file)
