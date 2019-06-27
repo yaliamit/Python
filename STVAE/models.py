@@ -3,6 +3,7 @@ import torch.nn.functional as F
 from torch import nn, optim
 from tps import TPSGridGen
 import numpy as np
+from scipy.misc import imsave
 import pylab as py
 
 class toNorm(nn.Module):
@@ -222,12 +223,25 @@ def show_sampled_images(model,opt_pre,mm_pre):
     theta = torch.zeros(model.bsz, 6)
     X=model.sample_from_z_prior(theta)
     XX=X.cpu().detach().numpy()
-    py.figure(figsize=(20,20))
-    for i in range(100):
-        py.subplot(10,10,i+1)
-        py.imshow(1.-XX[i].reshape((28,28)),cmap='gray')
-        py.axis('off')
-    py.savefig('_Images/'+opt_pre+model.type+'_'+str(model.num_hlayers)+mm_pre+'.png')
+    mat = []
+    #py.figure(figsize=(20,20))
+    for i in range(10):
+        line = []
+        for j in range(10):
+            line += [XX[i].reshape((28,28))]
+        mat+=[np.concatenate(line,axis=0)]
+        #py.subplot(10,10,i+1)
+        #py.imshow(1.-XX[i].reshape((28,28)),cmap='gray')
+        #py.axis('off')
+    manifold = np.concatenate(mat, axis=1)
+
+    manifold = 1. - manifold[np.newaxis, :]
+    print(manifold.shape)
+
+    img = np.concatenate([manifold, manifold, manifold], axis=0)
+    img = img.transpose(1, 2, 0)
+    imsave('_Images/'+opt_pre+model.type+'_'+str(model.num_hlayers)+mm_pre+'.png', img)
+    #py.savefig()
     print("hello")
 
 def get_scheduler(args,model):
