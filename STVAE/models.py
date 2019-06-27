@@ -77,10 +77,11 @@ class STVAE(nn.Module):
 
         self.s2s=None
         self.u2u=None
-
-        self.toNorm=toNorm(self.h_dim,self.s_dim)
+        if not args.OPT:
+            self.toNorm=toNorm(self.h_dim,self.s_dim)
         self.fromNorm =fromNorm(self.h_dim, self.z_dim)
-        self.encoder=encoder(self.x_dim,self.h_dim,self.num_hlayers)
+        if not args.OPT:
+            self.encoder=encoder(self.x_dim,self.h_dim,self.num_hlayers)
         self.decoder=decoder(self.x_dim,self.h_dim,self.s_dim,self.u_dim,self.num_hlayers,self.type)
 
         if (args.optimizer=='Adam'):
