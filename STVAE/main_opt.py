@@ -110,6 +110,7 @@ else:
                 model.run_epoch(val,epoch,args.nvi,valMU,valLOGVAR,type='val',fout=fout)
         if (fout is not None):
             fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
+            fout.flush()
         else:
             print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
         sys.stdout.flush()
