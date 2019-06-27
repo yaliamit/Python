@@ -1,6 +1,7 @@
 import torch
 from models_opt import STVAE_OPT
 from models import STVAE
+import json
 import numpy as np
 import os
 import sys
@@ -57,7 +58,7 @@ ex_file=opt_pre+args.type + '_' + args.transformation + '_' + str(args.num_hlaye
 fout=open('_OUTPUTS/OUT_'+ex_file+'.txt','w')
 
 if (fout is not None):
-    fout.write(args)
+    fout.write(str(args)+'\n')
     fout.flush()
 else:
     print(args)
@@ -90,9 +91,9 @@ model=locals()['STVAE'+opt_post](h, w,  device, args).to(device)
 
 tot_pars=0
 for keys, vals in model.state_dict().items():
-    fout.write(keys,np.array(vals.shape))
+    fout.write(keys+','+str(np.array(vals.shape))+'\n')
     tot_pars+=np.prod(np.array(vals.shape))
-fout.write('tot_pars',tot_pars)
+fout.write('tot_pars,'+str(tot_pars)+'\n')
 
 if (args.run_existing):
     model.load_state_dict(torch.load(ex_file,map_location='cpu'))
