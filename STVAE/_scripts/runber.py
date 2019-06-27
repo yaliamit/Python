@@ -77,6 +77,7 @@ else:
             print('copy failed')
     time.sleep(5)
 
+    os.system('ssh amit@marx.uchicago.edu "mv /Volumes/amit/Python/STVAE/_OUTPUTS/* /Users/amit/Desktop/Dropbox/Python/STVAE/_OUTPUTS/."')
     os.system('ssh amit@marx.uchicago.edu "mv /Volumes/amit/Python/STVAE/_output/* /Users/amit/Desktop/Dropbox/Python/STVAE/_output/."')
     os.system('ssh amit@marx.uchicago.edu "mv /Volumes/amit/Python/STVAE/_Images/* /Users/amit/Desktop/Dropbox/Python/STVAE/_Images/."')
 

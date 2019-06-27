@@ -88,16 +88,16 @@ for keys, vals in model.state_dict().items():
     print(keys,np.array(vals.shape))
     tot_pars+=np.prod(np.array(vals.shape))
 print('tot_pars',tot_pars)
-ex_file='_output/'+opt_pre+args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+mm_pre+'.pt'
-
+ex_file=opt_pre+args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_'+args.optimizer+mm_pre
+fout=open('_OUTPUTS/OUT_'+ex_file+'.txt','w')
 if (args.run_existing):
     model.load_state_dict(torch.load(ex_file,map_location='cpu'))
     model.eval()
     if (args.OPT):
-        model.run_epoch(test,testMU, testLOGVAR,0,args.nti,type='test')
+        model.run_epoch(test,testMU, testLOGVAR,0,args.nti,type='test',fout=fout)
     else:
         model.run_epoch(test, 0, type='test')
-    show_sampled_images(model,opt_pre,mm_pre)
+    show_sampled_images(model,ex_file)
 else:
     scheduler=get_scheduler(args,model)
 
@@ -105,25 +105,28 @@ else:
         if (scheduler is not None):
             scheduler.step()
         t1=time.time()
-        trainMU, trainLOGVAR=model.run_epoch(train,epoch,args.num_mu_iter,trainMU,trainLOGVAR,type='train')
+        trainMU, trainLOGVAR=model.run_epoch(train,epoch,args.num_mu_iter,trainMU,trainLOGVAR,type='train',fout=fout)
         if (val[0] is not None):
-                model.run_epoch(val,epoch,args.nvi,valMU,valLOGVAR,type='val')
-        print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
+                model.run_epoch(val,epoch,args.nvi,valMU,valLOGVAR,type='val',fout=fout)
+        if (fout is not None):
+            fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
+        else:
+            print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
         sys.stdout.flush()
 
     if (args.MM):
-            trainMU, trainLOGVAR = model.run_epoch(train,  epoch, 100,trainMU, trainLOGVAR, type='trest')
+            trainMU, trainLOGVAR = model.run_epoch(train,  epoch, 100,trainMU, trainLOGVAR, type='trest',fout=fout)
             model.MU = torch.nn.Parameter(torch.from_numpy(np.mean(trainMU, axis=0)))
             model.LOGVAR = torch.nn.Parameter(torch.from_numpy(np.log(np.var(trainMU, axis=0))))
             model.to(device)
     trainMU, trainLOGVAR = initialize_mus(train,args)
-    model.run_epoch(train,  epoch, 100, trainMU, trainLOGVAR,type='trest')
-    model.run_epoch(test,epoch,100,testMU, testLOGVAR,type='test')
+    model.run_epoch(train,  epoch, 100, trainMU, trainLOGVAR,type='trest',fout=fout)
+    model.run_epoch(test,epoch,100,testMU, testLOGVAR,type='test',fout=fout)
 
 
     print('writing to ',ex_file)
-    torch.save(model.state_dict(),ex_file)
-    show_sampled_images(model,opt_pre,mm_pre)
+    torch.save(model.state_dict(),'_output/'+ex_file+'.pt')
+    show_sampled_images(model,ex_file)
 
     print("DONE")
 

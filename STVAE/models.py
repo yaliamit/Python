@@ -181,7 +181,7 @@ class STVAE(nn.Module):
 
         return recon_loss, loss
 
-    def run_epoch(self, train, epoch,num, MU, LOGVAR, type='test'):
+    def run_epoch(self, train, epoch,num, MU, LOGVAR, type='test',fout=None):
 
         if (type=='train'):
             self.train()
@@ -203,7 +203,11 @@ class STVAE(nn.Module):
             recon_loss, loss=self.compute_loss_and_grad(data,type)
             tr_recon_loss += recon_loss
             tr_full_loss += loss
-        print('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}'.format(type,
+        if (fout is None):
+            print('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}'.format(type,
+            epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
+        else:
+            fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(type,
             epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
 
         return MU, LOGVAR
@@ -219,12 +223,11 @@ class STVAE(nn.Module):
 
         return x
 
-def show_sampled_images(model,opt_pre,mm_pre):
+def show_sampled_images(model,ex_file):
     theta = torch.zeros(model.bsz, 6)
     X=model.sample_from_z_prior(theta)
     XX=X.cpu().detach().numpy()
     mat = []
-    #py.figure(figsize=(20,20))
     t=0
     for i in range(10):
         line = []
@@ -232,17 +235,13 @@ def show_sampled_images(model,opt_pre,mm_pre):
             line += [XX[t].reshape((28,28))]
             t+=1
         mat+=[np.concatenate(line,axis=0)]
-        #py.subplot(10,10,i+1)
-        #py.imshow(1.-XX[i].reshape((28,28)),cmap='gray')
-        #py.axis('off')
     manifold = np.concatenate(mat, axis=1)
-
     manifold = 1. - manifold[np.newaxis, :]
     print(manifold.shape)
 
     img = np.concatenate([manifold, manifold, manifold], axis=0)
     img = img.transpose(1, 2, 0)
-    imsave('_Images/'+opt_pre+model.type+'_'+str(model.num_hlayers)+mm_pre+'.png', img)
+    imsave('_Images/'+ex_file+'.png', img)
     #py.savefig()
     print("hello")
 
