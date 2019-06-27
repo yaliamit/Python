@@ -1,5 +1,6 @@
 import torch
 from models_opt import STVAE_OPT
+from models import STVAE
 import numpy as np
 import os
 import sys
@@ -8,9 +9,13 @@ import time
 from Conv_data import get_data
 from models import show_sampled_images, get_scheduler
 
-def initialize_mus(train):
-    trMU = np.zeros((train[0].shape[0], args.sdim),dtype=np.float32)
-    trLOGVAR = -0.*np.ones((train[0].shape[0], args.sdim),dtype=np.float32)
+def initialize_mus(train,args):
+    trMU=None
+    trLOGVAR=None
+    if (args.OPT):
+        trMU = np.zeros((train[0].shape[0], args.sdim),dtype=np.float32)
+        trLOGVAR = -0.*np.ones((train[0].shape[0], args.sdim),dtype=np.float32)
+
     return trMU, trLOGVAR
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
@@ -39,12 +44,19 @@ parser.add_argument('--wd',type=bool, default=True, help='Use weight decay')
 parser.add_argument('--cl',type=int,default=None,help='class (default: None)')
 parser.add_argument('--run_existing',action='store_true', help='Use existing model')
 parser.add_argument('--nti',type=int,default=100,help='num test iterations (default: 100)')
-parser.add_argument('--MM',type=bool, default=False, help='Use max max')
+parser.add_argument('--nvi',type=int,default=20,help='num val iterations (default: 20)')
+parser.add_argument('--MM',action='store_true', help='Use max max')
+parser.add_argument('--OPT',action='store_true',help='Optimization instead of encoding')
+
 
 
 args = parser.parse_args()
 print(args)
 use_gpu = args.gpu and torch.cuda.is_available()
+
+opt_pre=''; mm_pre=''; opt_post=''
+if (args.OPT):
+    opt_pre='OPT_';opt_post='_OPT';mm_pre='_MM_'
 
 torch.manual_seed(args.seed)
 np.random.seed(args.seed)
@@ -63,9 +75,9 @@ if args.cl is not None:
 
 train, val, test, image_dim = get_data(PARS)
 
-trainMU, trainLOGVAR=initialize_mus(train)
-valMU, valLOGVAR=initialize_mus(val)
-testMU, testLOGVAR=initialize_mus(test)
+trainMU, trainLOGVAR=initialize_mus(train,args)
+valMU, valLOGVAR=initialize_mus(val,args)
+testMU, testLOGVAR=initialize_mus(test,args)
 
 
 print('Num Train',train[0].shape[0])
@@ -73,46 +85,47 @@ print('Num Train',train[0].shape[0])
 
 if (PARS['nval']==0):
     val=None
+
 h=train[0].shape[1]
 w=train[0].shape[2]
-model = STVAE_OPT(h, w,  device, args).to(device)
+model=locals()['STVAE'+opt_post](h, w,  device, args).to(device)
+
 tot_pars=0
 for keys, vals in model.state_dict().items():
     print(keys,np.array(vals.shape))
     tot_pars+=np.prod(np.array(vals.shape))
 print('tot_pars',tot_pars)
+ex_file='_output/'+opt_pre+args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+mm_pre+'.pt'
 
-ex_file='output/Opt_' + args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_MM_'+str(args.MM)+'.pt'
 if (args.run_existing):
     model.load_state_dict(torch.load(ex_file,map_location='cpu'))
     model.eval()
-
-    model.run_epoch(test,testMU, testLOGVAR,0,args.nti,type='test')
-    show_sampled_images(model)
+    if (args.OPT):
+        model.run_epoch(test,testMU, testLOGVAR,0,args.nti,type='test')
+    else:
+        model.run_epoch(test, 0, type='test')
+    show_sampled_images(model,opt_pre,mm_pre)
 else:
-
     scheduler=get_scheduler(args,model)
 
-    print('scheduler:',scheduler)
     for epoch in range(args.nepoch):
         if (scheduler is not None):
             scheduler.step()
         t1=time.time()
-        trainMU, trainLOGVAR=model.run_epoch(train,trainMU,trainLOGVAR,epoch,args.num_mu_iter,type='train')
-        print('LOGVAR',torch.max(model.LOGVAR),torch.min(                                                                           model.LOGVAR))
+        trainMU, trainLOGVAR=model.run_epoch(train,epoch,args.num_mu_iter,trainMU,trainLOGVAR,type='train')
         if (val is not None and val):
-            model.run_epoch(val,valMU,valLOGVAR,epoch,20,type='val')
+                model.run_epoch(val,epoch,args.nvi,valMU,valLOGVAR,type='val')
         print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
         sys.stdout.flush()
 
-    trainMU, trainLOGVAR=model.run_epoch(train,trainMU,trainLOGVAR,epoch,100,type='trest')
     if (args.MM):
-        model.MU = torch.nn.Parameter(torch.from_numpy(np.mean(trainMU,axis=0)))
-        model.LOGVAR = torch.nn.Parameter(torch.from_numpy(np.log(np.var(trainMU,axis=0))))
-        model.to(device)
-    trainMU, trainLOGVAR = initialize_mus(train)
-    model.run_epoch(train, trainMU, trainLOGVAR, epoch, 100, type='trest')
-    model.run_epoch(test,testMU, testLOGVAR,epoch,100,type='test')
+            trainMU, trainLOGVAR = model.run_epoch(train,  epoch, 100,trainMU, trainLOGVAR, type='trest')
+            model.MU = torch.nn.Parameter(torch.from_numpy(np.mean(trainMU, axis=0)))
+            model.LOGVAR = torch.nn.Parameter(torch.from_numpy(np.log(np.var(trainMU, axis=0))))
+            model.to(device)
+    trainMU, trainLOGVAR = initialize_mus(train,args)
+    model.run_epoch(train,  epoch, 100, trainMU, trainLOGVAR,type='trest')
+    model.run_epoch(test,epoch,100,testMU, testLOGVAR,type='test')
 
 
     print('writing to ',ex_file)

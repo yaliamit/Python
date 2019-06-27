@@ -180,7 +180,7 @@ class STVAE(nn.Module):
 
         return recon_loss, loss
 
-    def run_epoch(self, train, epoch,type='test'):
+    def run_epoch(self, train, epoch,num, MU, LOGVAR, type='test'):
 
         if (type=='train'):
             self.train()
@@ -205,7 +205,7 @@ class STVAE(nn.Module):
         print('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}'.format(type,
             epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
 
-
+        return MU, LOGVAR
 
     def sample_from_z_prior(self,theta=None):
         self.eval()
@@ -218,7 +218,7 @@ class STVAE(nn.Module):
 
         return x
 
-def show_sampled_images(model):
+def show_sampled_images(model,opt_pre,mm_pre):
     theta = torch.zeros(model.bsz, 6)
     X=model.sample_from_z_prior(theta)
     XX=X.cpu().detach().numpy()
@@ -227,7 +227,7 @@ def show_sampled_images(model):
         py.subplot(10,10,i+1)
         py.imshow(1.-XX[i].reshape((28,28)),cmap='gray')
         py.axis('off')
-    py.savefig(model.type+'_'+str(model.num_hlayers)+'.png')
+    py.savefig('_Images/'+opt_pre+model.type+'_'+str(model.num_hlayers)+mm_pre+'.png')
     print("hello")
 
 def get_scheduler(args,model):

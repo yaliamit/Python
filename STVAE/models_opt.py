@@ -105,7 +105,7 @@ class STVAE_OPT(models.STVAE):
         #print('logvarb',torch.mean(logvarb),torch.std(logvarb))
         return mub, logvarb, loss, recon_loss
 
-    def run_epoch(self, train, MU, LOGVAR, epoch,num_mu_iter,type='test'):
+    def run_epoch(self, train,  epoch,num_mu_iter,MU, LOGVAR,type='test'):
         self.train()
         tr_recon_loss = 0
         tr_full_loss=0
