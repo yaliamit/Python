@@ -99,10 +99,7 @@ class STVAE_OPT(models.STVAE):
 
 
             muit+=1
-            #print(muit, loss)
-        #self.updates['t_prev']=0
-        #print('mub',torch.mean(mub),torch.std(mub))
-        #print('logvarb',torch.mean(logvarb),torch.std(logvarb))
+
         return mub, logvarb, loss, recon_loss
 
     def run_epoch(self, train,  epoch,num_mu_iter,MU, LOGVAR,type='test',fout=None):
