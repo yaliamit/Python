@@ -33,14 +33,15 @@ parser.add_argument('--num_hlayers', type=int, default=0, help='number of hlayer
 parser.add_argument('--nepoch', type=int, default=40, help='number of training epochs')
 parser.add_argument('--gpu', type=bool, default=False,help='whether to run in the GPU')
 parser.add_argument('--seed', type=int, default=1111, help='random seed (default: 1111)')
-parser.add_argument('--num_train',type=int,default=60000,help='num train (default: 10000)')
+parser.add_argument('--num_train',type=int,default=60000,help='num train (default: 60000)')
+parser.add_argument('--nval',type=int,default=1000,help='num train (default: 1000)')
 parser.add_argument('--mb_size',type=int,default=100,help='mb_size (default: 500)')
 parser.add_argument('--model',default='base',help='model (default: base)')
 parser.add_argument('--optimizer',default='Adam',help='Type of optimiser')
 parser.add_argument('--lr',type=float, default=.001,help='Learning rate (default: .001)')
 parser.add_argument('--mu_lr',type=float, default=.05,help='Learning rate (default: .05)')
 parser.add_argument('--num_mu_iter',type=int, default=10,help='Learning rate (default: .05)')
-parser.add_argument('--wd',type=bool, default=True, help='Use weight decay')
+parser.add_argument('--wd',action='store_true', help='Use weight decay')
 parser.add_argument('--cl',type=int,default=None,help='class (default: None)')
 parser.add_argument('--run_existing',action='store_true', help='Use existing model')
 parser.add_argument('--nti',type=int,default=100,help='num test iterations (default: 100)')
@@ -68,8 +69,7 @@ print('USE_GPU',use_gpu)
 PARS={}
 PARS['data_set']='mnist'
 PARS['num_train']=args.num_train
-
-PARS['nval']=1000
+PARS['nval']=args.nval
 if args.cl is not None:
     PARS['one_class']=args.cl
 
@@ -78,13 +78,6 @@ train, val, test, image_dim = get_data(PARS)
 trainMU, trainLOGVAR=initialize_mus(train,args)
 valMU, valLOGVAR=initialize_mus(val,args)
 testMU, testLOGVAR=initialize_mus(test,args)
-
-
-print('Num Train',train[0].shape[0])
-
-
-if (PARS['nval']==0):
-    val=None
 
 h=train[0].shape[1]
 w=train[0].shape[2]
@@ -113,7 +106,7 @@ else:
             scheduler.step()
         t1=time.time()
         trainMU, trainLOGVAR=model.run_epoch(train,epoch,args.num_mu_iter,trainMU,trainLOGVAR,type='train')
-        if (val is not None and val):
+        if (val[0] is not None):
                 model.run_epoch(val,epoch,args.nvi,valMU,valLOGVAR,type='val')
         print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
         sys.stdout.flush()
@@ -130,6 +123,7 @@ else:
 
     print('writing to ',ex_file)
     torch.save(model.state_dict(),ex_file)
+    show_sampled_images(model,opt_pre,mm_pre)
 
     print("DONE")
 
