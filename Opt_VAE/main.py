@@ -12,7 +12,7 @@ from torchvision import transforms, datasets
 from model import VAE
 from opt_model import OPT_VAE
 import torch.nn.functional as F
-
+from Conv_data import get_data
 from math import pow
 import numpy as np
 from torch.autograd import Variable
@@ -37,22 +37,29 @@ log_interval = 100 # for reporting
 
 epochs = 50
 
-kwargs = {'num_workers': 8, 'pin_memory': True} if use_gpu else {}
+PARS={}
+PARS['data_set']='mnist'
+PARS['num_train']=10000
+PARS['nval']=1000
 
-mnist_tr = datasets.MNIST(root='../', download=True, transform=transforms.ToTensor())
-mnist_te = datasets.MNIST(root='../', download=True, train=False, transform=transforms.ToTensor())
+Train, val, Test, image_dim = get_data(PARS)
+
+#kwargs = {'num_workers': 8, 'pin_memory': True} if use_gpu else {}
+
+#mnist_tr = datasets.MNIST(root='../', download=True, transform=transforms.ToTensor())
+#mnist_te = datasets.MNIST(root='../', download=True, train=False, transform=transforms.ToTensor())
 
 
-tr = torch.utils.data.DataLoader(dataset=mnist_tr,
-                                batch_size=mb_size,
-                                shuffle=False,
-                                drop_last=True, **kwargs)
-
-
-te = torch.utils.data.DataLoader(dataset=mnist_te,
-                                batch_size=mb_size,
-                                shuffle=False,
-                                drop_last=True, **kwargs)
+# #tr = torch.utils.data.DataLoader(dataset=mnist_tr,
+#                                 batch_size=mb_size,
+#                                 shuffle=False,
+#                                 drop_last=True, **kwargs)
+#
+#
+# te = torch.utils.data.DataLoader(dataset=mnist_te,
+#                                 batch_size=mb_size,
+#                                 shuffle=False,
+#                                 drop_last=True, **kwargs)
 def loss_V(recon_x, x, mu, std):
     '''loss = reconstruction loss + KL_z + KL_u'''
     BCE = F.binary_cross_entropy(recon_x.squeeze().view(-1, x_dim), x.view(-1, x_dim), reduction='sum')
@@ -126,21 +133,28 @@ def train(epoch,img,model,optimizer):
     optimizer.step()
     return recon_loss.item(), kl.item()
 
-def train_opt_vae(tr_size):
-    model = OPT_VAE(h, w, 256, 20, torch.zeros(mb_size,20).to(device), 
-                    torch.zeros(mb_size,20).to(device), device).to(device)
+def train_opt_vae(Train):
+    sdim=8
+    model = OPT_VAE(h, w, 256, sdim, torch.zeros(mb_size,sdim).to(device),
+                    torch.zeros(mb_size,sdim).to(device), device).to(device)
     
     optimizer2 = optim.Adam(model.parameters(),lr=1e-3)
     optimizer1 = optim.Adam([model.z_mu,model.z_var],lr = 0.2)
-    zmu_dict = torch.zeros(len(tr),mb_size,20).to(device)
-    zlogvar_dict = torch.zeros(len(tr),mb_size,20).to(device)
+    numt = Train[0].shape[0] // mb_size
+    ii = np.arange(0, Train[0].shape[0], 1)
+    #if (type == 'train'):
+    #    np.random.shuffle(ii)
+
+    tr = Train[0][ii].transpose(0, 3, 1, 2)
+    tr=tr.reshape(numt,mb_size,Train[0].shape[1],Train[0].shape[2],Train[0].shape[3])
+    y = Train[1][ii]
+    zmu_dict = torch.zeros(len(tr),mb_size,sdim).to(device)
+    zlogvar_dict = torch.zeros(len(tr),mb_size,sdim).to(device)
     for epoch in range(epochs):
         loss_tr_recon = 0.0
         loss_tr_kl = 0.0
-        for batch_idx, (data, target) in enumerate(tr):
-            if batch_idx >= tr_size:
-                break
-            data = data.to(device)
+        for batch_idx, data in enumerate(tr):
+            data = torch.tensor(data).to(device)
             model.update_z(zmu_dict[batch_idx,:,:],zlogvar_dict[batch_idx,:,:])
             for num in range(2):
                 train(epoch,data,model,optimizer1)
@@ -149,8 +163,8 @@ def train_opt_vae(tr_size):
             loss_tr_kl += kl
             zmu_dict[batch_idx,:,:] = model.z_mu.data
             zlogvar_dict[batch_idx,:,:] = model.z_var.data
-        print('====> Epoch: {} Reconstruction loss: {:.4f}'.format(epoch,loss_tr_recon/tr_size/mb_size)) 
-        print('====> Epoch: {} KL loss: {:.4f}'.format(epoch,loss_tr_kl/tr_size/mb_size)) 
+        print('====> Epoch: {} Reconstruction loss: {:.4f}'.format(epoch,loss_tr_recon/numt/mb_size))
+        print('====> Epoch: {} KL loss: {:.4f}'.format(epoch,loss_tr_kl/numt/mb_size))
         
     return model
 
@@ -222,7 +236,7 @@ if __name__ == '__main__':
         #text_file.write("VAE recon loss: %s \n" % test_recon)
         #text_file.write("VAE ELBO: %s \n" % test_loss)
 
-        opt_model = train_opt_vae(tr_size)
+        opt_model = train_opt_vae(Train)
         opt_model.simul('opt_vae_' + str(tr_size))
         test_recon, test_loss = test_opt(opt_model,500)
 
