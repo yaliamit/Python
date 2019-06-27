@@ -53,7 +53,7 @@ parser.add_argument('--OPT',action='store_true',help='Optimization instead of en
 args = parser.parse_args()
 opt_pre=''; mm_pre=''; opt_post=''
 if (args.OPT):
-    opt_pre='OPT_';opt_post='_OPT';mm_pre='_MM_'
+    opt_pre='OPT_';opt_post='_OPT';mm_pre='_MM'
 ex_file=opt_pre+args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_'+args.optimizer+mm_pre
 fout=open('_OUTPUTS/OUT_'+ex_file+'.txt','w')
 
