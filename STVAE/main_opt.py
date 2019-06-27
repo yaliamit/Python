@@ -49,15 +49,20 @@ parser.add_argument('--nvi',type=int,default=20,help='num val iterations (defaul
 parser.add_argument('--MM',action='store_true', help='Use max max')
 parser.add_argument('--OPT',action='store_true',help='Optimization instead of encoding')
 
-
-
 args = parser.parse_args()
-print(args)
-use_gpu = args.gpu and torch.cuda.is_available()
-
 opt_pre=''; mm_pre=''; opt_post=''
 if (args.OPT):
     opt_pre='OPT_';opt_post='_OPT';mm_pre='_MM_'
+ex_file=opt_pre+args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_'+args.optimizer+mm_pre
+fout=open('_OUTPUTS/OUT_'+ex_file+'.txt','w')
+
+if (fout is not None):
+    fout.write(args)
+    fout.flush()
+else:
+    print(args)
+use_gpu = args.gpu and torch.cuda.is_available()
+
 
 torch.manual_seed(args.seed)
 np.random.seed(args.seed)
@@ -85,11 +90,10 @@ model=locals()['STVAE'+opt_post](h, w,  device, args).to(device)
 
 tot_pars=0
 for keys, vals in model.state_dict().items():
-    print(keys,np.array(vals.shape))
+    fout.write(keys,np.array(vals.shape))
     tot_pars+=np.prod(np.array(vals.shape))
-print('tot_pars',tot_pars)
-ex_file=opt_pre+args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_'+args.optimizer+mm_pre
-fout=open('_OUTPUTS/OUT_'+ex_file+'.txt','w')
+fout.write('tot_pars',tot_pars)
+
 if (args.run_existing):
     model.load_state_dict(torch.load(ex_file,map_location='cpu'))
     model.eval()
