@@ -1,6 +1,6 @@
 --transformation=aff
 --type=tvae
---sdim=20
+--sdim=8
 --hdim=256
 --num_hlayers=1
 --nepoch=50

@@ -55,16 +55,21 @@ if (args.OPT):
     opt_pre='OPT_';opt_post='_OPT';
 if (args.MM):
     mm_pre='_MM'
-ex_file=opt_pre+args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_'+args.optimizer+mm_pre
-fout=open('_OUTPUTS/OUT_'+ex_file+'.txt','w')
+ex_file=opt_pre+args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_sd_'+str(args.sdim)+'_'+args.optimizer+mm_pre
+
+
+
+use_gpu = args.gpu and torch.cuda.is_available()
+if (use_gpu):
+    fout=open('_OUTPUTS/OUT_'+ex_file+'.txt','w')
+else:
+    fout=sys.stdout
 
 if (fout is not None):
     fout.write(str(args)+'\n')
     fout.flush()
 else:
     print(args)
-use_gpu = args.gpu and torch.cuda.is_available()
-
 
 torch.manual_seed(args.seed)
 np.random.seed(args.seed)
