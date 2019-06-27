@@ -2,13 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b0a43a12-b84a-4e4c-a6df-2c878dbf68c8" name="Default" comment="">
-      <change beforePath="$USER_HOME$/Box Sync/URFB/Conv_data.py" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/Conv_data.py" afterDir="false" />
-      <change beforePath="$USER_HOME$/Box Sync/URFB/Conv_layers.py" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/Conv_layers.py" afterDir="false" />
-      <change beforePath="$USER_HOME$/Box Sync/URFB/Conv_net_aux.py" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/Conv_net_aux.py" afterDir="false" />
-      <change beforePath="$USER_HOME$/Box Sync/URFB/Conv_net_gpu.py" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/Conv_net_gpu.py" afterDir="false" />
-      <change beforePath="$USER_HOME$/Box Sync/URFB/_pars/simpnet.txt" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/_pars/simpnet.txt" afterDir="false" />
-      <change beforePath="$USER_HOME$/Box Sync/URFB/_pars/simpnet_exp.txt" beforeDir="false" afterPath="$USER_HOME$/Box Sync/URFB/_pars/simpnet_exp.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/_pars/deep_test.txt" beforeDir="false" afterPath="$PROJECT_DIR$/_pars/deep_test.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/blobs.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/blobs.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OUTPUT.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_pars/simpnet_test.txt" beforeDir="false" afterPath="$PROJECT_DIR$/_pars/simpnet_test.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,7 +16,7 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/blobs$runber__1_.coverage" NAME="runber (1) Coverage Results" MODIFIED="1550971984976" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/blobs$blobs.coverage" NAME="blobs Coverage Results" MODIFIED="1559186164580" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/blobs$blobs.coverage" NAME="blobs Coverage Results" MODIFIED="1561674518883" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/blobs$tt.coverage" NAME="tt Coverage Results" MODIFIED="1550971803953" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_scripts" />
     <SUITE FILE_PATH="coverage/blobs$try.coverage" NAME="try Coverage Results" MODIFIED="1555005184541" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/blobs$runber.coverage" NAME="runber Coverage Results" MODIFIED="1550971859486" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_scripts" />
@@ -36,44 +34,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/blobs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-286">
-              <caret line="46" selection-start-line="46" selection-end-line="46" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/_pars/simpnet_test.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="10" column="11" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="11" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/_pars/deep_test.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/Box Sync/URFB/Conv_data.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2790">
-              <caret line="194" column="72" selection-start-line="194" selection-start-column="72" selection-end-line="194" selection-end-column="72" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/network.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="20">
-              <caret line="363" column="15" selection-start-line="363" selection-start-column="15" selection-end-line="363" selection-end-column="15" />
+            <state relative-caret-position="-233">
+              <caret line="71" selection-start-line="71" selection-end-line="71" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -82,9 +44,39 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/_pars/simpnet_test.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="165">
+              <caret line="11" column="15" selection-start-line="11" selection-start-column="15" selection-end-line="11" selection-end-column="15" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/network.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1165">
+              <caret line="48" column="8" selection-start-line="48" selection-start-column="8" selection-end-line="48" selection-end-column="8" />
+              <folding>
+                <element signature="e#0#23#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/_pars/blob_test.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="90">
+              <caret line="6" column="14" selection-start-line="6" selection-start-column="14" selection-end-line="6" selection-end-column="14" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/generate_images.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="540">
+            <state relative-caret-position="175">
               <caret line="41" selection-start-line="41" selection-end-line="41" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -104,11 +96,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>greater</find>
-      <find>Amps</find>
-      <find>num_blob_</find>
-      <find>num_blob_pars</find>
-      <find>extract_mus</find>
       <find>num_</find>
       <find>get_data</find>
       <find>PAR</find>
@@ -134,6 +121,11 @@
       <find>global_L2</find>
       <find>get_</find>
       <find>as_list</find>
+      <find>cl_</find>
+      <find>ind</find>
+      <find>npa</find>
+      <find>glf</find>
+      <find>PLH_</find>
     </findStrings>
     <replaceStrings>
       <replace>model</replace>
@@ -165,17 +157,17 @@
         <option value="$PROJECT_DIR$/_pars/blob_train.txt" />
         <option value="$PROJECT_DIR$/generate_images.py" />
         <option value="$PROJECT_DIR$/blobs.py" />
-        <option value="$PROJECT_DIR$/_pars/simpnet_test.txt" />
         <option value="$PROJECT_DIR$/network.py" />
         <option value="$PROJECT_DIR$/_pars/deep_test.txt" />
+        <option value="$PROJECT_DIR$/_pars/simpnet_test.txt" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="111" />
-    <option name="y" value="25" />
-    <option name="width" value="1169" />
-    <option name="height" value="725" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="26" />
+    <option name="y" value="58" />
+    <option name="width" value="1280" />
+    <option name="height" value="727" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -183,6 +175,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -201,16 +194,10 @@
               <item name="blobs" type="462c0819:PsiDirectoryNode" />
               <item name="_pars" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="blobs" type="b2602c69:ProjectViewProjectNode" />
-              <item name="blobs" type="47feb1d3:ProjectViewModuleNode" />
-              <item name="URFB" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -303,7 +290,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/blobs.py" />
-      <option name="PARAMETERS" value="_pars/deep_test" />
+      <option name="PARAMETERS" value="_pars/simpnet_test" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -476,23 +463,24 @@
       <workItem from="1557498824546" duration="265000" />
       <workItem from="1557772272070" duration="533000" />
       <workItem from="1559185595688" duration="967000" />
+      <workItem from="1561660906737" duration="128000" />
+      <workItem from="1561671031529" duration="1849000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="122815000" />
+    <option name="totallyTimeSpent" value="124792000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1024" height="695" extended-state="6" />
-    <editor active="true" />
+    <frame x="26" y="58" width="1280" height="727" extended-state="0" />
     <layout>
-      <window_info id="Project" order="0" visible="true" weight="0.32179227" />
+      <window_info id="Project" order="0" visible="true" weight="0.17932148" />
       <window_info id="Structure" order="1" weight="0.25288832" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.39016393" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.3913793" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32843137" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.3398693" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.54901963" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -570,6 +558,31 @@
   <component name="debuggerHistoryManager">
     <expressions id="evaluateCodeFragment">
       <expression>
+        <expression-string>import pylab as py
+py.subplot(1,2,1)
+py.imshow(train[0][0][0,:,:,0])
+py.subplot(1,2,2)
+py.imshow(train[0][1][0,:,:,0])
+py.show()</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>train[0][0].shape</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>import pylab as py
+py.subplot(1,2,1)
+py.imshow(train[0][0][:,:,0])
+py.subplot(1,2,2)
+py.imshow(train[0][1][:,:,0])
+py.show()</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
+      <expression>
         <expression-string>bb=tf.boolean_mask(aa,vj,axis=1)</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
@@ -596,21 +609,6 @@
       </expression>
       <expression>
         <expression-string>np.mean(bh[ii]==np.argmax(batch[1][ii],axis=1))</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>bh[ii]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>ii=np.where(np.sum(batch[1],axis=1)&gt;0)[0]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>ii=np.where(np.sum(batch[1]&gt;0))[0]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
@@ -776,13 +774,6 @@
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/anaconda2/envs/myenv/lib/python3.6/site-packages/scipy/signal/signaltools.py" />
-    <entry file="file://$PROJECT_DIR$/_pars/blob_test.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="14" selection-start-line="6" selection-start-column="14" selection-end-line="6" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Box Sync/URFB/_pars/simpnet_test.txt">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -793,16 +784,40 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/_pars/deep_test.txt" />
     <entry file="file://$USER_HOME$/Box Sync/URFB/Conv_data.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2790">
-          <caret line="194" column="72" selection-start-line="194" selection-start-column="72" selection-end-line="194" selection-end-column="72" />
+          <caret line="194" column="15" selection-start-line="194" selection-start-column="15" selection-end-line="194" selection-end-column="15" />
         </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_pars/deep_train.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_pars/blob_test.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="14" selection-start-line="6" selection-start-column="14" selection-end-line="6" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/OUT_test_5.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/OUT_test_all.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-315" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/OUT_test.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-358" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/generate_images.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
+        <state relative-caret-position="175">
           <caret line="41" selection-start-line="41" selection-end-line="41" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
@@ -812,32 +827,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/_pars/simpnet_test.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="11" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="11" />
+        <state relative-caret-position="165">
+          <caret line="11" column="15" selection-start-line="11" selection-start-column="15" selection-end-line="11" selection-end-column="15" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/blobs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-286">
-          <caret line="46" selection-start-line="46" selection-end-line="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/network.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="20">
-          <caret line="363" column="15" selection-start-line="363" selection-start-column="15" selection-end-line="363" selection-end-column="15" />
+        <state relative-caret-position="-233">
+          <caret line="71" selection-start-line="71" selection-end-line="71" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_pars/deep_test.txt">
+    <entry file="file://$PROJECT_DIR$/network.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        <state relative-caret-position="-1165">
+          <caret line="48" column="8" selection-start-line="48" selection-start-column="8" selection-end-line="48" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

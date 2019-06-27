@@ -1,17 +1,17 @@
 seed:45239
 model:try_corr
 num_epochs:20
-non_trainable:newdensp,
+#non_trainable:newdensp,
 nval:5000
 data_set:mnist
 batch_size:500
 step_size:.001
 debug:False
 minimizer:Adam
-num_train:60000
-noise_sigma:0.05
+num_train:10000
+noise_sigma:0.1
 corr:True
-cl_range:4
+cl_range:8
 global_L2_fac:10.
 hinge:False
 nonlin_scale:.5
@@ -20,7 +20,6 @@ name:input1
 name:conv1R;num_filters:8;filter_size:(5,5);non_linearity:tanh;parent:input1
 name:comp1;fac:10.;parent:conv1R
 name:pool1;pool_size:(2, 2);stride:(2, 2);parent:comp1
-#name:drop1;drop:0.8;parent:pool1
 name:newdensp;num_units:200;non_linearity:relu;parent:comp1
 name:drop2;drop:0.;parent:newdensp
 name:newdensf;num_units:10;non_linearity:soft_max;parent:drop2;final:final
