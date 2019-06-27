@@ -225,10 +225,12 @@ def show_sampled_images(model,opt_pre,mm_pre):
     XX=X.cpu().detach().numpy()
     mat = []
     #py.figure(figsize=(20,20))
+    t=0
     for i in range(10):
         line = []
         for j in range(10):
-            line += [XX[i].reshape((28,28))]
+            line += [XX[t].reshape((28,28))]
+            t+=1
         mat+=[np.concatenate(line,axis=0)]
         #py.subplot(10,10,i+1)
         #py.imshow(1.-XX[i].reshape((28,28)),cmap='gray')
