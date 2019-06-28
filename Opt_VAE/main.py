@@ -36,7 +36,7 @@ w = 28
 x_dim = h*w
 log_interval = 100 # for reporting
 
-epochs = 50
+epochs = 5
 
 PARS={}
 PARS['data_set']='mnist'
@@ -173,12 +173,12 @@ def test_opt(model,epc):
     test_recon_loss = 0.0
     test_ELBO_loss = 0.0
     tr = Test[0].transpose(0, 3, 1, 2)
-    tr = tr.reshape(Test[0].shape[0]/mb_size, mb_size, Test[0].shape[1], Test[0].shape[2], Test[0].shape[3])
+    tr = tr.reshape(np.int(Test[0].shape[0]/mb_size), mb_size, Test[0].shape[1], Test[0].shape[2], Test[0].shape[3])
     y = Test[1]
 
     optimizer = optim.Adam([model.z_mu,model.z_var],lr = 0.2)
-    for _, (data, target) in enumerate(tr):
-        data = data.to(device)
+    for _, data in enumerate(tr):
+        data = torch.tensor(data).to(device)
         te_size = data.shape[0]
         model.update_z(torch.zeros(te_size,sdim).to(device),torch.zeros(te_size,sdim).to(device))
         for epoch in range(epc):
@@ -197,14 +197,14 @@ def test_opt(model,epc):
         test_ELBO_loss += loss.item()
     test_recon_loss /= (len(tr)*mb_size)
     test_ELBO_loss /= (len(tr)*mb_size)
-    #print('====> Epoch:{} recon_loss: {:.4f}'.format(epoch, test_recon_loss))
+    print('====> Epoch:{} recon_loss: {:.4f}'.format(epoch, test_recon_loss))
     return test_recon_loss, test_ELBO_loss
 
 def test_opt_decoder(model,epc):
     test_recon_loss = 0.0
     test_ELBO_loss = 0.0
     tr = Test[0].transpose(0, 3, 1, 2)
-    tr = tr.reshape(Test[0].shape[0] / mb_size, mb_size, Test[0].shape[1], Test[0].shape[2], Test[0].shape[3])
+    tr = tr.reshape(np.int(Test[0].shape[0] / mb_size), mb_size, Test[0].shape[1], Test[0].shape[2], Test[0].shape[3])
     y = Test[1]
     for _, (data, target) in enumerate(tr):
         data = data.to(device)

@@ -80,6 +80,6 @@ class OPT_VAE(nn.Module):
 
         img = np.concatenate([manifold, manifold, manifold], axis=0)
         img = img.transpose(1, 2, 0)
-        imsave('fname.jpg', img)
+        imsave(fname+'.jpg', img)
 
         return(x)
