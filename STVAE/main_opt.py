@@ -103,7 +103,7 @@ for keys, vals in model.state_dict().items():
 fout.write('tot_pars,'+str(tot_pars)+'\n')
 
 if (args.run_existing):
-    model.load_state_dict(torch.load('_output/'+ex_file,map_location=device))
+    model.load_state_dict(torch.load('_output/'+ex_file+'.pt',map_location=device))
     model.eval()
     if (args.OPT):
         model.run_epoch(train, 0, 500, trainMU, trainLOGVAR, type='trest', fout=fout)
