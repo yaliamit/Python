@@ -27,7 +27,8 @@ class STVAE_OPT(models.STVAE):
         if 'tvae' in self.type:
             self.mu_lr[0:self.u_dim]*=.1
 
-
+        self.mu = torch.autograd.Variable(torch.zeros(self.bsz,self.s_dim), requires_grad=True)
+        self.logvar = torch.autograd.Variable(torch.zeros(self.bsz,self.s_dim), requires_grad=True)
         self.s2s=None
         self.u2u=None
 
@@ -37,10 +38,13 @@ class STVAE_OPT(models.STVAE):
             self.optimizer = optim.Adadelta(self.parameters())
         else:
             self.optimizer = optim.SGD(lr=args.lr)
+        self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=0.2)
         print('s_dim',self.s_dim,'u_dim',self.u_dim,'z_dim',self.z_dim,self.type)
 
 
-
+    def update_s(self,mu,logvar):
+        self.mu.data = mu
+        self.logvar.data = logvar
 
     def forw(self, inputs,mub,logvarb):
 
@@ -61,7 +65,7 @@ class STVAE_OPT(models.STVAE):
             KLD1 = -0.5 * torch.sum(1 + logvar - mu ** 2 - torch.exp(logvar))  # z
         return BCE, KLD1
 
-    def compute_loss_and_grad(self,data, mub, logvarb, type):
+    def compute_loss_and_grad(self,data, mub, logvarb, type, optim):
 
         if (type == 'train'):
             self.optimizer.zero_grad()
@@ -69,8 +73,9 @@ class STVAE_OPT(models.STVAE):
         recon_loss, kl = self.loss_V(recon_batch, data, mub, logvarb)
         loss = recon_loss + kl
         if (type == 'train'):
-            loss.backward()
-            self.optimizer.step()
+            loss.backward(retain_graph=True)
+            #self.optimizer.step()
+            optim.step()
 
         return recon_batch, recon_loss, loss
 
@@ -106,33 +111,36 @@ class STVAE_OPT(models.STVAE):
         self.train()
         tr_recon_loss = 0
         tr_full_loss=0
-        numt= train[0].shape[0]//self.bsz * self.bsz
+        numb = train[0].shape[0]//self.bsz
+        numt= numb * self.bsz
         ii = np.arange(0, numt, 1)
         if (type=='train'):
             np.random.shuffle(ii)
         tr =train[0][ii].transpose(0,3,1,2)
         y = train[1][ii]
-        mu= MU[ii]
+        mu=MU[ii]
         logvar=LOGVAR[ii]
         batch_size = self.bsz
         for j in np.arange(0, len(y), batch_size):
 
             data = torch.tensor(tr[j:j + batch_size]).float()
-            mub=torch.autograd.Variable(torch.tensor(mu[j:j+batch_size],requires_grad=True).float(),requires_grad=True)
-            logvarb=torch.autograd.Variable(torch.tensor(logvar[j:j+batch_size],requires_grad=True).float(),requires_grad=True)
+            #mub=torch.autograd.Variable(torch.tensor(mu[j:j+batch_size],requires_grad=True).float(),requires_grad=True)
+            #logvarb=torch.autograd.Variable(torch.tensor(logvar[j:j+batch_size],requires_grad=True).float(),requires_grad=True)
 
-            target = torch.tensor(y[j:j + batch_size]).float()
+            #target = torch.tensor(y[j:j + batch_size]).float()
             data = data.to(self.dv)
-            mub = mub.to(self.dv)
-            logvarb = logvarb.to(self.dv)
+            #mub = mub.to(self.dv)
+            #logvarb = logvarb.to(self.dv)
 
+            self.update_s(mu[j:j+batch_size, :], logvar[j:j+batch_size, :])
 
             for it in range(1):
-                mub, logvarb, loss, recon_loss=self.iterate_mu_logvar(data,mub,logvarb,num_mu_iter)
-                recon_batch, recon_loss, loss = self.compute_loss_and_grad(data, mub, logvarb, type)
+                #mub, logvarb, loss, recon_loss=self.iterate_mu_logvar(data,mub,logvarb,num_mu_iter)
+                self.compute_loss_and_grad(data, self.mu, self.logvar, type,self.optimizer_s)
+                recon_batch, recon_loss, loss = self.compute_loss_and_grad(data, self.mu, self.logvar, type,self.optimizer)
 
-            mu[j:j + batch_size] = mub.cpu().detach().numpy()
-            logvar[j:j + batch_size] = logvarb.cpu().detach().numpy()
+            mu[j:j + batch_size] = self.mu.data #mub.cpu().detach().numpy()
+            logvar[j:j + batch_size] = self.logvar.data #logvarb.cpu().detach().numpy()
 
             tr_recon_loss += recon_loss
             tr_full_loss += loss
