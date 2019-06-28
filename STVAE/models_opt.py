@@ -126,16 +126,16 @@ class STVAE_OPT(models.STVAE):
 
             data = torch.tensor(tr[j:j + batch_size]).float()
             data = data.to(self.dv)
-            #mub=torch.autograd.Variable(mu[j:j+batch_size],requires_grad=True)
-            #logvarb=torch.autograd.Variable(logvar[j:j+batch_size],requires_grad=True)
+            mub=torch.autograd.Variable(mu[j:j+batch_size],requires_grad=True)
+            logvarb=torch.autograd.Variable(logvar[j:j+batch_size],requires_grad=True)
 
             #target = torch.tensor(y[j:j + batch_size]).float()
 
-            self.update_s(mu[j:j+batch_size, :], logvar[j:j+batch_size, :])
-            mub=self.mu; logvarb=self.logvar
-            for it in range(num_mu_iter):
-                #mub, logvarb, loss, recon_loss=self.iterate_mu_logvar(data,mub,logvarb,num_mu_iter)
-                self.compute_loss_and_grad(data, mub, logvarb, type,self.optimizer_s,opt='mu')
+            #self.update_s(mu[j:j+batch_size, :], logvar[j:j+batch_size, :])
+            #mub=self.mu; logvarb=self.logvar
+            for it in range(1):#num_mu_iter):
+                mub, logvarb, loss, recon_loss=self.iterate_mu_logvar(data,mub,logvarb,num_mu_iter)
+                #self.compute_loss_and_grad(data, mub, logvarb, type,self.optimizer_s,opt='mu')
                 recon_batch, recon_loss, loss = self.compute_loss_and_grad(data, mub, logvarb, type,self.optimizer,opt='par')
 
             mu[j:j + batch_size] = mub.data #self.mu.data #mub.cpu().detach().numpy()
