@@ -133,8 +133,8 @@ else:
     show_sampled_images(model,ex_file)
     if (args.MM):
             trainMU, trainLOGVAR = model.run_epoch(train,  epoch, 100,trainMU, trainLOGVAR, type='trest',fout=fout)
-            model.MU = torch.nn.Parameter(torch.from_numpy(np.mean(trainMU, axis=0)))
-            model.LOGVAR = torch.nn.Parameter(torch.from_numpy(np.log(np.var(trainMU, axis=0))))
+            model.MU = torch.nn.Parameter(torch.mean(trainMU, dim=0))
+            model.LOGVAR = torch.nn.Parameter(torch.log(torch.var(trainMU, dim=0)))
             model.to(device)
     trainMU, trainLOGVAR = initialize_mus(train,args)
     model.run_epoch(train,  epoch, 500, trainMU, trainLOGVAR,type='trest',fout=fout)
