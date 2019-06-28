@@ -130,12 +130,19 @@ else:
         else:
             print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
         sys.stdout.flush()
-    show_sampled_images(model,ex_file)
+
     if (args.MM):
+            fout.write('Means and variances of latent variable before restimation\n')
+            fout.write(str(model.MU.data)+'\n')
+            fout.write(str(model.LOGVAR.data)+'\n')
             trainMU, trainLOGVAR = model.run_epoch(train,  epoch, 100,trainMU, trainLOGVAR, type='trest',fout=fout)
             model.MU = torch.nn.Parameter(torch.mean(trainMU, dim=0))
             model.LOGVAR = torch.nn.Parameter(torch.log(torch.var(trainMU, dim=0)))
+            fout.write('Means and variances of latent variable after restimation\n')
+            fout.write(str(model.MU.data) + '\n')
+            fout.write(str(model.LOGVAR.data) + '\n')
             model.to(device)
+    show_sampled_images(model, ex_file)
     trainMU, trainLOGVAR = initialize_mus(train,args)
     model.run_epoch(train,  epoch, 500, trainMU, trainLOGVAR,type='trest',fout=fout)
     model.run_epoch(test,epoch,500,testMU, testLOGVAR,type='test',fout=fout)

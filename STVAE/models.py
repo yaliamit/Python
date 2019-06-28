@@ -245,7 +245,7 @@ def show_sampled_images(model,ex_file):
     img = img.transpose(1, 2, 0)
     imsave('_Images/'+ex_file+'.png', img)
     #py.savefig()
-    print("hello")
+    print("Saved the sampled images")
 
 def get_scheduler(args,model):
     scheduler=None
