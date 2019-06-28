@@ -134,7 +134,7 @@ else:
             model.MU = torch.nn.Parameter(torch.from_numpy(np.mean(trainMU, axis=0)))
             model.LOGVAR = torch.nn.Parameter(torch.from_numpy(np.log(np.var(trainMU, axis=0))))
             model.to(device)
-    #trainMU, trainLOGVAR = initialize_mus(train,args)
+    trainMU, trainLOGVAR = initialize_mus(train,args)
     model.run_epoch(train,  epoch, 500, trainMU, trainLOGVAR,type='trest',fout=fout)
     model.run_epoch(test,epoch,500,testMU, testLOGVAR,type='test',fout=fout)
 

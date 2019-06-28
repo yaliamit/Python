@@ -10,14 +10,6 @@ class STVAE_OPT(models.STVAE):
     def __init__(self, x_h, x_w, device, args):
         super(STVAE_OPT, self).__init__(x_h, x_w, device, args)
 
-        # Stuff for Adam on optimization of mu's var's for each image
-        self.beta1=torch.tensor(.5).to(self.dv)
-        self.beta2=torch.tensor(.999).to(self.dv)
-        self.updates={}
-        self.updates['one']=torch.tensor(1.).to(self.dv)
-        self.updates['epsilon']=torch.tensor(1e-8).to(self.dv)
-        self.updates['t_prev']=torch.tensor(0.).to(self.dv)
-        self.updates['lr']=torch.tensor(.01).to(self.dv)
         self.MM=args.MM
         if (self.MM):
             self.MU=nn.Parameter(torch.zeros(self.s_dim))
@@ -73,39 +65,12 @@ class STVAE_OPT(models.STVAE):
         recon_loss, kl = self.loss_V(recon_batch, data, mub, logvarb)
         loss = recon_loss + kl
         if (type == 'train' or opt=='mu'):
-            loss.backward(retain_graph=True)
+            loss.backward()
             #self.optimizer.step()
             optim.step()
 
         return recon_batch, recon_loss, loss
 
-    def sgdloc(self, grads, params):
-
-        for i in range(len(params)):
-            params[i] = params[i] - self.mu_lr * grads[i]
-
-        return params
-
-    def iterate_mu_logvar(self, data, mub, logvarb, num_mu_iter):
-        muit=0.
-        oldloss=0.
-        while  muit < num_mu_iter:
-            recon_batch = self.forw(data, mub, logvarb)
-            recon_loss, kl = self.loss_V(recon_batch, data, mub, logvarb)
-            loss = recon_loss + kl
-            if (self.MM):
-                dd = torch.autograd.grad(loss, [mub])
-                mub,=self.sgdloc(dd,[mub])
-            else:
-                dd = torch.autograd.grad(loss, [mub, logvarb])
-                mub,logvarb=self.sgdloc(dd,[mub,logvarb])
-
-
-
-
-            muit+=1
-
-        return mub, logvarb, loss, recon_loss
 
     def run_epoch(self, train,  epoch,num_mu_iter,MU, LOGVAR,type='test',fout=None):
         if (type=='train'):
@@ -134,8 +99,6 @@ class STVAE_OPT(models.STVAE):
             self.update_s(mu[j:j+batch_size, :], logvar[j:j+batch_size, :])
             mub=self.mu; logvarb=self.logvar
             self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=self.mu_lr)
-                #for it in range(1):#num_mu_iter):
-                #mub, logvarb, loss, recon_loss=self.iterate_mu_logvar(data,mub,logvarb,num_mu_iter)
             for it in range(num_mu_iter):
                 self.compute_loss_and_grad(data, mub, logvarb, type,self.optimizer_s,opt='mu')
             recon_batch, recon_loss, loss = self.compute_loss_and_grad(data, mub, logvarb, type,self.optimizer,opt='par')
@@ -190,24 +153,3 @@ class STVAE_OPT(models.STVAE):
         return x
 
 
-
-    def adamloc(self, grads, params):
-
-        if self.updates['t_prev']==0:
-            self.updates['m_prev']=torch.zeros(params[0].shape[1]).to(self.dv)
-            self.updates['v_prev']=torch.zeros(params[0].shape[1]).to(self.dv)
-
-        t = self.updates['t_prev'] + 1
-        a_t = self.updates['lr'] * torch.sqrt(self.updates['one'] - self.beta2 ** t) / (self.updates['one'] - self.beta1 ** t)
-        for i in range(len(params)):
-            g_t=grads[i]
-            m_t = self.beta1 * self.updates['m_prev'] + (1. - self.beta1) * g_t
-            v_t = self.beta2 * self.updates['v_prev'] + (1. - self.beta2) * g_t * g_t
-            # STEPS.append(a_t/T.sqrt(v_t)+epsilon)
-            step = a_t * m_t / (torch.sqrt(v_t) + self.updates['epsilon'])
-            self.updates['m_prev'] = m_t
-            self.updates['v_prev'] = v_t
-            params[i] = params[i] - step
-
-        self.updates['t_prev'] = t
-        return params
