@@ -35,12 +35,12 @@ h = 28
 w = 28
 x_dim = h*w
 log_interval = 100 # for reporting
-
-epochs = 5
+print('mb_size',mb_size,'sdim',sdim)
+epochs = 50
 
 PARS={}
 PARS['data_set']='mnist'
-PARS['num_train']=10000
+PARS['num_train']=60000
 PARS['nval']=1000
 
 Train, val, Test, image_dim = get_data(PARS)
