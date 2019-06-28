@@ -14,8 +14,6 @@ def initialize_mus(train,args):
     trMU=None
     trLOGVAR=None
     if (args.OPT and train[0] is not None):
-        #trMU = np.zeros((train[0].shape[0], args.sdim),dtype=np.float32)
-        #trLOGVAR = -0.*np.ones((train[0].shape[0], args.sdim),dtype=np.float32)
         trMU = torch.zeros(train[0].shape[0], args.sdim).to(device)
         trLOGVAR = torch.zeros(train[0].shape[0], args.sdim).to(device)
     return trMU, trLOGVAR
@@ -135,6 +133,7 @@ else:
             fout.write('Means and variances of latent variable before restimation\n')
             fout.write(str(model.MU.data)+'\n')
             fout.write(str(model.LOGVAR.data)+'\n')
+            trainMU, trainLOGVAR = initialize_mus(train, args)
             trainMU, trainLOGVAR = model.run_epoch(train,  epoch, 100,trainMU, trainLOGVAR, type='trest',fout=fout)
             model.MU = torch.nn.Parameter(torch.mean(trainMU, dim=0))
             model.LOGVAR = torch.nn.Parameter(torch.log(torch.var(trainMU, dim=0)))
