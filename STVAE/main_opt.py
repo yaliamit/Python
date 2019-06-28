@@ -106,7 +106,9 @@ if (args.run_existing):
     model.load_state_dict(torch.load(ex_file,map_location='cpu'))
     model.eval()
     if (args.OPT):
-        model.run_epoch(test,testMU, testLOGVAR,0,args.nti,type='test',fout=fout)
+        model.run_epoch(train, 0, 500, trainMU, trainLOGVAR, type='trest', fout=fout)
+        model.run_epoch(test, 0, 500, testMU, testLOGVAR, type='test', fout=fout)
+        model.run_epoch(test,0,args.nti,testMU, testLOGVAR,type='test',fout=fout)
     else:
         model.run_epoch(test, 0, type='test')
     show_sampled_images(model,ex_file)
@@ -132,9 +134,9 @@ else:
             model.MU = torch.nn.Parameter(torch.from_numpy(np.mean(trainMU, axis=0)))
             model.LOGVAR = torch.nn.Parameter(torch.from_numpy(np.log(np.var(trainMU, axis=0))))
             model.to(device)
-    trainMU, trainLOGVAR = initialize_mus(train,args)
-    model.run_epoch(train,  epoch, 100, trainMU, trainLOGVAR,type='trest',fout=fout)
-    model.run_epoch(test,epoch,100,testMU, testLOGVAR,type='test',fout=fout)
+    #trainMU, trainLOGVAR = initialize_mus(train,args)
+    model.run_epoch(train,  epoch, 500, trainMU, trainLOGVAR,type='trest',fout=fout)
+    model.run_epoch(test,epoch,500,testMU, testLOGVAR,type='test',fout=fout)
 
 
     print('writing to ',ex_file)
