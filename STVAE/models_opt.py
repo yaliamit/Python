@@ -114,8 +114,8 @@ class STVAE_OPT(models.STVAE):
         numb = train[0].shape[0]//self.bsz
         numt= numb * self.bsz
         ii = np.arange(0, numt, 1)
-        if (type=='train'):
-            np.random.shuffle(ii)
+        #if (type=='train'):
+        #   np.random.shuffle(ii)
         tr =train[0][ii].transpose(0,3,1,2)
         y = train[1][ii]
         mu=MU[ii]
