@@ -9,8 +9,9 @@ import torch
 #import math
 import torch.nn as nn
 import torch.nn.functional as F
-#import numpy as np
+import numpy as np
 from torch.autograd import Variable
+from scipy.misc import imsave
 
 class OPT_VAE(nn.Module):
     '''
@@ -58,3 +59,27 @@ class OPT_VAE(nn.Module):
         x = torch.clamp(x, 1e-6, 1-1e-6)
 
         return x, self.z_mu, self.z_var,z
+
+    def simul(self,fname):
+        z = torch.randn(100, self.z_dim).to(self.dv)
+        x = self.decode(z)
+        x = torch.clamp(x, 1e-6, 1 - 1e-6)
+        XX = x.cpu().detach().numpy()
+        x_mat=[]
+        t=0
+        for i in range(10):
+            x_line=[]
+            for j in range(10):
+                x_line+=[XX[t].reshape((28,28))]
+                t+=1
+            x_mat+=[np.concatenate(x_line,axis=0)]
+        manifold = np.concatenate(x_mat, axis=1)
+
+        manifold = 1. - manifold[np.newaxis, :]
+        print(manifold.shape)
+
+        img = np.concatenate([manifold, manifold, manifold], axis=0)
+        img = img.transpose(1, 2, 0)
+        imsave('fname.jpg', img)
+
+        return(x)

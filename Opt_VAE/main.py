@@ -172,11 +172,15 @@ def train_opt_vae(Train):
 def test_opt(model,epc):
     test_recon_loss = 0.0
     test_ELBO_loss = 0.0
+    tr = Test[0].transpose(0, 3, 1, 2)
+    tr = tr.reshape(Test[0].shape[0]/mb_size, mb_size, Test[0].shape[1], Test[0].shape[2], Test[0].shape[3])
+    y = Test[1]
+
     optimizer = optim.Adam([model.z_mu,model.z_var],lr = 0.2)
-    for _, (data, target) in enumerate(te):
+    for _, (data, target) in enumerate(tr):
         data = data.to(device)
         te_size = data.shape[0]
-        model.update_z(torch.zeros(te_size,20).to(device),torch.zeros(te_size,20).to(device))
+        model.update_z(torch.zeros(te_size,sdim).to(device),torch.zeros(te_size,sdim).to(device))
         for epoch in range(epc):
             model.train()
             optimizer.zero_grad()
@@ -191,19 +195,22 @@ def test_opt(model,epc):
         loss = recon_loss + kl
         test_recon_loss += recon_loss.item() 
         test_ELBO_loss += loss.item()
-    test_recon_loss /= (len(te)*mb_size)
-    test_ELBO_loss /= (len(te)*mb_size)
+    test_recon_loss /= (len(tr)*mb_size)
+    test_ELBO_loss /= (len(tr)*mb_size)
     #print('====> Epoch:{} recon_loss: {:.4f}'.format(epoch, test_recon_loss))
     return test_recon_loss, test_ELBO_loss
 
 def test_opt_decoder(model,epc):
     test_recon_loss = 0.0
     test_ELBO_loss = 0.0
-    for _, (data, target) in enumerate(te):
+    tr = Test[0].transpose(0, 3, 1, 2)
+    tr = tr.reshape(Test[0].shape[0] / mb_size, mb_size, Test[0].shape[1], Test[0].shape[2], Test[0].shape[3])
+    y = Test[1]
+    for _, (data, target) in enumerate(tr):
         data = data.to(device)
         te_size = data.shape[0]
-        z_mu = Variable(torch.zeros(te_size,20).cuda(),requires_grad = True)
-        z_logvar = Variable(torch.zeros(te_size,20).cuda(),requires_grad = True)
+        z_mu = Variable(torch.zeros(te_size,sdim).cuda(),requires_grad = True)
+        z_logvar = Variable(torch.zeros(te_size,sdim).cuda(),requires_grad = True)
         optimizer = optim.Adam([z_mu,z_logvar],lr = 0.2)
         for epoch in range(epc):
             model.train()
@@ -216,8 +223,8 @@ def test_opt_decoder(model,epc):
             optimizer.step()
         test_recon_loss += recon_loss.item() 
         test_ELBO_loss += loss.item()
-    test_recon_loss /= (len(te)*mb_size)
-    test_ELBO_loss /= (len(te)*mb_size)
+    test_recon_loss /= (len(tr)*mb_size)
+    test_ELBO_loss /= (len(tr)*mb_size)
     #print('====> Epoch:{} recon_loss: {:.4f}'.format(epoch, test_recon_loss))
     return test_recon_loss, test_ELBO_loss
 
@@ -238,15 +245,15 @@ if __name__ == '__main__':
         #text_file.write("VAE ELBO: %s \n" % test_loss)
 
         opt_model = train_opt_vae(Train)
-        opt_model.simul('opt_vae_' + str(tr_size))
+        opt_model.simul('opt_vae_')
         test_recon, test_loss = test_opt(opt_model,500)
 
         text_file.write("VLO recon loss: %s \n" % test_recon)
         text_file.write("VLO ELBO: %s \n" % test_loss)
 
-        test_recon_loss, test_ELBO_loss = test_opt_decoder(vae_model,500)
+        #test_recon_loss, test_ELBO_loss = test_opt_decoder(vae_model,500)
 
-        text_file.write("Opt-decoder recon loss: %s \n" % test_recon_loss)
-        text_file.write("OPT-decoder ELBO: %s \n" % test_ELBO_loss)
+        #text_file.write("Opt-decoder recon loss: %s \n" % test_recon_loss)
+        #text_file.write("OPT-decoder ELBO: %s \n" % test_ELBO_loss)
         
     text_file.close()   
