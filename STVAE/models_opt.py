@@ -124,13 +124,11 @@ class STVAE_OPT(models.STVAE):
         for j in np.arange(0, len(y), batch_size):
 
             data = torch.tensor(tr[j:j + batch_size]).float()
+            data = data.to(self.dv)
             mub=torch.autograd.Variable(mu[j:j+batch_size],requires_grad=True)
             logvarb=torch.autograd.Variable(logvar[j:j+batch_size],requires_grad=True)
 
             #target = torch.tensor(y[j:j + batch_size]).float()
-            data = data.to(self.dv)
-            #mub = mub.to(self.dv)
-            #logvarb = logvarb.to(self.dv)
 
             #self.update_s(mu[j:j+batch_size, :], logvar[j:j+batch_size, :])
 

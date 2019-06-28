@@ -29,7 +29,8 @@ torch.backends.cudnn.deterministic = True
 device = torch.device("cuda" if use_gpu else "cpu")
 
 '''Parameters, adjust here'''
-mb_size = 100 # batch size
+mb_size = 500 # batch size
+sdim=8
 h = 28
 w = 28
 x_dim = h*w
@@ -134,7 +135,7 @@ def train(epoch,img,model,optimizer):
     return recon_loss.item(), kl.item()
 
 def train_opt_vae(Train):
-    sdim=8
+
     model = OPT_VAE(h, w, 256, sdim, torch.zeros(mb_size,sdim).to(device),
                     torch.zeros(mb_size,sdim).to(device), device).to(device)
     
