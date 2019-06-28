@@ -117,7 +117,7 @@ else:
         if (scheduler is not None):
             scheduler.step()
         t1=time.time()
-        model.run_epoch(train,epoch,args.num_mu_iter,trainMU,trainLOGVAR,type='train',fout=fout)
+        trainMU, trainLOGVAR= model.run_epoch(train,epoch,args.num_mu_iter,trainMU,trainLOGVAR,type='train',fout=fout)
         if (val[0] is not None):
                 model.run_epoch(val,epoch,args.nvi,valMU,valLOGVAR,type='val',fout=fout)
         if (fout is not None):
