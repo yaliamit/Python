@@ -65,14 +65,14 @@ class STVAE_OPT(models.STVAE):
             KLD1 = -0.5 * torch.sum(1 + logvar - mu ** 2 - torch.exp(logvar))  # z
         return BCE, KLD1
 
-    def compute_loss_and_grad(self,data, mub, logvarb, type, optim):
+    def compute_loss_and_grad(self,data, mub, logvarb, type, optim,opt='par'):
 
-        if (type == 'train'):
-            self.optimizer.zero_grad()
+        if (type == 'train' or opt=='mu'):
+            optim.zero_grad()
         recon_batch = self.forw(data, mub, logvarb)
         recon_loss, kl = self.loss_V(recon_batch, data, mub, logvarb)
         loss = recon_loss + kl
-        if (type == 'train'):
+        if (type == 'train' or opt=='mu'):
             loss.backward(retain_graph=True)
             #self.optimizer.step()
             optim.step()
@@ -108,7 +108,8 @@ class STVAE_OPT(models.STVAE):
         return mub, logvarb, loss, recon_loss
 
     def run_epoch(self, train,  epoch,num_mu_iter,MU, LOGVAR,type='test',fout=None):
-        self.train()
+        if (type=='train'):
+            self.train()
         tr_recon_loss = 0
         tr_full_loss=0
         numb = train[0].shape[0]//self.bsz
@@ -125,17 +126,17 @@ class STVAE_OPT(models.STVAE):
 
             data = torch.tensor(tr[j:j + batch_size]).float()
             data = data.to(self.dv)
-            mub=torch.autograd.Variable(mu[j:j+batch_size],requires_grad=True)
-            logvarb=torch.autograd.Variable(logvar[j:j+batch_size],requires_grad=True)
+            #mub=torch.autograd.Variable(mu[j:j+batch_size],requires_grad=True)
+            #logvarb=torch.autograd.Variable(logvar[j:j+batch_size],requires_grad=True)
 
             #target = torch.tensor(y[j:j + batch_size]).float()
 
-            #self.update_s(mu[j:j+batch_size, :], logvar[j:j+batch_size, :])
-
-            #for it in range(num_mu_iter):
-            mub, logvarb, loss, recon_loss=self.iterate_mu_logvar(data,mub,logvarb,num_mu_iter)
-            #self.compute_loss_and_grad(data, mub, logvarb, type,self.optimizer_s)
-            recon_batch, recon_loss, loss = self.compute_loss_and_grad(data, mub, logvarb, type,self.optimizer)
+            self.update_s(mu[j:j+batch_size, :], logvar[j:j+batch_size, :])
+            mub=self.mu; logvarb=self.logvar
+            for it in range(num_mu_iter):
+                #mub, logvarb, loss, recon_loss=self.iterate_mu_logvar(data,mub,logvarb,num_mu_iter)
+                self.compute_loss_and_grad(data, mub, logvarb, type,self.optimizer_s,opt='mu')
+                recon_batch, recon_loss, loss = self.compute_loss_and_grad(data, mub, logvarb, type,self.optimizer,opt='par')
 
             mu[j:j + batch_size] = mub.data #self.mu.data #mub.cpu().detach().numpy()
             logvar[j:j + batch_size] = logvarb.data #self.logvar.data #logvarb.cpu().detach().numpy()
@@ -143,11 +144,11 @@ class STVAE_OPT(models.STVAE):
             tr_recon_loss += recon_loss
             tr_full_loss += loss
         if (fout is  None):
-            print('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}'.format(type,
-                    epoch, tr_recon_loss/len(tr), tr_full_loss/len(tr)))
+            print('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}, KL loss: {:.4F}'.format(type,
+                    epoch, tr_recon_loss/len(tr), tr_full_loss/len(tr),-tr_recon_loss/len(tr)+tr_full_loss/len(tr)))
         else:
-            fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(type,
-                    epoch, tr_recon_loss/len(tr), tr_full_loss/len(tr)))
+            fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F},KL loss: {:.4F}\n'.format(type,
+                    epoch, tr_recon_loss/len(tr), tr_full_loss/len(tr),-tr_recon_loss/len(tr)+tr_full_loss/len(tr)))
         return mu,logvar
 
 
