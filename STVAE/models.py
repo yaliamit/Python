@@ -169,6 +169,7 @@ class STVAE(nn.Module):
         return BCE, KLD1
 
     def compute_loss_and_grad(self,data,type):
+
         if (type == 'train'):
             self.optimizer.zero_grad()
 

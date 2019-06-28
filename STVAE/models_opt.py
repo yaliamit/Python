@@ -38,7 +38,7 @@ class STVAE_OPT(models.STVAE):
         self.mu.data = mu
         self.logvar.data = logvar
 
-    def forw(self, inputs,mub,logvarb):
+    def forw(self, mub,logvarb):
 
         if (self.type is not 'ae' and not self.MM):
             s = self.sample(mub, logvarb, self.s_dim)
@@ -57,16 +57,15 @@ class STVAE_OPT(models.STVAE):
             KLD1 = -0.5 * torch.sum(1 + logvar - mu ** 2 - torch.exp(logvar))  # z
         return BCE, KLD1
 
-    def compute_loss_and_grad(self,data, mub, logvarb, type, optim,opt='par'):
+    def compute_loss_and_grad(self,data, type, optim,opt='par'):
 
         if (type == 'train' or opt=='mu'):
             optim.zero_grad()
-        recon_batch = self.forw(data, mub, logvarb)
-        recon_loss, kl = self.loss_V(recon_batch, data, mub, logvarb)
+        recon_batch = self.forw(self.mu, self.logvar)
+        recon_loss, kl = self.loss_V(recon_batch, data, self.mu, self.logvar)
         loss = recon_loss + kl
         if (type == 'train' or opt=='mu'):
             loss.backward()
-            #self.optimizer.step()
             optim.step()
 
         return recon_batch, recon_loss, loss
@@ -75,11 +74,8 @@ class STVAE_OPT(models.STVAE):
     def run_epoch(self, train,  epoch,num_mu_iter,MU, LOGVAR,type='test',fout=None):
         if (type=='train'):
             self.train()
-        tr_recon_loss = 0
-        tr_full_loss=0
-        numb = train[0].shape[0]//self.bsz
-        numt= numb * self.bsz
-        ii = np.arange(0, numt, 1)
+        tr_recon_loss = 0; tr_full_loss=0
+        ii = np.arange(0, train[0].shape[0], 1)
         #if (type=='train'):
         #   np.random.shuffle(ii)
         tr =train[0][ii].transpose(0,3,1,2)
@@ -91,20 +87,17 @@ class STVAE_OPT(models.STVAE):
 
             data = torch.tensor(tr[j:j + batch_size]).float()
             data = data.to(self.dv)
-            #mub=torch.autograd.Variable(mu[j:j+batch_size],requires_grad=True)
-            #logvarb=torch.autograd.Variable(logvar[j:j+batch_size],requires_grad=True)
 
             #target = torch.tensor(y[j:j + batch_size]).float()
 
             self.update_s(mu[j:j+batch_size, :], logvar[j:j+batch_size, :])
-            mub=self.mu; logvarb=self.logvar
             self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=self.mu_lr)
             for it in range(num_mu_iter):
-                self.compute_loss_and_grad(data, mub, logvarb, type,self.optimizer_s,opt='mu')
-            recon_batch, recon_loss, loss = self.compute_loss_and_grad(data, mub, logvarb, type,self.optimizer,opt='par')
+                self.compute_loss_and_grad(data, type,self.optimizer_s,opt='mu')
+            recon_batch, recon_loss, loss = self.compute_loss_and_grad(data,type,self.optimizer,opt='par')
 
-            mu[j:j + batch_size] = mub.data #self.mu.data #mub.cpu().detach().numpy()
-            logvar[j:j + batch_size] = logvarb.data #self.logvar.data #logvarb.cpu().detach().numpy()
+            mu[j:j + batch_size] = self.mu.data
+            logvar[j:j + batch_size] = self.logvar.data
 
             tr_recon_loss += recon_loss
             tr_full_loss += loss

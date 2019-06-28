@@ -79,9 +79,11 @@ device = torch.device("cuda:1" if use_gpu else "cpu")
 print(device)
 print('USE_GPU',use_gpu)
 
+# round the number of training data to be a multiple of nbatch size
+
 PARS={}
 PARS['data_set']='mnist'
-PARS['num_train']=args.num_train
+PARS['num_train']=args.num_train//args.mb_size *args.mb_size
 PARS['nval']=args.nval
 if args.cl is not None:
     PARS['one_class']=args.cl
@@ -128,7 +130,7 @@ else:
         else:
             print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
         sys.stdout.flush()
-
+    show_sampled_images(model,ex_file)
     if (args.MM):
             trainMU, trainLOGVAR = model.run_epoch(train,  epoch, 100,trainMU, trainLOGVAR, type='trest',fout=fout)
             model.MU = torch.nn.Parameter(torch.from_numpy(np.mean(trainMU, axis=0)))
@@ -141,7 +143,7 @@ else:
 
     print('writing to ',ex_file)
     torch.save(model.state_dict(),'_output/'+ex_file+'.pt')
-    show_sampled_images(model,ex_file)
+
 
     print("DONE")
 
