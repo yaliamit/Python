@@ -43,7 +43,7 @@ parser.add_argument('--num_mu_iter',type=int, default=10,help='Learning rate (de
 parser.add_argument('--wd',action='store_true', help='Use weight decay')
 parser.add_argument('--cl',type=int,default=None,help='class (default: None)')
 parser.add_argument('--run_existing',action='store_true', help='Use existing model')
-parser.add_argument('--nti',type=int,default=100,help='num test iterations (default: 100)')
+parser.add_argument('--nti',type=int,default=500,help='num test iterations (default: 100)')
 parser.add_argument('--nvi',type=int,default=20,help='num val iterations (default: 20)')
 parser.add_argument('--MM',action='store_true', help='Use max max')
 parser.add_argument('--OPT',action='store_true',help='Optimization instead of encoding')
@@ -106,8 +106,8 @@ if (args.run_existing):
     model.load_state_dict(torch.load('_output/'+ex_file+'.pt',map_location=device))
     model.eval()
     if (args.OPT):
-        model.run_epoch(train, 0, 500, trainMU, trainLOGVAR, type='trest', fout=fout)
-        model.run_epoch(test, 0, 500, testMU, testLOGVAR, type='test', fout=fout)
+        model.run_epoch(train, 0, args.nti, trainMU, trainLOGVAR, type='trest', fout=fout)
+        model.run_epoch(test, 0, args.nti, testMU, testLOGVAR, type='test', fout=fout)
         model.run_epoch(test,0,args.nti,testMU, testLOGVAR,type='test',fout=fout)
     else:
         model.run_epoch(test, 0, type='test')
