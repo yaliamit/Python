@@ -133,6 +133,7 @@ else:
             fout.write('Means and variances of latent variable before restimation\n')
             fout.write(str(model.MU.data)+'\n')
             fout.write(str(model.LOGVAR.data)+'\n')
+            fout.flush()
             trainMU, trainLOGVAR = initialize_mus(train, args)
             trainMU, trainLOGVAR = model.run_epoch(train,  epoch, 500,trainMU, trainLOGVAR, type='trest',fout=fout)
             model.MU = torch.nn.Parameter(torch.mean(trainMU, dim=0))
@@ -140,12 +141,13 @@ else:
             fout.write('Means and variances of latent variable after restimation\n')
             fout.write(str(model.MU.data) + '\n')
             fout.write(str(model.LOGVAR.data) + '\n')
+            fout.flush()
             model.to(device)
     show_sampled_images(model, ex_file)
     trainMU, trainLOGVAR = initialize_mus(train,args)
     model.run_epoch(train,  epoch, 500, trainMU, trainLOGVAR,type='trest',fout=fout)
     model.run_epoch(test,epoch,500,testMU, testLOGVAR,type='test',fout=fout)
-
+    fout.flush()
 
     print('writing to ',ex_file)
     torch.save(model.state_dict(),'_output/'+ex_file+'.pt')

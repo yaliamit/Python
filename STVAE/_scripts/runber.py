@@ -75,6 +75,7 @@ else:
             commands.check_output('scp amit@marx.uchicago.edu:/Volumes/amit/Python/STVAE/'+OUTNAME+' ' + lOUTNAME,shell=True)
         except:
             print('copy failed')
+
     time.sleep(5)
 
     os.system('ssh amit@marx.uchicago.edu "mv /Volumes/amit/Python/STVAE/_OUTPUTS/* /Users/amit/Desktop/Dropbox/Python/STVAE/_OUTPUTS/."')
