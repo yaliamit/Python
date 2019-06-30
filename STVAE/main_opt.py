@@ -47,6 +47,8 @@ parser.add_argument('--nti',type=int,default=500,help='num test iterations (defa
 parser.add_argument('--nvi',type=int,default=20,help='num val iterations (default: 20)')
 parser.add_argument('--MM',action='store_true', help='Use max max')
 parser.add_argument('--OPT',action='store_true',help='Optimization instead of encoding')
+parser.add_argument('--CONS',action='store_true',help='Output to consol')
+
 
 args = parser.parse_args()
 opt_pre=''; mm_pre=''; opt_post=''
@@ -59,7 +61,7 @@ ex_file=opt_pre+args.type + '_' + args.transformation + '_' + str(args.num_hlaye
 
 
 use_gpu = args.gpu and torch.cuda.is_available()
-if (use_gpu):
+if (use_gpu and not args.CONS):
     fout=open('_OUTPUTS/OUT_'+ex_file+'.txt','w')
 else:
     fout=sys.stdout
