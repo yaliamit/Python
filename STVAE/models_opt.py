@@ -12,8 +12,8 @@ class STVAE_OPT(models.STVAE):
 
         self.MM=args.MM
         if (self.MM):
-            self.MU=nn.Parameter(torch.zeros(self.s_dim))
-            self.LOGVAR=nn.Parameter(torch.zeros(self.s_dim))
+            self.MU=nn.Parameter(torch.zeros(self.s_dim), requires_grad=False)
+            self.LOGVAR=nn.Parameter(torch.zeros(self.s_dim), requires_grad=False)
 
         self.mu_lr=args.mu_lr #torch.full([self.s_dim],args.mu_lr).to(self.dv)
         #if 'tvae' in self.type:
@@ -70,6 +70,9 @@ class STVAE_OPT(models.STVAE):
 
         return recon_batch, recon_loss, loss
 
+    def update_MU_LOGVAR(self,mu):
+        self.MU = torch.nn.Parameter(torch.mean(mu, dim=0))
+        self.LOGVAR = torch.nn.Parameter(torch.log(torch.var(mu, dim=0)))
 
     def run_epoch(self, train,  epoch,num_mu_iter,MU, LOGVAR,type='test',fout=None):
         if (type=='train'):
@@ -92,12 +95,17 @@ class STVAE_OPT(models.STVAE):
 
             self.update_s(mu[j:j+batch_size, :], logvar[j:j+batch_size, :])
             self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=self.mu_lr)
+            # Get optimzla mu/logvar for current set of parameters
             for it in range(num_mu_iter):
                 self.compute_loss_and_grad(data, type,self.optimizer_s,opt='mu')
-            recon_batch, recon_loss, loss = self.compute_loss_and_grad(data,type,self.optimizer,opt='par')
-
             mu[j:j + batch_size] = self.mu.data
             logvar[j:j + batch_size] = self.logvar.data
+            if (self.MM):
+                self.update_MU_LOGVAR(mu)
+            # Update decoder and encoder parameters.
+            recon_batch, recon_loss, loss = self.compute_loss_and_grad(data,type,self.optimizer,opt='par')
+
+
 
             tr_recon_loss += recon_loss
             tr_full_loss += loss
