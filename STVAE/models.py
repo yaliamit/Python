@@ -262,8 +262,7 @@ def show_sampled_images(model,ex_file):
     manifold = np.concatenate(mat, axis=1)
 
 
-    img = np.concatenate([manifold, manifold, manifold], axis=0)
-    img = img.transpose(1, 2, 0)
+    img = np.array([manifold, manifold, manifold]).transpose(1,2,0)
     imsave('_Images/'+ex_file+'.png', img)
 
 

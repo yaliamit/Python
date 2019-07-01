@@ -19,19 +19,9 @@ class STVAE_OPT(models.STVAE):
         self.s2s=None
         self.u2u=None
 
-        # if (args.optimizer=='Adam'):
-        #     self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
-        # elif (args.optimizer=='Adadelta'):
-        #     self.optimizer = optim.Adadelta(self.parameters())
-        # else:
-        #     self.optimizer = optim.SGD(lr=args.lr)
-
-
     def update_s(self,mu,logvar):
         self.mu=torch.autograd.Variable(mu, requires_grad=True)
         self.logvar = torch.autograd.Variable(logvar, requires_grad=True)
-        #self.mu.data = mu
-        #self.logvar.data = logvar
         self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=self.mu_lr)
 
     def forw(self, mub,logvarb):
