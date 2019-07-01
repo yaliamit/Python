@@ -125,6 +125,8 @@ if (args.run_existing):
     trainMU, trainLOGVAR = model.initialize_mus(train, args.OPT)
     testMU, testLOGVAR = model.initialize_mus(test, args.OPT)
     if (args.OPT):
+        if ('tvae' in model.type):
+            model.id = model.idty.expand((model.bsz,) + model.idty.size()).to(model.dv)
         model.run_epoch(train, 0, args.nti, trainMU, trainLOGVAR, type='trest', fout=fout)
         model.run_epoch(test, 0, args.nti, testMU, testLOGVAR, type='test', fout=fout)
     else:

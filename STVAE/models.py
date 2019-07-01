@@ -160,7 +160,8 @@ class STVAE(nn.Module):
         return x
 
     def sample(self, mu, logvar, dim):
-        eps = torch.randn(self.bsz, dim).to(self.dv)
+        eps = torch.randn(mu.shape[0],dim).to(self.dv)
+        #eps = torch.randn(self.bsz, dim).to(self.dv)
         return mu + torch.exp(logvar/2) * eps
 
 

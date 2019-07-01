@@ -15,9 +15,9 @@ class STVAE_OPT(models.STVAE):
             self.MU=nn.Parameter(torch.zeros(self.s_dim))  #, requires_grad=False)
             self.LOGVAR=nn.Parameter(torch.zeros(self.s_dim)) #, requires_grad=False)
 
-        self.mu_lr=args.mu_lr #torch.full([self.s_dim],args.mu_lr).to(self.dv)
+        self.mu_lr=args.mu_lr
         #self.mu = torch.autograd.Variable(torch.zeros(self.bsz,self.s_dim), requires_grad=True)
-        self.logvar = torch.autograd.Variable(torch.zeros(self.bsz,self.s_dim), requires_grad=True)
+        #self.logvar = torch.autograd.Variable(torch.zeros(self.bsz,self.s_dim), requires_grad=True)
         self.s2s=None
         self.u2u=None
 
@@ -125,7 +125,7 @@ class STVAE_OPT(models.STVAE):
         mu, logvar=self.initialize_mus(input,True)
         data=torch.tensor(input[0].transpose(0,3,1,2)).float().to(self.dv)
         self.update_s(mu, logvar)
-        self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=self.mu_lr)
+        #self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=self.mu_lr)
         for it in range(num_mu_iter):
             self.compute_loss_and_grad(data, type, self.optimizer_s, opt='mu')
         recon_batch, recon_loss, loss = self.compute_loss_and_grad(data, 'test', self.optimizer)
