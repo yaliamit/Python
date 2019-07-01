@@ -107,11 +107,12 @@ fout.write('tot_pars,'+str(tot_pars)+'\n')
 if (args.run_existing):
     model.load_state_dict(torch.load('_output/'+ex_file+'.pt',map_location=device))
     trainMU=model.MU.repeat(train[0].shape[0],1)
+    trainMU = model.MU.repeat(train[0].shape[0], 1)
+    testMU = model.MU.repeat(train[0].shape[0], 1)
     model.eval()
     if (args.OPT):
         model.run_epoch(train, 0, args.nti, trainMU, trainLOGVAR, type='trest', fout=fout)
         model.run_epoch(test, 0, args.nti, testMU, testLOGVAR, type='test', fout=fout)
-        model.run_epoch(test,0,args.nti,testMU, testLOGVAR,type='test',fout=fout)
     else:
         model.run_epoch(test, 0, type='test')
     show_sampled_images(model,ex_file)
