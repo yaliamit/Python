@@ -10,12 +10,15 @@ import time
 from Conv_data import get_data
 from models import show_sampled_images, get_scheduler
 
-def initialize_mus(train,args):
+def initialize_mus(train,args,model=None):
     trMU=None
     trLOGVAR=None
     if (args.OPT and train[0] is not None):
-        trMU = torch.zeros(train[0].shape[0], args.sdim).to(device)
-        trLOGVAR = torch.zeros(train[0].shape[0], args.sdim).to(device)
+        if (model is None):
+            trMU = torch.zeros(train[0].shape[0], args.sdim).to(device)
+            trLOGVAR = torch.zeros(train[0].shape[0], args.sdim).to(device)
+        else:
+            trMU = model.MU.repeat(train[0].shape[0], 1)
     return trMU, trLOGVAR
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
@@ -106,10 +109,9 @@ fout.write('tot_pars,'+str(tot_pars)+'\n')
 
 if (args.run_existing):
     model.load_state_dict(torch.load('_output/'+ex_file+'.pt',map_location=device))
-    trainMU=model.MU.repeat(train[0].shape[0],1)
-    trainMU = model.MU.repeat(train[0].shape[0], 1)
-    testMU = model.MU.repeat(train[0].shape[0], 1)
-    model.eval()
+    #model.eval()
+    trainMU, trainLOGVAR = initialize_mus(train, args,model=model)
+    testMU, testLOGVAR = initialize_mus(test, args,model=model)
     if (args.OPT):
         model.run_epoch(train, 0, args.nti, trainMU, trainLOGVAR, type='trest', fout=fout)
         model.run_epoch(test, 0, args.nti, testMU, testLOGVAR, type='test', fout=fout)
