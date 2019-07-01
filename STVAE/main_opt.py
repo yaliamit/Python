@@ -70,26 +70,23 @@ if (args.MM):
     mm_pre='_MM'
 ex_file=opt_pre+args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_sd_'+str(args.sdim)+'_'+args.optimizer+mm_pre
 
-
-
 use_gpu = args.gpu and torch.cuda.is_available()
 if (use_gpu and not args.CONS):
     fout=open('_OUTPUTS/OUT_'+ex_file+'.txt','w')
 else:
     fout=sys.stdout
 
-if (fout is not None):
-    fout.write(str(args)+'\n')
-    fout.flush()
-else:
-    print(args)
+fout.write(str(args)+'\n')
+args.fout=fout
+fout.flush()
+
 
 torch.manual_seed(args.seed)
 np.random.seed(args.seed)
 
 device = torch.device("cuda:1" if use_gpu else "cpu")
-print(device)
-print('USE_GPU',use_gpu)
+fout.write('Device,'+str(device)+'\n')
+fout.write('USE_GPU,'+str(use_gpu)+'\n')
 
 # round the number of training data to be a multiple of nbatch size
 
@@ -121,7 +118,9 @@ testMU, testLOGVAR=model.initialize_mus(test,args.OPT)
 if (args.run_existing):
     model.load_state_dict(torch.load('_output/'+ex_file+'.pt',map_location=device))
     #model.eval()
-    recon_ims=model.recon([test[0][0:10],test[1][0:10]], num_mu_iter=args.nti)
+    recon_data=[test[0][0:10].copy(),test[1][0:10].copy()]
+    recon_data[0][0:10][0:10,0:10,:,:]=0
+    recon_ims=model.recon(recon_data, num_mu_iter=args.nti)
     trainMU, trainLOGVAR = model.initialize_mus(train, args.OPT)
     testMU, testLOGVAR = model.initialize_mus(test, args.OPT)
     if (args.OPT):
@@ -142,11 +141,10 @@ else:
         trainMU, trainLOGVAR= model.run_epoch(train,epoch,args.num_mu_iter,trainMU,trainLOGVAR,type='train',fout=fout)
         if (val[0] is not None):
                 model.run_epoch(val,epoch,args.nvi,valMU,valLOGVAR,type='val',fout=fout)
-        if (fout is not None):
-            fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
-            fout.flush()
-        else:
-            print('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
+
+        fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
+        fout.flush()
+
         sys.stdout.flush()
 
     if (args.MM):
@@ -156,11 +154,12 @@ else:
     trainMU, trainLOGVAR = model.initialize_mus(train,args.OPT)
     model.run_epoch(train,  epoch, 500, trainMU, trainLOGVAR,type='trest',fout=fout)
     model.run_epoch(test,epoch,500,testMU, testLOGVAR,type='test',fout=fout)
-    fout.flush()
-    fout.close()
-    print('writing to ',ex_file)
-    torch.save(model.state_dict(),'_output/'+ex_file+'.pt')
 
+    fout.write('writing to '+ex_file+'\n')
+    torch.save(model.state_dict(),'_output/'+ex_file+'.pt')
+    fout.flush()
+    if (not args.CONS):
+        fout.close()
 
     print("DONE")
 

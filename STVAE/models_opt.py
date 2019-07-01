@@ -16,21 +16,15 @@ class STVAE_OPT(models.STVAE):
             self.LOGVAR=nn.Parameter(torch.zeros(self.s_dim)) #, requires_grad=False)
 
         self.mu_lr=args.mu_lr
-        #self.mu = torch.autograd.Variable(torch.zeros(self.bsz,self.s_dim), requires_grad=True)
-        #self.logvar = torch.autograd.Variable(torch.zeros(self.bsz,self.s_dim), requires_grad=True)
         self.s2s=None
         self.u2u=None
 
-        if (args.optimizer=='Adam'):
-            self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
-        elif (args.optimizer=='Adadelta'):
-            self.optimizer = optim.Adadelta(self.parameters())
-        else:
-            self.optimizer = optim.SGD(lr=args.lr)
-        #self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=0.2)
-        print('s_dim',self.s_dim,'u_dim',self.u_dim,'z_dim',self.z_dim,self.type)
-
-
+        # if (args.optimizer=='Adam'):
+        #     self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
+        # elif (args.optimizer=='Adadelta'):
+        #     self.optimizer = optim.Adadelta(self.parameters())
+        # else:
+        #     self.optimizer = optim.SGD(lr=args.lr)
 
 
     def update_s(self,mu,logvar):
