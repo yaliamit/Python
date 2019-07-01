@@ -155,7 +155,7 @@ else:
     model.run_epoch(train,  epoch, 500, trainMU, trainLOGVAR,type='trest',fout=fout)
     model.run_epoch(test,epoch,500,testMU, testLOGVAR,type='test',fout=fout)
     fout.flush()
-
+    fout.close()
     print('writing to ',ex_file)
     torch.save(model.state_dict(),'_output/'+ex_file+'.pt')
 
