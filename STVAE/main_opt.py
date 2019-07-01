@@ -181,4 +181,5 @@ else:
         fout.close()
 
     print("DONE")
+    sys.flush()
 
