@@ -16,9 +16,10 @@ def initialize_mus(train,args,model=None):
     if (args.OPT and train[0] is not None):
         if (model is None):
             trMU = torch.zeros(train[0].shape[0], args.sdim).to(device)
-            trLOGVAR = torch.zeros(train[0].shape[0], args.sdim).to(device)
         else:
             trMU = model.MU.repeat(train[0].shape[0], 1)
+        trLOGVAR = torch.zeros(train[0].shape[0], args.sdim).to(device)
+
     return trMU, trLOGVAR
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
