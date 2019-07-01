@@ -31,17 +31,7 @@ class STVAE_OPT(models.STVAE):
         print('s_dim',self.s_dim,'u_dim',self.u_dim,'z_dim',self.z_dim,self.type)
 
 
-    def initialize_mus(self,train,OPT):
-        trMU=None
-        trLOGVAR=None
-        if (OPT and train[0] is not None):
-            if (not self.MM):
-                trMU = torch.zeros(train[0].shape[0], self.s_dim).to(self.dv)
-            else:
-                trMU = self.MU.repeat(train[0].shape[0], 1)
-            trLOGVAR = torch.zeros(train[0].shape[0], self.s_dim).to(self.dv)
 
-        return trMU, trLOGVAR
 
     def update_s(self,mu,logvar):
         self.mu=torch.autograd.Variable(mu, requires_grad=True)
