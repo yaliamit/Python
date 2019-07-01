@@ -15,7 +15,7 @@ class STVAE_OPT(models.STVAE):
             self.MU=nn.Parameter(torch.zeros(self.s_dim))  #, requires_grad=False)
             self.LOGVAR=nn.Parameter(torch.zeros(self.s_dim)) #, requires_grad=False)
 
-        #self.mu_lr=args.mu_lr #torch.full([self.s_dim],args.mu_lr).to(self.dv)
+        self.mu_lr=args.mu_lr #torch.full([self.s_dim],args.mu_lr).to(self.dv)
         #self.mu = torch.autograd.Variable(torch.zeros(self.bsz,self.s_dim), requires_grad=True)
         self.logvar = torch.autograd.Variable(torch.zeros(self.bsz,self.s_dim), requires_grad=True)
         self.s2s=None
@@ -27,7 +27,7 @@ class STVAE_OPT(models.STVAE):
             self.optimizer = optim.Adadelta(self.parameters())
         else:
             self.optimizer = optim.SGD(lr=args.lr)
-        self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=0.2)
+        #self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=0.2)
         print('s_dim',self.s_dim,'u_dim',self.u_dim,'z_dim',self.z_dim,self.type)
 
 
