@@ -10,17 +10,25 @@ import time
 from Conv_data import get_data
 from models import show_sampled_images, get_scheduler
 
-def initialize_mus(train,args,model=None):
-    trMU=None
-    trLOGVAR=None
-    if (args.OPT and train[0] is not None):
-        if (model is None):
-            trMU = torch.zeros(train[0].shape[0], args.sdim).to(device)
-        else:
-            trMU = model.MU.repeat(train[0].shape[0], 1)
-        trLOGVAR = torch.zeros(train[0].shape[0], args.sdim).to(device)
 
-    return trMU, trLOGVAR
+
+
+
+def re_estimate(model):
+
+            fout.write('Means and variances of latent variable before restimation\n')
+            fout.write(str(model.MU.data)+'\n')
+            fout.write(str(model.LOGVAR.data)+'\n')
+            fout.flush()
+            trainMU, trainLOGVAR = model.initialize_mus(train, args.OPT,args.MM)
+            trainMU, trainLOGVAR = model.run_epoch(train,  epoch, 500,trainMU, trainLOGVAR, type='trest',fout=fout)
+            model.MU = torch.nn.Parameter(torch.mean(trainMU, dim=0))
+            model.LOGVAR = torch.nn.Parameter(torch.log(torch.var(trainMU, dim=0)))
+            fout.write('Means and variances of latent variable after restimation\n')
+            fout.write(str(model.MU.data) + '\n')
+            fout.write(str(model.LOGVAR.data) + '\n')
+            fout.flush()
+            model.to(device)
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
@@ -94,25 +102,28 @@ if args.cl is not None:
 
 train, val, test, image_dim = get_data(PARS)
 
-trainMU, trainLOGVAR=initialize_mus(train,args)
-valMU, valLOGVAR=initialize_mus(val,args)
-testMU, testLOGVAR=initialize_mus(test,args)
+
 
 h=train[0].shape[1]
 w=train[0].shape[2]
 model=locals()['STVAE'+opt_post](h, w,  device, args).to(device)
-
 tot_pars=0
 for keys, vals in model.state_dict().items():
     fout.write(keys+','+str(np.array(vals.shape))+'\n')
     tot_pars+=np.prod(np.array(vals.shape))
 fout.write('tot_pars,'+str(tot_pars)+'\n')
 
+
+trainMU, trainLOGVAR=model.initialize_mus(train,args.OPT)
+valMU, valLOGVAR=model.initialize_mus(val,args.OPT)
+testMU, testLOGVAR=model.initialize_mus(test,args.OPT)
+
 if (args.run_existing):
     model.load_state_dict(torch.load('_output/'+ex_file+'.pt',map_location=device))
     #model.eval()
-    trainMU, trainLOGVAR = initialize_mus(train, args,model=model)
-    testMU, testLOGVAR = initialize_mus(test, args,model=model)
+    recon_ims=model.recon([test[0][0:10],test[1][0:10]], num_mu_iter=args.nti)
+    trainMU, trainLOGVAR = model.initialize_mus(train, args.OPT)
+    testMU, testLOGVAR = model.initialize_mus(test, args.OPT)
     if (args.OPT):
         model.run_epoch(train, 0, args.nti, trainMU, trainLOGVAR, type='trest', fout=fout)
         model.run_epoch(test, 0, args.nti, testMU, testLOGVAR, type='test', fout=fout)
@@ -137,21 +148,10 @@ else:
         sys.stdout.flush()
 
     if (args.MM):
-            fout.write('Means and variances of latent variable before restimation\n')
-            fout.write(str(model.MU.data)+'\n')
-            fout.write(str(model.LOGVAR.data)+'\n')
-            fout.flush()
-            trainMU, trainLOGVAR = initialize_mus(train, args)
-            trainMU, trainLOGVAR = model.run_epoch(train,  epoch, 500,trainMU, trainLOGVAR, type='trest',fout=fout)
-            model.MU = torch.nn.Parameter(torch.mean(trainMU, dim=0))
-            model.LOGVAR = torch.nn.Parameter(torch.log(torch.var(trainMU, dim=0)))
-            fout.write('Means and variances of latent variable after restimation\n')
-            fout.write(str(model.MU.data) + '\n')
-            fout.write(str(model.LOGVAR.data) + '\n')
-            fout.flush()
-            model.to(device)
+        re_estimate()
+
     show_sampled_images(model, ex_file)
-    trainMU, trainLOGVAR = initialize_mus(train,args)
+    trainMU, trainLOGVAR = model.initialize_mus(train,args.OPT)
     model.run_epoch(train,  epoch, 500, trainMU, trainLOGVAR,type='trest',fout=fout)
     model.run_epoch(test,epoch,500,testMU, testLOGVAR,type='test',fout=fout)
     fout.flush()

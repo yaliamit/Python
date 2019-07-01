@@ -60,14 +60,14 @@ class STVAE(nn.Module):
         if 'tvae' in self.type:
             if self.tf == 'aff':
                 self.u_dim = 6
-                idty = torch.cat((torch.eye(2),torch.zeros(2).unsqueeze(1)),dim=1)
+                self.idty = torch.cat((torch.eye(2),torch.zeros(2).unsqueeze(1)),dim=1)
             elif self.tf == 'tps':
                 self.u_dim = 18 # 2 * 3 ** 2
                 self.gridGen = TPSGridGen(out_h=self.h,out_w=self.w,device=self.dv)
                 px = self.gridGen.PX.squeeze(0).squeeze(0).squeeze(0).squeeze(0)
                 py = self.gridGen.PY.squeeze(0).squeeze(0).squeeze(0).squeeze(0)
-                idty = torch.cat((px,py))
-            self.id = idty.expand((self.bsz,) + idty.size()).to(self.dv)
+                self.idty = torch.cat((px,py))
+            self.id = self.idty.expand((self.bsz,) + self.idty.size()).to(self.dv)
         else:
             self.u_dim=0
 

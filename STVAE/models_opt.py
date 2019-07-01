@@ -16,11 +16,8 @@ class STVAE_OPT(models.STVAE):
             self.LOGVAR=nn.Parameter(torch.zeros(self.s_dim)) #, requires_grad=False)
 
         self.mu_lr=args.mu_lr #torch.full([self.s_dim],args.mu_lr).to(self.dv)
-        #if 'tvae' in self.type:
-        #    self.mu_lr[0:self.u_dim]*=.1
-
-        self.mu = torch.autograd.Variable(torch.zeros(self.bsz,self.s_dim), requires_grad=True)
-        self.logvar = torch.autograd.Variable(torch.zeros(self.bsz,self.s_dim), requires_grad=True)
+        #self.mu = torch.autograd.Variable(torch.zeros(self.bsz,self.s_dim), requires_grad=True)
+        #self.logvar = torch.autograd.Variable(torch.zeros(self.bsz,self.s_dim), requires_grad=True)
         self.s2s=None
         self.u2u=None
 
@@ -30,13 +27,29 @@ class STVAE_OPT(models.STVAE):
             self.optimizer = optim.Adadelta(self.parameters())
         else:
             self.optimizer = optim.SGD(lr=args.lr)
-        self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=0.2)
+        #self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=0.2)
         print('s_dim',self.s_dim,'u_dim',self.u_dim,'z_dim',self.z_dim,self.type)
 
 
+    def initialize_mus(self,train,OPT):
+        trMU=None
+        trLOGVAR=None
+        if (OPT and train[0] is not None):
+            if (not self.MM):
+                trMU = torch.zeros(train[0].shape[0], self.s_dim).to(self.dv)
+            else:
+                trMU = self.MU.repeat(train[0].shape[0], 1)
+            trLOGVAR = torch.zeros(train[0].shape[0], self.s_dim).to(self.dv)
+
+        return trMU, trLOGVAR
+
     def update_s(self,mu,logvar):
-        self.mu.data = mu
-        self.logvar.data = logvar
+        self.mu=torch.autograd.Variable(mu, requires_grad=True)
+        self.logvar = torch.autograd.Variable(logvar, requires_grad=True)
+        self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=0.2)
+
+        #self.mu.data = mu
+        #self.logvar.data = logvar
 
     def forw(self, mub,logvarb):
 
@@ -94,7 +107,7 @@ class STVAE_OPT(models.STVAE):
             #target = torch.tensor(y[j:j + batch_size]).float()
 
             self.update_s(mu[j:j+batch_size, :], logvar[j:j+batch_size, :])
-            self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=self.mu_lr)
+            #self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=self.mu_lr)
             # Get optimzla mu/logvar for current set of parameters
             for it in range(num_mu_iter):
                 self.compute_loss_and_grad(data, type,self.optimizer_s,opt='mu')
@@ -103,10 +116,7 @@ class STVAE_OPT(models.STVAE):
             #if (self.MM):
             #    self.update_MU_LOGVAR(mu)
             # Update decoder and encoder parameters.
-            recon_batch, recon_loss, loss = self.compute_loss_and_grad(data,type,self.optimizer,opt='par')
-
-
-
+            recon_batch, recon_loss, loss = self.compute_loss_and_grad(data,type,self.optimizer)
             tr_recon_loss += recon_loss
             tr_full_loss += loss
         if (fout is  None):
@@ -118,28 +128,20 @@ class STVAE_OPT(models.STVAE):
         return mu,logvar
 
 
-    def recon_from_zero(self,input,num_mu_iter=10):
+    def recon(self,input,num_mu_iter=10):
 
-        num_inp=input.shape[0]
+        num_inp=input[0].shape[0]
         if ('tvae' in self.type):
             self.id = self.idty.expand((num_inp,) + self.idty.size()).to(self.dv)
+        mu, logvar=self.initialize_mus(input,True)
+        data=torch.tensor(input[0].transpose(0,3,1,2)).float().to(self.dv)
+        self.update_s(mu, logvar)
+        self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=self.mu_lr)
+        for it in range(num_mu_iter):
+            self.compute_loss_and_grad(data, type, self.optimizer_s, opt='mu')
+        recon_batch, recon_loss, loss = self.compute_loss_and_grad(data, 'test', self.optimizer)
 
-        mub = torch.autograd.Variable(torch.zeros(num_inp,self.s_dim, requires_grad=True).float(),
-                                      requires_grad=True)
-        logvarb = torch.autograd.Variable(torch.zeros(num_inp,self.s_dim, requires_grad=True).float(),
-                                          requires_grad=True)
-        inp=input.transpose(0,3,1,2)
-        data = (torch.tensor(inp).float()).to(self.dv)
-        mub = mub.to(self.dv)
-        logvarb = logvarb.to(self.dv)
-        for muit in range(num_mu_iter):
-            recon_batch = self.forw(data, mub, logvarb)
-            recon_loss, kl = self.loss_V(recon_batch, data, mub, logvarb)
-            loss = recon_loss + kl
-            dd = torch.autograd.grad(loss, mub)
-            mub = mub - (self.mu_lr * dd[0])
-
-        return recon_batch
+        return recon_batch, recon_loss, loss
 
     def sample_from_z_prior(self,theta=None):
         s = torch.randn(self.bsz, self.s_dim).to(self.dv)
