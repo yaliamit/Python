@@ -15,8 +15,8 @@ class STVAE_OPT(models.STVAE):
             self.MU=nn.Parameter(torch.zeros(self.s_dim))  #, requires_grad=False)
             self.LOGVAR=nn.Parameter(torch.zeros(self.s_dim)) #, requires_grad=False)
 
-        self.mu_lr=args.mu_lr #torch.full([self.s_dim],args.mu_lr).to(self.dv)
-        self.mu = torch.autograd.Variable(torch.zeros(self.bsz,self.s_dim), requires_grad=True)
+        #self.mu_lr=args.mu_lr #torch.full([self.s_dim],args.mu_lr).to(self.dv)
+        #self.mu = torch.autograd.Variable(torch.zeros(self.bsz,self.s_dim), requires_grad=True)
         self.logvar = torch.autograd.Variable(torch.zeros(self.bsz,self.s_dim), requires_grad=True)
         self.s2s=None
         self.u2u=None
@@ -34,12 +34,11 @@ class STVAE_OPT(models.STVAE):
 
 
     def update_s(self,mu,logvar):
-        #self.mu=torch.autograd.Variable(mu, requires_grad=True)
-        #self.logvar = torch.autograd.Variable(logvar, requires_grad=True)
-        #self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=0.2)
-
-        self.mu.data = mu
-        self.logvar.data = logvar
+        self.mu=torch.autograd.Variable(mu, requires_grad=True)
+        self.logvar = torch.autograd.Variable(logvar, requires_grad=True)
+        #self.mu.data = mu
+        #self.logvar.data = logvar
+        self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=self.mu_lr)
 
     def forw(self, mub,logvarb):
 
@@ -97,7 +96,7 @@ class STVAE_OPT(models.STVAE):
             #target = torch.tensor(y[j:j + batch_size]).float()
 
             self.update_s(mu[j:j+batch_size, :], logvar[j:j+batch_size, :])
-            self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=self.mu_lr)
+            #self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=self.mu_lr)
             # Get optimzla mu/logvar for current set of parameters
             for it in range(num_mu_iter):
                 self.compute_loss_and_grad(data, type,self.optimizer_s,opt='mu')
