@@ -9,9 +9,39 @@ import argparse
 import time
 from Conv_data import get_data
 from models import show_sampled_images, get_scheduler
+import pylab as py
 
+def rerun_on_train_test(model,train,test,args):
+    trainMU, trainLOGVAR = model.initialize_mus(train, args.OPT)
+    testMU, testLOGVAR = model.initialize_mus(test, args.OPT)
+    if (args.OPT):
+        model.setup_id(model.bsz)
+        model.run_epoch(train, 0, args.nti, trainMU, trainLOGVAR, type='trest', fout=fout)
+        model.run_epoch(test, 0, args.nti, testMU, testLOGVAR, type='test', fout=fout)
+    else:
+        model.run_epoch(test, 0, type='test')
 
+def test_with_noise(test,model):
 
+    ii=np.arange(0,test[0].shape[0],1)
+    np.random.shuffle(ii)
+    recon_data=[test[0][ii[0:20]].copy(),test[1][ii[0:20]].copy()]
+    recon_data[0][0:20,0:13,:,:]=0
+    recon_ims=model.recon(recon_data, num_mu_iter=args.nti)
+    rec=recon_ims.detach().cpu()
+    py.figure(figsize=(3, 20))
+    for t in range(20):
+            py.subplot(20,3,3*t+1)
+            py.imshow(test[0][ii[t],:,:,0])
+            py.axis('off')
+            py.subplot(20,3,3*t+2)
+            py.imshow(recon_data[0][t, :, :, 0])
+            py.axis('off')
+            py.subplot(20,3,3*t+3)
+            py.imshow(rec[t,0,:,:])
+            py.axis('off')
+    py.show()
+    print("hello")
 
 
 def re_estimate(model):
@@ -100,7 +130,6 @@ if args.cl is not None:
 train, val, test, image_dim = get_data(PARS)
 
 
-
 h=train[0].shape[1]
 w=train[0].shape[2]
 model=locals()['STVAE'+opt_post](h, w,  device, args).to(device)
@@ -118,18 +147,8 @@ testMU, testLOGVAR=model.initialize_mus(test,args.OPT)
 if (args.run_existing):
     model.load_state_dict(torch.load('_output/'+ex_file+'.pt',map_location=device))
     #model.eval()
-    recon_data=[test[0][0:10].copy(),test[1][0:10].copy()]
-    recon_data[0][0:10][0:10,0:10,:,:]=0
-    recon_ims=model.recon(recon_data, num_mu_iter=args.nti)
-    trainMU, trainLOGVAR = model.initialize_mus(train, args.OPT)
-    testMU, testLOGVAR = model.initialize_mus(test, args.OPT)
-    if (args.OPT):
-        if ('tvae' in model.type):
-            model.id = model.idty.expand((model.bsz,) + model.idty.size()).to(model.dv)
-        model.run_epoch(train, 0, args.nti, trainMU, trainLOGVAR, type='trest', fout=fout)
-        model.run_epoch(test, 0, args.nti, testMU, testLOGVAR, type='test', fout=fout)
-    else:
-        model.run_epoch(test, 0, type='test')
+    test_with_noise(test, model)
+    #rerun_on_train_test(model,train,test,args)
     show_sampled_images(model,ex_file)
 else:
     scheduler=get_scheduler(args,model)

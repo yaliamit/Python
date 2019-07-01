@@ -67,7 +67,8 @@ class STVAE(nn.Module):
                 px = self.gridGen.PX.squeeze(0).squeeze(0).squeeze(0).squeeze(0)
                 py = self.gridGen.PY.squeeze(0).squeeze(0).squeeze(0).squeeze(0)
                 self.idty = torch.cat((px,py))
-            self.id = self.idty.expand((self.bsz,) + self.idty.size()).to(self.dv)
+            self.setup_id(self.bsz)
+            #self.id = self.idty.expand((self.bsz,) + self.idty.size()).to(self.dv)
         else:
             self.u_dim=0
 
@@ -96,6 +97,13 @@ class STVAE(nn.Module):
                 {'params': self.fromNorm.parameters(), 'lr': 1e-5}
                 ],lr=args.lr)
         args.fout.write('s_dim,'+str(self.s_dim)+', u_dim,'+str(self.u_dim)+', z_dim,' + str(self.z_dim)+','+self.type+'\n')
+
+
+    def setup_id(self,size):
+        if ('tvae' in self.type):
+            self.id = self.idty.expand((size,) + self.idty.size()).to(self.dv)
+
+
 
     def initialize_mus(self,train,OPT=False):
         trMU=None
@@ -228,8 +236,7 @@ class STVAE(nn.Module):
 
         num_inp=input[0].shape[0]
         inp = torch.from_numpy(input[0].transpose(0, 3, 1, 2)).to(self.dv)
-        if ('tvae' in self.type):
-            self.id = self.idty.expand((num_inp,) + self.idty.size()).to(self.dv)
+        self.setup_id(num_inp)
         s_mu, s_var = self.forward_encoder(inp.view(-1, self.x_dim))
         recon_batch = self.decoder_and_trans(s_mu)
 
@@ -238,6 +245,7 @@ class STVAE(nn.Module):
 
     def sample_from_z_prior(self,theta=None):
         self.eval()
+        self.setup_id(self.bsz)
         s = torch.randn(self.bsz, self.s_dim).to(self.dv)
         if (theta is not None and self.u_dim>0):
             theta = theta.to(self.dv)
@@ -260,11 +268,11 @@ def show_sampled_images(model,ex_file):
             t+=1
         mat+=[np.concatenate(line,axis=0)]
     manifold = np.concatenate(mat, axis=1)
-
-
-    img = np.array([manifold, manifold, manifold]).transpose(1,2,0)
+    manifold = 1. - manifold[np.newaxis, :]
+    img = np.concatenate([manifold, manifold, manifold], axis=0).transpose(1,2,0)
     imsave('_Images/'+ex_file+'.png', img)
 
+    print("Saved the sampled images")
 
 def get_scheduler(args,model):
     scheduler=None

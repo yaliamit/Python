@@ -104,8 +104,7 @@ class STVAE_OPT(models.STVAE):
     def recon(self,input,num_mu_iter=10):
 
         num_inp=input[0].shape[0]
-        if ('tvae' in self.type):
-            self.id = self.idty.expand((num_inp,) + self.idty.size()).to(self.dv)
+        self.setup_id(num_inp)
         mu, logvar=self.initialize_mus(input,True)
         data=torch.tensor(input[0].transpose(0,3,1,2)).float().to(self.dv)
         self.update_s(mu, logvar)
@@ -114,9 +113,10 @@ class STVAE_OPT(models.STVAE):
             self.compute_loss_and_grad(data, type, self.optimizer_s, opt='mu')
         recon_batch, recon_loss, loss = self.compute_loss_and_grad(data, 'test', self.optimizer)
 
-        return recon_batch, recon_loss, loss
+        return recon_batch
 
     def sample_from_z_prior(self,theta=None):
+        self.setup_id(self.bsz)
         s = torch.randn(self.bsz, self.s_dim).to(self.dv)
         if self.MM:
             s=s*torch.exp(self.LOGVAR/2)+self.MU
