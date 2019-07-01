@@ -164,8 +164,6 @@ else:
         fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
         fout.flush()
 
-        sys.stdout.flush()
-
     if (args.MM):
         re_estimate()
 
@@ -181,5 +179,5 @@ else:
         fout.close()
 
     print("DONE")
-    sys.flush()
+    sys.stdout.flush()
 
