@@ -3,7 +3,7 @@ import torch.nn.functional as F
 from torch import nn, optim
 from tps import TPSGridGen
 import numpy as np
-from scipy.misc import imsave
+
 import pylab as py
 
 class toNorm(nn.Module):
@@ -249,24 +249,7 @@ class STVAE(nn.Module):
 
         return x
 
-def show_sampled_images(model,ex_file):
-    theta = torch.zeros(model.bsz, 6)
-    X=model.sample_from_z_prior(theta)
-    XX=X.cpu().detach().numpy()
-    mat = []
-    t=0
-    for i in range(10):
-        line = []
-        for j in range(10):
-            line += [XX[t].reshape((28,28))]
-            t+=1
-        mat+=[np.concatenate(line,axis=0)]
-    manifold = np.concatenate(mat, axis=1)
-    manifold = 1. - manifold[np.newaxis, :]
-    img = np.concatenate([manifold, manifold, manifold], axis=0).transpose(1,2,0)
-    imsave('_Images/'+ex_file+'.png', img)
 
-    print("Saved the sampled images")
 
 def get_scheduler(args,model):
     scheduler=None
