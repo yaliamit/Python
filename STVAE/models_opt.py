@@ -91,11 +91,11 @@ class STVAE_OPT(models.STVAE):
             tr_recon_loss += recon_loss
             tr_full_loss += loss
         if (fout is  None):
-            print('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}, KL loss: {:.4F}'.format(type,
-                    epoch, tr_recon_loss/len(tr), tr_full_loss/len(tr),-tr_recon_loss/len(tr)+tr_full_loss/len(tr)))
+            print('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}'.format(type,
+                    epoch, tr_recon_loss/len(tr), tr_full_loss/len(tr)))
         else:
-            fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F},KL loss: {:.4F}\n'.format(type,
-                    epoch, tr_recon_loss/len(tr), tr_full_loss/len(tr),-tr_recon_loss/len(tr)+tr_full_loss/len(tr)))
+            fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(type,
+                    epoch, tr_recon_loss/len(tr), tr_full_loss/len(tr)))
         return mu,logvar
 
 

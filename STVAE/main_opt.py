@@ -186,8 +186,8 @@ else:
 
     show_sampled_images(model, ex_file)
     trainMU, trainLOGVAR = model.initialize_mus(train,args.OPT)
-    model.run_epoch(train,  epoch, 500, trainMU, trainLOGVAR,type='trest',fout=fout)
-    model.run_epoch(test,epoch,500,testMU, testLOGVAR,type='test',fout=fout)
+    model.run_epoch(train,  epoch, args.nti, trainMU, trainLOGVAR,type='trest',fout=fout)
+    model.run_epoch(test,epoch,args.nti,testMU, testLOGVAR,type='test',fout=fout)
 
     fout.write('writing to '+ex_file+'\n')
     torch.save(model.state_dict(),'_output/'+ex_file+'.pt')
