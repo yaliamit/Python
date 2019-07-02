@@ -1,7 +1,6 @@
 import torch
 from models_opt import STVAE_OPT
 from models import STVAE
-import json
 import numpy as np
 import os
 import sys
@@ -21,12 +20,30 @@ def rerun_on_train_test(model,train,test,args):
     else:
         model.run_epoch(test, 0, type='test')
 
+def add_occlusion(recon_data):
+    recon_data[0][0:20,0:13,:,:]=0
+    return recon_data
+
+def add_clutter(recon_data):
+
+    block_size=3
+    num_clutter=2
+    dimx=recon_data[0].shape[1]
+    dimy=recon_data[0].shape[2]
+    for im in recon_data[0]:
+        for k in range(num_clutter):
+            x=np.int(np.random.rand()*(dimx-block_size))
+            y=np.int(np.random.rand()*(dimy-block_size))
+            im[x:x+block_size,y:y+block_size,0]=np.ones((block_size,block_size))
+
+    return recon_data
+
 def test_with_noise(test,model):
 
     ii=np.arange(0,test[0].shape[0],1)
     np.random.shuffle(ii)
     recon_data=[test[0][ii[0:20]].copy(),test[1][ii[0:20]].copy()]
-    recon_data[0][0:20,0:13,:,:]=0
+    recon_data=add_clutter(recon_data)
     recon_ims=model.recon(recon_data, num_mu_iter=args.nti)
     rec=recon_ims.detach().cpu()
     py.figure(figsize=(3, 20))

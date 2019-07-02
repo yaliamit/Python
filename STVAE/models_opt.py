@@ -80,8 +80,6 @@ class STVAE_OPT(models.STVAE):
             #target = torch.tensor(y[j:j + batch_size]).float()
 
             self.update_s(mu[j:j+batch_size, :], logvar[j:j+batch_size, :])
-            #self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=self.mu_lr)
-            # Get optimzla mu/logvar for current set of parameters
             for it in range(num_mu_iter):
                 self.compute_loss_and_grad(data, type,self.optimizer_s,opt='mu')
             mu[j:j + batch_size] = self.mu.data
@@ -108,7 +106,6 @@ class STVAE_OPT(models.STVAE):
         mu, logvar=self.initialize_mus(input,True)
         data=torch.tensor(input[0].transpose(0,3,1,2)).float().to(self.dv)
         self.update_s(mu, logvar)
-        #self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=self.mu_lr)
         for it in range(num_mu_iter):
             self.compute_loss_and_grad(data, type, self.optimizer_s, opt='mu')
         recon_batch, recon_loss, loss = self.compute_loss_and_grad(data, 'test', self.optimizer)
