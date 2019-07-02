@@ -6,9 +6,9 @@
 --nepoch=50
 --gpu=True
 --seed=435115
---num_train=10000
+--num_train=30000
 --mb_size=500
 --model=base
 --lr=.001
---nval=1000
+--nval=0
 --optimizer=Adadelta
