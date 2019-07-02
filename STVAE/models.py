@@ -68,7 +68,6 @@ class STVAE(nn.Module):
                 py = self.gridGen.PY.squeeze(0).squeeze(0).squeeze(0).squeeze(0)
                 self.idty = torch.cat((px,py))
             self.setup_id(self.bsz)
-            #self.id = self.idty.expand((self.bsz,) + self.idty.size()).to(self.dv)
         else:
             self.u_dim=0
 
