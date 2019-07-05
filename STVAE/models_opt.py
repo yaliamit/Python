@@ -26,12 +26,14 @@ class STVAE_OPT(models.STVAE):
 
     def forw(self, mub,logvarb):
 
+        ss2=None
         if (self.type is not 'ae' and not self.MM):
             s = self.sample(mub, logvarb, self.s_dim)
         else:
             s=mub
         x=self.decoder_and_trans(s)
-        return x
+        ss2=torch.sum((s*s)/2)
+        return x, ss2
 
 
 
@@ -40,16 +42,16 @@ class STVAE_OPT(models.STVAE):
         if self.MM:
             KLD1 = 0.5*torch.sum((mu-self.MU)*(mu-self.MU)/torch.exp(self.LOGVAR)+self.LOGVAR)
         else:
-            KLD1 = -0.5 * torch.sum(1 + logvar - mu ** 2 - torch.exp(logvar))  # z
+            KLD1 = -0.5 * torch.sum(1 + logvar) # - mu ** 2 - torch.exp(logvar))  # z
         return BCE, KLD1
 
     def compute_loss_and_grad(self,data, type, optim,opt='par'):
 
         if (type == 'train' or opt=='mu'):
             optim.zero_grad()
-        recon_batch = self.forw(self.mu, self.logvar)
+        recon_batch, ss2 = self.forw(self.mu, self.logvar)
         recon_loss, kl = self.loss_V(recon_batch, data, self.mu, self.logvar)
-        loss = recon_loss + kl
+        loss = recon_loss + kl +ss2
         if (type == 'train' or opt=='mu'):
             loss.backward()
             optim.step()

@@ -30,6 +30,7 @@ use_gpu = args.gpu and torch.cuda.is_available()
 if (use_gpu and not args.CONS):
     fout=open('_OUTPUTS/OUT_'+ex_file+'.txt','w')
 else:
+    args.CONS=True
     fout=sys.stdout
 
 fout.write(str(args)+'\n')
