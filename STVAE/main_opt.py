@@ -1,5 +1,6 @@
 import torch
 from models_opt import STVAE_OPT
+from models_mix import STVAE_mix
 from models import STVAE
 import numpy as np
 import os
@@ -22,6 +23,8 @@ args=process_args(parser)
 opt_pre=''; mm_pre=''; opt_post=''
 if (args.OPT):
     opt_pre='OPT_';opt_post='_OPT';
+if (args.n_mix>1):
+    opt_post='_mix'
 if (args.MM):
     mm_pre='_MM'
 ex_file=opt_pre+args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_sd_'+str(args.sdim)+'_'+args.optimizer+mm_pre

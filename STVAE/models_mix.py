@@ -3,19 +3,35 @@ import torch.nn.functional as F
 from torch import nn, optim
 from tps import TPSGridGen
 import numpy as np
+import models
 
-import pylab as py
 
-class toNorm(nn.Module):
-    def __init__(self,h_dim,s_dim):
-        super(toNorm,self).__init__()
-        self.h2smu = nn.Linear(h_dim, s_dim)
-        self.h2svar = nn.Linear(h_dim, s_dim)
+class toNorm_mix(nn.Module):
+    def __init__(self,h_dim,s_dim, n_mix):
+        super(toNorm_mix,self).__init__()
+        self.h2smu = nn.Linear(h_dim, s_dim*n_mix)
+        self.h2svar = nn.Linear(h_dim, s_dim*n_mix)
+        self.h2pi = nn.Linear(h_dim,n_mix)
 
-class fromNorm(nn.Module):
-    def __init__(self,h_dim,z_dim):
-        super(fromNorm,self).__init__()
-        self.z2h = nn.Linear(z_dim, h_dim)
+class fromNorm_mix(nn.Module):
+    def __init__(self,h_dim,z_dim, n_mix):
+        super(fromNorm_mix,self).__init__()
+        self.z2h=[]
+        self.n_mix=n_mix
+        self.z_dim=z_dim
+        for i in range(n_mix):
+            self.z2h=self.z2h+[nn.Linear(z_dim, h_dim)]
+
+    def forward(self,input):
+        hh=[]
+        z=input.view(-1,self.n_mix,self.z_dim)
+        for i in range(self.n_mix):
+            zi=z[:,i,:].squeeze()
+            hh=hh+[self.z2h[i](zi)]
+        h=torch.stack(hh)
+        return h
+
+
 
 class encoder(nn.Module):
     def __init__(self,x_dim,h_dim,num_layers):
@@ -24,9 +40,11 @@ class encoder(nn.Module):
             self.h2he = nn.Linear(h_dim, h_dim)
         self.x2h = nn.Linear(x_dim, h_dim)
 
-class decoder(nn.Module):
-    def __init__(self,x_dim,h_dim,s_dim,u_dim,num_layers,type):
-        super(decoder,self).__init__()
+class decoder_mix(nn.Module):
+    def __init__(self,x_dim,h_dim,s_dim,u_dim,n_mix,num_layers,type):
+        super(decoder_mix,self).__init__()
+        self.n_mix=n_mix
+        self.num_layers=num_layers
         if (num_layers==1):
             self.h2hd = nn.Linear(h_dim, h_dim)
         self.h2x = nn.Linear(h_dim, x_dim)
@@ -35,17 +53,29 @@ class decoder(nn.Module):
         elif (type == 'stvae'):
             self.s2s = nn.Linear(s_dim, s_dim)
 
+    def forward(self,input):
+            h=input
+            if (self.num_layers==1):
+                for i in range(self.n_mix):
+                    h[i]=self.h2hd(h[i])
+            xx=[]
+            for i in range(self.n_mix):
+                xx=xx+[self.h2x(h[i])]
+            x=torch.stack(xx)
+            return(x)
 
-class STVAE(nn.Module):
+
+class STVAE_mix(models.STVAE):
 
     def __init__(self, x_h, x_w, device, args):
-        super(STVAE, self).__init__()
+        super(STVAE_mix, self).__init__(x_h,x_w,device, args)
 
         self.x_dim = x_h * x_w # height * width
         self.h = x_h
         self.w = x_w
         self.h_dim = args.hdim # hidden layer
         self.s_dim = args.sdim # generic latent variable
+        self.n_mix = args.n_mix
         self.bsz = args.mb_size
         self.num_hlayers=args.num_hlayers
         self.dv=device
@@ -78,11 +108,11 @@ class STVAE(nn.Module):
         self.s2s=None
         self.u2u=None
         if not args.OPT:
-            self.toNorm=toNorm(self.h_dim,self.s_dim)
-        self.fromNorm =fromNorm(self.h_dim, self.z_dim)
+            self.toNorm_mix=toNorm_mix(self.h_dim,self.s_dim, self.n_mix)
+        self.fromNorm_mix =fromNorm_mix(self.h_dim, self.z_dim,self.n_mix)
         if not args.OPT:
             self.encoder=encoder(self.x_dim,self.h_dim,self.num_hlayers)
-        self.decoder=decoder(self.x_dim,self.h_dim,self.s_dim,self.u_dim,self.num_hlayers,self.type)
+        self.decoder_mix=decoder_mix(self.x_dim,self.h_dim,self.s_dim,self.u_dim,self.n_mix,self.num_hlayers,self.type)
 
         if (args.optimizer=='Adam'):
             self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
@@ -120,20 +150,20 @@ class STVAE(nn.Module):
         h=F.relu(self.encoder.x2h(inputs))
         if (self.num_hlayers==1):
             h=F.relu(self.encoder.h2he(h))
-        s_mu=self.toNorm.h2smu(h)
-        s_var=F.threshold(self.toNorm.h2svar(h),-6,-6)
-        return s_mu, s_var
+        s_mu=self.toNorm_mix.h2smu(h)
+        s_var=F.threshold(self.toNorm_mix.h2svar(h),-6,-6)
+        pi = torch.softmax(self.toNorm_mix.h2pi(h),dim=1)
+        return s_mu, s_var, pi
 
 
-    def forward_decoder(self, z):
-        h=F.relu(self.fromNorm.z2h(z))
-        if (self.num_hlayers==1):
-            h=F.relu(self.decoder.h2hd(h))
-        x=torch.sigmoid(self.decoder.h2x(h))
+    def forward_decoder(self, z, pi):
+        h=F.relu(self.fromNorm_mix.forward(z))
+        xx=torch.sigmoid(self.decoder_mix.forward(h))
+        x=torch.bmm(pi[:,None,:],xx.transpose(0,1)).squeeze()
         x = torch.clamp(x, 1e-6, 1 - 1e-6)
         return x
 
-    def decoder_and_trans(self,s):
+    def decoder_and_trans(self,s, pi):
 
         if (self.type=='tvae'): # Apply map separately to each component - transformation and z.
             u = s.narrow(1,0,self.u_dim)
@@ -142,14 +172,13 @@ class STVAE(nn.Module):
         else:
             if (self.type == 'stvae'):
                 s = self.decoder.s2s(s)
-            z = s.narrow(1, self.u_dim, self.z_dim)
-            u = s.narrow(1, 0, self.u_dim)
+            z = s.narrow(1, self.u_dim*self.n_mix, self.z_dim*self.n_mix)
+            u = s.narrow(1, 0, self.u_dim*self.n_mix)
         # Create image
-        x = self.forward_decoder(z)
+        x = self.forward_decoder(z,pi)
         # Transform
         if (self.u_dim>0):
             x=self.apply_trans(x,u)
-        x = x.clamp(1e-6, 1 - 1e-6)
         return x
 
     def apply_trans(self,x,u):
@@ -171,19 +200,22 @@ class STVAE(nn.Module):
         #eps = torch.randn(self.bsz, dim).to(self.dv)
         return mu + torch.exp(logvar/2) * eps
 
+    def dens_apply(self,s,s_mu,s_logvar,pi):
+        sd=torch.exp(s_logvar/2)
+        var=sd*sd
+        f=torch.exp(-.5*(s-s_mu)*(s-s_mu)/var)/sd
 
     def forward(self, inputs):
-        s_mu, s_logvar = self.forward_encoder(inputs.view(-1, self.x_dim))
+        s_mu, s_logvar, pi = self.forward_encoder(inputs.view(-1, self.x_dim))
         if (self.type is not 'ae'):
-            s = self.sample(s_mu, s_logvar, self.s_dim)
+            s = self.sample(s_mu, s_logvar, self.s_dim*self.n_mix)
         else:
             s=s_mu
         # Apply linear map to entire sampled vector.
-        x=self.decoder_and_trans(s)
-        ss_prior = torch.sum((s * s) / 2)
-        sd=torch.exp(s_logvar*.5)
-        ss_posterior = -torch.sum(.5*((s-s_mu)*(s-s_mu)/(sd*sd) + s_logvar))
-        return x, s_mu, s_logvar, ss_prior, ss_posterior
+
+        x=self.decoder_and_trans(s,pi)
+        self.dens_apply(s,s_mu,s_logvar,pi)
+        return x, s_mu, s_logvar, pi
 
     def loss_V(self, recon_x, x, mu, logvar):
         BCE = F.binary_cross_entropy(recon_x.squeeze().view(-1, self.x_dim), x.view(-1, self.x_dim), reduction='sum')
@@ -195,9 +227,9 @@ class STVAE(nn.Module):
         if (type == 'train'):
             self.optimizer.zero_grad()
 
-        recon_batch, smu, slogvar, ss_prior, ss_posterior = self(data)
+        recon_batch, smu, slogvar = self(data)
         recon_loss, kl = self.loss_V(recon_batch, data, smu, slogvar)
-        loss = recon_loss + ss_prior + ss_posterior
+        loss = recon_loss + kl
 
         if (type == 'train'):
             loss.backward()

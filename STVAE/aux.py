@@ -2,7 +2,7 @@ import numpy as np
 import pylab as py
 import torch
 from scipy.misc import imsave
-
+import os
 
 def process_args(parser):
     parser.add_argument('--transformation', default='aff', help='type of transformation: aff or tps')
@@ -26,6 +26,7 @@ def process_args(parser):
     parser.add_argument('--run_existing', action='store_true', help='Use existing model')
     parser.add_argument('--nti', type=int, default=500, help='num test iterations (default: 100)')
     parser.add_argument('--nvi', type=int, default=20, help='num val iterations (default: 20)')
+    parser.add_argument('--n_mix', type=int, default=1, help='num mixtures (default: 1)')
     parser.add_argument('--MM', action='store_true', help='Use max max')
     parser.add_argument('--OPT', action='store_true', help='Optimization instead of encoding')
     parser.add_argument('--CONS', action='store_true', help='Output to consol')
@@ -49,6 +50,9 @@ def show_sampled_images(model,ex_file):
     manifold = np.concatenate(mat, axis=1)
     manifold = 1. - manifold[np.newaxis, :]
     img = np.concatenate([manifold, manifold, manifold], axis=0).transpose(1,2,0)
+
+    if not os.path.isfile('_Images'):
+        os.system('mkdir _Images')
     imsave('_Images/'+ex_file+'.png', img)
 
     print("Saved the sampled images")
