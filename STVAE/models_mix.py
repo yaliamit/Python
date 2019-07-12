@@ -22,7 +22,7 @@ class toNorm_mix(nn.Module):
 
 # Each set of s_dim normals gets multiplied by its own matrix to correlate
 class fromNorm_mix(nn.Module):
-    def __init__(self,h_dim,z_dim, u_dim, n_mix, type):
+    def __init__(self,h_dim,z_dim, u_dim, n_mix, type, dv):
         super(fromNorm_mix,self).__init__()
         self.z2h=[]
         self.n_mix=n_mix
@@ -30,10 +30,12 @@ class fromNorm_mix(nn.Module):
         self.h_dim=h_dim
         self.u_dim=u_dim
         self.type=type
+        self.dv=dv
         self.z2h=nn.ModuleList([nn.Linear(z_dim, h_dim) for i in range(n_mix)])
         self.z2z=nn.ModuleList([nn.Linear(z_dim, z_dim) for i in range(n_mix)])
         if (type == 'tvae'):
             self.u2u = nn.ModuleList([nn.Linear(u_dim, u_dim) for i in range(n_mix)])
+
     def forward(self,z,u):
 
         #z=z.view(-1,self.n_mix,self.z_dim)
@@ -42,7 +44,7 @@ class fromNorm_mix(nn.Module):
         h=torch.zeros(z.shape[0],self.n_mix,self.h_dim)
 
         for i in range(self.n_mix):
-            h[:,i,:]=self.z2h[i](self.z2z[i](z[:,i,:]))
+            h[:,i,:]=self.z2h[i](self.z2z[i](z[:,i,:])).to(self.dv)
             if (self.type=='tvae'):
                 v=torch.zeros_like(u)
                 v[:,i,:]=self.u2u[i](u[:,i,:])
@@ -86,7 +88,7 @@ class STVAE_mix(models.STVAE):
 
         self.n_mix = args.n_mix
         self.toNorm_mix=toNorm_mix(self.h_dim, self.s_dim, self.n_mix)
-        self.fromNorm_mix=fromNorm_mix(self.h_dim, self.z_dim,self.u_dim,self.n_mix, self.type)
+        self.fromNorm_mix=fromNorm_mix(self.h_dim, self.z_dim,self.u_dim,self.n_mix, self.type, self.dv)
         self.encoder_mix = encoder_mix(self.x_dim, self.h_dim, self.num_hlayers)
         self.decoder_mix=decoder_mix(self.x_dim,self.h_dim,self.n_mix,self.num_hlayers,self.dv)
 
