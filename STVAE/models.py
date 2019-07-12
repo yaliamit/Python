@@ -108,14 +108,15 @@ class STVAE(nn.Module):
     def initialize_mus(self,train,OPT=False):
         trMU=None
         trLOGVAR=None
+        trPI=None
         if (OPT and train[0] is not None):
             if (not self.MM):
                 trMU = torch.zeros(train[0].shape[0], self.s_dim).to(self.dv)
             else:
                 trMU = self.MU.repeat(train[0].shape[0], 1)
             trLOGVAR = torch.zeros(train[0].shape[0], self.s_dim).to(self.dv)
-
-        return trMU, trLOGVAR
+            trPI=torch.zeros(train[0].shape[0], self.n_mix).to(self.dv)
+        return trMU, trLOGVAR, trPI
 
     def forward_encoder(self, inputs):
         h=F.relu(self.encoder.x2h(inputs))

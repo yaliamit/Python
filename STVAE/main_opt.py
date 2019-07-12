@@ -2,6 +2,7 @@ import torch
 from models_opt import STVAE_OPT
 from models_mix import STVAE_mix
 from models import STVAE
+from models_opt_mix import STVAE_OPT_mix
 import numpy as np
 import os
 import sys
@@ -20,11 +21,11 @@ parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
 args=aux.process_args(parser)
 
 
-opt_pre=''; mm_pre=''; opt_post=''
+opt_pre=''; mm_pre=''; opt_post=''; opt_mix=''
 if (args.OPT):
     opt_pre='OPT_';opt_post='_OPT';
 if (args.n_mix>=1):
-    opt_post='_mix'
+    opt_mix='_mix'
 if (args.MM):
     mm_pre='_MM'
 ex_file=opt_pre+args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_mx_'+str(args.n_mix)+'_sd_'+str(args.sdim)+'_'+args.optimizer+mm_pre
@@ -62,7 +63,7 @@ train, val, test, image_dim = get_data(PARS)
 
 h=train[0].shape[1]
 w=train[0].shape[2]
-model=locals()['STVAE'+opt_post](h, w,  device, args).to(device)
+model=locals()['STVAE'+opt_post+opt_mix](h, w,  device, args).to(device)
 tot_pars=0
 for keys, vals in model.state_dict().items():
     fout.write(keys+','+str(np.array(vals.shape))+'\n')
@@ -70,9 +71,9 @@ for keys, vals in model.state_dict().items():
 fout.write('tot_pars,'+str(tot_pars)+'\n')
 
 
-trainMU, trainLOGVAR=model.initialize_mus(train,args.OPT)
-valMU, valLOGVAR=model.initialize_mus(val,args.OPT)
-testMU, testLOGVAR=model.initialize_mus(test,args.OPT)
+trainMU, trainLOGVAR, trPI=model.initialize_mus(train,args.OPT)
+valMU, valLOGVAR, valPI=model.initialize_mus(val,args.OPT)
+testMU, testLOGVAR, testPI=model.initialize_mus(test,args.OPT)
 
 if (args.run_existing):
     model.load_state_dict(torch.load('_output/'+ex_file+'.pt',map_location=device))
@@ -88,9 +89,9 @@ else:
         if (scheduler is not None):
             scheduler.step()
         t1=time.time()
-        trainMU, trainLOGVAR= model.run_epoch(train,epoch,args.num_mu_iter,trainMU,trainLOGVAR,type='train',fout=fout)
+        trainMU, trainLOGVAR, trPI= model.run_epoch(train,epoch,args.num_mu_iter,trainMU,trainLOGVAR,trPI, type='train',fout=fout)
         if (val[0] is not None):
-                model.run_epoch(val,epoch,args.nvi,valMU,valLOGVAR,type='val',fout=fout)
+                model.run_epoch(val,epoch,args.nvi,valMU,valLOGVAR,valPI, type='val',fout=fout)
 
         fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
         fout.flush()
