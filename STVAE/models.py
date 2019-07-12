@@ -77,24 +77,25 @@ class STVAE(nn.Module):
 
         self.s2s=None
         self.u2u=None
-        if not args.OPT:
+        if not args.OPT and args.n_mix==0:
             self.toNorm=toNorm(self.h_dim,self.s_dim)
-        self.fromNorm =fromNorm(self.h_dim, self.z_dim)
-        if not args.OPT:
+        if (args.n_mix==0):
+            self.fromNorm =fromNorm(self.h_dim, self.z_dim)
+        if not args.OPT and args.n_mix==0:
             self.encoder=encoder(self.x_dim,self.h_dim,self.num_hlayers)
-        self.decoder=decoder(self.x_dim,self.h_dim,self.s_dim,self.u_dim,self.num_hlayers,self.type)
-
-        if (args.optimizer=='Adam'):
-            self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
-        elif (args.optimizer=='Adadelta'):
-            self.optimizer = optim.Adadelta(self.parameters())
-        else:
-            self.optimizer = optim.SGD([
-                {'params':self.encoder.parameters()},
-                {'params': self.decoder.parameters()},
-                {'params':self.toNorm.parameters(),'lr':1e-5},
-                {'params': self.fromNorm.parameters(), 'lr': 1e-5}
-                ],lr=args.lr)
+        if args.n_mix==0:
+            self.decoder=decoder(self.x_dim,self.h_dim,self.s_dim,self.u_dim,self.num_hlayers,self.type)
+            if (args.optimizer=='Adam'):
+                self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
+            elif (args.optimizer=='Adadelta'):
+                self.optimizer = optim.Adadelta(self.parameters())
+            else:
+                self.optimizer = optim.SGD([
+                    {'params':self.encoder.parameters()},
+                    {'params': self.decoder.parameters()},
+                    {'params':self.toNorm.parameters(),'lr':1e-5},
+                    {'params': self.fromNorm.parameters(), 'lr': 1e-5}
+                    ],lr=args.lr)
         args.fout.write('s_dim,'+str(self.s_dim)+', u_dim,'+str(self.u_dim)+', z_dim,' + str(self.z_dim)+','+self.type+'\n')
 
 
@@ -197,7 +198,7 @@ class STVAE(nn.Module):
 
         recon_batch, smu, slogvar, ss_prior, ss_posterior = self(data)
         recon_loss, kl = self.loss_V(recon_batch, data, smu, slogvar)
-        loss = recon_loss + kl #ss_prior + ss_posterior
+        loss = recon_loss+ ss_prior + ss_posterior
 
         if (type == 'train'):
             loss.backward()
@@ -231,7 +232,7 @@ class STVAE(nn.Module):
     def recon(self,input,num_mu_iter=None):
 
         num_inp=input[0].shape[0]
-        inp = torch.from_numpy(input[0].transpose(0, 3, 1, 2)).to(self.dv)
+        inp = input.to(self.dv)
         self.setup_id(num_inp)
         s_mu, s_var = self.forward_encoder(inp.view(-1, self.x_dim))
         recon_batch = self.decoder_and_trans(s_mu)

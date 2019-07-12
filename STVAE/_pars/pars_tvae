@@ -5,10 +5,10 @@
 --num_hlayers=1
 --nepoch=50
 --gpu=True
---seed=435115
+--seed=4351
 --num_train=60000
 --mb_size=500
 --model=base
 --lr=.001
 --nval=0
---optimizer=Adadelta
+--optimizer=Adam

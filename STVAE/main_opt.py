@@ -9,7 +9,7 @@ import argparse
 import time
 from Conv_data import get_data
 from models import  get_scheduler
-from aux import process_args, re_estimate, rerun_on_train_test, add_clutter, add_occlusion, test_with_noise, show_sampled_images
+import aux
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
@@ -17,17 +17,17 @@ parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
     description='Variational Autoencoder with Spatial Transformation'
 )
 
-args=process_args(parser)
+args=aux.process_args(parser)
 
 
 opt_pre=''; mm_pre=''; opt_post=''
 if (args.OPT):
     opt_pre='OPT_';opt_post='_OPT';
-if (args.n_mix>1):
+if (args.n_mix>=1):
     opt_post='_mix'
 if (args.MM):
     mm_pre='_MM'
-ex_file=opt_pre+args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_sd_'+str(args.sdim)+'_'+args.optimizer+mm_pre
+ex_file=opt_pre+args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_mx_'+str(args.n_mix)+'_sd_'+str(args.sdim)+'_'+args.optimizer+mm_pre
 
 use_gpu = args.gpu and torch.cuda.is_available()
 if (use_gpu and not args.CONS):
@@ -77,9 +77,10 @@ testMU, testLOGVAR=model.initialize_mus(test,args.OPT)
 if (args.run_existing):
     model.load_state_dict(torch.load('_output/'+ex_file+'.pt',map_location=device))
     #model.eval()
-    test_with_noise(test, model)
+    #aux.test_with_noise(test, model)
     #rerun_on_train_test(model,train,test,args)
-    show_sampled_images(model,ex_file)
+    aux.show_reconstructed_images(test,model,ex_file)
+    aux.show_sampled_images(model,ex_file)
 else:
     scheduler=get_scheduler(args,model)
 
@@ -95,9 +96,9 @@ else:
         fout.flush()
 
     if (args.MM):
-        re_estimate()
-
-    show_sampled_images(model, ex_file)
+        aux.re_estimate()
+    aux.show_reconstructed_images(test,model,ex_file)
+    aux.show_sampled_images(model, ex_file)
     #trainMU, trainLOGVAR = model.initialize_mus(train,args.OPT)
     #model.run_epoch(train,  epoch, args.nti, trainMU, trainLOGVAR,type='trest',fout=fout)
     model.run_epoch(test,epoch,args.nti,testMU, testLOGVAR,type='test',fout=fout)

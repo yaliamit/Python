@@ -26,7 +26,7 @@ def process_args(parser):
     parser.add_argument('--run_existing', action='store_true', help='Use existing model')
     parser.add_argument('--nti', type=int, default=500, help='num test iterations (default: 100)')
     parser.add_argument('--nvi', type=int, default=20, help='num val iterations (default: 20)')
-    parser.add_argument('--n_mix', type=int, default=1, help='num mixtures (default: 1)')
+    parser.add_argument('--n_mix', type=int, default=0, help='num mixtures (default: 0)')
     parser.add_argument('--MM', action='store_true', help='Use max max')
     parser.add_argument('--OPT', action='store_true', help='Optimization instead of encoding')
     parser.add_argument('--CONS', action='store_true', help='Output to consol')
@@ -35,12 +35,9 @@ def process_args(parser):
 
     return (args)
 
-def show_sampled_images(model,ex_file):
-    theta = torch.zeros(model.bsz, 6)
-    X=model.sample_from_z_prior(theta)
-    XX=X.cpu().detach().numpy()
+def create_image(XX, ex_file):
     mat = []
-    t=0
+    t = 0
     for i in range(10):
         line = []
         for j in range(10):
@@ -56,6 +53,21 @@ def show_sampled_images(model,ex_file):
     imsave('_Images/'+ex_file+'.png', img)
 
     print("Saved the sampled images")
+
+def show_sampled_images(model,ex_file):
+    model.bsz=100
+    theta = torch.zeros(model.bsz, 6)
+    X=model.sample_from_z_prior(theta)
+    XX=X.cpu().detach().numpy()
+    create_image(XX, ex_file)
+
+def show_reconstructed_images(test,model,ex_file):
+
+    inp = torch.from_numpy(test[0][0:50].transpose(0, 3, 1, 2))
+    X=model.recon(inp)
+    X = X.cpu().detach().numpy().reshape(inp.shape)
+    XX=np.concatenate([inp,X])
+    create_image(XX,ex_file+'_recon')
 
 def rerun_on_train_test(model,train,test,args):
     trainMU, trainLOGVAR = model.initialize_mus(train, args.OPT)
