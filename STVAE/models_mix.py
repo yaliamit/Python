@@ -41,17 +41,18 @@ class fromNorm_mix(nn.Module):
         #z=z.view(-1,self.n_mix,self.z_dim)
         #if (self.type=='tvae'):
         #   u=u.view(-1,self.n_mix,self.u_dim)
-        h=torch.zeros(z.shape[0],self.n_mix,self.h_dim).to(self.dv)
-
+        #h=torch.zeros(z.shape[0],self.n_mix,self.h_dim).to(self.dv)
+        h=[]
         for i in range(self.n_mix):
-            h[:,i,:]=self.z2h[i](self.z2z[i](z[:,i,:]))
+            h=h+[self.z2h[i](self.z2z[i](z[:,i,:]))]
             if (self.type=='tvae'):
                 v=torch.zeros_like(u)
                 v[:,i,:]=self.u2u[i](u[:,i,:])
             else:
                 v=u
-        h=F.relu(h)
-        return h, v
+        hh=torch.stack(h,dim=0).transpose(0,1)
+        hh=F.relu(hh)
+        return hh, v
 
 
 
