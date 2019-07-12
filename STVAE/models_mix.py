@@ -165,6 +165,7 @@ class STVAE_mix(models.STVAE):
     def forward(self, inputs):
         prior=0; post=0;
         s_mu, s_logvar, pi = self.forward_encoder(inputs.view(-1, self.x_dim))
+        print(s_mu.is_cuda,s_logvar.is_cuda,pi.is_cuda)
         if (self.type is not 'ae'):
             s = self.sample(s_mu, s_logvar, self.s_dim*self.n_mix)
         else:
