@@ -230,6 +230,7 @@ class STVAE_mix(models.STVAE):
         pia = ee[ii]
         pia=pia[:,None,:]
         s_mu = s_mu.view(-1, self.n_mix, self.s_dim)
+        print(s_mu.is_cuda, pia.is_cuda)
         recon_batch = self.decoder_and_trans(s_mu, pia)
 
         return recon_batch
