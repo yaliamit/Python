@@ -165,7 +165,7 @@ class STVAE_mix(models.STVAE):
     def forward(self, inputs):
         prior=0; post=0;
         s_mu, s_logvar, pi = self.forward_encoder(inputs.view(-1, self.x_dim))
-        print(s_mu.is_cuda,s_logvar.is_cuda,pi.is_cuda)
+
         if (self.type is not 'ae'):
             s = self.sample(s_mu, s_logvar, self.s_dim*self.n_mix)
         else:
@@ -173,6 +173,8 @@ class STVAE_mix(models.STVAE):
         s=s.view(-1,self.n_mix,self.s_dim)
         pit = pi.reshape(pi.shape[0], 1, pi.shape[1])
         # Apply linear map to entire sampled vector.
+        print(s.is_cuda, pit.is_cuda)
+
         x=self.decoder_and_trans(s,pit)
         prior, post = self.dens_apply(s,s_mu,s_logvar,pit)
         return x, prior, post
