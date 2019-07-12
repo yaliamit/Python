@@ -56,11 +56,12 @@ class fromNorm_mix(nn.Module):
 
 # Each correlated normal coming out of fromNorm_mix goes through same network to produce an image these get mixed.
 class decoder_mix(nn.Module):
-    def __init__(self,x_dim,h_dim,n_mix,num_layers):
+    def __init__(self,x_dim,h_dim,n_mix,num_layers,dv):
         super(decoder_mix,self).__init__()
         self.n_mix=n_mix
         self.x_dim=x_dim
         self.num_layers=num_layers
+        self.dv=dv
         if (num_layers==1):
             self.h2hd = nn.Linear(h_dim, h_dim)
         self.h2x = nn.Linear(h_dim, x_dim)
@@ -70,7 +71,7 @@ class decoder_mix(nn.Module):
             if (self.num_layers==1):
                 for i in range(self.n_mix):
                     h[:,i,:]=self.h2hd(h[:,i,:])
-            x=torch.zeros(h.shape[0],self.n_mix,self.x_dim)
+            x=torch.zeros(h.shape[0],self.n_mix,self.x_dim).to(self.dv)
             for i in range(self.n_mix):
                 x[:,i,:]=self.h2x(h[:,i,:])
             x=torch.sigmoid(x)
@@ -87,7 +88,7 @@ class STVAE_mix(models.STVAE):
         self.toNorm_mix=toNorm_mix(self.h_dim, self.s_dim, self.n_mix)
         self.fromNorm_mix=fromNorm_mix(self.h_dim, self.z_dim,self.u_dim,self.n_mix, self.type)
         self.encoder_mix = encoder_mix(self.x_dim, self.h_dim, self.num_hlayers)
-        self.decoder_mix=decoder_mix(self.x_dim,self.h_dim,self.n_mix,self.num_hlayers)
+        self.decoder_mix=decoder_mix(self.x_dim,self.h_dim,self.n_mix,self.num_hlayers,self.dv)
 
         self.rho = nn.Parameter(torch.zeros(self.n_mix))
 
