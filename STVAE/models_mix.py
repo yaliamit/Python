@@ -226,7 +226,7 @@ class STVAE_mix(models.STVAE):
         inp = input.to(self.dv)
         s_mu, s_var, pi = self.forward_encoder(inp.view(-1, self.x_dim))
         ii = torch.argmax(pi, dim=1)
-        ee = torch.eye(self.n_mix)
+        ee = torch.eye(self.n_mix).to(self.dv)
         pia = ee[ii]
         pia=pia[:,None,:]
         s_mu = s_mu.view(-1, self.n_mix, self.s_dim)
@@ -238,7 +238,7 @@ class STVAE_mix(models.STVAE):
     def sample_from_z_prior(self,theta=None):
         self.eval()
         self.setup_id(self.bsz)
-        ee=torch.eye(self.n_mix)
+        ee=torch.eye(self.n_mix).to(self.dv)
         rho_dist=torch.exp(self.rho-torch.logsumexp(self.rho,dim=0))
         kk=torch.multinomial(rho_dist,self.bsz,replacement=True)
         pi=ee[kk]
