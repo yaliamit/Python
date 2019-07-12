@@ -116,6 +116,7 @@ class STVAE_mix(models.STVAE):
         z = s.narrow(len(s.shape)-1,self.u_dim,self.z_dim)
         # Create image
         h,u = self.fromNorm_mix.forward(z,u)
+        print(h.is_cuda, u.is_cuda)
         x = self.decoder_mix.forward(h)
         # Transform
 
@@ -173,7 +174,7 @@ class STVAE_mix(models.STVAE):
         s=s.view(-1,self.n_mix,self.s_dim)
         pit = pi.reshape(pi.shape[0], 1, pi.shape[1])
         # Apply linear map to entire sampled vector.
-        print(s.is_cuda, pit.is_cuda)
+
 
         x=self.decoder_and_trans(s,pit)
         prior, post = self.dens_apply(s,s_mu,s_logvar,pit)
