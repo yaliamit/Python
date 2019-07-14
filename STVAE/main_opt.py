@@ -80,7 +80,7 @@ if (args.run_existing):
     #model.eval()
     #aux.test_with_noise(test, model)
     #rerun_on_train_test(model,train,test,args)
-    aux.show_reconstructed_images(test,model,ex_file)
+    aux.show_reconstructed_images(test,model,ex_file,args.nti)
     aux.show_sampled_images(model,ex_file)
 else:
     scheduler=get_scheduler(args,model)
