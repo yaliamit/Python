@@ -122,7 +122,7 @@ class STVAE(nn.Module):
             ee = torch.eye(self.n_mix).to(self.dv)
             eps=.1
             ee = ee+eps
-            ee = ee/torch.sum(ee,dim=1)
+            ee = torch.log(ee/torch.sum(ee,dim=1))
             rho_dist=torch.ones(self.n_mix)/self.n_mix
             kk = torch.multinomial(rho_dist, train.shape[0], replacement=True)
             trPI = ee[kk]
