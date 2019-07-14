@@ -103,10 +103,10 @@ class STVAE_OPT(models.STVAE):
 
     def recon(self,input,num_mu_iter=10):
 
-        num_inp=input[0].shape[0]
+        num_inp=input.shape[0]
         self.setup_id(num_inp)
         mu, logvar, _ =self.initialize_mus(input,True)
-        data=torch.tensor(input[0].transpose(0,3,1,2)).float().to(self.dv)
+        data=torch.tensor(input.transpose(0,3,1,2)).float().to(self.dv)
         self.update_s(mu, logvar)
         for it in range(num_mu_iter):
             self.compute_loss_and_grad(data, type, self.optimizer_s, opt='mu')
