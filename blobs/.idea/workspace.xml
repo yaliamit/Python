@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b0a43a12-b84a-4e4c-a6df-2c878dbf68c8" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/../Opt_VAE/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Opt_VAE/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Opt_VAE/opt_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Opt_VAE/opt_model.py" afterDir="false" />
-    </list>
+    <list default="true" id="b0a43a12-b84a-4e4c-a6df-2c878dbf68c8" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,8 +49,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/network.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="48" column="8" selection-start-line="48" selection-start-column="8" selection-end-line="48" selection-end-column="8" />
+            <state relative-caret-position="540">
+              <caret line="116" column="22" selection-start-line="116" selection-start-column="22" selection-end-line="116" selection-end-column="22" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -160,7 +157,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="26" />
     <option name="y" value="58" />
     <option name="width" value="1280" />
@@ -172,7 +169,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -185,16 +181,11 @@
               <item name="blobs" type="47feb1d3:ProjectViewModuleNode" />
               <item name="blobs" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="blobs" type="b2602c69:ProjectViewProjectNode" />
-              <item name="blobs" type="47feb1d3:ProjectViewModuleNode" />
-              <item name="blobs" type="462c0819:PsiDirectoryNode" />
-              <item name="_pars" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -463,17 +454,18 @@
       <workItem from="1561660906737" duration="128000" />
       <workItem from="1561671031529" duration="1849000" />
       <workItem from="1561734170798" duration="597000" />
+      <workItem from="1563121376841" duration="282000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="125389000" />
+    <option name="totallyTimeSpent" value="125671000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="26" y="58" width="1280" height="727" extended-state="0" />
+    <frame x="0" y="23" width="1280" height="727" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" order="0" visible="true" weight="0.18174475" />
+      <window_info active="true" id="Project" order="0" visible="true" weight="0.18416801" />
       <window_info id="Structure" order="1" weight="0.25288832" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -831,10 +823,20 @@ py.show()</expression-string>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/ThesisKennethRuiter.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="457">
+          <caret line="127" lean-forward="true" selection-start-line="127" selection-end-line="127" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/network.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="48" column="8" selection-start-line="48" selection-start-column="8" selection-end-line="48" selection-end-column="8" />
+        <state relative-caret-position="540">
+          <caret line="116" column="22" selection-start-line="116" selection-start-column="22" selection-end-line="116" selection-end-column="22" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>

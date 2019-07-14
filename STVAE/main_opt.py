@@ -98,7 +98,10 @@ else:
 
     if (args.MM):
         aux.re_estimate()
-    aux.show_reconstructed_images(test,model,ex_file)
+    num_mu_iter=None
+    if (args.OPT):
+        num_mu_iter=args.nti
+    aux.show_reconstructed_images(test,model,ex_file,num_mu_iter)
     aux.show_sampled_images(model, ex_file)
     #trainMU, trainLOGVAR = model.initialize_mus(train,args.OPT)
     #model.run_epoch(train,  epoch, args.nti, trainMU, trainLOGVAR,type='trest',fout=fout)

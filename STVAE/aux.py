@@ -61,10 +61,10 @@ def show_sampled_images(model,ex_file):
     XX=X.cpu().detach().numpy()
     create_image(XX, ex_file)
 
-def show_reconstructed_images(test,model,ex_file):
+def show_reconstructed_images(test,model,ex_file,num_iter=None):
 
     inp = torch.from_numpy(test[0][0:50].transpose(0, 3, 1, 2))
-    X=model.recon(inp)
+    X=model.recon(inp,num_iter)
     X = X.cpu().detach().numpy().reshape(inp.shape)
     XX=np.concatenate([inp,X])
     create_image(XX,ex_file+'_recon')
