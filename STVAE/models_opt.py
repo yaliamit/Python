@@ -34,7 +34,7 @@ class STVAE_OPT(models.STVAE):
         x=self.decoder_and_trans(s)
         ss_prior = torch.sum((s * s) / 2)
         sd = torch.exp(logvarb * .5)
-        ss_posterior = -torch.sum(.5 * ((s - mub) * (s - mub) / (sd * sd) + logvar))
+        ss_posterior = -torch.sum(.5 * ((s - mub) * (s - mub) / (sd * sd) + logvarb))
         return x, ss_prior, ss_posterior
 
 

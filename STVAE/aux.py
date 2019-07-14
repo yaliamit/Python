@@ -126,7 +126,7 @@ def re_estimate(model,train,args,fout):
             fout.write(str(model.MU.data)+'\n')
             fout.write(str(model.LOGVAR.data)+'\n')
             fout.flush()
-            trainMU, trainLOGVAR = model.initialize_mus(train, args.OPT,args.MM)
+            trainMU, trainLOGVAR = model.initialize_mus(train[0], args.OPT,args.MM)
             trainMU, trainLOGVAR = model.run_epoch(train, 0, 500,trainMU, trainLOGVAR, type='trest',fout=fout)
             model.MU = torch.nn.Parameter(torch.mean(trainMU, dim=0))
             model.LOGVAR = torch.nn.Parameter(torch.log(torch.var(trainMU, dim=0)))

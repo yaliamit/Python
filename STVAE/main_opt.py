@@ -71,9 +71,9 @@ for keys, vals in model.state_dict().items():
 fout.write('tot_pars,'+str(tot_pars)+'\n')
 
 
-trainMU, trainLOGVAR, trPI=model.initialize_mus(train,args.OPT)
-valMU, valLOGVAR, valPI=model.initialize_mus(val,args.OPT)
-testMU, testLOGVAR, testPI=model.initialize_mus(test,args.OPT)
+trainMU, trainLOGVAR, trPI=model.initialize_mus(train[0],args.OPT)
+valMU, valLOGVAR, valPI=model.initialize_mus(val[0],args.OPT)
+testMU, testLOGVAR, testPI=model.initialize_mus(test[0],args.OPT)
 
 if (args.run_existing):
     model.load_state_dict(torch.load('_output/'+ex_file+'.pt',map_location=device))
@@ -102,7 +102,7 @@ else:
     aux.show_sampled_images(model, ex_file)
     #trainMU, trainLOGVAR = model.initialize_mus(train,args.OPT)
     #model.run_epoch(train,  epoch, args.nti, trainMU, trainLOGVAR,type='trest',fout=fout)
-    model.run_epoch(test,epoch,args.nti,testMU, testLOGVAR,type='test',fout=fout)
+    model.run_epoch(test,epoch,args.nti,testMU, testLOGVAR,testPI, type='test',fout=fout)
 
     fout.write('writing to '+ex_file+'\n')
     torch.save(model.state_dict(),'_output/'+ex_file+'.pt')

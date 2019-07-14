@@ -56,8 +56,8 @@ class fromNorm_mix(nn.Module):
 class decoder_mix(nn.Module):
     def __init__(self,x_dim,h_dim,n_mix,num_layers):
         super(decoder_mix,self).__init__()
-        self.n_mix=n_mix
         self.x_dim=x_dim
+        self.n_mix=n_mix
         self.num_layers=num_layers
         if (num_layers==1):
             self.h2hd = nn.Linear(h_dim, h_dim)
@@ -85,9 +85,11 @@ class STVAE_mix(models.STVAE):
 
 
         self.n_mix = args.n_mix
-        self.toNorm_mix=toNorm_mix(self.h_dim, self.s_dim, self.n_mix)
+        if (not args.OPT):
+            self.toNorm_mix=toNorm_mix(self.h_dim, self.s_dim, self.n_mix)
         self.fromNorm_mix=fromNorm_mix(self.h_dim, self.z_dim,self.u_dim,self.n_mix, self.type)
-        self.encoder_mix = encoder_mix(self.x_dim, self.h_dim, self.num_hlayers)
+        if (not args.OPT):
+            self.encoder_mix = encoder_mix(self.x_dim, self.h_dim, self.num_hlayers)
         self.decoder_mix=decoder_mix(self.x_dim,self.h_dim,self.n_mix,self.num_hlayers)
 
         self.rho = nn.Parameter(torch.zeros(self.n_mix))
@@ -109,7 +111,6 @@ class STVAE_mix(models.STVAE):
 
     def decoder_and_trans(self,s, pi):
 
-        #if (self.type=='tvae'): # Apply map separately to each component - transformation and z.
         u = s.narrow(len(s.shape)-1,0,self.u_dim)
         z = s.narrow(len(s.shape)-1,self.u_dim,self.z_dim)
         # Create image
