@@ -148,8 +148,6 @@ class STVAE_mix(models.STVAE):
                 ss=ss+[-.5*((sss*sss)/var[:,j,:]+s_logvar[:,j,:])]
             ss=torch.stack(ss,dim=0).transpose(0,1)
             ss=torch.sum(ss,dim=2)
-            #ss=torch.exp(ss)
-            #u=torch.log(torch.bmm(pi, ss[:, :, None]).squeeze())
             u=torch.logsumexp(ss+lpi,dim=1)
             f = f+[u]
         f=torch.stack(f,dim=0).transpose(0,1)
