@@ -133,7 +133,7 @@ class STVAE_mix(models.STVAE):
         return mu + torch.exp(logvar/2) * eps
 
     def dens_apply(self,s,s_mu,s_logvar,pi):
-
+        lpi=torch.log(pi.squeeze())
         s_mu = s_mu.view(-1, self.n_mix, self.s_dim)
         s_logvar = s_logvar.view(-1, self.n_mix, self.s_dim)
         sd=torch.exp(s_logvar/2)
@@ -148,8 +148,10 @@ class STVAE_mix(models.STVAE):
                 ss=ss+[-.5*((sss*sss)/var[:,j,:]+s_logvar[:,j,:])]
             ss=torch.stack(ss,dim=0).transpose(0,1)
             ss=torch.sum(ss,dim=2)
-            ss=torch.exp(ss)
-            f = f+[torch.log(torch.bmm(pi, ss[:,:,None]).squeeze())]
+            #ss=torch.exp(ss)
+            #u=torch.log(torch.bmm(pi, ss[:, :, None]).squeeze())
+            u=torch.logsumexp(ss+lpi,dim=1)
+            f = f+[u]
         f=torch.stack(f,dim=0).transpose(0,1)
         posterior=torch.sum(torch.bmm(pi,f[:,:,None]))
         # Sum along last coordinate to get negative log density of each component.

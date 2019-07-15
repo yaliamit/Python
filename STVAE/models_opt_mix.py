@@ -39,9 +39,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         # Apply linear map to entire sampled vector.
 
         x = self.decoder_and_trans(s)
-        prior=0
-        post=0
-        #prior, post = self.dens_apply(s, self.mu, self.logvar, pit)
+        prior, post = self.dens_apply(s, self.mu, self.logvar, pit)
         recon_loss=self.mixed_loss(x,data,pii)
         return recon_loss, prior, post, x
 
