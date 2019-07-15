@@ -233,7 +233,7 @@ class STVAE_mix(models.STVAE):
         s_mu, s_var, pi = self.forward_encoder(inp.view(-1, self.x_dim))
         s_mu = s_mu.view(-1, self.n_mix, self.s_dim)
         ii = torch.argmax(pi, dim=1)
-        jj = torch.arange(0,num_inp,dtype=torch.int64)
+        jj = torch.arange(0,num_inp,dtype=torch.int64).to(self.dv)
         kk = ii+jj*self.n_mix
         recon_batch = self.decoder_and_trans(s_mu)
         recon=recon_batch.reshape(self.n_mix*num_inp,-1)
