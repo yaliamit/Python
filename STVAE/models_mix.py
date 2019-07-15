@@ -109,7 +109,7 @@ class STVAE_mix(models.STVAE):
         pi = torch.softmax(hm,dim=1)
         return s_mu, s_logvar, pi
 
-    def decoder_and_trans(self,s, pi):
+    def decoder_and_trans(self,s):
 
         u = s.narrow(len(s.shape)-1,0,self.u_dim)
         z = s.narrow(len(s.shape)-1,self.u_dim,self.z_dim)
@@ -125,8 +125,8 @@ class STVAE_mix(models.STVAE):
                 xt=xt+[self.apply_trans(x[:,i,:],u[:,i,:]).squeeze()]
            x=torch.stack(xt,dim=0).transpose(0,1).view(-1,self.n_mix,self.x_dim)
 
-        xx = torch.bmm(pi, x).squeeze()
-        xx = torch.clamp(xx, 1e-6, 1 - 1e-6)
+        #xx = torch.bmm(pi, x).squeeze()
+        xx = torch.clamp(x, 1e-6, 1 - 1e-6)
         return xx
 
 
@@ -163,7 +163,7 @@ class STVAE_mix(models.STVAE):
         return prior, posterior
 
     def forward(self, inputs):
-        prior=0; post=0;
+
         s_mu, s_logvar, pi = self.forward_encoder(inputs.view(-1, self.x_dim))
 
         if (self.type is not 'ae'):
@@ -173,11 +173,10 @@ class STVAE_mix(models.STVAE):
         s=s.view(-1,self.n_mix,self.s_dim)
         pit = pi.reshape(pi.shape[0], 1, pi.shape[1])
         # Apply linear map to entire sampled vector.
-
-
-        x=self.decoder_and_trans(s,pit)
+        x=self.decoder_and_trans(s)
         prior, post = self.dens_apply(s,s_mu,s_logvar,pit)
-        return x, prior, post
+
+        return x, prior, post,pi
 
 
 
@@ -186,16 +185,22 @@ class STVAE_mix(models.STVAE):
         if (type == 'train'):
             self.optimizer.zero_grad()
 
-        recon_batch, prior, post = self.forward(data)
-        recon_loss = F.binary_cross_entropy(recon_batch.squeeze().view(-1, self.x_dim), data.view(-1, self.x_dim), reduction='sum')
-
-        loss = recon_loss + prior + post
+        recon_batch, prior, post, pi = self.forward(data)
+        rec=torch.zeros(self.n_mix).to(self.dv)
+        b=[]
+        for i in range(self.n_mix):
+            a=F.binary_cross_entropy(recon_batch[:,i,:].squeeze().view(-1, self.x_dim), data.view(-1, self.x_dim), reduction='none')
+            a=torch.log(pi[:,i])+torch.sum(a,dim=1)
+            b=b+[a]
+        b=torch.stack(b).transpose(0,1)
+        recloss=torch.sum(torch.logsumexp(b,dim=1))
+        loss = recloss + prior + post
 
         if (type == 'train'):
             loss.backward()
             self.optimizer.step()
 
-        return recon_loss, loss
+        return recloss, loss
 
     def run_epoch(self, train, epoch,num, MU, LOGVAR,PI, type='test',fout=None):
 
@@ -226,15 +231,15 @@ class STVAE_mix(models.STVAE):
         self.setup_id(num_inp)
         inp = input.to(self.dv)
         s_mu, s_var, pi = self.forward_encoder(inp.view(-1, self.x_dim))
-        ii = torch.argmax(pi, dim=1)
-        ee = torch.eye(self.n_mix).to(self.dv)
-        pia = ee[ii]
-        pia=pia[:,None,:]
         s_mu = s_mu.view(-1, self.n_mix, self.s_dim)
-        print(s_mu.is_cuda, pia.is_cuda)
-        recon_batch = self.decoder_and_trans(s_mu, pia)
+        ii = torch.argmax(pi, dim=1)
+        jj = torch.arange(0,num_inp-1,dtype=torch.int64)
+        kk = ii+jj*self.n_mix
+        recon_batch = self.decoder_and_trans(s_mu)
+        recon=recon_batch.reshape(self.n_mix*num_inp,-1)
+        rr=recon[kk]
 
-        return recon_batch
+        return rr
 
 
     def sample_from_z_prior(self,theta=None):
@@ -242,19 +247,20 @@ class STVAE_mix(models.STVAE):
         self.setup_id(self.bsz)
         ee=torch.eye(self.n_mix).to(self.dv)
         rho_dist=torch.exp(self.rho-torch.logsumexp(self.rho,dim=0))
-        kk=torch.multinomial(rho_dist,self.bsz,replacement=True)
-        pi=ee[kk]
-        pi=pi[:,None,:]
+        ii=torch.multinomial(rho_dist,self.bsz,replacement=True)
         s = torch.randn(self.bsz, self.s_dim*self.n_mix).to(self.dv)
-
         s = s.view(-1, self.n_mix, self.s_dim)
         if (theta is not None and self.u_dim>0):
             theta = theta.to(self.dv)
             for i in range(self.n_mix):
                 s[:,i,0:self.u_dim]=theta
-        x=self.decoder_and_trans(s,pi)
+        x=self.decoder_and_trans(s)
+        jj = torch.arange(0, self.bsz - 1, dtype=torch.int64)
+        kk = ii + jj * self.n_mix
+        recon = x.reshape(self.n_mix * self.bsz, -1)
+        rr = recon[kk]
 
-        return x
+        return rr
 
 
 
