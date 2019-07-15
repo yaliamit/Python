@@ -119,13 +119,14 @@ class STVAE(nn.Module):
             else:
                 trMU = self.MU.repeat(train.shape[0], 1)
             trLOGVAR = torch.zeros(train.shape[0], sdim).to(self.dv)
-            ee = torch.eye(self.n_mix).to(self.dv)
-            eps=.1
-            ee = ee+eps
-            ee = torch.log(ee/torch.sum(ee,dim=1))
-            rho_dist=torch.ones(self.n_mix)/self.n_mix
-            kk = torch.multinomial(rho_dist, train.shape[0], replacement=True)
-            trPI = ee[kk]
+            if (self.n_mix>0):
+                ee = torch.eye(self.n_mix).to(self.dv)
+                eps=.1
+                ee = ee+eps
+                ee = torch.log(ee/torch.sum(ee,dim=1))
+                rho_dist=torch.ones(self.n_mix)/self.n_mix
+                kk = torch.multinomial(rho_dist, train.shape[0], replacement=True)
+                trPI = ee[kk]
             #trPI=torch.zeros(train.shape[0], self.n_mix).to(self.dv)
         return trMU, trLOGVAR, trPI
 
