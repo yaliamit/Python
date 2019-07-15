@@ -127,6 +127,7 @@ class STVAE(nn.Module):
                 rho_dist=torch.ones(self.n_mix)/self.n_mix
                 kk = torch.multinomial(rho_dist, train.shape[0], replacement=True)
                 trPI = ee[kk]
+                print('trPI',trPI.is_cuda)
             #trPI=torch.zeros(train.shape[0], self.n_mix).to(self.dv)
         return trMU, trLOGVAR, trPI
 
