@@ -255,7 +255,7 @@ class STVAE_mix(models.STVAE):
             for i in range(self.n_mix):
                 s[:,i,0:self.u_dim]=theta
         x=self.decoder_and_trans(s)
-        jj = torch.arange(0, self.bsz, dtype=torch.int64)
+        jj = torch.arange(0, self.bsz, dtype=torch.int64).to(self.dv)
         kk = ii + jj * self.n_mix
         recon = x.reshape(self.n_mix * self.bsz, -1)
         rr = recon[kk]
