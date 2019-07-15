@@ -37,7 +37,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         pii=torch.softmax(self.pi,dim=1)
         pit =pii.reshape(self.pi.shape[0], 1, self.pi.shape[1])
         # Apply linear map to entire sampled vector.
-
+        print(s.is_cuda(),pii.is_cuda(),pit.is_cuda())
         x = self.decoder_and_trans(s)
         prior, post = self.dens_apply(s, self.mu, self.logvar, pit)
         recon_loss=self.mixed_loss(x,data,pii)
