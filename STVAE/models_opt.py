@@ -26,7 +26,6 @@ class STVAE_OPT(models.STVAE):
 
     def forw(self, mub,logvarb):
 
-        ss_prior=None; ss_posterior=None
         if (self.type is not 'ae' and not self.MM):
             s = self.sample(mub, logvarb, self.s_dim)
         else:
