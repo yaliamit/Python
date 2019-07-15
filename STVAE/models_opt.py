@@ -83,16 +83,16 @@ class STVAE_OPT(models.STVAE):
             #target = torch.tensor(y[j:j + batch_size]).float()
 
             self.update_s(mu[j:j+batch_size, :], logvar[j:j+batch_size, :])
-            t1 = time.time()
+            #t1 = time.time()
             for it in range(num_mu_iter):
                 self.compute_loss_and_grad(data, type,self.optimizer_s,opt='mu')
-            print('mu time', time.time() - t1)
+            #print('mu time', time.time() - t1)
             mu[j:j + batch_size] = self.mu.data
             logvar[j:j + batch_size] = self.logvar.data
             # Update decoder and encoder parameters.
-            t1 = time.time()
+            #t1 = time.time()
             recon_batch, recon_loss, loss = self.compute_loss_and_grad(data,type,self.optimizer)
-            print('par time', time.time() - t1)
+            #print('par time', time.time() - t1)
             tr_recon_loss += recon_loss
             tr_full_loss += loss
         if (fout is  None):

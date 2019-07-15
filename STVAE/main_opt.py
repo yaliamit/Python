@@ -97,7 +97,7 @@ else:
         fout.flush()
 
     if (args.MM):
-        aux.re_estimate()
+        aux.re_estimate(model,train,args,fout)
     num_mu_iter=None
     if (args.OPT):
         num_mu_iter=args.nti
