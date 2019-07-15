@@ -124,8 +124,6 @@ class STVAE_mix(models.STVAE):
            for i in range(self.n_mix):
                 xt=xt+[self.apply_trans(x[:,i,:],u[:,i,:]).squeeze()]
            x=torch.stack(xt,dim=0).transpose(0,1).view(-1,self.n_mix,self.x_dim)
-
-        #xx = torch.bmm(pi, x).squeeze()
         xx = torch.clamp(x, 1e-6, 1 - 1e-6)
         return xx
 
@@ -162,6 +160,17 @@ class STVAE_mix(models.STVAE):
 
         return prior, posterior
 
+    def mixed_loss(self,x,data,pi):
+        b = []
+        for i in range(self.n_mix):
+            a = F.binary_cross_entropy(x[:, i, :].squeeze().view(-1, self.x_dim), data.view(-1, self.x_dim),
+                                       reduction='none')
+            a = torch.log(pi[:, i]) + torch.sum(a, dim=1)
+            b = b + [a]
+        b = torch.stack(b).transpose(0, 1)
+        recloss = torch.sum(torch.logsumexp(b, dim=1))
+        return recloss
+
     def forward(self, inputs):
 
         s_mu, s_logvar, pi = self.forward_encoder(inputs.view(-1, self.x_dim))
@@ -174,9 +183,10 @@ class STVAE_mix(models.STVAE):
         pit = pi.reshape(pi.shape[0], 1, pi.shape[1])
         # Apply linear map to entire sampled vector.
         x=self.decoder_and_trans(s)
-        prior, post = self.dens_apply(s,s_mu,s_logvar,pit)
 
-        return x, prior, post,pi
+        prior, post = self.dens_apply(s,s_mu,s_logvar,pit)
+        recloss=self.mixed_loss(x,inputs,pi)
+        return recloss, prior, post
 
 
 
@@ -185,15 +195,8 @@ class STVAE_mix(models.STVAE):
         if (type == 'train'):
             self.optimizer.zero_grad()
 
-        recon_batch, prior, post, pi = self.forward(data)
-        rec=torch.zeros(self.n_mix).to(self.dv)
-        b=[]
-        for i in range(self.n_mix):
-            a=F.binary_cross_entropy(recon_batch[:,i,:].squeeze().view(-1, self.x_dim), data.view(-1, self.x_dim), reduction='none')
-            a=torch.log(pi[:,i])+torch.sum(a,dim=1)
-            b=b+[a]
-        b=torch.stack(b).transpose(0,1)
-        recloss=torch.sum(torch.logsumexp(b,dim=1))
+        recloss, prior, post = self.forward(data)
+
         loss = recloss + prior + post
 
         if (type == 'train'):

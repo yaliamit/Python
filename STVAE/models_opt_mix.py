@@ -25,39 +25,39 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         self.pi=torch.autograd.Variable(pi, requires_grad=True)
         self.optimizer_s = optim.Adam([self.mu, self.logvar, self.pi], lr=self.mu_lr)
 
-    def forw(self, mu,logvar,pi):
+    def forward(self,data):
 
 
         if (self.type is not 'ae' and not self.MM):
-            s = self.sample(mu, logvar, self.s_dim*self.n_mix)
+            s = self.sample(self.mu, self.logvar, self.s_dim*self.n_mix)
         else:
-            s=mu
+            s=self.mu
 
         s = s.view(-1, self.n_mix, self.s_dim)
-        pit = torch.softmax(pi,dim=1).reshape(pi.shape[0], 1, pi.shape[1])
+        pii=torch.softmax(self.pi,dim=1)
+        pit =pii.reshape(self.pi.shape[0], 1, self.pi.shape[1])
         # Apply linear map to entire sampled vector.
 
-        x = self.decoder_and_trans(s, pit)
-        prior, post = self.dens_apply(s, mu, logvar, pit)
+        x = self.decoder_and_trans(s)
+        prior, post = self.dens_apply(s, self.mu, self.logvar, pit)
+        recon_loss=self.mixed_loss(x,data,pii)
+        return recon_loss, prior, post, x
 
-        return x, prior, post
 
-
-    def compute_loss_and_grad(self,data, type, optim,opt='par'):
+    def compute_loss_and_grad(self,data, type, optim, opt='par'):
 
         if (type == 'train' or opt=='mu'):
             optim.zero_grad()
 
-        recon_batch, prior, post = self.forw(self.mu, self.logvar, self.pi)
-        recon_loss = F.binary_cross_entropy(recon_batch.squeeze().view(-1, self.x_dim), data.view(-1, self.x_dim),
-                                            reduction='sum')
+        recon_loss, prior, post,recon = self.forward(data)
+
         loss = recon_loss + prior + post
 
         if (type == 'train' or opt=='mu'):
             loss.backward()
             optim.step()
 
-        return recon_batch, recon_loss, loss
+        return recon_loss, loss, recon
 
     def run_epoch(self, train,  epoch,num_mu_iter,MU, LOGVAR, PI, type='test',fout=None):
         if (type=='train'):
@@ -85,7 +85,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             mu[j:j + batch_size] = self.mu.data
             logvar[j:j + batch_size] = self.logvar.data
             pi[j:j + batch_size]=self.pi.data
-            recon_batch, recon_loss, loss = self.compute_loss_and_grad(data,type,self.optimizer)
+            recon_loss, loss, _ = self.compute_loss_and_grad(data,type,self.optimizer)
             tr_recon_loss += recon_loss
             tr_full_loss += loss
         if (fout is  None):
@@ -107,9 +107,9 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         for it in range(num_mu_iter):
             self.compute_loss_and_grad(data, type, self.optimizer_s, opt='mu')
         ii = torch.argmax(self.pi, dim=1)
-        jj = torch.range(0, num_inp - 1, dtype=torch.int64)
+        jj = torch.range(0, num_inp - 1, dtype=torch.int64).to(self.dv)
         kk = ii + jj * self.n_mix
-        recon_batch, recon_loss, loss = self.compute_loss_and_grad(data, 'test', self.optimizer)
+        recon_loss, loss, recon_batch = self.compute_loss_and_grad(data, 'test', self.optimizer)
         recon = recon_batch.reshape(self.n_mix * num_inp, -1)
         rr = recon[kk]
         return rr
