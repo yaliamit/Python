@@ -107,7 +107,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         for it in range(num_mu_iter):
             self.compute_loss_and_grad(data, type, self.optimizer_s, opt='mu')
         ii = torch.argmax(self.pi, dim=1)
-        jj = torch.range(0, num_inp - 1, dtype=torch.int64).to(self.dv)
+        jj = torch.arange(0, num_inp, dtype=torch.int64).to(self.dv)
         kk = ii + jj * self.n_mix
         recon_loss, loss, recon_batch = self.compute_loss_and_grad(data, 'test', self.optimizer)
         recon = recon_batch.reshape(self.n_mix * num_inp, -1)
