@@ -105,7 +105,7 @@ class STVAE_mix(models.STVAE):
             h=F.relu(self.encoder_mix.h2he(h))
         s_mu=self.toNorm_mix.h2smu(h)
         s_logvar=F.threshold(self.toNorm_mix.h2svar(h),-6,-6)
-        hm=torch.matmul(h,self.toNorm_mix.h2pi)
+        hm=torch.matmul(h,self.toNorm_mix.h2pi).clamp(-10.,10.)
         pi = torch.softmax(hm,dim=1)
         return s_mu, s_logvar, pi
 
@@ -233,7 +233,7 @@ class STVAE_mix(models.STVAE):
         s_mu, s_var, pi = self.forward_encoder(inp.view(-1, self.x_dim))
         s_mu = s_mu.view(-1, self.n_mix, self.s_dim)
         ii = torch.argmax(pi, dim=1)
-        jj = torch.arange(0,num_inp-1,dtype=torch.int64)
+        jj = torch.arange(0,num_inp,dtype=torch.int64)
         kk = ii+jj*self.n_mix
         recon_batch = self.decoder_and_trans(s_mu)
         recon=recon_batch.reshape(self.n_mix*num_inp,-1)
@@ -255,7 +255,7 @@ class STVAE_mix(models.STVAE):
             for i in range(self.n_mix):
                 s[:,i,0:self.u_dim]=theta
         x=self.decoder_and_trans(s)
-        jj = torch.arange(0, self.bsz - 1, dtype=torch.int64)
+        jj = torch.arange(0, self.bsz, dtype=torch.int64)
         kk = ii + jj * self.n_mix
         recon = x.reshape(self.n_mix * self.bsz, -1)
         rr = recon[kk]
