@@ -12,8 +12,8 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
 
         self.MM=args.MM
         if (self.MM):
-            self.MU=nn.Parameter(torch.zeros(self.s_dim*self.n_mix))  #, requires_grad=False)
-            self.LOGVAR=nn.Parameter(torch.zeros(self.s_dim*self.n_mix)) #, requires_grad=False)
+            self.MU=nn.Parameter(torch.zeros(self.n_mix,self.s_dim))  #, requires_grad=False)
+            self.LOGVAR=nn.Parameter(torch.zeros(self.n_mix,self.s_dim)) #, requires_grad=False)
 
         self.mu_lr=args.mu_lr
         self.s2s=None
@@ -34,22 +34,23 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             s=self.mu
 
         s = s.view(-1, self.n_mix, self.s_dim)
-        pii=torch.softmax(self.pi,dim=1)
-        pit =pii.reshape(self.pi.shape[0], 1, self.pi.shape[1])
+        if (self.MM):
+            lpii=-torch.logsumexp(self.rho,dim=0)+self.rho
+        else:
+            lpii=-torch.logsumexp(self.pi,dim=1,keepdim=True)+self.pi #torch.softmax(self.pi,dim=1)
+        pit =torch.exp(lpii)[:,None] #.reshape(lpii.shape[0], 1, lpii.shape[1])
         # Apply linear map to entire sampled vector.
 
         x = self.decoder_and_trans(s)
         #prior=0
         #post=0
-        lgrho=-torch.logsumexp(self.rho,dim=0)+self.rho
+
         if (self.MM):
             post=0
-            MU=self.MU.reshape(self.n_mix,self.s_dim)
-            LOGVAR=self.LOGVAR.reshape(self.n_mix,self.s_dim)
-            prior = -torch.sum(torch.logsumexp(-0.5 * torch.sum((s-MU ) * (s- MU) / torch.exp(LOGVAR) + LOGVAR,dim=2)+lgrho,dim=1))
+            prior = -torch.sum(torch.logsumexp(-0.5 * torch.sum((s-self.MU ) * (s- self.MU) / torch.exp(self.LOGVAR) + self.LOGVAR,dim=2)+lpii,dim=1))
         else:
             prior, post = self.dens_apply(s, self.mu, self.logvar, pit)
-        recon_loss=self.mixed_loss(x,data,pii)
+        recon_loss=self.mixed_loss(x,data,lpii)
         return recon_loss, prior, post, x
 
 

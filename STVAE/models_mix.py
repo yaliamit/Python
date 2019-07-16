@@ -160,12 +160,14 @@ class STVAE_mix(models.STVAE):
 
         return prior, posterior
 
-    def mixed_loss(self,x,data,pi):
+    def mixed_loss(self,x,data,lpi):
         b = []
+        if (self.MM):
+            lpi=lpi[None,:]
         for i in range(self.n_mix):
             a = F.binary_cross_entropy(x[:, i, :].squeeze().view(-1, self.x_dim), data.view(-1, self.x_dim),
                                        reduction='none')
-            a = torch.log(pi[:, i]) + torch.sum(a, dim=1)
+            a = lpi[:, i] + torch.sum(a, dim=1)
             b = b + [a]
         b = torch.stack(b).transpose(0, 1)
         recloss = torch.sum(torch.logsumexp(b, dim=1))

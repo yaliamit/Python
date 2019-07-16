@@ -114,10 +114,10 @@ class STVAE(nn.Module):
         if self.n_mix>0:
             sdim=self.s_dim*self.n_mix
         if (OPT and train is not None):
-            if (not self.MM):
-                trMU = torch.zeros(train.shape[0], sdim).to(self.dv)
-            else:
-                trMU = self.MU.repeat(train.shape[0], 1)
+            #if (not self.MM):
+            trMU = torch.zeros(train.shape[0], sdim).to(self.dv)
+            #else:
+            #   trMU = self.MU.repeat(train.shape[0], 1)
             trLOGVAR = torch.zeros(train.shape[0], sdim).to(self.dv)
             if (self.n_mix>0):
                 ee = torch.eye(self.n_mix).to(self.dv)
