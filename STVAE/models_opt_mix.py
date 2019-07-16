@@ -12,8 +12,8 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
 
         self.MM=args.MM
         if (self.MM):
-            self.MU=nn.Parameter(torch.zeros(self.s_dim))  #, requires_grad=False)
-            self.LOGVAR=nn.Parameter(torch.zeros(self.s_dim)) #, requires_grad=False)
+            self.MU=nn.Parameter(torch.zeros(self.s_dim*self.n_mix))  #, requires_grad=False)
+            self.LOGVAR=nn.Parameter(torch.zeros(self.s_dim*self.n_mix)) #, requires_grad=False)
 
         self.mu_lr=args.mu_lr
         self.s2s=None
@@ -41,7 +41,14 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         x = self.decoder_and_trans(s)
         #prior=0
         #post=0
-        prior, post = self.dens_apply(s, self.mu, self.logvar, pit)
+        lgrho=-torch.logsumexp(self.rho,dim=0)+self.rho
+        if (self.MM):
+            post=0
+            MU=self.MU.reshape(self.n_mix,self.s_dim)
+            LOGVAR=self.LOGVAR.reshape(self.n_mix,self.s_dim)
+            prior = -torch.sum(torch.logsumexp(-0.5 * torch.sum((s-MU ) * (s- MU) / torch.exp(LOGVAR) + LOGVAR,dim=2)+lgrho,dim=1))
+        else:
+            prior, post = self.dens_apply(s, self.mu, self.logvar, pit)
         recon_loss=self.mixed_loss(x,data,pii)
         return recon_loss, prior, post, x
 
