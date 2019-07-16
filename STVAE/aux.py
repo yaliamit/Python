@@ -45,7 +45,7 @@ def create_image(XX, ex_file):
             t+=1
         mat+=[np.concatenate(line,axis=0)]
     manifold = np.concatenate(mat, axis=1)
-    manifold = 1. - manifold[np.newaxis, :]
+    manifold = manifold[np.newaxis, :]
     img = np.concatenate([manifold, manifold, manifold], axis=0).transpose(1,2,0)
 
     if not os.path.isfile('_Images'):
