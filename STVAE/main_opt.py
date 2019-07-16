@@ -101,6 +101,8 @@ else:
     num_mu_iter=None
     if (args.OPT):
         num_mu_iter=args.nti
+    torch.manual_seed(args.seed)
+    np.random.seed(args.seed)
     aux.show_reconstructed_images(test,model,ex_file,num_mu_iter)
     aux.show_sampled_images(model, ex_file)
     #trainMU, trainLOGVAR = model.initialize_mus(train,args.OPT)
