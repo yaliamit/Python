@@ -220,7 +220,7 @@ class STVAE(nn.Module):
 
         return recon_loss, loss
 
-    def run_epoch(self, train, epoch,num, MU, LOGVAR, type='test',fout=None):
+    def run_epoch(self, train, epoch,num, MU, LOGVAR, PI, type='test',fout=None):
 
         if (type=='train'):
             self.train()
@@ -241,7 +241,7 @@ class STVAE(nn.Module):
         fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(type,
         epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
 
-        return MU, LOGVAR
+        return MU, LOGVAR, PI
 
     def recon(self,input,num_mu_iter=None):
 
