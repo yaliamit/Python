@@ -166,11 +166,11 @@ class STVAE_mix(models.STVAE):
         for i in range(self.n_mix):
             a = F.binary_cross_entropy(x[:, i, :].squeeze().view(-1, self.x_dim), data.view(-1, self.x_dim),
                                        reduction='none')
-            a = lpi[:, i] + torch.sum(a, dim=1)
+            a = lpi[:, i] - torch.sum(a, dim=1)
             b = b + [a]
         b = torch.stack(b).transpose(0, 1)
 
-        recloss = torch.sum(torch.logsumexp(b, dim=1))
+        recloss = -torch.sum(torch.logsumexp(b, dim=1))
         return recloss, b
 
     def forward(self, inputs):
@@ -187,7 +187,7 @@ class STVAE_mix(models.STVAE):
         x=self.decoder_and_trans(s)
 
         prior, post = self.dens_apply(s,s_mu,s_logvar,pit)
-        recloss=self.mixed_loss(x,inputs,pi)
+        recloss, _=self.mixed_loss(x,inputs,torch.log(pi))
         return recloss, prior, post
 
 
