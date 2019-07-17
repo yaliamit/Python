@@ -55,7 +55,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
 
 
         else:
-            pit = torch.softmax(self.pi)
+            pit = torch.softmax(self.pi,dim=1)
             prior, post = self.dens_apply(s, self.mu, self.logvar, torch.log(pit),pit)
 
         recon_loss, b=self.mixed_loss(x,data,pit)
