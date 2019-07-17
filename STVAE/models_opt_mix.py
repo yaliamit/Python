@@ -14,10 +14,13 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         if (self.MM):
             self.MU=nn.Parameter(torch.zeros(self.n_mix,self.s_dim))  #, requires_grad=False)
             self.LOGVAR=nn.Parameter(torch.zeros(self.n_mix,self.s_dim)) #, requires_grad=False)
-
+            self.K = torch.autograd.Variable(torch.ones(self.bsz,self.n_mix),requires_grad=False)
         self.mu_lr=args.mu_lr
-        self.s2s=None
-        self.u2u=None
+
+        if (args.optimizer=='Adam'):
+            self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
+        elif (args.optimizer=='Adadelta'):
+            self.optimizer = optim.Adadelta(self.parameters())
 
     def update_s(self,mu,logvar,pi):
         self.mu=torch.autograd.Variable(mu, requires_grad=True)
@@ -25,7 +28,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         self.pi=torch.autograd.Variable(pi, requires_grad=True)
         self.optimizer_s = optim.Adam([self.mu, self.logvar, self.pi], lr=self.mu_lr)
 
-    def forward(self,data):
+    def forward(self,data,opt):
 
 
         if (self.type is not 'ae' and not self.MM):
@@ -34,23 +37,30 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             s=self.mu
 
         s = s.view(-1, self.n_mix, self.s_dim)
-        if (self.MM):
-            lpii=-torch.logsumexp(self.rho,dim=0)+self.rho
-        else:
-            lpii=-torch.logsumexp(self.pi,dim=1,keepdim=True)+self.pi #torch.softmax(self.pi,dim=1)
-        pit =torch.exp(lpii)[:,None] #.reshape(lpii.shape[0], 1, lpii.shape[1])
-        # Apply linear map to entire sampled vector.
-
         x = self.decoder_and_trans(s)
-        #prior=0
-        #post=0
 
         if (self.MM):
-            post=0
-            prior = -torch.sum(torch.logsumexp(-0.5 * torch.sum((s-self.MU ) * (s- self.MU) / torch.exp(self.LOGVAR) + self.LOGVAR,dim=2)+lpii,dim=1))
+            prior = 0
+            post = 0
+            # For finding optimal s for each mixture component just add log-prior density. mixed loss will optimize the sum
+            # of log-prior + conditional for each component and the optimal s for each component is obtained.
+            lpii=-0.5 * torch.sum((s-self.MU ) * (s- self.MU) / torch.exp(self.LOGVAR) + self.LOGVAR,dim=2)
+
+            if (opt=='par'):
+                 lpii=lpii-torch.logsumexp(self.K,dim=1,keepdim=True)+self.K+ self.rho - torch.logsumexp(self.rho,dim=0)
+
+
         else:
+            lpii = -torch.logsumexp(self.pi, dim=1, keepdim=True) + self.pi  # torch.softmax(self.pi,dim=1)
+            pit = torch.exp(lpii)[:, None]
             prior, post = self.dens_apply(s, self.mu, self.logvar, pit)
-        recon_loss=self.mixed_loss(x,data,lpii)
+
+        recon_loss, b=self.mixed_loss(x,data,lpii)
+        if (self.MM and opt=='mu'):
+            # Log conditional densities of x given z + log prob(z).
+            self.K = torch.autograd.Variable(b+ self.rho - torch.logsumexp(self.rho,dim=0), requires_grad=False)
+
+
         return recon_loss, prior, post, x
 
 
@@ -59,7 +69,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         if (type == 'train' or opt=='mu'):
             optim.zero_grad()
 
-        recon_loss, prior, post,recon = self.forward(data)
+        recon_loss, prior, post,recon = self.forward(data,opt)
 
         loss = recon_loss + prior + post
 

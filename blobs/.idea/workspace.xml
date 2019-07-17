@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b0a43a12-b84a-4e4c-a6df-2c878dbf68c8" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/../STVAE/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/../STVAE/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../STVAE/models_mix.py" beforeDir="false" afterPath="$PROJECT_DIR$/../STVAE/models_mix.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../STVAE/models_opt_mix.py" beforeDir="false" afterPath="$PROJECT_DIR$/../STVAE/models_opt_mix.py" afterDir="false" />
     </list>
@@ -32,7 +31,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/blobs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="930">
+            <state relative-caret-position="642">
               <caret line="71" selection-start-line="71" selection-end-line="71" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
@@ -53,8 +52,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/network.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-49">
-              <caret line="93" column="48" lean-forward="true" selection-start-line="93" selection-start-column="8" selection-end-line="93" selection-end-column="48" />
+            <state relative-caret-position="691">
+              <caret line="103" selection-start-line="103" selection-end-line="103" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -172,6 +171,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -188,7 +188,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -459,17 +458,18 @@
       <workItem from="1561734170798" duration="597000" />
       <workItem from="1563121376841" duration="282000" />
       <workItem from="1563300071150" duration="632000" />
+      <workItem from="1563309286822" duration="53000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="126303000" />
+    <option name="totallyTimeSpent" value="126356000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1600" height="837" extended-state="6" />
+    <frame x="0" y="23" width="1600" height="837" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" id="Project" order="0" visible="true" weight="0.18613607" />
+      <window_info id="Project" order="0" visible="true" weight="0.18806162" />
       <window_info id="Structure" order="1" weight="0.25288832" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -481,7 +481,7 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info anchor="bottom" id="Python Console" order="9" weight="0.39813375" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="9" visible="true" weight="0.39750692" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="12" />
@@ -803,16 +803,6 @@ py.show()</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/blobs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="930">
-          <caret line="71" selection-start-line="71" selection-end-line="71" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/_pars/simpnet_test.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
@@ -837,10 +827,20 @@ py.show()</expression-string>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/blobs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="642">
+          <caret line="71" selection-start-line="71" selection-end-line="71" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/network.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-49">
-          <caret line="93" column="48" lean-forward="true" selection-start-line="93" selection-start-column="8" selection-end-line="93" selection-end-column="48" />
+        <state relative-caret-position="691">
+          <caret line="103" selection-start-line="103" selection-end-line="103" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
