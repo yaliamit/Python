@@ -127,9 +127,19 @@ def re_estimate(model,train,args,fout):
             fout.write(str(model.LOGVAR.data)+'\n')
             fout.flush()
             trainMU, trainLOGVAR, trPI = model.initialize_mus(train[0], args.OPT)
-            trainMU, trainLOGVAR, _ = model.run_epoch(train, 0, 500,trainMU, trainLOGVAR, trPI, type='trest',fout=fout)
-            model.MU = torch.nn.Parameter(torch.mean(trainMU, dim=0))
-            model.LOGVAR = torch.nn.Parameter(torch.log(torch.var(trainMU, dim=0)))
+            trainMU, trainLOGVAR, trPI = model.run_epoch(train, 0, args.nti,trainMU, trainLOGVAR, trPI, type='trest',fout=fout)
+
+            if (model.n_mix>0):
+                cpi=torch.softmax(trPI,dim=1)
+                model.rho=torch.nn.Parameter(torch.mean(cpi,dim=0))
+                nmu=torch.sum(trainMU.reshape(-1,model.n_mix,model.s_dim)*cpi[:,:,None],dim=0)/torch.sum(cpi,dim=0)[:,None]
+                model.MU=torch.nn.Parameter(nmu)
+                nmu2=torch.sum(trainMU.reshape(-1,model.n_mix,model.s_dim)*trainMU.reshape(-1,model.n_mix,model.s_dim)*cpi[:,:,None],dim=0)/torch.sum(cpi,dim=0)[:,None]
+                nvar=nmu2-nmu*nmu
+                model.LOGVAR = torch.nn.Parameter(torch.log(nvar))
+            else:
+                model.MU = torch.nn.Parameter(torch.mean(trainMU, dim=0))
+                model.LOGVAR = torch.nn.Parameter(torch.log(torch.var(trainMU, dim=0)))
             fout.write('Means and variances of latent variable after restimation\n')
             fout.write(str(model.MU.data) + '\n')
             fout.write(str(model.LOGVAR.data) + '\n')

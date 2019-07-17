@@ -96,17 +96,22 @@ else:
         fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
         fout.flush()
 
+
+    if (args.OPT):
+        trainMU, trainLOGVAR,trPI = model.initialize_mus(train[0], args.OPT)
+        model.run_epoch(train, epoch, args.nti, trainMU, trainLOGVAR, trPI, type='trest', fout=fout)
+
     if (args.MM):
         aux.re_estimate(model,train,args,fout)
+        trainMU, trainLOGVAR, trPI = model.initialize_mus(train[0], args.OPT)
+        model.run_epoch(train, epoch, args.nti, trainMU, trainLOGVAR, trPI, type='trest', fout=fout)
+
     num_mu_iter=None
-    if (args.OPT):
-        num_mu_iter=args.nti
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
-    aux.show_reconstructed_images(test,model,ex_file,num_mu_iter)
+    aux.show_reconstructed_images(test,model,ex_file,args.nti)
     aux.show_sampled_images(model, ex_file)
-    #trainMU, trainLOGVAR = model.initialize_mus(train,args.OPT)
-    #model.run_epoch(train,  epoch, args.nti, trainMU, trainLOGVAR,type='trest',fout=fout)
+
     model.run_epoch(test,epoch,args.nti,testMU, testLOGVAR,testPI, type='test',fout=fout)
 
     fout.write('writing to '+ex_file+'\n')

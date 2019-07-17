@@ -106,7 +106,10 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             #print('mu time',time.time()-t1)
             mu[j:j + batch_size] = self.mu.data
             logvar[j:j + batch_size] = self.logvar.data
-            pi[j:j + batch_size]=self.pi.data
+            if (not self.MM):
+                pi[j:j + batch_size]=self.pi.data
+            else:
+                pi[j:j+batch_size]=self.K
             #t1 = time.time()
             recon_loss, loss, _ = self.compute_loss_and_grad(data,type,self.optimizer)
             #print('par time', time.time() - t1)
