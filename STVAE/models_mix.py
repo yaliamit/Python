@@ -132,7 +132,7 @@ class STVAE_mix(models.STVAE):
         eps = torch.randn(mu.shape[0],dim).to(self.dv)
         return mu + torch.exp(logvar/2) * eps
 
-    def dens_apply(self,s,s_mu,s_logvar,lpi):
+    def dens_apply(self,s,s_mu,s_logvar,lpi,pi):
         s_mu = s_mu.view(-1, self.n_mix, self.s_dim)
         s_logvar = s_logvar.view(-1, self.n_mix, self.s_dim)
         sd=torch.exp(s_logvar/2)
@@ -140,26 +140,25 @@ class STVAE_mix(models.STVAE):
         f=[]
         ss=-.5*((s-s_mu)*(s-s_mu)/var+s_logvar)
         ss=torch.sum(ss,dim=2)+lpi
-        posterior=torch.sum(torch.exp(lpi)*ss)
+        posterior=torch.sum(pi*ss)
         # Sum along last coordinate to get negative log density of each component.
 
         pr=-.5*torch.sum((s*s),dim=2)+self.rho-torch.logsumexp(self.rho,0)
-        # Substract log-prior
-        prior=-torch.sum(torch.exp(lpi)*pr) #+10*torch.sum(self.rho*self.rho)
+        prior=-torch.sum(pi*pr)
 
         return prior, posterior
 
-    def mixed_loss(self,x,data,lpi):
+    def mixed_loss(self,x,data,pi):
         b = []
 
         for i in range(self.n_mix):
             a = F.binary_cross_entropy(x[:, i, :].squeeze().view(-1, self.x_dim), data.view(-1, self.x_dim),
                                        reduction='none')
-            a = lpi[:, i] - torch.sum(a, dim=1)
+            a = torch.sum(a, dim=1)
             b = b + [a]
         b = torch.stack(b).transpose(0, 1)
 
-        recloss = -torch.sum(torch.logsumexp(b, dim=1))
+        recloss = torch.sum(pi*b)
         return recloss, b
 
     def forward(self, inputs):
@@ -177,8 +176,8 @@ class STVAE_mix(models.STVAE):
         lpi=torch.log(pi)
         prior=0
         post=0
-        prior, post = self.dens_apply(s,s_mu,s_logvar,lpi)
-        recloss, _=self.mixed_loss(x,inputs,lpi)
+        prior, post = self.dens_apply(s,s_mu,s_logvar,lpi,pi)
+        recloss, _=self.mixed_loss(x,inputs,pi)
         return recloss, prior, post
 
 
