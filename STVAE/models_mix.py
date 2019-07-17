@@ -187,7 +187,9 @@ class STVAE_mix(models.STVAE):
         # Apply linear map to entire sampled vector.
         x=self.decoder_and_trans(s)
         lpi=torch.log(pi)
-        prior, post = self.dens_apply(s,s_mu,s_logvar,lpi)
+        prior=0
+        post=0
+        #prior, post = self.dens_apply(s,s_mu,s_logvar,lpi)
         recloss, _=self.mixed_loss(x,inputs,lpi)
         return recloss, prior, post
 
