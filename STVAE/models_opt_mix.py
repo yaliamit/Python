@@ -51,11 +51,11 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             lpii=-0.5 * torch.sum((s-self.MU ) * (s- self.MU) / torch.exp(self.LOGVAR) + self.LOGVAR,dim=2)
 
             if (opt=='par'):
-                 lpii=lpii-torch.logsumexp(self.K,dim=1,keepdim=True)+self.K+ self.rho - torch.logsumexp(self.rho,dim=0)
+                 lpii=lpii-torch.logsumexp(self.pi,dim=1,keepdim=True)+self.pi+ self.rho - torch.logsumexp(self.rho,dim=0)
 
 
         else:
-            lpii = -torch.logsumexp(self.pi, dim=1, keepdim=True) + self.pi  # torch.softmax(self.pi,dim=1)
+            lpii = -torch.logsumexp(self.pi, dim=1, keepdim=True) + self.pi 
             pit = torch.exp(lpii)[:, None]
             prior, post = self.dens_apply(s, self.mu, self.logvar, pit)
 
