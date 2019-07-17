@@ -138,27 +138,14 @@ class STVAE_mix(models.STVAE):
         sd=torch.exp(s_logvar/2)
         var=sd*sd
         f=[]
-        for i in range(self.n_mix):
-            ss=[]
-            si=s[:,i,:] # sample from mixture component i
-            # Apply the mixture model to the samples from each of the mixture components.
-            for j in range(self.n_mix):
-                sss=si-s_mu[:,j,:]
-                ss=ss+[-.5*((sss*sss)/var[:,j,:]+s_logvar[:,j,:])]
-            ss=torch.stack(ss,dim=0).transpose(0,1)
-            ss=torch.sum(ss,dim=2)
-            # Add log-prob of each mixture component and do logsumexp
-            u=torch.logsumexp(ss+lpi,dim=1)
-            f = f+[u]
-        # Now f is the log E_{q_i} \sum \pi_i q_i multiply by \pi_i for each
-        f=torch.stack(f,dim=0).transpose(0,1)+lpi
-        posterior=torch.sum(torch.logsumexp(f,dim=1))
+        ss=-.5*((s-s_mu)*(s-s_mu)/var+s_logvar)
+        ss=torch.sum(ss,dim=2)+lpi
+        posterior=torch.sum(torch.exp(lpi)*ss)
         # Sum along last coordinate to get negative log density of each component.
 
-        pr=torch.sum(-(s*s),dim=2)/2  #+self.rho-torch.logsumexp(self.rho,0)
+        pr=-.5*torch.sum((s*s),dim=2)+self.rho-torch.logsumexp(self.rho,0)
         # Substract log-prior
-        pr=pr+lpi
-        prior=-torch.sum(torch.logsumexp(pr,dim=1)) #+10*torch.sum(self.rho*self.rho)
+        prior=-torch.sum(torch.exp(lpi)*pr) #+10*torch.sum(self.rho*self.rho)
 
         return prior, posterior
 
@@ -190,7 +177,7 @@ class STVAE_mix(models.STVAE):
         lpi=torch.log(pi)
         prior=0
         post=0
-        #prior, post = self.dens_apply(s,s_mu,s_logvar,lpi)
+        prior, post = self.dens_apply(s,s_mu,s_logvar,lpi)
         recloss, _=self.mixed_loss(x,inputs,lpi)
         return recloss, prior, post
 
