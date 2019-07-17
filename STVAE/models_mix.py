@@ -132,8 +132,7 @@ class STVAE_mix(models.STVAE):
         eps = torch.randn(mu.shape[0],dim).to(self.dv)
         return mu + torch.exp(logvar/2) * eps
 
-    def dens_apply(self,s,s_mu,s_logvar,pi):
-        lpi=torch.log(pi.squeeze())
+    def dens_apply(self,s,s_mu,s_logvar,lpi):
         s_mu = s_mu.view(-1, self.n_mix, self.s_dim)
         s_logvar = s_logvar.view(-1, self.n_mix, self.s_dim)
         sd=torch.exp(s_logvar/2)
@@ -158,9 +157,9 @@ class STVAE_mix(models.STVAE):
         pr=torch.sum(-(s*s),dim=2)/2
         # Substract log-prior
         pr=pr+self.rho-torch.logsumexp(self.rho,0)+lpi
-        prior=torch.sum(torch.logsumexp(pr,dim=1)) #+10*torch.sum(self.rho*self.rho)
+        prior=-torch.sum(torch.logsumexp(pr,dim=1)) #+10*torch.sum(self.rho*self.rho)
 
-        return -prior, posterior
+        return prior, posterior
 
     def mixed_loss(self,x,data,lpi):
         b = []
@@ -187,9 +186,9 @@ class STVAE_mix(models.STVAE):
         pit = pi.reshape(pi.shape[0], 1, pi.shape[1])
         # Apply linear map to entire sampled vector.
         x=self.decoder_and_trans(s)
-
-        prior, post = self.dens_apply(s,s_mu,s_logvar,pit)
-        recloss, _=self.mixed_loss(x,inputs,torch.log(pi))
+        lpi=torch.log(pi)
+        prior, post = self.dens_apply(s,s_mu,s_logvar,lpi)
+        recloss, _=self.mixed_loss(x,inputs,lpi)
         return recloss, prior, post
 
 
