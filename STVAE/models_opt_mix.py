@@ -55,7 +55,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
 
 
         else:
-            lpii = -torch.logsumexp(self.pi, dim=1, keepdim=True) + self.pi 
+            lpii = -torch.logsumexp(self.pi, dim=1, keepdim=True) + self.pi
             pit = torch.exp(lpii)[:, None]
             prior, post = self.dens_apply(s, self.mu, self.logvar, pit)
 
