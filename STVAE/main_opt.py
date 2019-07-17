@@ -99,11 +99,13 @@ else:
 
     if (args.OPT):
         trainMU, trainLOGVAR,trPI = model.initialize_mus(train[0], args.OPT)
+        fout.write('Train likelihood before reestimation\n')
         model.run_epoch(train, epoch, args.nti, trainMU, trainLOGVAR, trPI, type='trest', fout=fout)
 
     if (args.MM):
         aux.re_estimate(model,train,args,fout)
         trainMU, trainLOGVAR, trPI = model.initialize_mus(train[0], args.OPT)
+        fout.write('Train likelihood after reestimation\n')
         model.run_epoch(train, epoch, args.nti, trainMU, trainLOGVAR, trPI, type='trest', fout=fout)
 
     num_mu_iter=None

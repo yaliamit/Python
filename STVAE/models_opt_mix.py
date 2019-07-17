@@ -14,7 +14,6 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         if (self.MM):
             self.MU=nn.Parameter(torch.zeros(self.n_mix,self.s_dim))  #, requires_grad=False)
             self.LOGVAR=nn.Parameter(torch.zeros(self.n_mix,self.s_dim)) #, requires_grad=False)
-            self.K = torch.autograd.Variable(torch.ones(self.bsz,self.n_mix),requires_grad=False)
         self.mu_lr=args.mu_lr
 
         if (args.optimizer=='Adam'):
@@ -25,8 +24,13 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
     def update_s(self,mu,logvar,pi):
         self.mu=torch.autograd.Variable(mu, requires_grad=True)
         self.logvar = torch.autograd.Variable(logvar, requires_grad=True)
-        self.pi=torch.autograd.Variable(pi, requires_grad=True)
-        self.optimizer_s = optim.Adam([self.mu, self.logvar, self.pi], lr=self.mu_lr)
+
+        if (self.MM):
+            self.pi = torch.autograd.Variable(pi, requires_grad=False)
+            self.optimizer_s = optim.Adam([self.mu, self.logvar, self.pi], lr=self.mu_lr)
+        else:
+            self.pi = torch.autograd.Variable(pi, requires_grad=True)
+            self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=self.mu_lr)
 
     def forward(self,data,opt):
 
@@ -58,7 +62,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         recon_loss, b=self.mixed_loss(x,data,lpii)
         if (self.MM and opt=='mu'):
             # Log conditional densities of x given z + log prob(z).
-            self.K = torch.autograd.Variable(b+ self.rho - torch.logsumexp(self.rho,dim=0), requires_grad=False)
+            self.pi = torch.autograd.Variable(b+ self.rho - torch.logsumexp(self.rho,dim=0), requires_grad=False)
 
 
         return recon_loss, prior, post, x
@@ -106,10 +110,8 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             #print('mu time',time.time()-t1)
             mu[j:j + batch_size] = self.mu.data
             logvar[j:j + batch_size] = self.logvar.data
-            if (not self.MM):
-                pi[j:j + batch_size]=self.pi.data
-            else:
-                pi[j:j+batch_size]=self.K
+            pi[j:j + batch_size]=self.pi.data
+
             #t1 = time.time()
             recon_loss, loss, _ = self.compute_loss_and_grad(data,type,self.optimizer)
             #print('par time', time.time() - t1)
