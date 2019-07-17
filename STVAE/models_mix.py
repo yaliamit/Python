@@ -92,7 +92,7 @@ class STVAE_mix(models.STVAE):
             self.encoder_mix = encoder_mix(self.x_dim, self.h_dim, self.num_hlayers)
         self.decoder_mix=decoder_mix(self.x_dim,self.h_dim,self.n_mix,self.num_hlayers)
 
-        self.rho = nn.Parameter(torch.zeros(self.n_mix))
+        self.rho = nn.Parameter(torch.zeros(self.n_mix),requires_grad=True)
 
         if (args.optimizer=='Adam'):
             self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
@@ -154,9 +154,10 @@ class STVAE_mix(models.STVAE):
         f=torch.stack(f,dim=0).transpose(0,1)+lpi
         posterior=torch.sum(torch.logsumexp(f,dim=1))
         # Sum along last coordinate to get negative log density of each component.
-        pr=torch.sum(-(s*s),dim=2)/2
+
+        pr=torch.sum(-(s*s),dim=2)/2  #+self.rho-torch.logsumexp(self.rho,0)
         # Substract log-prior
-        pr=pr+self.rho-torch.logsumexp(self.rho,0)+lpi
+        pr=pr+lpi
         prior=-torch.sum(torch.logsumexp(pr,dim=1)) #+10*torch.sum(self.rho*self.rho)
 
         return prior, posterior
@@ -187,9 +188,9 @@ class STVAE_mix(models.STVAE):
         # Apply linear map to entire sampled vector.
         x=self.decoder_and_trans(s)
         lpi=torch.log(pi)
-        #prior=0
-        #post=0
-        prior, post = self.dens_apply(s,s_mu,s_logvar,lpi)
+        prior=0
+        post=0
+        #prior, post = self.dens_apply(s,s_mu,s_logvar,lpi)
         recloss, _=self.mixed_loss(x,inputs,lpi)
         return recloss, prior, post
 
