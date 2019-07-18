@@ -27,7 +27,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         if (self.MM):
             self.pi = torch.autograd.Variable(pi, requires_grad=True)
             self.logvar = torch.autograd.Variable(logvar, requires_grad=False)
-            self.optimizer_s = optim.Adam([self.mu,self.pi], lr=self.mu_lr)
+            self.optimizer_s = optim.Adam([self.mu, self.pi], lr=self.mu_lr)
         else:
             self.logvar = torch.autograd.Variable(logvar, requires_grad=True)
             self.pi = torch.autograd.Variable(pi, requires_grad=True)
@@ -76,9 +76,6 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             lpi=torch.log(pit)
             prior, post = self.dens_apply(s, self.mu, self.logvar, lpi,pit)
             recon_loss, _=self.mixed_loss(x,data,pit)
-        if (self.MM and opt=='mu'):
-            # Log conditional densities of x given z + log prob(z).
-            self.pi = torch.autograd.Variable(b+ self.rho - torch.logsumexp(self.rho,dim=0), requires_grad=False)
 
 
         return recon_loss, prior, post, x
