@@ -99,6 +99,8 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         return recon_loss, loss, recon
 
     def run_epoch(self, train,  epoch,num_mu_iter,MU, LOGVAR, PI, type='test',fout=None):
+        if (self.MM):
+            MU, LOGVAR, PI=self.initialize_mus(train[0],True)
         if (type=='train'):
             self.train()
         tr_recon_loss = 0; tr_full_loss=0
