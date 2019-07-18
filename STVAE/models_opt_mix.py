@@ -12,8 +12,8 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
 
         self.MM=args.MM
         if (self.MM):
-            self.MU=nn.Parameter(torch.zeros(self.n_mix,self.s_dim), requires_grad=True)
-            self.LOGVAR=nn.Parameter(torch.zeros(self.n_mix,self.s_dim), requires_grad=True)
+            self.MU=nn.Parameter(torch.zeros(self.n_mix,self.s_dim), requires_grad=False)
+            self.LOGVAR=nn.Parameter(torch.zeros(self.n_mix,self.s_dim), requires_grad=False)
         self.mu_lr=args.mu_lr
         self.eyy=torch.eye(self.n_mix).to(self.dv)
         if (args.optimizer=='Adam'):
