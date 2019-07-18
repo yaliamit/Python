@@ -106,7 +106,7 @@ else:
     num_mu_iter=None
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
-    aux.show_reconstructed_images(test,model,ex_file,args.nti)
+    aux.show_reconstructed_images(train,model,ex_file,args.nti)
     aux.show_sampled_images(model, ex_file)
 
     model.run_epoch(test,epoch,args.nti,testMU, testLOGVAR,testPI, type='test',fout=fout)

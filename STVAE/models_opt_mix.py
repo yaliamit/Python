@@ -80,8 +80,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             recon_loss, _=self.mixed_loss(x,data,pit)
 
         if (opt=='mu' and self.MM):
-            kk=torch.argmin(b,dim=1)
-            self.pi=torch.autograd.Variable(self.eyy[kk])
+            self.pi=torch.autograd.Variable(torch.softmax(b,dim=1))
         return recon_loss, prior, post, x
 
 
