@@ -32,6 +32,19 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             self.pi = torch.autograd.Variable(pi, requires_grad=True)
             self.optimizer_s = optim.Adam([self.mu, self.logvar,self.pi], lr=self.mu_lr)
 
+    def mixed_loss_MM(self,x,data,pi,lqi):
+        b = []
+
+        for i in range(self.n_mix):
+            a = F.binary_cross_entropy(x[:, i, :].squeeze().view(-1, self.x_dim), data.view(-1, self.x_dim),
+                                       reduction='none')
+            a = torch.sum(a, dim=1)
+            b = b + [a]
+        b = torch.stack(b).transpose(0, 1)
+        b=b+lqi
+        recloss = torch.sum(pi*b)
+        return recloss, b
+
     def forward(self,data,opt):
 
 
@@ -51,14 +64,16 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             lpii=-0.5 * torch.sum((s-self.MU ) * (s- self.MU) / torch.exp(self.LOGVAR) + self.LOGVAR,dim=2)
 
             if (opt=='par'):
-                 lpii=lpii-torch.logsumexp(self.pi,dim=1,keepdim=True)+self.pi+ self.rho - torch.logsumexp(self.rho,dim=0)
-
-
+                lpii=lpii+self.rho - torch.logsumexp(self.rho,dim=0)
+                pit=torch.softmax(self.pi)
+            else:
+                pit=torch.ones_like(self.pi).to(self.dv)
+            self.mixed_loss_MM(x,data,pit,lpii)
         else:
             pit = torch.softmax(self.pi,dim=1)
-            prior, post = self.dens_apply(s, self.mu, self.logvar, torch.log(pit),pit)
-
-        recon_loss, b=self.mixed_loss(x,data,pit)
+            lpi=torch.log(pit)
+            prior, post = self.dens_apply(s, self.mu, self.logvar, lpi,pit)
+            recon_loss, b=self.mixed_loss(x,data,pit)
         if (self.MM and opt=='mu'):
             # Log conditional densities of x given z + log prob(z).
             self.pi = torch.autograd.Variable(b+ self.rho - torch.logsumexp(self.rho,dim=0), requires_grad=False)
