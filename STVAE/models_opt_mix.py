@@ -41,7 +41,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             a = torch.sum(a, dim=1)
             b = b + [a]
         b = torch.stack(b).transpose(0, 1)
-        b=b+lqi
+        b=b-lqi
         recloss = torch.sum(pi*b)
         return recloss, b
 
@@ -64,16 +64,17 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             lpii=-0.5 * torch.sum((s-self.MU ) * (s- self.MU) / torch.exp(self.LOGVAR) + self.LOGVAR,dim=2)
 
             if (opt=='par'):
+                # For optimizing parameters you want the full log-likelihood including the mixture weights
                 lpii=lpii+self.rho - torch.logsumexp(self.rho,dim=0)
-                pit=torch.softmax(self.pi)
+                pit=torch.softmax(self.pi,dim=1)
             else:
-                pit=torch.ones_like(self.pi).to(self.dv)
-            self.mixed_loss_MM(x,data,pit,lpii)
+                pit=torch.ones_like(self.pi).to(self.dv)/self.n_mix
+            recon_loss, b = self.mixed_loss_MM(x,data,pit,lpii)
         else:
             pit = torch.softmax(self.pi,dim=1)
             lpi=torch.log(pit)
             prior, post = self.dens_apply(s, self.mu, self.logvar, lpi,pit)
-            recon_loss, b=self.mixed_loss(x,data,pit)
+            recon_loss, _=self.mixed_loss(x,data,pit)
         if (self.MM and opt=='mu'):
             # Log conditional densities of x given z + log prob(z).
             self.pi = torch.autograd.Variable(b+ self.rho - torch.logsumexp(self.rho,dim=0), requires_grad=False)
