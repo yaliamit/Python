@@ -36,19 +36,6 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             self.pi = torch.autograd.Variable(pi, requires_grad=True)
             self.optimizer_s = optim.Adam([self.mu, self.logvar,self.pi], lr=self.mu_lr)
 
-    def mixed_loss_MM(self,x,data,pi):
-        b = []
-
-        for i in range(self.n_mix):
-            a = F.binary_cross_entropy(x[:, i, :].squeeze().view(-1, self.x_dim), data.view(-1, self.x_dim),
-                                       reduction='none')
-            a = torch.sum(a, dim=1)
-            b = b + [a]
-        b = torch.stack(b).transpose(0, 1)
-        b=b
-        recloss = torch.sum(pi*b)
-        return recloss, b
-
     def forward(self,data,opt):
 
 
@@ -73,7 +60,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             else:
                 pit=torch.ones_like(self.pi).to(self.dv)/self.n_mix
             prior= torch.sum(pit*(lpii))
-            recon_loss, b = self.mixed_loss_MM(x,data,pit)
+            recon_loss, b = self.mixed_loss(x,data,pit)
         else:
             pit = torch.softmax(self.pi,dim=1)
             lpi=torch.log(pit)
