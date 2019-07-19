@@ -27,6 +27,7 @@ def process_args(parser):
     parser.add_argument('--nti', type=int, default=500, help='num test iterations (default: 100)')
     parser.add_argument('--nvi', type=int, default=20, help='num val iterations (default: 20)')
     parser.add_argument('--n_mix', type=int, default=0, help='num mixtures (default: 0)')
+    parser.add_argument('--clust', type=int, default=None, help='which cluster to shoe')
     parser.add_argument('--MM', action='store_true', help='Use max max')
     parser.add_argument('--OPT', action='store_true', help='Optimization instead of encoding')
     parser.add_argument('--CONS', action='store_true', help='Output to consol')
@@ -54,10 +55,10 @@ def create_image(XX, ex_file):
 
     print("Saved the sampled images")
 
-def show_sampled_images(model,ex_file):
+def show_sampled_images(model,ex_file,clust=None):
     model.bsz=100
     theta = torch.zeros(model.bsz, 6)
-    X=model.sample_from_z_prior(theta)
+    X=model.sample_from_z_prior(theta,clust)
     XX=X.cpu().detach().numpy()
     create_image(XX, ex_file)
 

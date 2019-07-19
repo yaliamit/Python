@@ -36,7 +36,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             self.pi = torch.autograd.Variable(pi, requires_grad=True)
             self.optimizer_s = optim.Adam([self.mu, self.logvar,self.pi], lr=self.mu_lr)
 
-    def mixed_loss_MM(self,x,data,pi,lqi):
+    def mixed_loss_MM(self,x,data,pi):
         b = []
 
         for i in range(self.n_mix):
@@ -45,7 +45,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             a = torch.sum(a, dim=1)
             b = b + [a]
         b = torch.stack(b).transpose(0, 1)
-        b=b-lqi
+        b=b
         recloss = torch.sum(pi*b)
         return recloss, b
 
@@ -65,14 +65,15 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             post = 0
             # For finding optimal s for each mixture component just add log-prior density. mixed loss will optimize the sum
             # of log-prior + conditional for each component and the optimal s for each component is obtained.
-            lpii=-0.5 * torch.sum((s-self.MU ) * (s- self.MU) / torch.exp(self.LOGVAR) + self.LOGVAR,dim=2)
-            lpii = lpii + self.rho - torch.logsumexp(self.rho, dim=0)
+            lpii=0.5 * torch.sum((s-self.MU ) * (s- self.MU) / torch.exp(self.LOGVAR) + self.LOGVAR,dim=2)
+            lpii = lpii - self.rho + torch.logsumexp(self.rho, dim=0)
             if (opt=='par'):
                 # For optimizing parameters you want the full log-likelihood including the mixture weights
                 pit=self.pi #torch.softmax(self.pi,dim=1)
             else:
                 pit=torch.ones_like(self.pi).to(self.dv)/self.n_mix
-            recon_loss, b = self.mixed_loss_MM(x,data,pit,lpii)
+            prior= torch.sum(pit*(lpii))
+            recon_loss, b = self.mixed_loss_MM(x,data,pit)
         else:
             pit = torch.softmax(self.pi,dim=1)
             lpi=torch.log(pit)

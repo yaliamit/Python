@@ -237,12 +237,15 @@ class STVAE_mix(models.STVAE):
         return rr
 
 
-    def sample_from_z_prior(self,theta=None):
+    def sample_from_z_prior(self,theta=None, clust=None):
         self.eval()
         self.setup_id(self.bsz)
         ee=torch.eye(self.n_mix).to(self.dv)
         rho_dist=torch.exp(self.rho-torch.logsumexp(self.rho,dim=0))
-        ii=torch.multinomial(rho_dist,self.bsz,replacement=True)
+        if (clust is not None):
+            ii=clust*torch.ones(self.bsz, dtype=torch.int64)
+        else:
+            ii=torch.multinomial(rho_dist,self.bsz,replacement=True)
         s = torch.randn(self.bsz, self.s_dim*self.n_mix).to(self.dv)
         s = s.view(-1, self.n_mix, self.s_dim)
         if (theta is not None and self.u_dim>0):
