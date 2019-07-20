@@ -243,7 +243,7 @@ class STVAE_mix(models.STVAE):
         ee=torch.eye(self.n_mix).to(self.dv)
         rho_dist=torch.exp(self.rho-torch.logsumexp(self.rho,dim=0))
         if (clust is not None):
-            ii=clust*torch.ones(self.bsz, dtype=torch.int64).to(dv)
+            ii=clust*torch.ones(self.bsz, dtype=torch.int64).to(self.dv)
         else:
             ii=torch.multinomial(rho_dist,self.bsz,replacement=True)
         s = torch.randn(self.bsz, self.s_dim*self.n_mix).to(self.dv)
