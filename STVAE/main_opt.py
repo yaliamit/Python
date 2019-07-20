@@ -81,7 +81,10 @@ if (args.run_existing):
     #aux.test_with_noise(test, model)
     #rerun_on_train_test(model,train,test,args)
     aux.show_reconstructed_images(test,model,ex_file,args.nti)
-    aux.show_sampled_images(model,ex_file,args.clust)
+    if args.n_mix>0:
+        for clust in range(args.n_mix):
+            aux.show_sampled_images(model,ex_file,clust)
+
 else:
     scheduler=get_scheduler(args,model)
 
@@ -107,7 +110,11 @@ else:
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
     aux.show_reconstructed_images(test,model,ex_file,args.nti)
-    aux.show_sampled_images(model, ex_file)
+    if args.n_mix>0:
+        for clust in range(args.n_mix):
+            aux.show_sampled_images(model,ex_file,clust)
+    else:
+        aux.show_sampled_images(model, ex_file)
 
     model.run_epoch(test,epoch,args.nti,testMU, testLOGVAR,testPI, type='test',fout=fout)
 
