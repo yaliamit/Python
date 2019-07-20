@@ -153,6 +153,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         self.LOGVAR = torch.nn.Parameter(torch.log(nvar))
         print(self.MU)
         print(self.LOGVAR)
+
     def recon(self,input,num_mu_iter=10):
 
         num_inp=input.shape[0]
