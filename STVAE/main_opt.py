@@ -100,10 +100,10 @@ else:
         fout.flush()
 
 
-    if (args.OPT):
-        trainMU, trainLOGVAR,trPI = model.initialize_mus(train[0], args.OPT)
-        fout.write('Train likelihood before reestimation\n')
-        model.run_epoch(train, epoch, args.nti, trainMU, trainLOGVAR, trPI, type='trest', fout=fout)
+    #if (args.OPT):
+    #    trainMU, trainLOGVAR,trPI = model.initialize_mus(train[0], args.OPT)
+    #    fout.write('Train likelihood before reestimation\n')
+    #    model.run_epoch(train, epoch, args.nti, trainMU, trainLOGVAR, trPI, type='trest', fout=fout)
 
 
     num_mu_iter=None
