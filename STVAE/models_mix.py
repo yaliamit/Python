@@ -17,8 +17,8 @@ class toNorm_mix(nn.Module):
     def __init__(self,h_dim,s_dim, n_mix):
         super(toNorm_mix,self).__init__()
         self.h2smu = nn.Linear(h_dim, s_dim*n_mix)
-        self.h2svar = nn.Linear(h_dim, s_dim*n_mix)
-        self.h2pi = nn.Parameter(torch.zeros(h_dim,n_mix))
+        self.h2svar = nn.Linear(h_dim, s_dim*n_mix,bias=False)
+        self.h2pi = nn.Linear(h_dim,n_mix) #nn.Parameter(torch.zeros(h_dim,n_mix))
 
 # Each set of s_dim normals gets multiplied by its own matrix to correlate
 class fromNorm_mix(nn.Module):
@@ -105,7 +105,8 @@ class STVAE_mix(models.STVAE):
             h=F.relu(self.encoder_mix.h2he(h))
         s_mu=self.toNorm_mix.h2smu(h)
         s_logvar=F.threshold(self.toNorm_mix.h2svar(h),-6,-6)
-        hm=torch.matmul(h,self.toNorm_mix.h2pi).clamp(-10.,10.)
+        hm=self.toNorm_mix.h2pi(h).clamp(-10.,10.)
+        #hm=torch.matmul(h,self.toNorm_mix.h2pi).clamp(-10.,10.)
         pi = torch.softmax(hm,dim=1)
         return s_mu, s_logvar, pi
 
