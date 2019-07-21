@@ -117,7 +117,7 @@ class STVAE_OPT(models.STVAE):
 
         return recon_batch
 
-    def sample_from_z_prior(self,theta=None):
+    def sample_from_z_prior(self,theta=None,clust=None):
         self.setup_id(self.bsz)
         s = torch.randn(self.bsz, self.s_dim).to(self.dv)
         if self.MM:
