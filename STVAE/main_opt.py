@@ -125,6 +125,6 @@ else:
     if (not args.CONS):
         fout.close()
 
-    print("DONE")
-    sys.stdout.flush()
+    #print("DONE")
+    #sys.stdout.flush()
 
