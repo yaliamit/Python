@@ -120,6 +120,7 @@ else:
 
     fout.write('writing to '+ex_file+'\n')
     torch.save(model.state_dict(),'_output/'+ex_file+'.pt')
+    fout.write('DONE\n')
     fout.flush()
     if (not args.CONS):
         fout.close()
