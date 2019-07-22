@@ -38,13 +38,12 @@ class fromNorm_mix(nn.Module):
     def forward(self,z,u):
 
         h=[]
+        v=[]
         for i in range(self.n_mix):
             h=h+[self.z2h[i](self.z2z[i](z[:,i,:]))]
             if (self.type=='tvae'):
-                v=torch.zeros_like(u)
-                v[:,i,:]=self.u2u[i](u[:,i,:])
-            else:
-                v=u
+                v=v+[self.u2u[i](u[:,i,:])]
+
         hh=torch.stack(h,dim=0).transpose(0,1)
         hh=F.relu(hh)
         return hh, v
@@ -123,7 +122,7 @@ class STVAE_mix(models.STVAE):
         if (self.u_dim>0):
            xt = []
            for i in range(self.n_mix):
-                xt=xt+[self.apply_trans(x[:,i,:],u[:,i,:]).squeeze()]
+                xt=xt+[self.apply_trans(x[:,i,:],u[i]).squeeze()]
            x=torch.stack(xt,dim=0).transpose(0,1).view(-1,self.n_mix,self.x_dim)
         xx = torch.clamp(x, 1e-6, 1 - 1e-6)
         return xx
