@@ -33,7 +33,7 @@ class fromNorm_mix(nn.Module):
         self.z2h=nn.ModuleList([nn.Linear(z_dim, h_dim) for i in range(n_mix)])
         self.z2z=nn.ModuleList([nn.Linear(z_dim, z_dim) for i in range(n_mix)])
         if (type == 'tvae'):
-            self.u2u = nn.ModuleList([nn.Linear(u_dim, u_dim) for i in range(n_mix)])
+            self.u2u = nn.ModuleList([nn.Linear(u_dim, u_dim, bias=False) for i in range(n_mix)])
 
     def forward(self,z,u):
 
