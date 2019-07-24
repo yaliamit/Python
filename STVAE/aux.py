@@ -31,6 +31,10 @@ def process_args(parser):
     parser.add_argument('--MM', action='store_true', help='Use max max')
     parser.add_argument('--OPT', action='store_true', help='Optimization instead of encoding')
     parser.add_argument('--CONS', action='store_true', help='Output to consol')
+    parser.add_argument('--classify', action='store_true', help='Output to consol')
+    parser.add_argument('--output_prefix', default='', help='path to model')
+
+
 
     args = parser.parse_args()
 

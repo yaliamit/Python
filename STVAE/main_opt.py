@@ -11,6 +11,7 @@ import time
 from Conv_data import get_data
 from models import  get_scheduler
 import aux
+from class_on_hidden import train_new
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
@@ -76,14 +77,14 @@ valMU, valLOGVAR, valPI=model.initialize_mus(val[0],args.OPT)
 testMU, testLOGVAR, testPI=model.initialize_mus(test[0],args.OPT)
 
 if (args.run_existing):
-    model.load_state_dict(torch.load('_output/'+ex_file+'.pt',map_location=device))
-    #model.eval()
-    #aux.test_with_noise(test, model)
-    #rerun_on_train_test(model,train,test,args)
-    aux.show_reconstructed_images(test,model,ex_file,args.nti)
-    if args.n_mix>0:
-        for clust in range(args.n_mix):
-            aux.show_sampled_images(model,ex_file,clust)
+    model.load_state_dict(torch.load(args.output_prefix+'_output/'+ex_file+'.pt',map_location=device))
+    if (args.classify):
+        train_new(model,args,train,test,device)
+    else:
+        aux.show_reconstructed_images(test,model,ex_file,args.nti)
+        if args.n_mix>0:
+            for clust in range(args.n_mix):
+                aux.show_sampled_images(model,ex_file,clust)
 
 else:
     scheduler=get_scheduler(args,model)

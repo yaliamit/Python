@@ -161,14 +161,13 @@ class STVAE_mix(models.STVAE):
         recloss = torch.sum(pi*b)
         return recloss, b
 
-    def forward(self, inputs):
+    def forward(self, inputs,mu,logvar,pi):
 
-        s_mu, s_logvar, pi = self.forward_encoder(inputs.view(-1, self.x_dim))
 
         if (self.type is not 'ae'):
-            s = self.sample(s_mu, s_logvar, self.s_dim*self.n_mix)
+            s = self.sample(mu, logvar, self.s_dim*self.n_mix)
         else:
-            s=s_mu
+            s=mu
         s=s.view(-1,self.n_mix,self.s_dim)
         pit = pi.reshape(pi.shape[0], 1, pi.shape[1])
         # Apply linear map to entire sampled vector.
@@ -176,7 +175,7 @@ class STVAE_mix(models.STVAE):
         lpi=torch.log(pi)
         prior=0
         post=0
-        prior, post = self.dens_apply(s,s_mu,s_logvar,lpi,pi)
+        prior, post = self.dens_apply(s,mu,logvar,lpi,pi)
         recloss, _=self.mixed_loss(x,inputs,pi)
         return recloss, prior, post
 
@@ -184,10 +183,12 @@ class STVAE_mix(models.STVAE):
 
     def compute_loss_and_grad(self,data,type):
 
+        mu, logvar, pi = self.forward_encoder(data.view(-1, self.x_dim))
+
         if (type == 'train'):
             self.optimizer.zero_grad()
 
-        recloss, prior, post = self.forward(data)
+        recloss, prior, post = self.forward(data,mu,logvar,pi)
 
         loss = recloss + prior + post
 
@@ -195,7 +196,7 @@ class STVAE_mix(models.STVAE):
             loss.backward()
             self.optimizer.step()
 
-        return recloss, loss
+        return recloss, loss, mu, logvar, pi
 
     def run_epoch(self, train, epoch,num, MU, LOGVAR,PI, type='test',fout=None):
 
@@ -211,7 +212,10 @@ class STVAE_mix(models.STVAE):
         for j in np.arange(0, len(y), self.bsz):
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
-            recon_loss, loss=self.compute_loss_and_grad(data,type)
+            recon_loss, loss, mu, logvar, pi=self.compute_loss_and_grad(data,type)
+            MU[j:j+self.bsz]=mu
+            LOGVAR[j:j+self.bsz]=logvar
+            PI[j:j+self.bsz]=pi
             tr_recon_loss += recon_loss
             tr_full_loss += loss
 

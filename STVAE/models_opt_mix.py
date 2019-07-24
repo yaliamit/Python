@@ -120,16 +120,6 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             tr_recon_loss += recon_loss
             tr_full_loss += loss
 
-        # if (self.MM):
-        #     #self.E_step(pi,mu)
-        #     print('rho',torch.softmax(self.rho,dim=0))
-        #     for j in np.arange(0, len(y), batch_size):
-        #         data = torch.tensor(tr[j:j + batch_size]).float()
-        #         data = data.to(self.dv)
-        #         self.mu=torch.autograd.Variable(mu[j:j + batch_size, :],requires_grad=False)
-        #         recon_loss, loss, _ = self.compute_loss_and_grad(data, type, self.optimizer)
-        #         tr_recon_loss += recon_loss
-        #         tr_full_loss += loss
         if (fout is  None):
             print('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}'.format(type,
                     epoch, tr_recon_loss/len(tr), tr_full_loss/len(tr)))
@@ -170,7 +160,6 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         recon = recon_batch.reshape(self.n_mix * num_inp, -1)
         rr = recon[kk]
         return rr
-
-
-
+    
+    
 
