@@ -76,6 +76,8 @@ trainMU, trainLOGVAR, trPI=model.initialize_mus(train[0],args.OPT)
 valMU, valLOGVAR, valPI=model.initialize_mus(val[0],args.OPT)
 testMU, testLOGVAR, testPI=model.initialize_mus(test[0],args.OPT)
 
+
+
 if (args.run_existing):
     model.load_state_dict(torch.load(args.output_prefix+'_output/'+ex_file+'.pt',map_location=device))
     if (args.classify):

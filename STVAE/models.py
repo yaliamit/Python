@@ -106,7 +106,7 @@ class STVAE(nn.Module):
 
 
 
-    def initialize_mus(self,train,OPT=False):
+    def initialize_mus(self,train,OPT=None):
         trMU=None
         trLOGVAR=None
         trPI=None
