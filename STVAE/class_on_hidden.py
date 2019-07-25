@@ -56,7 +56,7 @@ class NET(nn.Module):
             tr_loss += cost
             tr_acc+= acc
 
-        fout.write('====> Epoch {}: {} loss: {:.4f}: accuracy:{:.4f}\n'.format(type,
+        fout.write('====> Epoch {}: {} loss: {:.4f}, accuracy:{:.4f}\n'.format(type,
         epoch, tr_loss / len(tr), np.float(tr_acc)/len(tr)))
 
 def prepare_new(model,args,train,fout):
