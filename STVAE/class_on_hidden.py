@@ -59,9 +59,9 @@ def prepare_new(model,args,train,fout):
     trainMU, trainLOGVAR, trPI = model.initialize_mus(train[0], args.OPT)
     trainMU, trainLOGVAR, trPI = model.run_epoch(train, 0, args.nti, trainMU, trainLOGVAR, trPI,
                                                   type='trest',fout=fout)
-    trmu=trainMU.detach().numpy()
-    trlogvar=trainLOGVAR.detach().numpy()
-    trpi=trPI.detach().numpy()
+    trmu=trainMU.detach().cpu().numpy()
+    trlogvar=trainLOGVAR.detach().cpu().numpy()
+    trpi=trPI.detach().cpu().numpy()
     trX=torch.cat([torch.tensor(trmu),torch.tensor(trlogvar),torch.tensor(trpi)],dim=1)
     trY=np.argmax(train[1],axis=1)
 
