@@ -123,14 +123,17 @@ else:
 
     fout.write('writing to '+ex_file+'\n')
     torch.save(model.state_dict(),'_output/'+ex_file+'.pt')
-    fout.write('DONE\n')
-    fout.flush()
+
     if args.classify:
         args.nepoch=1000
         args.lr=.01
         train_new(model,args,train,test,device)
+
+    fout.write('DONE\n')
+    fout.flush()
     if (not args.CONS):
         fout.close()
+
 
     #print("DONE")
     #sys.stdout.flush()
