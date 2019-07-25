@@ -12,3 +12,4 @@
 --lr=.001
 --nval=0
 --optimizer=Adam
+--classify

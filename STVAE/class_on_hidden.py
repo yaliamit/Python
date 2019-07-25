@@ -15,17 +15,22 @@ class NET(nn.Module):
         self.bsz=args.mb_size
         self.dv=device
         self.final = nn.Linear(hdim, ncl)
-        self.optimizer = optim.Adam(self.parameters(),.01)
+        self.optimizer = optim.Adam(self.parameters(),args.lr)
 
+        self.loss = nn.CrossEntropyLoss(reduction='sum')
 
+    def forward(self,input):
+
+        logits=self.final(input)
+
+        return logits
 
     def compute_loss_and_grad(self,data,target,type):
 
         if (type == 'train'):
             self.optimizer.zero_grad()
-        logits = self.final(data)
-        loss = nn.CrossEntropyLoss()
-        cost = loss(logits, target)
+        logits = self(data)
+        cost = self.loss(logits, target)
         acc=torch.sum(torch.eq(torch.argmax(logits,dim=1),target))
         if (type == 'train'):
             cost.backward()
@@ -50,6 +55,7 @@ class NET(nn.Module):
             cost, acc=self.compute_loss_and_grad(data,target,type)
             tr_loss += cost
             tr_acc+= acc
+
         fout.write('====> Epoch {}: {} loss: {:.4f}: accuracy:{:.4f}\n'.format(type,
         epoch, tr_loss / len(tr), np.float(tr_acc)/len(tr)))
 
