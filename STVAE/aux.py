@@ -3,6 +3,7 @@ import pylab as py
 import torch
 from scipy.misc import imsave
 import os
+import sys
 
 def process_args(parser):
     parser.add_argument('--transformation', default='aff', help='type of transformation: aff or tps')
@@ -77,15 +78,6 @@ def show_reconstructed_images(test,model,ex_file,num_iter=None):
     XX=np.concatenate([inp,X])
     create_image(XX,ex_file+'_recon')
 
-def rerun_on_train_test(model,train,test,args):
-    trainMU, trainLOGVAR = model.initialize_mus(train, args.OPT)
-    testMU, testLOGVAR = model.initialize_mus(test, args.OPT)
-    if (args.OPT):
-        model.setup_id(model.bsz)
-        model.run_epoch(train, 0, args.nti, trainMU, trainLOGVAR, type='trest', fout=fout)
-        model.run_epoch(test, 0, args.nti, testMU, testLOGVAR, type='test', fout=fout)
-    else:
-        model.run_epoch(test, 0, type='test')
 
 def add_occlusion(recon_data):
     recon_data[0][0:20,0:13,:,:]=0
