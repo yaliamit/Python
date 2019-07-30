@@ -14,10 +14,22 @@ class NET(nn.Module):
         self.hdim=hdim
         self.bsz=args.mb_size
         self.dv=device
+        self.lamda=args.lamda
         self.final = nn.Linear(hdim, ncl)
         self.optimizer = optim.Adam(self.parameters(),args.lr)
-
         self.loss = nn.CrossEntropyLoss(reduction='sum')
+
+
+
+
+    def l2_loss(self):
+        reg_loss = 0
+        for param in self.parameters():
+            reg_loss += torch.sum(param.pow(2))
+
+        reg_loss
+
+        return reg_loss
 
     def forward(self,input):
 
@@ -30,19 +42,21 @@ class NET(nn.Module):
         if (type == 'train'):
             self.optimizer.zero_grad()
         logits = self(data)
-        cost = self.loss(logits, target)
+        l2l=self.l2_loss()
+        like = self.loss(logits, target)
+        cost=like+self.lamda*l2l
         acc=torch.sum(torch.eq(torch.argmax(logits,dim=1),target))
         if (type == 'train'):
             cost.backward()
             self.optimizer.step()
 
-        return cost, acc
+        return like, acc, l2l
 
     def run_epoch(self, trainX, trainY,epoch, type='test',fout=None):
 
         if (type=='train'):
             self.train()
-        tr_loss = 0; tr_acc=0
+        tr_like = 0; tr_acc=0; tr_l2=0
         ii = np.arange(0, trainX.shape[0], 1)
         # if (type=='train'):
         #   np.random.shuffle(ii)
@@ -52,12 +66,16 @@ class NET(nn.Module):
         for j in np.arange(0, len(y), self.bsz):
             data = (tr[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(y[j:j + self.bsz]).long().to(self.dv)
-            cost, acc=self.compute_loss_and_grad(data,target,type)
-            tr_loss += cost
+            like, acc, l2l=self.compute_loss_and_grad(data,target,type)
+            tr_like += like
             tr_acc+= acc
+            tr_l2 = l2l
 
-        fout.write('====> Epoch {}: {} loss: {:.4f}, accuracy:{:.4f}\n'.format(type,
-        epoch, tr_loss / len(tr), np.float(tr_acc)/len(tr)))
+        tr_l2=tr_l2*self.lamda/self.bsz
+        tr_acc=np.float(tr_acc)/len(tr)
+        tr_like/=len(tr)
+        fout.write('====> Epoch {}: {} loss: {:.4f}, like:{:.4f}, l2_loss:{:.4f}, accuracy:{:.4f}, \n'.format(type,
+        epoch, tr_like+self.lamda*tr_l2, tr_like, tr_l2, tr_acc))
 
 def prepare_new(model,args,train,fout):
 
