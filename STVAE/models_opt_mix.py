@@ -74,8 +74,8 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
 
     def compute_loss_and_grad(self,data, type, optim, opt='par'):
 
-        #if (type == 'train' or opt=='mu'):
-        optim.zero_grad()
+        if (type == 'train' or opt=='mu'):
+            optim.zero_grad()
 
         recon_loss, prior, post,recon = self.forward(data,opt)
 
@@ -91,6 +91,8 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
 
         if (type=='train'):
             self.train()
+        else:
+            self.eval()
         tr_recon_loss = 0; tr_full_loss=0
         ii = np.arange(0, train[0].shape[0], 1)
         #if (type=='train'):
