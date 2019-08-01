@@ -97,8 +97,6 @@ else:
             scheduler.step()
         t1=time.time()
         trainMU, trainLOGVAR, trPI= model.run_epoch(train,epoch,args.num_mu_iter,trainMU,trainLOGVAR,trPI, type='train',fout=fout)
-        model.run_epoch(train, epoch, args.nti, trainMU, trainLOGVAR, trPI, type='trest', fout=fout)
-
         if (val[0] is not None):
                 model.run_epoch(val,epoch,args.nvi,valMU,valLOGVAR,valPI, type='val',fout=fout)
 
@@ -108,15 +106,15 @@ else:
 
     if (args.OPT):
         trainMU, trainLOGVAR,trPI = model.initialize_mus(train[0], args.OPT)
-        fout.write('Train likelihood before reestimation\n')
-        model.run_epoch(train, epoch, args.nti, trainMU, trainLOGVAR, trPI, type='trest', fout=fout)
-    #aux.make_images(test,model,ex_file,args)
+    fout.write('Train likelihood before reestimation\n')
+    model.run_epoch(train, epoch, args.nti, trainMU, trainLOGVAR, trPI, type='trest', fout=fout)
+    aux.make_images(test,model,ex_file,args)
 
 
-    #model.run_epoch(test,epoch,args.nti,testMU, testLOGVAR,testPI, type='test',fout=fout)
+    model.run_epoch(test,epoch,args.nti,testMU, testLOGVAR,testPI, type='test',fout=fout)
 
-    #fout.write('writing to '+ex_file+'\n')
-    #torch.save(model.state_dict(),'_output/'+ex_file+'.pt')
+    fout.write('writing to '+ex_file+'\n')
+    torch.save(model.state_dict(),'_output/'+ex_file+'.pt')
     trainMU=None;trainLOGVAR=None;trainPI=None
     if args.classify:
         args.nepoch=1000
