@@ -72,9 +72,6 @@ for keys, vals in model.state_dict().items():
 fout.write('tot_pars,'+str(tot_pars)+'\n')
 
 
-trainMU, trainLOGVAR, trPI=model.initialize_mus(train[0],args.OPT)
-valMU, valLOGVAR, valPI=model.initialize_mus(val[0],args.OPT)
-testMU, testLOGVAR, testPI=model.initialize_mus(test[0],args.OPT)
 
 
 
@@ -89,6 +86,10 @@ if (args.run_existing):
                 aux.show_sampled_images(model,ex_file,clust)
 
 else:
+    trainMU, trainLOGVAR, trPI = model.initialize_mus(train[0], args.OPT)
+    valMU, valLOGVAR, valPI = model.initialize_mus(val[0], args.OPT)
+    testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
+
     scheduler=get_scheduler(args,model)
 
     for epoch in range(args.nepoch):
