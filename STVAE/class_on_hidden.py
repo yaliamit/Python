@@ -84,7 +84,7 @@ def prepare_new(model,args,train,fout):
     fout.write('Initialized\n')
 
     trainMU, trainLOGVAR, trPI = model.run_epoch(train, 0, args.nti, trainMU, trainLOGVAR, trPI,
-                                                  type='train',fout=fout)
+                                                  type='trest',fout=fout)
     fout.write('Finished computing features\n')
     fout.flush()
     trmu=trainMU.detach().cpu().numpy()
