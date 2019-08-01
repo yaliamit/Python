@@ -214,9 +214,9 @@ class STVAE_mix(models.STVAE):
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
             recon_loss, loss, mu, logvar, pi=self.compute_loss_and_grad(data,type)
-            MU[j:j+self.bsz]=mu.detach()
-            LOGVAR[j:j+self.bsz]=logvar.detach()
-            PI[j:j+self.bsz]=pi.detach()
+            #MU[j:j+self.bsz]=mu.detach()
+            #LOGVAR[j:j+self.bsz]=logvar.detach()
+            #PI[j:j+self.bsz]=pi.detach()
             tr_recon_loss += recon_loss
             tr_full_loss += loss
 
