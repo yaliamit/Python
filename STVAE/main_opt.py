@@ -107,7 +107,8 @@ else:
     if (args.OPT):
         trainMU, trainLOGVAR,trPI = model.initialize_mus(train[0], args.OPT)
     fout.write('Train likelihood before reestimation\n')
-    model.run_epoch(train, epoch, args.nti, trainMU, trainLOGVAR, trPI, type='test', fout=fout)
+    with torch.no_grad():
+        model.run_epoch(train, epoch, args.nti, trainMU, trainLOGVAR, trPI, type='trest', fout=fout)
     aux.make_images(test,model,ex_file,args)
 
 
