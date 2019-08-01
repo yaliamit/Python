@@ -82,9 +82,9 @@ def prepare_new(model,args,train,fout):
 
     trainMU, trainLOGVAR, trPI = model.initialize_mus(train[0], args.OPT)
     fout.write('Initialized\n')
-    with torch.no_grad():
-        trainMU, trainLOGVAR, trPI = model.run_epoch(train, 0, args.nti, trainMU, trainLOGVAR, trPI,
-                                                  type='trest',fout=fout)
+
+    trainMU, trainLOGVAR, trPI = model.run_epoch(train, 0, args.nti, trainMU, trainLOGVAR, trPI,
+                                                  type='train',fout=fout)
     fout.write('Finished computing features\n')
     fout.flush()
     trmu=trainMU.detach().cpu().numpy()

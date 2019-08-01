@@ -104,14 +104,12 @@ else:
         fout.flush()
 
 
-    if (args.OPT):
-        trainMU, trainLOGVAR,trPI = model.initialize_mus(train[0], args.OPT)
-    fout.write('Train likelihood before reestimation\n')
-    with torch.no_grad():
-        model.run_epoch(train, epoch, args.nti, trainMU, trainLOGVAR, trPI, type='trest', fout=fout)
+    #if (args.OPT):
+        #trainMU, trainLOGVAR,trPI = model.initialize_mus(train[0], args.OPT)
+        #fout.write('Train likelihood before reestimation\n')
+        #with torch.no_grad():
+        #    model.run_epoch(train, epoch, args.nti, trainMU, trainLOGVAR, trPI, type='trest', fout=fout)
     aux.make_images(test,model,ex_file,args)
-
-
     model.run_epoch(test,epoch,args.nti,testMU, testLOGVAR,testPI, type='test',fout=fout)
 
     fout.write('writing to '+ex_file+'\n')
