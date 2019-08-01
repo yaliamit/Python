@@ -83,6 +83,7 @@ def prepare_new(model,args,train,fout):
     trainMU, trainLOGVAR, trPI = model.initialize_mus(train[0], args.OPT)
     trainMU, trainLOGVAR, trPI = model.run_epoch(train, 0, args.nti, trainMU, trainLOGVAR, trPI,
                                                   type='trest',fout=fout)
+    fout.write('Finished computing features\n')
     trmu=trainMU.detach().cpu().numpy()
     trlogvar=trainLOGVAR.detach().cpu().numpy()
     trpi=trPI.detach().cpu().numpy()
