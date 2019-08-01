@@ -91,8 +91,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
 
         if (type=='train'):
             self.train()
-        else:
-            self.eval()
+
         tr_recon_loss = 0; tr_full_loss=0
         ii = np.arange(0, train[0].shape[0], 1)
         #if (type=='train'):
