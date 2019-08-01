@@ -114,9 +114,9 @@ class STVAE(nn.Module):
         if self.n_mix>0:
             sdim=self.s_dim*self.n_mix
         if (train is not None):
-            trMU = torch.zeros(train.shape[0], sdim) #.to(self.dv)
-            trLOGVAR = torch.zeros(train.shape[0], sdim) #.to(self.dv)
-            trPI=torch.zeros(train.shape[0], self.n_mix) #.to(self.dv)
+            trMU = torch.zeros(train.shape[0], sdim).to(self.dv)
+            trLOGVAR = torch.zeros(train.shape[0], sdim).to(self.dv)
+            trPI=torch.zeros(train.shape[0], self.n_mix).to(self.dv)
         return trMU, trLOGVAR, trPI
 
     def forward_encoder(self, inputs):
