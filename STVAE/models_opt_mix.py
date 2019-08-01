@@ -99,7 +99,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         y = train[1][ii]
         mu=MU[ii]
         logvar=LOGVAR[ii]
-        fout.write('logvar',logvar.is_cuda)
+        fout.write(logvar.is_cuda)
         pi=PI[ii]
         batch_size = self.bsz
         for j in np.arange(0, len(y), batch_size):
