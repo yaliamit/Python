@@ -25,15 +25,15 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
 
 
     def update_s(self,mu,logvar,pi):
-        self.mu=torch.autograd.Variable(mu, requires_grad=True)
+        self.mu=torch.autograd.Variable(mu.to(self.dv), requires_grad=True)
 
         if (self.MM):
             self.pi = torch.autograd.Variable(pi, requires_grad=False)
             self.logvar = torch.autograd.Variable(logvar, requires_grad=False)
             self.optimizer_s = optim.Adam([self.mu], lr=self.mu_lr)
         else:
-            self.logvar = torch.autograd.Variable(logvar, requires_grad=True)
-            self.pi = torch.autograd.Variable(pi, requires_grad=True)
+            self.logvar = torch.autograd.Variable(logvar.to(self.dv), requires_grad=True)
+            self.pi = torch.autograd.Variable(pi.to(self.dv), requires_grad=True)
             self.optimizer_s = optim.Adam([self.mu, self.logvar,self.pi], lr=self.mu_lr)
 
     def forward(self,data,opt):
