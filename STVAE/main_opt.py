@@ -108,17 +108,8 @@ else:
     #    trainMU, trainLOGVAR,trPI = model.initialize_mus(train[0], args.OPT)
     #    fout.write('Train likelihood before reestimation\n')
     #    model.run_epoch(train, epoch, args.nti, trainMU, trainLOGVAR, trPI, type='trest', fout=fout)
+    aux.make_images(test,model,ex_file,args)
 
-
-    num_mu_iter=None
-    torch.manual_seed(args.seed)
-    np.random.seed(args.seed)
-    aux.show_reconstructed_images(test,model,ex_file,args.nti)
-    if args.n_mix>0:
-        for clust in range(args.n_mix):
-            aux.show_sampled_images(model,ex_file,clust)
-    else:
-        aux.show_sampled_images(model, ex_file)
 
     #model.run_epoch(test,epoch,args.nti,testMU, testLOGVAR,testPI, type='test',fout=fout)
 

@@ -42,6 +42,23 @@ def process_args(parser):
 
     return (args)
 
+def make_images(test,model,ex_file,args):
+        old_bsz=model.bsz
+        model.bsz = 100
+        model.setup_id(model.bsz)
+        num_mu_iter=None
+        torch.manual_seed(args.seed)
+        np.random.seed(args.seed)
+        show_reconstructed_images(test,model,ex_file,args.nti)
+        if args.n_mix>0:
+            for clust in range(args.n_mix):
+                show_sampled_images(model,ex_file,clust)
+        else:
+            show_sampled_images(model, ex_file)
+
+        model.bsz=old_bsz
+        model.setup_id(old_bsz)
+
 def create_image(XX, ex_file):
     mat = []
     t = 0
@@ -62,7 +79,6 @@ def create_image(XX, ex_file):
     print("Saved the sampled images")
 
 def show_sampled_images(model,ex_file,clust=None):
-    model.bsz=100
     theta = torch.zeros(model.bsz, 6)
     X=model.sample_from_z_prior(theta,clust)
     XX=X.cpu().detach().numpy()
@@ -70,13 +86,14 @@ def show_sampled_images(model,ex_file,clust=None):
         ex_file=ex_file+'_'+str(clust)
     create_image(XX, ex_file)
 
+
 def show_reconstructed_images(test,model,ex_file,num_iter=None):
 
-    inp = torch.from_numpy(test[0][0:50].transpose(0, 3, 1, 2))
+    inp = torch.from_numpy(test[0][0:100].transpose(0, 3, 1, 2))
 
     X=model.recon(inp,num_iter)
     X = X.cpu().detach().numpy().reshape(inp.shape)
-    XX=np.concatenate([inp,X])
+    XX=np.concatenate([inp[0:50],X[0:50]])
     create_image(XX,ex_file+'_recon')
 
 
