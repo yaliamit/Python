@@ -185,15 +185,15 @@ class STVAE_mix(models.STVAE):
 
         mu, logvar, pi = self.forward_encoder(data.view(-1, self.x_dim))
 
-        if (type == 'train'):
-            self.optimizer.zero_grad()
+        #if (type == 'train'):
+        self.optimizer.zero_grad()
 
         recloss, prior, post = self.forward(data,mu,logvar,pi)
 
         loss = recloss + prior + post
+        loss.backward()
 
         if (type == 'train'):
-            loss.backward()
             self.optimizer.step()
 
         return recloss, loss, mu, logvar, pi
