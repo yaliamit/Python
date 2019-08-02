@@ -80,9 +80,10 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         recon_loss, prior, post,recon = self.forward(data,opt)
 
         loss = recon_loss + prior + post
-        loss.backward()
+
 
         if (type == 'train' or opt=='mu'):
+            loss.backward()
             optim.step()
 
         return recon_loss, loss, recon
@@ -108,7 +109,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             data = torch.tensor(tr[j:j + batch_size]).float()
             data = data.to(self.dv)
             self.update_s(mu[j:j+batch_size, :], logvar[j:j+batch_size, :], pi[j:j+batch_size])
-            print('j',j)
+            #print('j',j)
             for it in range(num_mu_iter):
                self.compute_loss_and_grad(data, type,self.optimizer_s,opt='mu')
             mu[j:j + batch_size] = self.mu.data
@@ -117,7 +118,12 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             pi[j:j + batch_size]=self.pi.data
             # If MM the parameters of the prior get updated using direct estimates using the mu's and the pi's
             #if (not self.MM):
-            recon_loss, loss, _ = self.compute_loss_and_grad(data,type,self.optimizer)
+            if (type=='train'):
+                recon_loss, loss, _ = self.compute_loss_and_grad(data,type,self.optimizer)
+            else:
+                with torch.no_grad():
+                    recon_loss, loss, _ = self.compute_loss_and_grad(data, type, self.optimizer)
+
             #print('par time', time.time() - t1)
             tr_recon_loss += recon_loss
             tr_full_loss += loss
