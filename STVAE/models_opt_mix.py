@@ -5,6 +5,12 @@ import numpy as np
 import models_mix
 import time
 
+import contextlib
+
+@contextlib.contextmanager
+def dummy_context_mgr():
+    yield None
+
 class STVAE_OPT_mix(models_mix.STVAE_mix):
 
     def __init__(self, x_h, x_w, device, args):
@@ -118,11 +124,11 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             pi[j:j + batch_size]=self.pi.data
             # If MM the parameters of the prior get updated using direct estimates using the mu's and the pi's
             #if (not self.MM):
-            if (type=='train'):
+            with torch.no_grad() if (type !='train') else dummy_context_mgr():
                 recon_loss, loss, _ = self.compute_loss_and_grad(data,type,self.optimizer)
-            else:
-                with torch.no_grad():
-                    recon_loss, loss, _ = self.compute_loss_and_grad(data, type, self.optimizer)
+            #else:
+            #    with torch.no_grad():
+            #        recon_loss, loss, _ = self.compute_loss_and_grad(data, type, self.optimizer)
 
             #print('par time', time.time() - t1)
             tr_recon_loss += recon_loss
