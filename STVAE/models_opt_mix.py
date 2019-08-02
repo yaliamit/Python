@@ -109,7 +109,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             data = torch.tensor(tr[j:j + batch_size]).float()
             data = data.to(self.dv)
             self.update_s(mu[j:j+batch_size, :], logvar[j:j+batch_size, :], pi[j:j+batch_size])
-            #print('j',j)
+            print('j',j)
             for it in range(num_mu_iter):
                self.compute_loss_and_grad(data, type,self.optimizer_s,opt='mu')
             mu[j:j + batch_size] = self.mu.data
