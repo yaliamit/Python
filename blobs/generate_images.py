@@ -34,7 +34,7 @@ def acquire_data(PARS,type='class'):
     if ('blob' in PARS):
 
         train=make_data(PARS['num_train'],PARS)
-        #show_images(train[0],num=100)
+        show_images(train[0],num=100)
         val=make_data(PARS['num_val'],PARS)
         test=make_data(PARS['num_test'],PARS)
         image_dim = PARS['image_dim']
@@ -54,7 +54,7 @@ def show_images(ims,num=None):
     cn=np.int32(np.ceil(num/rn))
     for i in range(num):
         py.subplot(rn,cn,i+1)
-        py.imshow(ims[i,:,:,0])
+        py.imshow(ims[0,i,:,:,0])
         py.axis('off')
 
     py.show()

@@ -191,9 +191,10 @@ class STVAE_mix(models.STVAE):
         recloss, prior, post = self.forward(data,mu,logvar,pi)
 
         loss = recloss + prior + post
-        loss.backward()
+
 
         if (type == 'train'):
+            loss.backward()
             self.optimizer.step()
 
         return recloss, loss, mu, logvar, pi

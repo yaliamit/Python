@@ -120,17 +120,10 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
                self.compute_loss_and_grad(data, type,self.optimizer_s,opt='mu')
             mu[j:j + batch_size] = self.mu.data
             logvar[j:j + batch_size] = self.logvar.data
-            #if (not self.MM or epoch>0):
             pi[j:j + batch_size]=self.pi.data
-            # If MM the parameters of the prior get updated using direct estimates using the mu's and the pi's
-            #if (not self.MM):
             with torch.no_grad() if (type !='train') else dummy_context_mgr():
                 recon_loss, loss, _ = self.compute_loss_and_grad(data,type,self.optimizer)
-            #else:
-            #    with torch.no_grad():
-            #        recon_loss, loss, _ = self.compute_loss_and_grad(data, type, self.optimizer)
 
-            #print('par time', time.time() - t1)
             tr_recon_loss += recon_loss
             tr_full_loss += loss
 
