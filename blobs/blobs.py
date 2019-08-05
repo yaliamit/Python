@@ -69,6 +69,7 @@ def run_new(PARS):
 
     num_epochs = PARS['num_epochs']
     train, val, test, image_dim=acquire_data(PARS)
+    print('Finished generating training images')
     tf.reset_default_graph()
     PLH=get_place_holders(PARS,image_dim)
 
