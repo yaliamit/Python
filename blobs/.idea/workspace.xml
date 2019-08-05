@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="b0a43a12-b84a-4e4c-a6df-2c878dbf68c8" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/_pars/blob_train.txt" beforeDir="false" afterPath="$PROJECT_DIR$/_pars/blob_train.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blobs.py" beforeDir="false" afterPath="$PROJECT_DIR$/blobs.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -68,7 +67,7 @@
         <entry file="file://$PROJECT_DIR$/_pars/blob_train.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="60">
-              <caret line="4" column="14" selection-start-line="4" selection-start-column="14" selection-end-line="4" selection-end-column="14" />
+              <caret line="4" column="16" selection-start-line="4" selection-start-column="16" selection-end-line="4" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -176,8 +175,8 @@
         <option value="$PROJECT_DIR$/_pars/simpnet_test.txt" />
         <option value="$PROJECT_DIR$/_pars/blob_test.txt" />
         <option value="$PROJECT_DIR$/generate_images.py" />
-        <option value="$PROJECT_DIR$/_pars/blob_train.txt" />
         <option value="$PROJECT_DIR$/blobs.py" />
+        <option value="$PROJECT_DIR$/_pars/blob_train.txt" />
       </list>
     </option>
   </component>
@@ -487,12 +486,12 @@
       <workItem from="1563121376841" duration="282000" />
       <workItem from="1563300071150" duration="632000" />
       <workItem from="1563309286822" duration="53000" />
-      <workItem from="1565042547278" duration="1522000" />
+      <workItem from="1565042547278" duration="1577000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="127878000" />
+    <option name="totallyTimeSpent" value="127933000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="727" extended-state="6" />
@@ -917,7 +916,7 @@ py.show()</expression-string>
     <entry file="file://$PROJECT_DIR$/_pars/blob_train.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
-          <caret line="4" column="14" selection-start-line="4" selection-start-column="14" selection-end-line="4" selection-end-column="14" />
+          <caret line="4" column="16" selection-start-line="4" selection-start-column="16" selection-end-line="4" selection-end-column="16" />
         </state>
       </provider>
     </entry>
