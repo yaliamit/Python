@@ -3,7 +3,7 @@
 --sdim=8
 --hdim=256
 --num_hlayers=0
---nepoch=50
+--nepoch=10
 --gpu=True
 --seed=3259679
 --num_train=60000
@@ -13,3 +13,5 @@
 --nval=0
 --optimizer=Adam
 --classify
+--run_existing
+--output_prefix=EXP_NT60_1+120+3+40+6+20_vae_tvae

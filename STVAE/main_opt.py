@@ -79,9 +79,10 @@ if (args.run_existing):
     model.load_state_dict(torch.load(args.output_prefix+'_output/'+ex_file+'.pt',map_location=device))
     if (args.classify):
         train_new(model,args,train,test,device)
-    else:
-        aux.show_reconstructed_images(test,model,ex_file,args.nti)
-        if args.n_mix>0:
+    testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
+    model.run_epoch(test,0,args.nti,testMU, testLOGVAR,testPI, type='test',fout=fout)
+    aux.show_reconstructed_images(test,model,ex_file,args.nti)
+    if args.n_mix>0:
             for clust in range(args.n_mix):
                 aux.show_sampled_images(model,ex_file,clust)
 
