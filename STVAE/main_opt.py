@@ -81,8 +81,9 @@ if (args.run_existing):
     model.run_epoch(test,0,args.nti,testMU, testLOGVAR,testPI, type='test',fout=fout)
     if (args.classify):
         train_new(model,args,train,test,device)
-    aux.show_reconstructed_images(test,model,ex_file,args.nti)
-    if args.n_mix>0:
+    else:
+        aux.show_reconstructed_images(test,model,ex_file,args.nti)
+        if args.n_mix>0:
             for clust in range(args.n_mix):
                 aux.show_sampled_images(model,ex_file,clust)
 
