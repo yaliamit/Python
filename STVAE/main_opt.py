@@ -77,10 +77,10 @@ fout.write('tot_pars,'+str(tot_pars)+'\n')
 
 if (args.run_existing):
     model.load_state_dict(torch.load(args.output_prefix+'_output/'+ex_file+'.pt',map_location=device))
-    if (args.classify):
-        train_new(model,args,train,test,device)
     testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
     model.run_epoch(test,0,args.nti,testMU, testLOGVAR,testPI, type='test',fout=fout)
+    if (args.classify):
+        train_new(model,args,train,test,device)
     aux.show_reconstructed_images(test,model,ex_file,args.nti)
     if args.n_mix>0:
             for clust in range(args.n_mix):
@@ -116,9 +116,9 @@ else:
         args.lr=.01
         train_new(model,args,train,test,device)
 
-    fout.write('DONE\n')
-    fout.flush()
-    if (not args.CONS):
+fout.write('DONE\n')
+fout.flush()
+if (not args.CONS):
         fout.close()
 
 
