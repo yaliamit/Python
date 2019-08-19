@@ -107,11 +107,22 @@ def run_new(PARS):
         sys.stdout.flush()
 
 
+def run_big(test_batch, PLH, OPS, PARS, sess):
+
+    HY = run_epoch(test_batch, PLH, OPS, PARS, sess, 0, type='Test')
+    HYY = np.array(HY[0])
+    image_dim = PARS['image_dim']
+    PARS['image_dim'] = PARS['big_image_dim']
+    HYA = paste_batch(HYY, PARS['old_dim'], PARS['image_dim'], PARS['coarse_disp'], PARS['num_blob_pars'])
+    PARS['image_dim'] = image_dim
+    return HYA
+
 def reload(PARS,train=False):
 
     tf.reset_default_graph()
     if ('blob' in PARS and PARS['blob']):
-        np.random.seed(34567)
+        np.random.seed(PARS['seed'])
+        #np.random.seed(54245)
         test, test_batch = generate_bigger_images(PARS)
     else:
         train, val, test, image_dim = acquire_data(PARS)
@@ -138,14 +149,15 @@ def reload(PARS,train=False):
             #     py.subplot(1,4,i+1)
             #     py.imshow(vars[0][:,:,0,i])
 
-            py.show()
-            HY = run_epoch(test_batch,PLH,OPS,PARS,sess, 0, type='Test')
-            HYY = np.array(HY[0])
-            PARS['image_dim']=PARS['big_image_dim']
-            HYA=paste_batch(HYY, PARS['old_dim'], PARS['image_dim'],PARS['coarse_disp'],PARS['num_blob_pars'])
+            #py.show()
+            old_thresh = PARS['thresh']
+            PARS['thresh'] = 0.
+            HYA=run_big(test_batch,PLH,OPS,PARS,sess)
             inds = range(len(HYA))
             for ind in inds:
-                generate_image_from_estimate(PARS, HYA[ind], test[0][ind],test[1][ind])
+                generate_image_from_estimate(PARS, HYA[ind], test[0][ind], test[1][ind],optim=False)
+            PARS['thresh'] = old_thresh
+            HYA=run_big(test_batch,PLH,OPS,PARS,sess)
         else:
             # Get the minimization operation from the stored model
             if (train):
@@ -154,6 +166,10 @@ def reload(PARS,train=False):
                 run_epoch(train, PLH, OPS, PARS, sess, i)
                 run_epoch(val, PLH, OPS, PARS, sess, i, type='Val')
                 sys.stdout.flush()
+
+    if ('blob' in PARS and PARS['blob']):
+        for ind in inds:
+            generate_image_from_estimate(PARS, HYA[ind], test[0][ind], test[1][ind])
 
 net = sys.argv[1]
 gpu_device=None

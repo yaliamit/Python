@@ -4,6 +4,7 @@ import PyQt5
 import scipy.signal as signal
 import scipy.interpolate as inp
 from Conv_data import get_data
+import blob_optim
 
 def add_nois(train,sigma):
     nois = np.random.normal(size=train[0].shape) * sigma
@@ -34,7 +35,7 @@ def acquire_data(PARS,type='class'):
     if ('blob' in PARS):
 
         train=make_data(PARS['num_train'],PARS)
-        #show_images(train[0],num=100)
+        show_images(train[0],num=100)
         val=make_data(PARS['num_val'],PARS)
         test=make_data(PARS['num_test'],PARS)
         image_dim = PARS['image_dim']
@@ -188,6 +189,7 @@ def make_blobs(mux,muy,sigmas, Amps, image_dim, nchannels=1):
     x, y = np.meshgrid(range(np.int32(image_dim)), range(np.int32(image_dim)))
 
     g = np.zeros(x.shape+(nchannels,))
+    #GT=[]
     for mx, my, si, a in zip(mux, muy,sigmas,Amps):
         gt = a*np.exp(-(((x - mx) ** 2 + (y - my) ** 2) / (2.0 * si ** 2)))
         if (nchannels==3):
@@ -195,14 +197,15 @@ def make_blobs(mux,muy,sigmas, Amps, image_dim, nchannels=1):
             gt=np.dot(col,gt.ravel().reshape((1,-1))).transpose().reshape(g.shape)
         else:
             gt=gt.reshape(gt.shape+(1,))
+
         g = g + gt
         #g = np.maximum(g,np.exp(-(((x - mx) ** 2 + (y - my) ** 2) / (2.0 * sigma ** 2))))
     #g = np.reshape(g, g.shape + (1,))
 
-    return(g)
+    return g
 
 # Find  duplicate detections and merge them (if centers are too close.)
-def clean_b(ii,jj,mux,muy,coarse_disp):
+def clean_b(mux,muy,coarse_disp):
     ij=np.ones(mux.shape[0], dtype=bool)
     for i in range(mux.shape[0]):
         for j in range(mux.shape[0]):
@@ -214,9 +217,8 @@ def clean_b(ii,jj,mux,muy,coarse_disp):
 
     mux=mux[ij==1]
     muy=muy[ij==1]
-    ii=ii[ij==1]
-    jj=jj[ij==1]
-    return(ii,jj,mux,muy)
+
+    return(mux,muy,ij)
 
 # Make background
 def background(n,gauss_ker,nchannels):
@@ -301,6 +303,7 @@ def generate_image(PARS,num_blobs=1):
     As=PARS['Amps'][0]+np.random.rand(num_blobs)*(PARS['Amps'][1]-PARS['Amps'][0])
 
     g = make_blobs(mux, muy, sigmas, As, image_dim, PARS['nchannels'])
+
     #py.imshow(g[:,:,0])
     #py.show()
     mux = np.array(mux) #* np.float32(image_dim / 2) + image_dim / 2
@@ -334,8 +337,9 @@ def extract_mus(hy,ii,jj,coarse_disp,PARS):
     muy=jj*coarse_disp+coarse_disp/2 + hy[tuple(I1)]
 
     # clean up close detections
-    ii,jj,mux,muy=clean_b(ii,jj,mux,muy,coarse_disp)
-
+    mux,muy,ij=clean_b(mux,muy,coarse_disp)
+    ii = ii[ij == 1]
+    jj = jj[ij == 1]
     l = len(ii)
     if (hy.shape[-1]>3):
         I = np.int32(np.concatenate([np.array(ii).reshape((1,-1)), np.array(jj).reshape((1,-1)), 2*np.ones((1,l))]))
@@ -349,44 +353,59 @@ def extract_mus(hy,ii,jj,coarse_disp,PARS):
         As=PARS['Amps'][0]*np.ones(l)
     return(mux,muy,sigmas,As)
 
-def generate_image_from_estimate(PARS,hy,orig_image,orig_data):
+def generate_image_from_estimate(PARS,hy,orig_image,orig_data,optim=True):
 
-    image_dim=orig_image.shape[0]
+    image_dim=orig_image.shape[1]
+    coarse_disp = PARS['coarse_disp']
+    [It, Jt] = np.where(orig_data[:, :, PARS['num_blob_pars'] - 1] == 1)
+    muxt, muyt, sigmast, Ast = extract_mus(orig_data, It, Jt, coarse_disp, PARS)
 
-    coarse_disp=PARS['coarse_disp']
     #image_dim=PARS['image_dim']
     hys = hy[:,:,PARS['num_blob_pars']-1]>PARS['thresh']
     [ii, jj] = np.where(hys > 0)
 
-
-    mux,muy,sigmas,As=extract_mus(hy,ii,jj,coarse_disp,PARS)
-
-
-    g=make_blobs(list(mux),list(muy),list(sigmas),list(As),image_dim, PARS['nchannels'])
-    [It,Jt]=np.where(orig_data[:,:,PARS['num_blob_pars']-1]==1)
-    muxt,muyt,sigmast,Ast=extract_mus(orig_data,It,Jt,coarse_disp,PARS)
-
-    print('mux')
-    print(np.array([mux, muxt]))
-    print('muy')
-    print(np.array([muy, muyt]))
-    print('sigmas')
-    print(np.array([sigmas, sigmast]))
-    print('As')
-    print(np.array([As, Ast]))
-    print(py.get_backend())
     py.ion()
-    fig=py.figure(1)
+    mux,muy,sigmas,As=extract_mus(hy,ii,jj,coarse_disp,PARS)
+    show_circs(mux,muxt,muy,muyt,sigmas,sigmast,As,Ast,orig_image)
+    if (optim):
+        mux,muy,sigmas,As=blob_optim.optimize_blobs_tf(mux, muy, sigmas, As, image_dim, orig_image,PARS)
+        show_circs(mux,muxt,muy,muyt,sigmas,sigmast,As,Ast,orig_image)
+        mux, muy, ij = clean_b(mux, muy, coarse_disp)
+        As=As[ij]; sigmas=sigmas[ij]
+        show_circs(mux,muxt,muy,muyt,sigmas,sigmast,As,Ast,orig_image)
+        mux,muy,sigmas,As=blob_optim.optimize_blobs_tf(mux, muy, sigmas, As, image_dim, orig_image,PARS)
+        show_circs(mux,muxt,muy,muyt,sigmas,sigmast,As,Ast,orig_image)
+        mux, muy, ij = clean_b(mux, muy, coarse_disp)
+        As = As[ij]; sigmas = sigmas[ij]
+        show_circs(mux, muxt, muy, muyt, sigmas, sigmast, As, Ast, orig_image)
+        mux, muy, sigmas, As = blob_optim.optimize_blobs_tf(mux, muy, sigmas, As, image_dim, orig_image, PARS)
+        show_circs(mux, muxt, muy, muyt, sigmas, sigmast, As, Ast, orig_image)
+        g=make_blobs(list(mux),list(muy),list(sigmas),list(As),image_dim, PARS['nchannels'])
+        ii=np.logical_and(As>PARS['Amps'][0]/3, sigmas<PARS['sigma'][1]*1.1)
+        show_circs(mux[ii],muxt,muy[ii],muyt,sigmas[ii],sigmast,As[ii],Ast,orig_image)
 
-    ax = fig.add_subplot(1, 1, 1)
-    py.title("Original")
-    py.imshow(orig_image[0,:,:,0])
-    for mx,my,s in zip(mux,muy,sigmas):
-        circle=py.Circle((mx,my),radius=s,color="r",fill=False)
-        ax.add_artist(circle)
-    py.show()
+
     print("Hello")
     #py.close(1)
 
 
 
+def show_circs(mux,muxt,muy,muyt,sigmas,sigmast,As,Ast,orig_image):
+    np.set_printoptions(precision=3)
+    print(np.transpose(np.array([mux/128., muy/128., sigmas, As])))
+    # print('muy')
+    # print(np.array([muy, muyt]))
+    # print('sigmas')
+    # print(np.array([sigmas, sigmast]))
+    # print('As')
+    # print(np.array([As, Ast]))
+    print(py.get_backend())
+    fig = py.figure(1)
+    ax = fig.add_subplot(1, 1, 1)
+
+    py.imshow(orig_image[0,:,:,0])
+    py.axis('off')
+    for mx,my,s in zip(mux,muy,sigmas):
+        circle=py.Circle((mx,my),radius=s,color="r",fill=False)
+        ax.add_artist(circle)
+    py.show()
