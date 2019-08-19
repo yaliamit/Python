@@ -13,5 +13,3 @@
 --nval=0
 --optimizer=Adam
 --classify
---run_existing
---output_prefix=EXP_OPT_NT60_1+120+3+40+6+20_vae+tvae/

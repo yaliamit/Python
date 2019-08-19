@@ -113,7 +113,7 @@ else:
     torch.save(model.state_dict(),'_output/'+ex_file+'.pt')
     trainMU=None;trainLOGVAR=None;trainPI=None
     if args.classify:
-        args.nepoch=10
+        args.nepoch=1000
         args.lr=.01
         train_new(model,args,train,test,device)
 
