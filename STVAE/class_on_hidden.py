@@ -74,8 +74,8 @@ class NET(nn.Module):
         tr_l2=tr_l2*self.lamda/self.bsz
         tr_acc=np.float(tr_acc)/len(tr)
         tr_like/=len(tr)
-        fout.write('====> Epoch {}: {} loss: {:.4f}, accuracy:{:.4f}, like:{:.4f}, l2l:{:.4f} \n'.format(type,
-        epoch, tr_like+self.lamda*tr_l2,tr_acc, tr_like,  tr_l2 ))
+        fout.write('====> Epoch {}: {} loss: {:.4f}, accuracy:{:.4f} \n'.format(type,
+        epoch, tr_like+self.lamda*tr_l2,tr_acc))
 
 def prepare_new(model,args,train,fout):
 
