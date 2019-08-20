@@ -82,6 +82,7 @@ def prepare_new(model,args,train,fout):
 
     trainMU, trainLOGVAR, trPI = model.initialize_mus(train[0], args.OPT)
     fout.write('Initialized\n')
+    print(train[0].shape,args.nti)
 
     trainMU, trainLOGVAR, trPI = model.run_epoch(train, 0, args.nti, trainMU, trainLOGVAR, trPI,
                                                   type='trest',fout=fout)
