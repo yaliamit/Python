@@ -100,7 +100,8 @@ def train_new(model,args,train,test,device):
 
     fout=sys.stdout
     trX, trY=prepare_new(model,args,train,fout)
-
+    print('In train new:')
+    print(str(args))
     val = None
     ncl=np.max(trY)+1
     net=NET(trX.shape[1],ncl,args,device).to(device)
