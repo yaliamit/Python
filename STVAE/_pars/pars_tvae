@@ -5,7 +5,7 @@
 --num_hlayers=0
 --nepoch=1000
 --gpu=True
---seed=3259679
+--seed=3251234
 --num_train=60000
 --mb_size=500
 --model=base
