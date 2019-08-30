@@ -9,6 +9,7 @@ import pprint
 import pandas
 
 
+
 def produce_B(b):
     B = copy.deepcopy(b[0])
 
@@ -159,7 +160,7 @@ def read_e(nh,mx,type,nt):
 l=len(sys.argv)
 
 new=True
-ntk=20
+ntk=10
 if (l>1):
     new=(sys.argv[1]=='new')
 if (l>2):

@@ -34,7 +34,7 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/blobs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
+            <state relative-caret-position="-649">
               <caret line="116" column="33" selection-start-line="116" selection-start-column="33" selection-end-line="116" selection-end-column="33" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
@@ -51,15 +51,6 @@
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/_pars/blob_test.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="28" column="9" selection-start-line="28" selection-start-column="9" selection-end-line="28" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -88,7 +79,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/blob_optim.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="176">
+            <state relative-caret-position="870">
               <caret line="59" column="30" selection-start-line="59" selection-start-column="30" selection-end-line="59" selection-end-column="30" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
@@ -177,7 +168,7 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="78" />
+    <option name="x" value="6" />
     <option name="y" value="23" />
     <option name="width" value="1164" />
     <option name="height" value="701" />
@@ -188,7 +179,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -211,6 +201,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -491,16 +482,20 @@
       <workItem from="1565972747475" duration="1023000" />
       <workItem from="1565974805739" duration="8891000" />
       <workItem from="1566224521663" duration="621000" />
+      <workItem from="1567192222952" duration="34000" />
+      <workItem from="1567192682959" duration="82000" />
+      <workItem from="1567192920086" duration="10000" />
+      <workItem from="1567193219740" duration="373000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="167084000" />
+    <option name="totallyTimeSpent" value="167583000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="78" y="23" width="1164" height="701" extended-state="0" />
+    <frame x="6" y="23" width="1164" height="701" extended-state="0" />
     <layout>
-      <window_info id="Project" order="0" visible="true" weight="0.25490198" />
+      <window_info id="Project" order="0" visible="true" weight="0.27272728" />
       <window_info id="Structure" order="1" weight="0.25288832" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -511,15 +506,15 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info anchor="bottom" id="Python Console" order="9" visible="true" weight="0.051194537" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.32935154" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="9" visible="true" weight="0.32423207" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="12" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info active="true" anchor="right" x="226" y="62" width="1001" height="618" id="SciView" internal_type="SLIDING" order="3" visible="true" weight="0.28074867" />
+      <window_info anchor="right" x="226" y="62" width="1001" height="618" id="SciView" internal_type="SLIDING" order="3" visible="true" weight="0.28074867" />
       <window_info anchor="right" id="Database" order="4" />
     </layout>
   </component>
@@ -645,13 +640,7 @@ py.show()</expression-string>
     <entry file="file://$PROJECT_DIR$/blob_detector.py" />
     <entry file="file://$PROJECT_DIR$/_pars/blob1.py" />
     <entry file="file://$PROJECT_DIR$/conv_net_gpu.py" />
-    <entry file="file://$PROJECT_DIR$/_scripts/runrcc.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="376">
-          <caret line="66" column="101" selection-start-line="66" selection-start-column="101" selection-end-line="66" selection-end-column="101" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/_scripts/runrcc.py" />
     <entry file="file:///anaconda2/envs/myenv/lib/python3.6/site-packages/tensorflow/python/client/session.py" />
     <entry file="file://$PROJECT_DIR$/blob_detector_a.py" />
     <entry file="file://$USER_HOME$/anaconda2/envs/myenv/lib/python3.6/importlib/_bootstrap.py" />
@@ -672,16 +661,7 @@ py.show()</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_scripts/ttt.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" selection-start-line="8" selection-end-line="8" />
-          <folding>
-            <element signature="e#0#29#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/_scripts/ttt.py" />
     <entry file="file://$USER_HOME$/Box Sync/URFB/test.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -691,23 +671,8 @@ py.show()</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/_scripts/runber.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1215">
-          <caret line="85" column="81" selection-start-line="79" selection-start-column="4" selection-end-line="85" selection-end-column="81" />
-          <folding>
-            <element signature="e#0#29#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/_scripts/mrunber.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="900">
-          <caret line="64" column="21" selection-start-line="64" selection-start-column="21" selection-end-line="64" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/_scripts/runber.py" />
+    <entry file="file://$PROJECT_DIR$/_scripts/mrunber.py" />
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.7/site-packages/tensorflow/python/ops/array_ops.py" />
     <entry file="file://$USER_HOME$/Box Sync/URFB/_scripts/mrunber.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -735,16 +700,7 @@ py.show()</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/try.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="25" selection-start-line="5" selection-start-column="25" selection-end-line="5" selection-end-column="25" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/try.py" />
     <entry file="file://$USER_HOME$/Box Sync/URFB/Conv_sparse_aux.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1003">
@@ -796,16 +752,7 @@ py.show()</expression-string>
     <entry file="file://$PROJECT_DIR$/OUT_test_5.txt" />
     <entry file="file://$PROJECT_DIR$/OUT_test_all.txt" />
     <entry file="file://$PROJECT_DIR$/OUT_test.txt" />
-    <entry file="file://$PROJECT_DIR$/ThesisKennethRuiter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="457">
-          <caret line="127" lean-forward="true" selection-start-line="127" selection-end-line="127" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/ThesisKennethRuiter.py" />
     <entry file="file://$PROJECT_DIR$/_pars/simpnet_test.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
@@ -823,17 +770,22 @@ py.show()</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/runber.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1125">
-          <caret line="79" column="43" selection-start-line="79" selection-start-column="43" selection-end-line="79" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/runber.py" />
     <entry file="file://$USER_HOME$/anaconda2/envs/myenv/lib/python3.6/site-packages/tensorflow/python/framework/ops.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="82">
           <caret line="1578" selection-start-line="1578" selection-end-line="1578" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_pars/blob_test.txt" />
+    <entry file="file://$PROJECT_DIR$/blobs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-649">
+          <caret line="116" column="33" selection-start-line="116" selection-start-column="33" selection-end-line="116" selection-end-column="33" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -844,13 +796,6 @@ py.show()</expression-string>
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/_pars/blob_test.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="28" column="9" selection-start-line="28" selection-start-column="9" selection-end-line="28" selection-end-column="9" />
         </state>
       </provider>
     </entry>
@@ -873,18 +818,8 @@ py.show()</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/blob_optim.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
+        <state relative-caret-position="870">
           <caret line="59" column="30" selection-start-line="59" selection-start-column="30" selection-end-line="59" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/blobs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="116" column="33" selection-start-line="116" selection-start-column="33" selection-end-line="116" selection-end-column="33" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
