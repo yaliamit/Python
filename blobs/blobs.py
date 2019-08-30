@@ -2,6 +2,7 @@ import tensorflow as tf
 import numpy as np
 import os
 import sys
+import pprint
 import subprocess as commands
 from generate_images import show_images, acquire_data, generate_bigger_images, generate_image_from_estimate, paste_batch
 from Conv_net_aux import process_parameters
@@ -103,6 +104,10 @@ def run_new(PARS):
         commands.check_output('rm -rf '+PARS['model'],shell=True)
         commands.check_output('mkdir ' + PARS['model'], shell=True)
         save_path = saver.save(sess, PARS['model']+'/BL')
+        f=open(PARS['model']+'/pars_train','w')
+        pp = pprint.PrettyPrinter(indent=4,stream=f)
+        pp.pprint(PARS)
+        f.close()
         print("Model saved in path: %s" % save_path)
         print("DONE")
         sys.stdout.flush()
@@ -172,19 +177,19 @@ def reload(PARS,train=False):
         for ind in inds:
             generate_image_from_estimate(PARS, HYA[ind], test[0][ind], test[1][ind])
 
-net = sys.argv[1]
+par_file = sys.argv[1]
 gpu_device=None
 
 
-print('net', net)
+print('par_file', par_file)
 
 PARS = {}
 
-PARS = process_parameters(net)
+PARS = process_parameters(par_file)
 
 
 
-if ('train' in net or not os.path.exists(PARS['model'])):
+if ('train' in par_file or not os.path.exists(PARS['model'])):
     run_new(PARS)
 else:
     reload(PARS)

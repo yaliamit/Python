@@ -16,7 +16,7 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/blobs$runber__1_.coverage" NAME="runber (1) Coverage Results" MODIFIED="1550971984976" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/blobs$blobs.coverage" NAME="blobs Coverage Results" MODIFIED="1566001646202" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/blobs$blobs.coverage" NAME="blobs Coverage Results" MODIFIED="1567201011136" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/blobs$tt.coverage" NAME="tt Coverage Results" MODIFIED="1550971803953" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_scripts" />
     <SUITE FILE_PATH="coverage/blobs$try.coverage" NAME="try Coverage Results" MODIFIED="1555005184541" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/blobs$runber.coverage" NAME="runber Coverage Results" MODIFIED="1550971859486" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/_scripts" />
@@ -32,14 +32,33 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/blobs.py">
+        <entry file="file://$PROJECT_DIR$/../STVAE/EXP.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="15">
-              <caret line="116" column="33" selection-start-line="116" selection-start-column="33" selection-end-line="116" selection-end-column="33" />
+              <caret line="162" column="5" selection-start-line="162" selection-start-column="5" selection-end-line="162" selection-end-column="5" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/blobs.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="110">
+              <caret line="108" column="23" selection-start-line="108" selection-start-column="23" selection-end-line="108" selection-end-column="23" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
             </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/_blobs_try_a/pars_train">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-141" />
           </provider>
         </entry>
       </file>
@@ -58,8 +77,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/_pars/blob_train.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="12" column="14" selection-start-line="12" selection-start-column="14" selection-end-line="12" selection-end-column="14" />
+            <state relative-caret-position="-261">
+              <caret line="1" column="18" selection-start-line="1" selection-start-column="18" selection-end-line="1" selection-end-column="18" />
             </state>
           </provider>
         </entry>
@@ -99,7 +118,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>make_data</find>
       <find>background</find>
       <find>py.show</find>
       <find>noise_sigma</find>
@@ -129,6 +147,7 @@
       <find>thresh</find>
       <find>PLH['thresh_']</find>
       <find>clean_b</find>
+      <find>ppr</find>
     </findStrings>
     <replaceStrings>
       <replace>model</replace>
@@ -159,16 +178,17 @@
         <option value="$PROJECT_DIR$/network.py" />
         <option value="$PROJECT_DIR$/_pars/deep_test.txt" />
         <option value="$PROJECT_DIR$/_pars/simpnet_test.txt" />
-        <option value="$PROJECT_DIR$/_pars/blob_train.txt" />
         <option value="$PROJECT_DIR$/generate_images.py" />
         <option value="$PROJECT_DIR$/_pars/blob_test.txt" />
-        <option value="$PROJECT_DIR$/blobs.py" />
         <option value="$PROJECT_DIR$/blob_optim.py" />
+        <option value="$PROJECT_DIR$/_pars/blob_train.txt" />
+        <option value="$PROJECT_DIR$/blobs.py" />
+        <option value="$PROJECT_DIR$/../STVAE/EXP.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="6" />
+    <option name="x" value="92" />
     <option name="y" value="23" />
     <option name="width" value="1164" />
     <option name="height" value="701" />
@@ -179,6 +199,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -195,13 +216,18 @@
               <item name="blobs" type="b2602c69:ProjectViewProjectNode" />
               <item name="blobs" type="47feb1d3:ProjectViewModuleNode" />
               <item name="blobs" type="462c0819:PsiDirectoryNode" />
+              <item name="_blobs_try_a" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="blobs" type="b2602c69:ProjectViewProjectNode" />
+              <item name="blobs" type="47feb1d3:ProjectViewModuleNode" />
+              <item name="blobs" type="462c0819:PsiDirectoryNode" />
               <item name="_pars" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -295,7 +321,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/blobs.py" />
-      <option name="PARAMETERS" value="_pars/blob_test" />
+      <option name="PARAMETERS" value="_pars/blob_train" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -490,35 +516,37 @@
       <workItem from="1567192920086" duration="10000" />
       <workItem from="1567193219740" duration="373000" />
       <workItem from="1567194274972" duration="9000" />
+      <workItem from="1567200221178" duration="945000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="167592000" />
+    <option name="totallyTimeSpent" value="168537000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="6" y="23" width="1164" height="701" extended-state="0" />
+    <frame x="92" y="23" width="1164" height="701" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" order="0" visible="true" weight="0.2771836" />
+      <window_info id="Project" order="0" visible="true" weight="0.28163993" />
       <window_info id="Structure" order="1" weight="0.25288832" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32843137" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.3529412" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39419794" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.4249147" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.32935154" />
-      <window_info anchor="bottom" id="Python Console" order="9" visible="true" weight="0.32423207" />
+      <window_info anchor="bottom" id="Python Console" order="9" weight="0.26791808" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="12" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info active="true" anchor="right" x="226" y="62" width="1001" height="618" id="SciView" internal_type="SLIDING" order="3" visible="true" weight="0.28074867" />
+      <window_info anchor="right" x="226" y="62" width="1001" height="618" id="SciView" internal_type="SLIDING" order="3" weight="0.28074867" />
       <window_info anchor="right" id="Database" order="4" />
     </layout>
   </component>
@@ -567,13 +595,23 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/blobs.py</url>
-          <line>72</line>
-          <option name="timeStamp" value="119" />
+          <line>185</line>
+          <option name="timeStamp" value="127" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/blobs.py</url>
-          <line>78</line>
-          <option name="timeStamp" value="126" />
+          <line>191</line>
+          <option name="timeStamp" value="128" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/blobs.py</url>
+          <line>106</line>
+          <option name="timeStamp" value="129" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/blobs.py</url>
+          <line>109</line>
+          <option name="timeStamp" value="130" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -587,6 +625,11 @@
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateCodeFragment">
+      <expression>
+        <expression-string>print(PARS)</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>py.imshow(g[:,:,0])
 py.show()</expression-string>
@@ -629,16 +672,9 @@ py.show()</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
       </expression>
-      <expression>
-        <expression-string>np.mean((dgg2-doimage)*(dgg2-doimage))</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>CODE_FRAGMENT</evaluation-mode>
-      </expression>
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/conv_net_gpu-mult.py" />
-    <entry file="file://$USER_HOME$/anaconda2/envs/myenv/lib/python3.6/site-packages/tensorflow/python/client/session.py" />
     <entry file="file://$USER_HOME$/anaconda2/envs/myenv/lib/python3.6/site-packages/matplotlib/image.py" />
     <entry file="file:///anaconda2/envs/myenv/lib/python3.6/site-packages/tensorflow/python/framework/ops.py" />
     <entry file="file://$PROJECT_DIR$/blob_detector.py" />
@@ -777,16 +813,6 @@ py.show()</expression-string>
     <entry file="file://$PROJECT_DIR$/runber.py" />
     <entry file="file://$USER_HOME$/anaconda2/envs/myenv/lib/python3.6/site-packages/tensorflow/python/framework/ops.py" />
     <entry file="file://$PROJECT_DIR$/_pars/blob_test.txt" />
-    <entry file="file://$PROJECT_DIR$/blobs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="116" column="33" selection-start-line="116" selection-start-column="33" selection-end-line="116" selection-end-column="33" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/network.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4320">
@@ -794,13 +820,6 @@ py.show()</expression-string>
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/_pars/blob_train.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="14" selection-start-line="12" selection-start-column="14" selection-end-line="12" selection-end-column="14" />
         </state>
       </provider>
     </entry>
@@ -820,6 +839,38 @@ py.show()</expression-string>
           <caret line="59" column="30" selection-start-line="59" selection-start-column="30" selection-end-line="59" selection-end-column="30" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/blobs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="110">
+          <caret line="108" column="23" selection-start-line="108" selection-start-column="23" selection-end-line="108" selection-end-column="23" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_pars/blob_train.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-261">
+          <caret line="1" column="18" selection-start-line="1" selection-start-column="18" selection-end-line="1" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_blobs_try_a/pars_train">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-141" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../STVAE/EXP.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="162" column="5" selection-start-line="162" selection-start-column="5" selection-end-line="162" selection-end-column="5" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>

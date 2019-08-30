@@ -160,7 +160,7 @@ def read_e(nh,mx,type,nt):
 l=len(sys.argv)
 
 new=True
-ntk=10
+ntk=20
 if (l>1):
     new=(sys.argv[1]=='new')
 if (l>2):
