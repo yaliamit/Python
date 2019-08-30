@@ -1,0 +1,1 @@
+/opt/anaconda/anaconda3/bin/python blobs.py _pars/blob_train 0 >OUT.txt

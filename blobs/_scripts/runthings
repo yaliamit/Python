@@ -1,0 +1,1 @@
+python run_conv.py _pars/fncrc_deep_tryR_avg2>DUT10a_h_RR.txt
