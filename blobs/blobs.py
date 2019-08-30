@@ -9,6 +9,7 @@ from network import recreate_network, run_epoch, get_trainable
 
 import pylab as py
 
+
 def get_place_holders(PARS,image_dim):
 
 
