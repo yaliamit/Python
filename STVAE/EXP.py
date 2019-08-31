@@ -174,14 +174,13 @@ if (l>4):
     type=sys.argv[4]
 OPT='_OPT'
 
-dir_name_base='/Users/amit/Box Sync/EXP_NT'+str(ntk)+'/EXP'+'_NT'+str(ntk)+'_'+mx+'_'+type
+dir_name_base='EXP_NT'+str(ntk)+'/EXP'+'_NT'+str(ntk)+'_'+mx+'_'+type
 print(dir_name_base)
 
 nh=0
 if new:
     for i in range(20):
         dir_name=dir_name_base+'_'+str(i)
-
         run_e(nh,mx,type,numt)
 else:
     b=[]
