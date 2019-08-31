@@ -174,7 +174,7 @@ if (l>4):
     type=sys.argv[4]
 OPT='_OPT'
 
-dir_name_base='EXP_NT'+str(ntk)+'/EXP'+'_NT'+str(ntk)+'_'+mx+'_'+type
+dir_name_base='EXP'+'_NT'+str(ntk)+'_'+mx+'_'+type
 print(dir_name_base)
 
 nh=0
