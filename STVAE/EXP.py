@@ -12,7 +12,7 @@ import pandas
 
 def produce_B(b):
     B = copy.deepcopy(b[0])
-
+    ll=len(b)
     for keya, valuea in B.items():
         print(keya)
         for keyb, valueb in valuea.items():
@@ -22,7 +22,7 @@ def produce_B(b):
                 for keyd, valued in valuec.items():
                     print(keyd, valued)
                     B[keya][keyb][keyc][keyd] = np.array([0., 0., 0., 0.])
-    for j in range(20):
+    for j in range(ll):
         for keya, valuea in b[j].items():
             print(keya)
             for keyb, valueb in valuea.items():
@@ -43,7 +43,7 @@ def produce_B(b):
                 print(keyc)
                 for keyd, valued in valuec.items():
                     print(keyd, valued)
-                    B[keya][keyb][keyc][keyd] /= 20.
+                    B[keya][keyb][keyc][keyd] /= ll
                     for j in [1, 3]:
                         B[keya][keyb][keyc][keyd][j] = np.sqrt(B[keya][keyb][keyc][keyd][j] -
                                                                B[keya][keyb][keyc][keyd][j - 1] *
@@ -160,7 +160,7 @@ def read_e(nh,mx,type,nt):
 l=len(sys.argv)
 
 new=True
-ntk=20
+ntk=60
 if (l>1):
     new=(sys.argv[1]=='new')
 if (l>2):
