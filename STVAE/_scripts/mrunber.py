@@ -74,7 +74,7 @@ else:
             print('Not Done')
             done=False
         try:
-            commands.check_output('cp /Volumes/amit/Python/STVAE/'+OUTNAME+' ' + lOUTNAME,shell=True)
+            commands.check_output('scp aitken:Python/STVAE/'+OUTNAME+' ' + lOUTNAME,shell=True)
         except:
             print('copy failed')
     time.sleep(10)
