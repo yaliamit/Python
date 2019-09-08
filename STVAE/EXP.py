@@ -130,6 +130,9 @@ def run_exp(nh,mx, type, numt=60000):
                 RR['test_loss'][mkey][ty][OP] = np.asscalar(aa)
             print(RR)
             sys.stdout.flush()
+            FOUT = 'EXP_h' + str(nh) + '.pickle'
+            with open(FOUT, 'wb') as handle:
+                pickle.dump(RR, handle, protocol=pickle.HIGHEST_PROTOCOL)
     time.sleep(10)
     FOUT='EXP_h'+str(nh)+'.pickle'
     with open(FOUT, 'wb') as handle:
