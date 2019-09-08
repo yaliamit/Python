@@ -85,14 +85,14 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
 
         recon_loss, prior, post,recon = self.forward(data,opt)
 
-        loss = recon_loss + prior + post
+        loss = recon_loss.item() + prior.item() + post.item()
 
 
         if (type == 'train' or opt=='mu'):
             loss.backward()
             optim.step()
 
-        return recon_loss, loss, recon
+        return recon_loss.item(), loss, recon.item()
 
     def run_epoch(self, train,  epoch,num_mu_iter,MU, LOGVAR, PI, type='test',fout=None):
 

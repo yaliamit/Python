@@ -200,13 +200,13 @@ class STVAE(nn.Module):
 
         recon_batch, smu, slogvar, ss_prior, ss_posterior = self(data)
         recon_loss, kl = self.loss_V(recon_batch, data, smu, slogvar)
-        loss = recon_loss+ ss_prior + ss_posterior
+        loss = recon_loss.item()+ ss_prior.item() + ss_posterior.item()
 
         if (type == 'train'):
             loss.backward()
             self.optimizer.step()
 
-        return recon_loss, loss
+        return recon_loss.item(), loss
 
     def run_epoch(self, train, epoch,num, MU, LOGVAR, PI, type='test',fout=None):
 

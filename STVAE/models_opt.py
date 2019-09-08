@@ -52,12 +52,12 @@ class STVAE_OPT(models.STVAE):
             optim.zero_grad()
         recon_batch, ss_prior, ss_posterior = self.forw(self.mu, self.logvar)
         recon_loss, kl = self.loss_V(recon_batch, data, self.mu, self.logvar)
-        loss = recon_loss + ss_prior + ss_posterior
+        loss = recon_loss.item() + ss_prior.item() + ss_posterior.item()
         if (type == 'train' or opt=='mu'):
             loss.backward()
             optim.step()
 
-        return recon_batch, recon_loss, loss
+        return recon_batch.item(), recon_loss.item(), loss
 
     def update_MU_LOGVAR(self,mu):
         self.MU = torch.nn.Parameter(torch.mean(mu, dim=0))
