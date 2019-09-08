@@ -190,14 +190,14 @@ class STVAE_mix(models.STVAE):
 
         recloss, prior, post = self.forward(data,mu,logvar,pi)
 
-        loss = recloss + prior + post
+        loss = recloss.item() + prior.item() + post.item()
 
 
         if (type == 'train'):
             loss.backward()
             self.optimizer.step()
 
-        return recloss, loss, mu, logvar, pi
+        return recloss.item(), loss, mu, logvar, pi
 
     def run_epoch(self, train, epoch,num, MU, LOGVAR,PI, type='test',fout=None):
 
@@ -220,7 +220,7 @@ class STVAE_mix(models.STVAE):
             PI[j:j+self.bsz]=pi.detach()
             tr_recon_loss += recon_loss
             tr_full_loss += loss
-            torch.cuda.empty_cache()
+
 
         fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(type,
         epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
