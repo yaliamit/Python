@@ -92,7 +92,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             loss.backward()
             optim.step()
 
-        return recon_loss.item(), loss.item(), recon.item()
+        return recon_loss.item(), loss.item()
 
     def run_epoch(self, train,  epoch,num_mu_iter,MU, LOGVAR, PI, type='test',fout=None):
 
@@ -122,7 +122,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             logvar[j:j + batch_size] = self.logvar.data
             pi[j:j + batch_size]=self.pi.data
             with torch.no_grad() if (type !='train') else dummy_context_mgr():
-                recon_loss, loss, _ = self.compute_loss_and_grad(data,type,self.optimizer)
+                recon_loss, loss = self.compute_loss_and_grad(data,type,self.optimizer)
 
             tr_recon_loss += recon_loss
             tr_full_loss += loss
