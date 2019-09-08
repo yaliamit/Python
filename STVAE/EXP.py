@@ -173,7 +173,8 @@ numt=ntk*1000
 mx='6+20'
 if (l>3):
     mx=sys.argv[3]
-type='vae+tvae'
+#type='vae+tvae'
+type='tvae'
 if (l>4):
     type=sys.argv[4]
 OPT='_OPT'
