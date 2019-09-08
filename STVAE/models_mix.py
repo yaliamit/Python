@@ -220,6 +220,7 @@ class STVAE_mix(models.STVAE):
             PI[j:j+self.bsz]=pi.detach()
             tr_recon_loss += recon_loss
             tr_full_loss += loss
+            torch.cuda.empty_cache()
 
         fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(type,
         epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
