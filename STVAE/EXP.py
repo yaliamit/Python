@@ -169,7 +169,8 @@ if (l>1):
 if (l>2):
     ntk=np.int32(sys.argv[2])
 numt=ntk*1000
-mx='1+120+3+40+6+20'
+#mx='1+120+3+40+6+20'
+mx='6+20'
 if (l>3):
     mx=sys.argv[3]
 type='vae+tvae'
