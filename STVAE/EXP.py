@@ -182,12 +182,12 @@ print(dir_name_base)
 
 nh=0
 if new:
-    for i in range(20):
+    for i in range(1):
         dir_name=dir_name_base+'_'+str(i)
         run_e(nh,mx,type,numt)
 else:
     b=[]
-    for i in range(20):
+    for i in range(3):
         dir_name=dir_name_base+'_'+str(i)
         os.listdir(dir_name)
         b=b+[read_e(nh,mx,type,ntk)]
