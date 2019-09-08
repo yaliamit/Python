@@ -211,7 +211,7 @@ class STVAE_mix(models.STVAE):
         y = train[1][ii]
 
         for j in np.arange(0, len(y), self.bsz):
-            print(j)
+            #print(j)
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
             recon_loss, loss, mu, logvar, pi=self.compute_loss_and_grad(data,type)
