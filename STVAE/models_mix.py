@@ -190,14 +190,14 @@ class STVAE_mix(models.STVAE):
 
         recloss, prior, post = self.forward(data,mu,logvar,pi)
 
-        loss = recloss.item() + prior.item() + post.item()
+        loss = recloss + prior + post
 
 
         if (type == 'train'):
             loss.backward()
             self.optimizer.step()
 
-        return recloss.item(), loss, mu, logvar, pi
+        return recloss.item(), loss.item(), mu, logvar, pi
 
     def run_epoch(self, train, epoch,num, MU, LOGVAR,PI, type='test',fout=None):
 

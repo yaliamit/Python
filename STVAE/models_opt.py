@@ -57,7 +57,7 @@ class STVAE_OPT(models.STVAE):
             loss.backward()
             optim.step()
 
-        return recon_batch.item(), recon_loss.item(), loss
+        return recon_batch.item(), recon_loss.item(), loss.item()
 
     def update_MU_LOGVAR(self,mu):
         self.MU = torch.nn.Parameter(torch.mean(mu, dim=0))
