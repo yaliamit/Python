@@ -9,7 +9,7 @@ import pdfCropMargins
 def create_image(text,file_name):
     img = Image.new('L', (200,40), 255)
     draw = ImageDraw.Draw(img)
-    #font = ImageFont.truetype("sans-serif.ttf", 16)
+    font = ImageFont.truetype("Arial.ttf", 16)
     #font = ImageFont.load("arial.pil")
     font=ImageFont.load_default()
     # draw.text((x, y),"Sample Text",(r,g,b))
