@@ -10,7 +10,7 @@ def create_image(text,file_name):
     img = Image.new('L', (200,40), 255)
     draw = ImageDraw.Draw(img)
     #font = ImageFont.truetype("sans-serif.ttf", 16)
-    font = ImageFont.truetype("arial.ttf", 15)
+    font = ImageFont.load("arial.pil")
     # draw.text((x, y),"Sample Text",(r,g,b))
     draw.text((0, 0), text,0,font=font)
     img.show()
