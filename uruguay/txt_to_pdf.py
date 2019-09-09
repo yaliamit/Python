@@ -7,12 +7,12 @@ def create_pdf(text,file_name):
     pdf = FPDF(orientation = 'P', unit = 'pt',format=(200,40))
     pdf.set_auto_page_break(0)
     pdf.add_page()
-    pdf.set_margins(0, 0, 0)
+    pdf.set_margins(-5, 0, 0)
     pdf.set_font("Arial", size=12)
     pdf.cell(w=0,txt=text, ln=0, align="L")
     pdf.output('temp.pdf')
     #pdfCropMargins('temp.pdf')
-    os.system('pdf-crop-margins temp.pdf -o ' +file_name)
+    #os.system('pdf-crop-margins temp.pdf -o ' +file_name)
 
 create_pdf('Shit','out.pdf')
 path="/Users/amit/Desktop/luisa-blocks-real"
