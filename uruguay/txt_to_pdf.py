@@ -2,10 +2,8 @@ import os
 
 from fpdf import FPDF
 
-fpdf = FPDF(orientation = 'P', unit = 'in', format='A4')
-
-pdf.add_page()
-pdf.set_margins(0, 0, -1)
+pdf = FPDF(orientation = 'P', unit = 'pt', format=(200,60))
+#pdf.set_margins(0, 0, -1)
 pdf.set_font("Arial", size=12)
 pdf.cell(0, 0, txt="Welcome to Python!", border=0,ln=0, align="L")
 pdf.output("simple_demo.pdf")
