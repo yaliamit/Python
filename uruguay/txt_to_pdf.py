@@ -1,6 +1,8 @@
 import os
 
 from fpdf import FPDF
+from pdf2image import convert_from_path, convert_from_bytes
+
 import pdfCropMargins
 
 def create_pdf(text,file_name):
@@ -12,8 +14,8 @@ def create_pdf(text,file_name):
     pdf.set_font("Arial", size=12)
     pdf.cell(w=0,txt=text, ln=0, border=0)
     pdf.output('temp.pdf')
-    #pdfCropMargins('temp.pdf')
-    os.system('pdf-crop-margins temp.pdf' +file_name)
+    images = convert_from_path('temp.pdf')
+    print("Hello")
 
 create_pdf('Shit','out.pdf')
 path="/Users/amit/Desktop/luisa-blocks-real"
