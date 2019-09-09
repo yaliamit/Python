@@ -27,6 +27,15 @@ def create_image(text,file_name):
     # images = convert_from_path('temp.pdf')
     print("Hello")
 
+import fontconfig
+
+# find a font file
+fonts = fontconfig.query(lang='en')
+for i in range(1, len(fonts)):
+    if fonts[i].fontformat == 'TrueType':
+        absolute_path = fonts[i].file
+        break
+
 create_image('Shit','out.pdf')
 path="/Users/amit/Desktop/luisa-blocks-real"
 
