@@ -2,15 +2,18 @@ import os
 
 from fpdf import FPDF
 from pdf2image import convert_from_path, convert_from_bytes
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 import pdfCropMargins
 
 def create_image(text,file_name):
-    img = Image.new('L', (200,40), 255)
+    img = Image.new('L', (200,40), 0)
     draw = ImageDraw.Draw(img)
     font = ImageFont.truetype("Arial.ttf", 24)
-    draw.text((0, 0), text,0,font=font)
+    draw.text((0, 0), text,255,font=font)
+    ibx=img.getbbox()
+    img=img.crop(ibx)
+    img=ImageOps.invert(img)
     img.show()
     #img.save(file_name)
     # pdf = FPDF(orientation = 'P', unit = 'pt',format=(200,40))
