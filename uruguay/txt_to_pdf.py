@@ -13,7 +13,7 @@ def create_pdf(text,file_name):
     pdf.cell(w=0,txt=text, ln=0, border=0)
     pdf.output('temp.pdf')
     #pdfCropMargins('temp.pdf')
-    #os.system('pdf-crop-margins temp.pdf -o ' +file_name)
+    os.system('pdf-crop-margins temp.pdf' +file_name)
 
 create_pdf('Shit','out.pdf')
 path="/Users/amit/Desktop/luisa-blocks-real"
