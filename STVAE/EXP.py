@@ -170,16 +170,16 @@ if (l>1):
 if (l>2):
     ntk=np.int32(sys.argv[2])
 numt=ntk*1000
-#mx='1+120+3+40+6+20'
-mx='6+20'
+mx='1+120+3+40+6+20'
+#mx='6+20'
 if (l>3):
     mx=sys.argv[3]
-#type='vae+tvae'
-type='tvae'
+type='vae+tvae'
+#type='tvae'
 if (l>4):
     type=sys.argv[4]
 OPT='_OPT'
-
+#/Users/amit/Box Sync/EXP_NT60/
 dir_name_base='EXP'+'_NT'+str(ntk)+'_'+mx+'_'+type
 print(dir_name_base)
 
@@ -190,7 +190,7 @@ if new:
         run_e(nh,mx,type,numt)
 else:
     b=[]
-    for i in range(3):
+    for i in range(4):
         dir_name=dir_name_base+'_'+str(i)
         os.listdir(dir_name)
         b=b+[read_e(nh,mx,type,ntk)]
