@@ -9,10 +9,7 @@ import pdfCropMargins
 def create_image(text,file_name):
     img = Image.new('L', (200,40), 255)
     draw = ImageDraw.Draw(img)
-    font = ImageFont.truetype("Arial.ttf", 16)
-    #font = ImageFont.load("arial.pil")
-    font=ImageFont.load_default()
-    # draw.text((x, y),"Sample Text",(r,g,b))
+    font = ImageFont.truetype("Arial.ttf", 24)
     draw.text((0, 0), text,0,font=font)
     img.show()
     #img.save(file_name)
@@ -26,15 +23,6 @@ def create_image(text,file_name):
     # pdf.output('temp.pdf')
     # images = convert_from_path('temp.pdf')
     print("Hello")
-
-import fontconfig
-
-# find a font file
-fonts = fontconfig.query(lang='en')
-for i in range(1, len(fonts)):
-    if fonts[i].fontformat == 'TrueType':
-        absolute_path = fonts[i].file
-        break
 
 create_image('Shit','out.pdf')
 path="/Users/amit/Desktop/luisa-blocks-real"
