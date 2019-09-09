@@ -7,7 +7,8 @@ from PIL import Image, ImageDraw
 import pdfCropMargins
 
 def create_image(text,file_name):
-    img = Image.new('', size, color)
+    img = Image.new('L', (200,40), 0)
+    img.
     img.save(file_name)
     # pdf = FPDF(orientation = 'P', unit = 'pt',format=(200,40))
     # pdf.set_auto_page_break(0)
