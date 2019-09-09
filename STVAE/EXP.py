@@ -97,7 +97,8 @@ def run_exp(nh,mx, type, numt=60000):
     RR={}
     RR['test_recon_loss']={}
     RR['test_loss']={}
-    ne=100
+    #ne=100
+    ne=1000
     for mm in mx:
         mkey='nmix_'+mm[0]+'_'+mm[1]
         m=mm[0]
