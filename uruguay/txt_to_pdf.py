@@ -5,7 +5,7 @@ from fpdf import FPDF
 pdf = FPDF()
 pdf.add_page()
 pdf.set_font("Arial", size=12)
-pdf.cell(0, 0, txt="Welcome to Python!", ln=1, align="C")
+pdf.cell(0, 0, txt="Welcome to Python!", border=0,ln=0, align="L")
 pdf.output("simple_demo.pdf")
 
 
