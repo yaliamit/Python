@@ -15,7 +15,7 @@ def im_proc(rr):
 
 def check_if_has_images(path):
     rr=os.listdir(path)
-    if 'tif' in rr[0]:
+    if 'tif' in rr[0] or 'txt' in rr[0]:
         im_proc(rr)
     else:
         for r in rr:
