@@ -11,7 +11,8 @@ def create_pdf(text,file_name):
     pdf.set_font("Arial", size=12)
     pdf.cell(w=0,txt=text, ln=0, align="L")
     pdf.output('temp.pdf')
-    os.system('pdf-crop-margins temp.pdf -o ' +file_name)
+    pdfCropMargins('temp.pdf')
+    #os.system('pdf-crop-margins temp.pdf -o ' +file_name)
 
 create_pdf('Shit','out.pdf')
 path="/Users/amit/Desktop/luisa-blocks-real"
