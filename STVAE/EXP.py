@@ -87,8 +87,8 @@ def run_exp(nh,mx, type, numt=60000):
     print('Script',scr)
     TYPE=type.split('+')
     H=['10']#,32,64]
-    #OPT=['','--OPT']
-    OPT = ['--OPT']
+    OPT=['','--OPT']
+    #OPT = ['--OPT']
     mm=[]
     for i in np.arange(0,len(mx),2):
         mm=mm+[mx[i:i+2]]
