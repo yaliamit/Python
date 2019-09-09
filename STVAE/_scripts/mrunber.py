@@ -49,7 +49,7 @@ else:
         print('pull failed')
 
 
-    #os.system("ssh amit@bernie.uchicago.edu \'cd /ga/amit/Python/STVAE; rm _output/* \' & ")
+    os.system("ssh amit@bernie.uchicago.edu \'cd /ga/amit/Python/STVAE; rm _output/* \' & ")
     os.system("ssh amit@bernie.uchicago.edu \'cd /ga/amit/Python/STVAE; rm _Images/* \' & ")
 
     os.system("ssh amit@bernie.uchicago.edu \'cd /ga/amit/Python/STVAE; ./runthingsBR.txt \' & ")

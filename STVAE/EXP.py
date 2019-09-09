@@ -97,8 +97,8 @@ def run_exp(nh,mx, type, numt=60000):
     RR={}
     RR['test_recon_loss']={}
     RR['test_loss']={}
-    #ne=100
-    ne=1000
+    ne=100
+
     for mm in mx:
         mkey='nmix_'+mm[0]+'_'+mm[1]
         m=mm[0]
@@ -165,18 +165,18 @@ def read_e(nh,mx,type,nt):
 l=len(sys.argv)
 
 new=True
-ntk=60
+ntk=5
 if (l>1):
     new=(sys.argv[1]=='new')
 if (l>2):
     ntk=np.int32(sys.argv[2])
 numt=ntk*1000
 mx='1+120+3+40+6+20'
-#mx='6+20'
+
 if (l>3):
     mx=sys.argv[3]
 type='vae+tvae'
-#type='tvae'
+
 if (l>4):
     type=sys.argv[4]
 OPT='_OPT'
@@ -186,7 +186,7 @@ print(dir_name_base)
 
 nh=0
 if new:
-    for i in range(1):
+    for i in range(10):
         dir_name=dir_name_base+'_'+str(i)
         run_e(nh,mx,type,numt)
 else:

@@ -2,7 +2,7 @@
 --type=vae
 --sdim=8
 --hdim=256
---num_hlayers=0
+--num_hlayers=1
 --nepoch=1000
 --gpu=True
 --seed=3251234
@@ -13,4 +13,4 @@
 --nval=0
 --optimizer=Adam
 --classify
---run_existing
+
