@@ -9,7 +9,7 @@ def create_pdf(text,file_name):
     pdf.add_page()
     pdf.set_margins(-5, 0, 0)
     pdf.set_font("Arial", size=12)
-    pdf.cell(w=0,txt=text, ln=0, align="L")
+    pdf.cell(w=0,txt=text, ln=0, border=0)
     pdf.output('temp.pdf')
     #pdfCropMargins('temp.pdf')
     #os.system('pdf-crop-margins temp.pdf -o ' +file_name)
