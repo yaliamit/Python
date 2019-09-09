@@ -2,7 +2,8 @@ import os
 
 from fpdf import FPDF
 
-pdf = FPDF()
+fpdf = FPDF(orientation = 'P', unit = 'in', format='A4')
+
 pdf.add_page()
 pdf.set_margins(0, 0, -1)
 pdf.set_font("Arial", size=12)
