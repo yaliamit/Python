@@ -2,14 +2,19 @@ import os
 
 from fpdf import FPDF
 from pdf2image import convert_from_path, convert_from_bytes
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 import pdfCropMargins
 
 def create_image(text,file_name):
-    img = Image.new('L', (200,40), 0)
-    img.
-    img.save(file_name)
+    img = Image.new('L', (200,40), 255)
+    draw = ImageDraw.Draw(img)
+    #font = ImageFont.truetype("sans-serif.ttf", 16)
+    font = ImageFont.truetype("arial.ttf", 15)
+    # draw.text((x, y),"Sample Text",(r,g,b))
+    draw.text((0, 0), text,0,font=font)
+    img.show()
+    #img.save(file_name)
     # pdf = FPDF(orientation = 'P', unit = 'pt',format=(200,40))
     # pdf.set_auto_page_break(0)
     # pdf.add_page()
@@ -19,9 +24,9 @@ def create_image(text,file_name):
     # pdf.cell(w=0,txt=text, ln=0, border=0)
     # pdf.output('temp.pdf')
     # images = convert_from_path('temp.pdf')
-    # print("Hello")
+    print("Hello")
 
-create_pdf('Shit','out.pdf')
+create_image('Shit','out.pdf')
 path="/Users/amit/Desktop/luisa-blocks-real"
 
 
