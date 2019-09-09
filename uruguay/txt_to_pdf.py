@@ -2,12 +2,12 @@ import os
 
 from fpdf import FPDF
 
-pdf = FPDF(orientation = 'P', unit = 'pt',format=(200,60))
-
+pdf = FPDF(orientation = 'P', unit = 'pt',format=(200,40))
+pdf.set_auto_page_break(0)
 pdf.add_page()
-#pdf.set_margins(0, 0, -1)
+pdf.set_margins(0, 0, 0)
 pdf.set_font("Arial", size=12)
-pdf.cell(w=20,txt="Welcome to Python!", ln=1, align="L")
+pdf.cell(w=0,txt="Welcome to Python!", ln=0, align="L")
 pdf.output("simple_demo.pdf")
 
 
