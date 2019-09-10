@@ -33,7 +33,7 @@ else:
     f=open('runthingsBR.txt','w')
     f.write(ss+'\n')
     f.close()
-    commands.check_output("cp runthingsBR.txt /Volumes/amit/Python/STVAE/.",shell=True)
+    commands.check_output("scp runthingsBR.txt aitken:Python/STVAE/.",shell=True)
 
     try:
         commands.check_output('rm ' + lOUTNAME, shell=True)
@@ -58,7 +58,7 @@ else:
     while (ny != ''):
         time.sleep(10)
         try:
-            ss=commands.check_output('cp /Volumes/amit/Python/STVAE/'+OUTNAME+' '+ lOUTNAME,shell=True)
+            ss=commands.check_output('scp aitken:Python/STVAE/'+OUTNAME+' '+ lOUTNAME,shell=True)
             print(ss)
             ny=''
         except:
@@ -80,9 +80,9 @@ else:
         except:
             print('copy failed')
     time.sleep(10)
-    commands.check_output('cp /Volumes/amit/Python/STVAE/' + OUTNAME + ' ' + lOUTNAME, shell=True)
+    commands.check_output('scp aitken:Python/STVAE/' + OUTNAME + ' ' + lOUTNAME, shell=True)
     #os.system('mv /Volumes/amit/Python/STVAE/_OUTPUTS/* /Users/amit/Desktop/Dropbox/Python/STVAE/_OUTPUTS/.')
-    os.system('cp /Volumes/amit/Python/STVAE/_output/* /Users/amit/Desktop/Dropbox/Python/STVAE/_output/.')
-    os.system('cp /Volumes/amit/Python/STVAE/_Images/* /Users/amit/Desktop/Dropbox/Python/STVAE/_Images/.')
+    os.system('scp aitken:Python/STVAE/_output/* /Users/amit/Desktop/Dropbox/Python/STVAE/_output/.')
+    os.system('scp aitken:Python/STVAE/_Images/* /Users/amit/Desktop/Dropbox/Python/STVAE/_Images/.')
 
 

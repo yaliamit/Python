@@ -9,7 +9,7 @@
 --num_train=60000
 --mb_size=500
 --model=base
---lr=.001
+--lr=.003
 --nval=0
 --optimizer=Adam
 --classify
