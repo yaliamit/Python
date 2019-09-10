@@ -184,7 +184,7 @@ OPT='_OPT'
 dir_name_base='EXP'+'_NT'+str(ntk)+'_'+mx+'_'+type
 print(dir_name_base)
 
-nh=0
+nh=1
 if new:
     for i in range(10):
         dir_name=dir_name_base+'_'+str(i)
