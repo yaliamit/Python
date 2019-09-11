@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import sys
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 import h5py
 
@@ -57,7 +58,8 @@ def im_proc(path,rr):
             produce_image(path+'/'+r)
             global t
             t=t+1
-            if (t==1000):
+            print(t,num_images,t==num_images)
+            if (t==num_images):
                 print("Hello", len(Images))
                 with h5py.File('pairs.hdf5', 'w') as f:
                     dset = f.create_dataset("PAIRS", data=np.array(Images))
@@ -73,9 +75,11 @@ def check_if_has_images(path):
         for r in rr:
             if not r.startswith('.'):
                 check_if_has_images(path+'/'+r)
+    with h5py.File('pairs.hdf5', 'w') as f:
+        dset = f.create_dataset("PAIRS", data=np.array(Images))
 
-
-#check_if_has_images(path)
+num_images=np.int32(sys.argv[1])
+check_if_has_images(path)
 
 
 
