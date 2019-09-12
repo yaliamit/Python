@@ -86,7 +86,7 @@ class CLEAN(nn.Module):
 
             loss, out = self.loss_and_grad(data, target, 'test')
             full_loss += loss.item()
-            OUT=OUT+[out.detach().numpy()]
+            OUT=OUT+[out.detach().cpu().numpy()]
         fout.write('====> Epoch {}: {} Full loss: {:.4F}\n'.format(type, epoch,
                                                                    full_loss / (num_tr / self.bsz)))
         OUTA=np.concatenate(OUT,axis=0).squeeze()
