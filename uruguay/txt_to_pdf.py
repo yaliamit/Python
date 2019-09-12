@@ -59,7 +59,7 @@ def im_proc(path,rr):
             produce_image(path+'/'+r)
             global t
             t=t+1
-            print(t,num_images,t==num_images)
+            #print(t,num_images,t==num_images)
             if (t==num_images):
                 print("Hello", len(Images))
                 with h5py.File('pairs.hdf5', 'w') as f:
