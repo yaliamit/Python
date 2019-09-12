@@ -36,7 +36,7 @@ def create_image(text,old_img,newname,oldname):
     return IM
 
 #create_image('Shit','out.pdf')
-path="/Users/amit/Desktop/luisa-blocks-real"
+path=os.path.expanduser("~/Desktop/luisa-blocks-real")
 
 
 def produce_image(r):
