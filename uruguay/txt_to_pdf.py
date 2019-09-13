@@ -39,8 +39,10 @@ def create_image(text,old_img,newname,oldname):
     return IM, ibx[2:4]
 
 #create_image('Shit','out.pdf')
-path=os.path.expanduser("~/Desktop/luisa-blocks-real")
-#path="/ga/amit/Desktop/luisa-blocks-real"
+if ('darwin' in sys.platform):
+    path=os.path.expanduser("~/Desktop/luisa-blocks-real")
+else:
+    path="/ga/amit/Desktop/luisa-blocks-real"
 
 
 def produce_image(r):
