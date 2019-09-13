@@ -37,14 +37,13 @@ class CLEAN(nn.Module):
         out=torch.sigmoid(out)
         return(out)
 
-    def loss_and_grad(self, input, target,type='train'):
+    def loss_and_grad(self, input, target, target_boxes, type='train'):
 
         out=self.forward(input)
 
         if (type == 'train'):
             self.optimizer.zero_grad()
-
-        loss = F.binary_cross_entropy(out.squeeze().view(-1, self.full_dim), target.view(-1, self.full_dim), reduction='mean')
+        loss = F.binary_cross_entropy(out.squeeze().view(-1, self.full_dim), target.view(-1, self.full_dim), weight=target_boxes.view(-1,self.full_dim),reduction='mean')
 
         if (type == 'train'):
             loss.backward()
@@ -52,7 +51,7 @@ class CLEAN(nn.Module):
 
         return loss, out
 
-    def run_epoch(self, train, epoch, fout, type):
+    def run_epoch(self, train, train_boxes, epoch, fout, type):
 
         if (type=='train'):
             self.train()
@@ -66,8 +65,9 @@ class CLEAN(nn.Module):
         for j in np.arange(0, num_tr, self.bsz):
             data = torch.from_numpy(trin[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(trat[j:j + self.bsz]).float().to(self.dv)
+            target_boxes = torch.from_numpy(train_boxes[j:j+self.bsz]).float().to(self.dv)
 
-            loss, out= self.loss_and_grad(data, target, type)
+            loss, out= self.loss_and_grad(data, target, target_boxes, type)
             full_loss += loss.item()
 
         fout.write('====> Epoch {}: {} Full loss: {:.4F}\n'.format(type,epoch,
@@ -84,11 +84,9 @@ class CLEAN(nn.Module):
             data = torch.from_numpy(trin[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(trat[j:j + self.bsz]).float().to(self.dv)
 
-            loss, out = self.loss_and_grad(data, target, 'test')
-            full_loss += loss.item()
+            out = self.forward(data)
             OUT=OUT+[out.detach().cpu().numpy()]
-        fout.write('====> Epoch {}: {} Full loss: {:.4F}\n'.format(type, epoch,
-                                                                   full_loss / (num_tr / self.bsz)))
+
         OUTA=np.concatenate(OUT,axis=0).squeeze()
         aux.create_image(trin.squeeze(),trat.squeeze(),OUTA,'recon'+type)
 
@@ -100,24 +98,38 @@ class CLEAN(nn.Module):
 
         return scheduler
 
+def make_boxes(bx,td):
+    standard_size = (35, 150)
+    boxes=[]
+    for b,tr in zip(bx,td):
+        a=np.zeros(standard_size)
+        a[0:np.int32(b[1]),0:np.int32(b[0])]=1
+        #a[tr[0,standard_size[0]:,:]<.3]=2
+        boxes+=[a]
+    boxes=np.array(boxes)
+    return boxes
 
 def get_data():
     with h5py.File('pairs.hdf5', 'r') as f:
-        key = list(f.keys())[0]
+        #key = list(f.keys())[0]
         # Get the data
-        pairs = f[key]
+
+        pairs = f['PAIRS']
         print('tr', pairs.shape)
         all_pairs=np.float32(pairs)/255.
         all_pairs=all_pairs.reshape(-1,1,all_pairs.shape[1],all_pairs.shape[2])
         lltr=np.int32(np.ceil(.8*len(all_pairs))//args.bsz *args.bsz)
         llte=np.int32((len(all_pairs)-lltr)//args.bsz * args.bsz)
         ii=np.array(range(lltr+llte))
-        np.random.shuffle(ii)
-        train_data=all_pairs[ii[0:lltr]]
-
+        #np.random.shuffle(ii)
+        bx=np.float32(f['BOXES'])
+        boxes=make_boxes(bx,all_pairs)
+        train_data = all_pairs[ii[0:lltr]]
+        train_data_boxes=boxes[ii[0:lltr]]
         test_data=all_pairs[ii[lltr:lltr+llte]]
+        test_data_boxes=boxes[ii[lltr:lltr+llte]]
 
-    return train_data, test_data
+    return train_data, train_data_boxes, test_data, test_data_boxes
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
@@ -146,7 +158,7 @@ device = torch.device("cuda:1" if use_gpu else "cpu")
 fout.write('Device,'+str(device)+'\n')
 fout.write('USE_GPU,'+str(use_gpu)+'\n')
 
-train_data, test_data = get_data()
+train_data, train_data_boxes, test_data, test_data_boxes = get_data()
 
 
 x_dim=np.int32(train_data[0].shape[1]/2)
@@ -164,8 +176,8 @@ for epoch in range(args.nepoch):
     if (scheduler is not None):
             scheduler.step()
     t1=time.time()
-    model.run_epoch(train_data,epoch,fout, 'train')
-    model.run_epoch(test_data,epoch,fout, 'test')
+    model.run_epoch(train_data, train_data_boxes, epoch,fout, 'train')
+    model.run_epoch(test_data, test_data_boxes, epoch,fout, 'test')
 
     fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
     fout.flush()

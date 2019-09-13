@@ -4,13 +4,15 @@ import sys
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 import h5py
 
-standard_size=(300,70)
+standard_size=(150,35)
 t=0
 Images=[]
+IBX=[]
 
 def create_image(text,old_img,newname,oldname):
     old_im=Image.new('L',standard_size,255)
     oim=old_img.convert('L')
+    oim=ImageOps.scale(oim,.5,resample=Image.BICUBIC)
     oim=ImageOps.invert(oim)
     oibx=oim.getbbox()
     oim=oim.crop(oibx)
@@ -27,17 +29,18 @@ def create_image(text,old_img,newname,oldname):
     ibx=img.getbbox()
     ibx_in=(ibx[0],ibx[1],ibx[2]+1,ibx[3]+1)
     img=img.crop(ibx_in)
-    img=ImageOps.invert(img)
     img=img.resize(oibx[2:4],resample=Image.BICUBIC)
+    ibx=img.getbbox()
+    img = ImageOps.invert(img)
     new_im=Image.new('L', standard_size,255)
     new_im.paste(img,(0,0))
     nnew_im=np.array(new_im.getdata(),np.uint8).reshape(new_im.size[1], new_im.size[0])
     IM=np.concatenate([nold_im,nnew_im],axis=0)
-    return IM
+    return IM, ibx[2:4]
 
 #create_image('Shit','out.pdf')
-#path=os.path.expanduser("~/Desktop/luisa-blocks-real")
-path="/ga/amit/Desktop/luisa-blocks-real"
+path=os.path.expanduser("~/Desktop/luisa-blocks-real")
+#path="/ga/amit/Desktop/luisa-blocks-real"
 
 
 def produce_image(r):
@@ -49,9 +52,10 @@ def produce_image(r):
             ra = r.split('/')[-1]
             newr = 'PAIRS/'+ra[0:ra.find('.txt')] + '_cl.tiff'
             oldr = 'PAIRS/'+ra[0:ra.find('.txt')] + '_or.tiff'
-            IM=create_image(data[0],oldimg,newr,oldr)
-            global Images
+            IM, ibx=create_image(data[0],oldimg,newr,oldr)
+            global Images, IBX
             Images+=[IM]
+            IBX+=[ibx]
 
 def im_proc(path,rr):
     for r in rr:
@@ -63,7 +67,8 @@ def im_proc(path,rr):
             if (t==num_images):
                 print("Hello", len(Images))
                 with h5py.File('pairs.hdf5', 'w') as f:
-                    dset = f.create_dataset("PAIRS", data=np.array(Images))
+                    dset1 = f.create_dataset("PAIRS", data=np.array(Images))
+                    dset2 = f.create_dataset("BOXES", data=np.array(IBX))
                     print("HH")
                 exit()
 
