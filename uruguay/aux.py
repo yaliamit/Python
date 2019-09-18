@@ -4,8 +4,8 @@ import os
 from scipy.misc import imsave
 
 def process_args(parser):
-    parser.add_argument('--filts', type=int, default=(3,3), help='size of filters')
-    parser.add_argument('--feats', type=int, default=(1,16,32), help='number of filters')
+    parser.add_argument('--filts', type=int, default=(3,3,3), help='size of filters')
+    parser.add_argument('--feats', type=int, default=(1,16,32,64), help='number of filters')
     parser.add_argument('--filt_size_out', type=int, default=3, help='size of last layer filter')
     parser.add_argument('--bsz', type=int, default=100, help='mb_size (default: 500)')
     parser.add_argument('--nepoch', type=int, default=30, help='number of training epochs')
