@@ -189,3 +189,8 @@ ex_file='MM'
 if not os.path.isfile('_output'):
     os.system('mkdir _output')
 torch.save(model.state_dict(),'_output/'+ex_file+'.pt')
+fout.write("DONE\n")
+fout.flush()
+
+if (not args.CONS):
+    fout.close()
