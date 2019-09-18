@@ -58,7 +58,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             post = 0
             # For finding optimal s for each mixture component just add log-prior density. mixed loss will optimize the sum
             # of log-prior + conditional for each component and the optimal s for each component is obtained.
-            lpii=0.5 * torch.sum((s-self.MU ) * (s- self.MU) / torch.exp(self.LOGVAR) + self.LOGVAR,dim=2)
+            lpii=0.5 * torch.sum((s-self.MU ) * (s-self.MU) / torch.exp(self.LOGVAR) + self.LOGVAR,dim=2)
             lpii = lpii - self.rho + torch.logsumexp(self.rho, dim=0)
             if (opt=='par'):
                 # For optimizing parameters you want the full log-likelihood including the mixture weights
