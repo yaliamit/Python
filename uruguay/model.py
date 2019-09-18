@@ -142,7 +142,7 @@ args=aux.process_args(parser)
 
 use_gpu = args.gpu and torch.cuda.is_available()
 if (use_gpu and not args.CONS):
-    fout=open('_OUTPUTS/OUT.txt','w')
+    fout=open('OUT.txt','w')
 else:
     args.CONS=True
     fout=sys.stdout
