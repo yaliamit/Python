@@ -1,4 +1,4 @@
---nepoch=100
+--nepoch=10
 --gpu=True
 --seed=3251234
 --num_train=60000
