@@ -96,10 +96,10 @@ def im_proc(path,rr):
 def check_if_has_images(path):
     rr=os.listdir(path)
     rr.sort()
+    print(len(rr), len(TEXT))
     if 'tif' in rr[0] or 'txt' in rr[0]:
         im_proc(path,rr)
     else:
-        print(len(rr),len(TEXT))
         for r in rr:
             if not r.startswith('.'):
                 check_if_has_images(path+'/'+r)
