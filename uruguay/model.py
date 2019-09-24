@@ -208,6 +208,8 @@ fout.write('USE_GPU,'+str(use_gpu)+'\n')
 ll=0
 train_data, train_data_boxes, train_text, test_data, test_data_boxes, test_text = get_data(args)
 args.ll=ll
+fout.write('num train '+str(train_data.shape[0])+'\n')
+fout.write('num test '+str(test_data.shape[0])+'\n')
 
 x_dim=np.int32(train_data[0].shape[1]/2)
 y_dim=train_data[0].shape[2]
