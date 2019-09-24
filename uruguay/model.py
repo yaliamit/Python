@@ -13,6 +13,7 @@ class CLEAN(nn.Module):
     def __init__(self, device, x_dim, y_dim, args):
         super(CLEAN, self).__init__()
 
+        self.lenc=args.lenc
         self.numc=args.num_char
         self.bsz=args.bsz
         self.x_dim=x_dim
@@ -51,10 +52,10 @@ class CLEAN(nn.Module):
         if (first):
             sh2 = out.shape[3]
             sh1 = out.shape[2]
-            sh2a = np.int32(np.ceil(sh2 / 5))
-            pad = sh2a * 5 - sh2
+            sh2a = np.int32(np.ceil(sh2 / self.lenc))
+            pad = sh2a * (self.lenc)+1 - sh2
             print('pre final shape',out.shape,sh1,sh2a)
-            self.l_out=torch.nn.Conv2d(out.shape[1],args.ll,[sh1,sh2a],stride=[1,sh2a],padding=[0,pad]).to(self.dv)
+            self.l_out=torch.nn.Conv2d(out.shape[1],args.ll,[sh1,sh2a+1],stride=[1,sh2a],padding=[0,pad]).to(self.dv)
         out=self.l_out(out)
         if (first):
             print('final shape',out.shape)
@@ -116,7 +117,7 @@ class CLEAN(nn.Module):
             full_acca+=acca.item()
             full_numa+=numa
             rmx+=[mx.cpu().detach().numpy()]
-        print('non space',full_numa/(num_tr*5))
+        print('non space',full_numa/(num_tr*args.lenc))
         fout.write('====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}\n'.format(type,epoch,
                     full_loss /(num_tr/self.bsz), full_acc/(num_tr*model.numc), full_acca/full_numa))
 
@@ -175,11 +176,13 @@ def get_data(args):
             spa=ll-1
         train_t=[TEXT[j] for j in ii[0:lltr]]
         test_t=[TEXT[j] for j in ii[lltr:lltr+llte]]
-        train_text=np.ones((len(train_t),5))*spa
+        lens=[len(r) for r in train_t]
+        args.lenc=np.max(lens)
+        train_text=np.ones((len(train_t),args.lenc))*spa
         for j,tt in enumerate(train_t):
             for i,ss in enumerate(tt):
                 train_text[j,i]=aa.index(ss)
-        test_text=np.ones((len(test_t),5))*spa
+        test_text=np.ones((len(test_t),args.lenc))*spa
         for j,tt in enumerate(test_t):
             for i,ss in enumerate(tt):
                 test_text[j,i]=aa.index(ss)
@@ -247,7 +250,7 @@ for epoch in range(args.nepoch):
 
 rx=model.run_epoch(test_data, test_text, epoch,fout, 'test')
 rxx=np.int32(np.array(rx)).ravel()
-tt=np.array([args.aa[i] for i in rxx]).reshape(len(test_text),5)
+tt=np.array([args.aa[i] for i in rxx]).reshape(len(test_text),args.lenc)
 aux.create_image(test_data,tt,model.x_dim,'try')
 
 #model.show_recon(test_data[0:model.bsz],'test')
