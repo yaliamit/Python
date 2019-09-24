@@ -41,6 +41,7 @@ if ('darwin' in sys.platform):
 else:
     path="/ga/amit/Desktop/luisa-blocks-real"
 
+print("path")
 def all_alfa(text):
 
     alfa='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
@@ -86,7 +87,6 @@ def im_proc(path,rr):
     for r in rr:
         if 'txt' in r:
             produce_image(path+'/'+r)
-
             #print(t,num_images,t==num_images)
             if (len(TEXT)>=num_images):
                 print("Hello", len(Images))
@@ -99,6 +99,7 @@ def check_if_has_images(path):
     if 'tif' in rr[0] or 'txt' in rr[0]:
         im_proc(path,rr)
     else:
+        print(len(rr),len(TEXT))
         for r in rr:
             if not r.startswith('.'):
                 check_if_has_images(path+'/'+r)
