@@ -143,7 +143,7 @@ def get_data(args):
         lltr=np.int32(np.ceil(.8*len(all_pairs))//args.bsz *args.bsz)
         llte=np.int32((len(all_pairs)-lltr)//args.bsz * args.bsz)
         ii=np.array(range(lltr+llte))
-        #np.random.shuffle(ii)
+        np.random.shuffle(ii)
         bx=np.float32(f['BOXES'])
         boxes=make_boxes(bx,all_pairs)
         train_data = all_pairs[ii[0:lltr]]
