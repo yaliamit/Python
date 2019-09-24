@@ -20,10 +20,12 @@ class CLEAN(nn.Module):
         self.full_dim=x_dim*y_dim
         self.dv=device
         self.ll=args.ll
+        self.weights=torch.ones(self.ll).to(device)
+        self.weights[0]=1.
         ll=len(args.filts)
         self.convs = nn.ModuleList([torch.nn.Conv2d(args.feats[i], args.feats[i+1],args.filts[i],stride=1,padding=np.int32(np.floor(args.filts[i]/2))) for i in range(ll)])
         self.l_out=None
-        self.criterion=nn.CrossEntropyLoss(reduce=None)
+        self.criterion=nn.CrossEntropyLoss(weight=self.weights)
         if (args.optimizer == 'Adam'):
             self.optimizer = optim.Adam(self.parameters(), lr=args.lr)
         else:
@@ -59,15 +61,19 @@ class CLEAN(nn.Module):
 
         return(out)
 
-    def get_acc(self,out,targ):
+
+
+    def get_acc_and_loss(self,out,targ):
 
         v,mx=torch.max(out,1)
         targa=targ[targ>0]
         mxa=mx[targ>0]
+        numa = targa.shape[0]
+        loss=self.criterion(out,targ)
         acc=torch.sum(mx.eq(targ))
         acca=torch.sum(mxa.eq(targa))
-        numa=mxa.shape[0]
-        return acc, mx, acca, numa
+
+        return loss, acc, mx, acca, numa
 
     def loss_and_grad(self, input, target, type='train'):
 
@@ -75,8 +81,7 @@ class CLEAN(nn.Module):
 
         if (type == 'train'):
             self.optimizer.zero_grad()
-        loss=self.criterion(out.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),target.reshape(-1))
-        acc,mx, acca, numa=self.get_acc(out.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),target.reshape(-1))
+        loss, acc,mx, acca, numa=self.get_acc_and_loss(out.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),target.reshape(-1))
         if (type == 'train'):
             loss.backward()
             self.optimizer.step()
@@ -111,6 +116,7 @@ class CLEAN(nn.Module):
             full_acca+=acca.item()
             full_numa+=numa
             rmx+=[mx.cpu().detach().numpy()]
+        print('non space',full_numa/(num_tr*5))
         fout.write('====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}\n'.format(type,epoch,
                     full_loss /(num_tr/self.bsz), full_acc/(num_tr*model.numc), full_acca/full_numa))
 
