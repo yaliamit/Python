@@ -52,7 +52,7 @@ class CLEAN(nn.Module):
             sh2a = np.int32(np.ceil(sh2 / 5))
             pad = sh2a * 5 - sh2
             print('pre final shape',out.shape,sh1,sh2a)
-            self.l_out=torch.nn.Conv2d(out.shape[1],args.ll,[sh1,sh2a],stride=[1,sh2a],padding=[0,pad])
+            self.l_out=torch.nn.Conv2d(out.shape[1],args.ll,[sh1,sh2a],stride=[1,sh2a],padding=[0,pad]).to(self.dv)
         out=self.l_out(out)
         if (first):
             print('final shape',out.shape)
