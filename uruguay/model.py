@@ -65,7 +65,7 @@ class CLEAN(nn.Module):
 
         acc=torch.sum(mx.eq(targ))
 
-        return acc
+        return acc, mx
 
     def loss_and_grad(self, input, target, type='train'):
 
@@ -74,12 +74,12 @@ class CLEAN(nn.Module):
         if (type == 'train'):
             self.optimizer.zero_grad()
         loss=self.criterion(out.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),target.reshape(-1))
-        acc=self.get_acc(out.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),target.reshape(-1))
+        acc,mx=self.get_acc(out.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),target.reshape(-1))
         if (type == 'train'):
             loss.backward()
             self.optimizer.step()
 
-        return loss, acc
+        return loss, acc, mx
 
     def run_epoch(self, train, text, epoch, fout, type):
 
@@ -94,35 +94,22 @@ class CLEAN(nn.Module):
 
         full_loss=0
         full_acc=0
+        rmx=[]
         for j in np.arange(0, num_tr, self.bsz):
             data = torch.from_numpy(trin[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(targ[j:j + self.bsz]).to(self.dv)
             target=target.type(torch.int64)
             #target_boxes = torch.from_numpy(train_boxes[j:j+self.bsz]).float().to(self.dv)
 
-            loss, acc= self.loss_and_grad(data, target, type)
+            loss, acc, mx= self.loss_and_grad(data, target, type)
             full_loss += loss.item()
             full_acc += acc.item()
-
+            rmx+=[mx.cpu().detach().numpy()]
         fout.write('====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}\n'.format(type,epoch,
                     full_loss /(num_tr/self.bsz), full_acc/(num_tr*model.numc)))
 
-    def show_recon(self, train,text, type):
+        return(rmx)
 
-        num_tr = train.shape[0]
-        trin = train[:, :, 0:self.x_dim, :]
-        #trat = train[:, :, self.x_dim:, :]
-        full_loss = 0
-        OUT=[]
-        for j in np.arange(0, num_tr, self.bsz):
-            data = torch.from_numpy(trin[j:j + self.bsz]).float().to(self.dv)
-            target = torch.from_numpy(trat[j:j + self.bsz]).float().to(self.dv)
-
-            out = self.forward(data)
-            OUT=OUT+[out.detach().cpu().numpy()]
-
-        OUTA=np.concatenate(OUT,axis=0).squeeze()
-        #aux.create_image(trin.squeeze(),OUTA,'recon'+type)
 
     def get_scheduler(self,args):
         scheduler = None
@@ -186,6 +173,7 @@ def get_data(args):
         train_text=np.int32(train_text)
         test_text=np.int32(test_text)
         print("hello")
+        args.aa=aa
 
     return train_data, train_data_boxes, train_text, test_data, test_data_boxes, test_text
 
@@ -242,7 +230,10 @@ for epoch in range(args.nepoch):
     fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
     fout.flush()
 
-#model.show_recon(train_data[0:model.bsz],'train')
+rx=model.run_epoch(test_data, test_text, epoch,fout, 'test')
+rxx=np.int32(np.array(rx)).ravel()
+tt=np.array([args.aa[i] for i in rxx]).reshape(len(test_text),5)
+
 
 #model.show_recon(test_data[0:model.bsz],'test')
 ex_file='MM'
