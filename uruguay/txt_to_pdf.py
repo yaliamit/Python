@@ -3,11 +3,8 @@ import numpy as np
 import sys
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 import h5py
+standard_size=(80,35)
 
-standard_size=(150,35)
-t=0
-Images=[]
-IBX=[]
 
 def create_image(text,old_img,newname,oldname):
     old_im=Image.new('L',standard_size,255)
@@ -44,34 +41,56 @@ if ('darwin' in sys.platform):
 else:
     path="/ga/amit/Desktop/luisa-blocks-real"
 
+def all_alfa(text):
+
+    alfa='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    lent=len(text)
+    c=0
+    for t in text:
+        if (t in alfa):
+            c+=1
+    alf=c==lent
+    return alf
 
 def produce_image(r):
     with open (r, "r") as f:
         data=f.readlines()
         if (len(data)>0):
-            oldr = r[0:r.find('txt')] + 'tif'
-            oldimg=Image.open(oldr)
-            ra = r.split('/')[-1]
-            newr = 'PAIRS/'+ra[0:ra.find('.txt')] + '_cl.tiff'
-            oldr = 'PAIRS/'+ra[0:ra.find('.txt')] + '_or.tiff'
-            IM, ibx=create_image(data[0],oldimg,newr,oldr)
-            global Images, IBX
-            Images+=[IM]
-            IBX+=[ibx]
+            if (all_alfa(data[0])):
+                oldr = r[0:r.find('txt')] + 'tif'
+                oldimg=Image.open(oldr)
+                ra = r.split('/')[-1]
+                newr = 'PAIRS/'+ra[0:ra.find('.txt')] + '_cl.tiff'
+                oldr = 'PAIRS/'+ra[0:ra.find('.txt')] + '_or.tiff'
+                if (len(data[0])<max_length):
+                    text=data[0]+' '*(max_length-len(data[0]))
+                else:
+                    text=data[0][0:max_length]
+                IM, ibx=create_image(text,oldimg,newr,oldr)
+                global Images, IBX, TEXT
+                Images+=[IM]
+                IBX+=[ibx]
+                TEXT+=[text]
+
+
+def make_hpy():
+    with h5py.File('pairs.hdf5', 'w') as f:
+        dset1 = f.create_dataset("PAIRS", data=np.array(Images))
+        dset2 = f.create_dataset("BOXES", data=np.array(IBX))
+    with open('texts.txt','w') as f:
+        for tx in TEXT:
+            f.write('%s\n' % tx)
+
 
 def im_proc(path,rr):
     for r in rr:
         if 'txt' in r:
             produce_image(path+'/'+r)
-            global t
-            t=t+1
+
             #print(t,num_images,t==num_images)
-            if (t==num_images):
+            if (len(TEXT)>=num_images):
                 print("Hello", len(Images))
-                with h5py.File('pairs.hdf5', 'w') as f:
-                    dset1 = f.create_dataset("PAIRS", data=np.array(Images))
-                    dset2 = f.create_dataset("BOXES", data=np.array(IBX))
-                    print("HH")
+                make_hpy()
                 exit()
 
 def check_if_has_images(path):
@@ -83,27 +102,19 @@ def check_if_has_images(path):
         for r in rr:
             if not r.startswith('.'):
                 check_if_has_images(path+'/'+r)
-    with h5py.File('pairs.hdf5', 'w') as f:
-        dset = f.create_dataset("PAIRS", data=np.array(Images))
+
+
+Images=[]
+IBX=[]
+TEXT=[]
+
 
 num_images=np.int32(sys.argv[1])
+max_length=np.int32(sys.argv[2])
 check_if_has_images(path)
+make_hpy()
 
 
 
 
-with h5py.File('pairs.hdf5', 'r') as f:
-    key = list(f.keys())[0]
-    # Get the data
-    pairs = f[key]
-    print('tr', pairs.shape)
-    all_pairs=np.float32(pairs)
-    ll=len(all_pairs)
-    ii=np.array(range(ll))
-    np.random.shuffle(ii)
-    ll_tr=np.int32(np.ceil(.8*ll))
-    train_data=all_pairs[ii[0:ll_tr]]
-    test_data=all_pairs[ii[ll_tr:]]
-
-    print("Hello")
 
