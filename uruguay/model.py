@@ -62,10 +62,12 @@ class CLEAN(nn.Module):
     def get_acc(self,out,targ):
 
         v,mx=torch.max(out,1)
-
+        targa=targ[targ>0]
+        mxa=mx[targ>0]
         acc=torch.sum(mx.eq(targ))
-
-        return acc, mx
+        acca=torch.sum(mxa.eq(targa))
+        numa=mxa.shape[0]
+        return acc, mx, acca, numa
 
     def loss_and_grad(self, input, target, type='train'):
 
@@ -74,12 +76,12 @@ class CLEAN(nn.Module):
         if (type == 'train'):
             self.optimizer.zero_grad()
         loss=self.criterion(out.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),target.reshape(-1))
-        acc,mx=self.get_acc(out.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),target.reshape(-1))
+        acc,mx, acca, numa=self.get_acc(out.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),target.reshape(-1))
         if (type == 'train'):
             loss.backward()
             self.optimizer.step()
 
-        return loss, acc, mx
+        return loss, acc, mx, acca, numa
 
     def run_epoch(self, train, text, epoch, fout, type):
 
@@ -94,6 +96,8 @@ class CLEAN(nn.Module):
 
         full_loss=0
         full_acc=0
+        full_acca=0
+        full_numa=0
         rmx=[]
         for j in np.arange(0, num_tr, self.bsz):
             data = torch.from_numpy(trin[j:j + self.bsz]).float().to(self.dv)
@@ -101,12 +105,14 @@ class CLEAN(nn.Module):
             target=target.type(torch.int64)
             #target_boxes = torch.from_numpy(train_boxes[j:j+self.bsz]).float().to(self.dv)
 
-            loss, acc, mx= self.loss_and_grad(data, target, type)
+            loss, acc, mx, acca, numa= self.loss_and_grad(data, target, type)
             full_loss += loss.item()
             full_acc += acc.item()
+            full_acca+=acca.item()
+            full_numa+=numa
             rmx+=[mx.cpu().detach().numpy()]
-        fout.write('====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}\n'.format(type,epoch,
-                    full_loss /(num_tr/self.bsz), full_acc/(num_tr*model.numc)))
+        fout.write('====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}\n'.format(type,epoch,
+                    full_loss /(num_tr/self.bsz), full_acc/(num_tr*model.numc), full_acca/full_numa))
 
         return(rmx)
 
