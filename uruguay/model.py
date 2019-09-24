@@ -130,6 +130,7 @@ def make_boxes(bx,td):
     boxes=np.array(boxes)
     return boxes
 
+
 def get_data(args):
     with h5py.File('pairs.hdf5', 'r') as f:
         #key = list(f.keys())[0]
@@ -233,7 +234,7 @@ for epoch in range(args.nepoch):
 rx=model.run_epoch(test_data, test_text, epoch,fout, 'test')
 rxx=np.int32(np.array(rx)).ravel()
 tt=np.array([args.aa[i] for i in rxx]).reshape(len(test_text),5)
-
+aux.create_image(test_data,tt,model.x_dim,'try')
 
 #model.show_recon(test_data[0:model.bsz],'test')
 ex_file='MM'

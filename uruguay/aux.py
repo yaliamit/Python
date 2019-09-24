@@ -2,6 +2,7 @@ import argparse
 import numpy as np
 import os
 from scipy.misc import imsave
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 def process_args(parser):
     parser.add_argument('--filts', type=int, default=(3,3,3), help='size of filters')
@@ -26,28 +27,41 @@ def process_args(parser):
     args = parser.parse_args()
     return (args)
 
-def create_image(trin, trat, OUT, ex_file):
+def create_image(trin, TT, x_dim, ex_file):
         mat = []
         t = 0
-        ll=len(trin)
+        ll=len(trin)//63 *63
         page=[]
         t=0
-        for j in range(3):
-            col=[]
-            for i in range(9):
-                col+=[trin[t]]
-                col+=[trat[t]]
-                col+=[OUT[t]]
-                t+=1
-            COL = np.concatenate(col, axis=0)
-            page+=[COL]
-        manifold=np.concatenate(page,axis=1)
-        manifold = manifold[np.newaxis, :]
-        img = np.concatenate([manifold, manifold, manifold], axis=0).transpose(1, 2, 0)
+        imlist=[]
+        while (t<ll):
+            page=[]
+            for j in range(7):
+                col=[]
+                for i in range(9):
+                    if (t<ll):
+                        text=''.join(TT[t,:])
+                        img = Image.new('L', (80+5, x_dim+20), 255)
+                        imga = Image.fromarray(np.int8(trin[t,0,0:x_dim]*200))
+                        img.paste(imga, (0,0))
+                        draw = ImageDraw.Draw(img)
+                        font = ImageFont.truetype("Arial.ttf", 16)
+                        draw.text((0,x_dim), text, 0, font=font)
+                        col += [np.array(img.getdata(), np.uint8).reshape(img.size[1], img.size[0])]
+                        t+=1
+                    else:
+                        col += [np.ones((x_dim+20,85))*255]
 
-        if not os.path.isfile('_Images'):
-            os.system('mkdir _Images')
-        imsave('_Images/' + ex_file + '.png', img)
+                COL = np.concatenate(col, axis=0)
+                page+=[COL]
+            manifold = np.concatenate(page, axis=1)
+            imlist.append(Image.fromarray(manifold))
+        imlist[0].save("test.tif", compression="tiff_deflate", save_all=True,
+                       append_images=imlist[1:])
+
+        #if not os.path.isfile('_Images'):
+        #    os.system('mkdir _Images')
+        #imsave('_Images/' + ex_file + '.png', img)
 
         print("Saved the sampled images")
 
