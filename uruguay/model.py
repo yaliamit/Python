@@ -13,6 +13,7 @@ class CLEAN(nn.Module):
     def __init__(self, device, x_dim, y_dim, args):
         super(CLEAN, self).__init__()
 
+        self.first=True
         self.lenc=args.lenc
         self.numc=args.num_char
         self.bsz=args.bsz
@@ -23,6 +24,7 @@ class CLEAN(nn.Module):
         self.ll=args.ll
         self.weights=torch.ones(self.ll).to(device)
         self.weights[0]=1.
+        self.pools = args.pools
         ll=len(args.filts)
         self.convs = nn.ModuleList([torch.nn.Conv2d(args.feats[i], args.feats[i+1],args.filts[i],stride=1,padding=np.int32(np.floor(args.filts[i]/2))) for i in range(ll)])
         self.l_out=None
@@ -35,21 +37,22 @@ class CLEAN(nn.Module):
     def forward_pre(self,input):
 
         out=input
-        for cc in self.convs:
+        for i, cc in enumerate(self.convs):
+            if (self.first):
+                print(out.shape)
             out=cc(out)
-            pp=torch.fmod(torch.tensor(out.shape),2)
-            pool=nn.MaxPool2d(2,padding=tuple(pp[2:4]))
-            out=pool(out)
+            pp=torch.fmod(torch.tensor(out.shape),self.pools[i])
+            if (self.pools[i]>1):
+                pool=nn.MaxPool2d(self.pools[i],padding=tuple(pp[2:4]))
+                out=pool(out)
             out=F.relu(out)
         return(out)
 
     def forward(self,input):
-        first=False
-        if (self.l_out is None):
-            first=True
+
         out=self.forward_pre(input)
 
-        if (first):
+        if (self.first):
             sh2 = out.shape[3]
             sh1 = out.shape[2]
             sh2a = np.int32(np.ceil(sh2 / self.lenc))
@@ -57,8 +60,9 @@ class CLEAN(nn.Module):
             print('pre final shape',out.shape,sh1,sh2a)
             self.l_out=torch.nn.Conv2d(out.shape[1],args.ll,[sh1,sh2a+1],stride=[1,sh2a],padding=[0,pad]).to(self.dv)
         out=self.l_out(out)
-        if (first):
+        if (self.first):
             print('final shape',out.shape)
+            self.first=False
 
         return(out)
 
