@@ -86,7 +86,7 @@ class CLEAN(nn.Module):
 
         return loss, acc, acca, numa, mx
 
-    def get_loss_shift(self,input,target):
+    def get_loss_shift(self,input,target, fout):
         model.eval()
         S = [4]
         ls=len(S)+1
@@ -94,6 +94,7 @@ class CLEAN(nn.Module):
         num_tr=len(trin)
         full_loss=0; full_acc=0; full_acca=0; full_numa=0
         trin_shift=np.zeros_like(trin)
+        rmx = []
         for j in np.arange(0, num_tr, self.bsz):
 
             data = torch.from_numpy(trin[j:j + self.bsz]).float().to(self.dv)
@@ -110,15 +111,16 @@ class CLEAN(nn.Module):
             ii=torch.arange(0,len(sinput),ls,dtype=torch.long).to(self.dv)+lossm
             outs=out[ii]
             stargs=starg[ii]
-            loss, acc, acca, numa, _ =self.get_acc_and_loss(outs.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),stargs.reshape(-1))
-            trin_shift[j:j+self.bsz]=sinput[ii].cpu().numpy()
+            loss, acc, acca, numa, mx =self.get_acc_and_loss(outs.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),stargs.reshape(-1))
+            trin_shift[j:j+self.bsz]=sinput[ii].cpu().detach().numpy()
             full_loss += loss.item()
             full_acc += acc.item()
             full_acca += acca.item()
             full_numa += numa
+            rmx += [mx.cpu().detach().numpy()]
         fout.write('====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}\n'.format('shift', epoch,
                         full_loss / (num_tr / self.bsz),full_acc / (num_tr * model.numc), full_acca / full_numa))
-        return trin_shift
+        return trin_shift, rmx
 
 
     def loss_and_grad(self, input, target, type='train'):
@@ -234,14 +236,15 @@ for epoch in range(args.nepoch):
     if (scheduler is not None):
             scheduler.step()
     t1=time.time()
-    train_data_shift=model.get_loss_shift(train_data,train_text)
+    train_data_shift, _=model.get_loss_shift(train_data,train_text,fout)
     model.run_epoch(train_data_shift, train_text, epoch,fout, 'train')
-    model.run_epoch(test_data, test_text, epoch,fout, 'test')
+    model.get_loss_shift(test_data, test_text,fout)
+    #model.run_epoch(test_data, test_text, epoch,fout, 'test')
 
     fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
     fout.flush()
 
-rx=model.run_epoch(test_data, test_text, epoch,fout, 'test')
+rx=model.get_loss_shift(test_data, test_text, fout)
 rxx=np.int32(np.array(rx)).ravel()
 tt=np.array([args.aa[i] for i in rxx]).reshape(len(test_text),args.lenc)
 aux.create_image(test_data,tt,model.x_dim,'try')
