@@ -25,6 +25,7 @@ class CLEAN(nn.Module):
         self.weights=torch.ones(self.ll).to(device)
         self.weights[0]=1.
         self.pools = args.pools
+        self.drops=args.drops
         ll=len(args.filts)
         self.convs = nn.ModuleList([torch.nn.Conv2d(args.feats[i], args.feats[i+1],args.filts[i],stride=1,padding=np.int32(np.floor(args.filts[i]/2))) for i in range(ll)])
         self.l_out=None
@@ -45,13 +46,18 @@ class CLEAN(nn.Module):
             if (self.pools[i]>1):
                 pool=nn.MaxPool2d(self.pools[i],padding=tuple(pp[2:4]))
                 out=pool(out)
+            if (self.drops[i]<1.):
+                out=nn.functional.dropout(out,self.drops[i])
             out=F.relu(out)
         return(out)
 
     def forward(self,input):
 
         out=self.forward_pre(input)
-
+        if (self.drops[-1]<1.):
+            if (self.first):
+                self.dr2d=nn.Dropout2d(self.drops[-1])
+            out=self.dr2d(out)
         if (self.first):
             sh2 = out.shape[3]
             sh1 = out.shape[2]
