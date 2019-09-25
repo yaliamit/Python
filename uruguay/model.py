@@ -90,9 +90,10 @@ class CLEAN(nn.Module):
         model.eval()
         S = [4]
         ls=len(S)+1
-        trin = input[:, :, 0:self.x_dim, :]
+        trin = input
         num_tr=len(trin)
         full_loss=0; full_acc=0; full_acca=0; full_numa=0
+        trin_shift=np.zeros_like(trin)
         for j in np.arange(0, num_tr, self.bsz):
 
             data = torch.from_numpy(trin[j:j + self.bsz]).float().to(self.dv)
@@ -110,14 +111,14 @@ class CLEAN(nn.Module):
             outs=out[ii]
             stargs=starg[ii]
             loss, acc, acca, numa, _ =self.get_acc_and_loss(outs.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),stargs.reshape(-1))
-            trin[j:j+self.bsz]=sinput[ii].cpu().numpy()
+            trin_shift[j:j+self.bsz]=sinput[ii].cpu().numpy()
             full_loss += loss.item()
             full_acc += acc.item()
             full_acca += acca.item()
             full_numa += numa
-        fout.write('====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}\n'.format(type, epoch,
+        fout.write('====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}\n'.format('shift', epoch,
                         full_loss / (num_tr / self.bsz),full_acc / (num_tr * model.numc), full_acca / full_numa))
-        return trin
+        return trin_shift
 
 
     def loss_and_grad(self, input, target, type='train'):
@@ -143,7 +144,7 @@ class CLEAN(nn.Module):
         ii = np.arange(0, num_tr, 1)
         if (type=='train'):
            np.random.shuffle(ii)
-        trin=train[ii,:,0:self.x_dim,:]
+        trin=train[ii]
         targ=text[ii]
 
         full_loss=0
@@ -210,11 +211,15 @@ fout.write('USE_GPU,'+str(use_gpu)+'\n')
 ll=0
 train_data, train_data_boxes, train_text, test_data, test_data_boxes, test_text = aux.get_data(args)
 
+
+
 fout.write('num train '+str(train_data.shape[0])+'\n')
 fout.write('num test '+str(test_data.shape[0])+'\n')
 
 x_dim=np.int32(train_data[0].shape[1]/2)
 y_dim=train_data[0].shape[2]
+train_data=train_data[:, :, 0:x_dim, :]
+test_data=test_data[:, :, 0:x_dim, :]
 
 model=CLEAN(device,x_dim, y_dim, args).to(device)
 tot_pars=0
@@ -229,8 +234,8 @@ for epoch in range(args.nepoch):
     if (scheduler is not None):
             scheduler.step()
     t1=time.time()
-    model.run_epoch(train_data, train_text, epoch,fout, 'train')
-    train_data=model.get_loss_shift(train_data,train_text)
+    train_data_shift=model.get_loss_shift(train_data,train_text)
+    model.run_epoch(train_data_shift, train_text, epoch,fout, 'train')
     model.run_epoch(test_data, test_text, epoch,fout, 'test')
 
     fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
