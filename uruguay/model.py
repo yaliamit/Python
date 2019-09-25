@@ -88,7 +88,7 @@ class CLEAN(nn.Module):
 
     def get_loss_shift(self,input,target, fout, type):
         self.eval()
-        S = [4]
+        S = [2,4,6]
         ls=len(S)+1
         trin = input
         num_tr=len(trin)
