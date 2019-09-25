@@ -243,7 +243,7 @@ for epoch in range(args.nepoch):
     fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
     fout.flush()
 
-rx=model.get_loss_shift(test_data, test_text, fout)
+rx=model.get_loss_shift(test_data, test_text, fout,'test')
 rxx=np.int32(np.array(rx)).ravel()
 tt=np.array([args.aa[i] for i in rxx]).reshape(len(test_text),args.lenc)
 aux.create_image(test_data,tt,model.x_dim,'try')
