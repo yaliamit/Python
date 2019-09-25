@@ -87,7 +87,7 @@ class CLEAN(nn.Module):
         return loss, acc, acca, numa, mx
 
     def get_loss_shift(self,input,target, fout):
-        model.eval()
+        self.eval()
         S = [4]
         ls=len(S)+1
         trin = input
@@ -107,7 +107,7 @@ class CLEAN(nn.Module):
 
             sloss=torch.sum(loss.view(-1,self.lenc),dim=1).view(-1,ls)
 
-            v,lossm=torch.max(sloss,1)
+            v,lossm=torch.min(sloss,1)
             ii=torch.arange(0,len(sinput),ls,dtype=torch.long).to(self.dv)+lossm
             outs=out[ii]
             stargs=starg[ii]
@@ -144,8 +144,8 @@ class CLEAN(nn.Module):
             self.eval()
         num_tr=train.shape[0]
         ii = np.arange(0, num_tr, 1)
-        if (type=='train'):
-           np.random.shuffle(ii)
+        #if (type=='train'):
+        #   np.random.shuffle(ii)
         trin=train[ii]
         targ=text[ii]
 
