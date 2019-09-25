@@ -236,8 +236,8 @@ for epoch in range(args.nepoch):
     if (scheduler is not None):
             scheduler.step()
     t1=time.time()
-    train_data, _=model.get_loss_shift(train_data,train_text,fout,'train')
-    model.run_epoch(train_data, train_text, epoch,fout, 'train')
+    train_data_shift, _=model.get_loss_shift(train_data,train_text,fout,'train')
+    model.run_epoch(train_data_shift, train_text, epoch,fout, 'train')
     model.get_loss_shift(test_data, test_text,fout,'test')
 
     fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
