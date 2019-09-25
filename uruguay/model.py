@@ -86,7 +86,7 @@ class CLEAN(nn.Module):
 
         return loss, acc, acca, numa, mx
 
-    def get_loss_shift(self,input,target, fout):
+    def get_loss_shift(self,input,target, fout, type):
         self.eval()
         S = [4]
         ls=len(S)+1
@@ -118,7 +118,7 @@ class CLEAN(nn.Module):
             full_acca += acca.item()
             full_numa += numa
             rmx += [mx.cpu().detach().numpy()]
-        fout.write('====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}\n'.format('shift', epoch,
+        fout.write('====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}\n'.format(type+'_shift', epoch,
                         full_loss / (num_tr / self.bsz),full_acc / (num_tr * model.numc), full_acca / full_numa))
         return trin_shift, rmx
 
@@ -236,10 +236,9 @@ for epoch in range(args.nepoch):
     if (scheduler is not None):
             scheduler.step()
     t1=time.time()
-    train_data_shift, _=model.get_loss_shift(train_data,train_text,fout)
+    train_data_shift, _=model.get_loss_shift(train_data,train_text,fout,'train')
     model.run_epoch(train_data_shift, train_text, epoch,fout, 'train')
-    model.run_epoch(test_data, test_text, epoch,fout, 'test')
-    model.get_loss_shift(test_data, test_text,fout)
+    model.get_loss_shift(test_data, test_text,fout,'test')
 
     fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
     fout.flush()
