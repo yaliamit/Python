@@ -98,7 +98,7 @@ class CLEAN(nn.Module):
             data = torch.from_numpy(trin[j:j + self.bsz]).float().to(self.dv)
             targ = torch.from_numpy(target[j:j + self.bsz]).to(self.dv)
             targ = targ.type(torch.int64)
-            sinput=aux.add_shifts(data,targ,S)
+            sinput=aux.add_shifts(data,S,model.dv)
             starg=targ.repeat(1,ls).view(-1,self.lenc)
             out = self.forward(sinput)
             loss=self.criterion_shift(out.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),starg.reshape(-1))

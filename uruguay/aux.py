@@ -128,7 +128,7 @@ def get_data(args):
 
     return train_data, train_data_boxes, train_text, test_data, test_data_boxes, test_text
 
-def add_shifts(input,target,S):
+def add_shifts(input,S,dv):
 
 
     ss=input.shape
@@ -138,6 +138,6 @@ def add_shifts(input,target,S):
 
     for i,s in enumerate(S):
         ll=np.arange(i+1,l,ls)
-        input_s[ll,:]=torch.cat((input_s[ll,:,:,s:],torch.zeros(len(ll),ss[1],ss[2],s,dtype=torch.float)),dim=3)
+        input_s[ll,:]=torch.cat((input_s[ll,:,:,s:],torch.zeros(len(ll),ss[1],ss[2],s,dtype=torch.float).to(dv)),dim=3)
 
     return input_s
