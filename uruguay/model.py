@@ -238,8 +238,8 @@ for epoch in range(args.nepoch):
     t1=time.time()
     train_data_shift, _=model.get_loss_shift(train_data,train_text,fout)
     model.run_epoch(train_data_shift, train_text, epoch,fout, 'train')
+    model.run_epoch(test_data, test_text, epoch,fout, 'test')
     model.get_loss_shift(test_data, test_text,fout)
-    #model.run_epoch(test_data, test_text, epoch,fout, 'test')
 
     fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
     fout.flush()
