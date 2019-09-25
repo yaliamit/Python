@@ -106,7 +106,7 @@ class CLEAN(nn.Module):
             sloss=torch.sum(loss.view(-1,self.lenc),dim=1).view(-1,ls)
 
             v,lossm=torch.max(sloss,1)
-            ii=torch.arange(0,len(sinput),ls)+lossm
+            ii=torch.arange(0,len(sinput),ls,dtype=torch.long).to(self.dv)+lossm
             outs=out[ii]
             stargs=starg[ii]
             loss, acc, acca, numa, _ =self.get_acc_and_loss(outs.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),stargs.reshape(-1))
