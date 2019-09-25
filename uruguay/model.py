@@ -88,8 +88,10 @@ class CLEAN(nn.Module):
 
     def get_loss_shift(self,input,target, fout, type):
         self.eval()
-        S = [2,4,6]
-        ls=len(S)+1
+        S = [0,2,4,6]
+        T = [0,4]
+        ls=len(S)
+        lt=len(T)
         trin = input
         num_tr=len(trin)
         full_loss=0; full_acc=0; full_acca=0; full_numa=0
@@ -100,15 +102,15 @@ class CLEAN(nn.Module):
             data = torch.from_numpy(trin[j:j + self.bsz]).float().to(self.dv)
             targ = torch.from_numpy(target[j:j + self.bsz]).to(self.dv)
             targ = targ.type(torch.int64)
-            sinput=aux.add_shifts(data,S,model.dv)
-            starg=targ.repeat(1,ls).view(-1,self.lenc)
+            sinput=aux.add_shifts(data,S,T,model.dv)
+            starg=targ.repeat(1,ls*lt).view(-1,self.lenc)
             out = self.forward(sinput)
             loss=self.criterion_shift(out.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),starg.reshape(-1))
 
-            sloss=torch.sum(loss.view(-1,self.lenc),dim=1).view(-1,ls)
+            sloss=torch.sum(loss.view(-1,self.lenc),dim=1).view(-1,ls*lt)
 
             v,lossm=torch.min(sloss,1)
-            ii=torch.arange(0,len(sinput),ls,dtype=torch.long).to(self.dv)+lossm
+            ii=torch.arange(0,len(sinput),ls*lt,dtype=torch.long).to(self.dv)+lossm
             outs=out[ii]
             stargs=starg[ii]
             loss, acc, acca, numa, mx =self.get_acc_and_loss(outs.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),stargs.reshape(-1))
