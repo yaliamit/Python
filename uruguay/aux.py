@@ -1,14 +1,14 @@
 import argparse
 import numpy as np
-import os
-from scipy.misc import imsave
+import torch
 from PIL import Image, ImageDraw, ImageFont, ImageOps
+import h5py
 
 def process_args(parser):
     parser.add_argument('--filts', type=int, default=(3,3,3,3), help='size of filters')
     parser.add_argument('--feats', type=int, default=(1,32,32,64,128), help='number of filters')
     parser.add_argument('--pools', type=int, default=(2,2,1,2), help='pooling')
-    parser.add_argument('--drops', type=float, default=(1.,1.,1.,1.,.5))
+    parser.add_argument('--drops', type=float, default=(1.,1.,1.,1.,1.))
     parser.add_argument('--num_char', type=int, default=5, help='number of characters')
     parser.add_argument('--filt_size_out', type=int, default=3, help='size of last layer filter')
     parser.add_argument('--bsz', type=int, default=100, help='mb_size (default: 500)')
@@ -58,7 +58,7 @@ def create_image(trin, TT, x_dim, ex_file):
                 page+=[COL]
             manifold = np.concatenate(page, axis=1)
             imlist.append(Image.fromarray(manifold))
-        imlist[0].save("test.tif", compression="tiff_deflate", save_all=True,
+        imlist[0].save("_Images/test.tif", compression="tiff_deflate", save_all=True,
                        append_images=imlist[1:])
 
         #if not os.path.isfile('_Images'):
@@ -67,3 +67,77 @@ def create_image(trin, TT, x_dim, ex_file):
 
         print("Saved the sampled images")
 
+def make_boxes(bx,td):
+    standard_size = (35, 150)
+    boxes=[]
+    for b,tr in zip(bx,td):
+        a=np.zeros(standard_size)
+        a[0:np.int32(b[1]),0:np.int32(b[0])]=1
+        #a[tr[0,standard_size[0]:,:]<.3]=2
+        boxes+=[a]
+    boxes=np.array(boxes)
+    return boxes
+
+
+def get_data(args):
+    with h5py.File('pairs.hdf5', 'r') as f:
+        #key = list(f.keys())[0]
+        # Get the data
+        pairs = f['PAIRS']
+        print('tr', pairs.shape)
+        all_pairs=np.float32(pairs)/255.
+        all_pairs=all_pairs[0:args.num_train]
+        all_pairs=all_pairs.reshape(-1,1,all_pairs.shape[1],all_pairs.shape[2])
+        lltr=np.int32(np.ceil(.8*len(all_pairs))//args.bsz *args.bsz)
+        llte=np.int32((len(all_pairs)-lltr)//args.bsz * args.bsz)
+        ii=np.array(range(lltr+llte))
+        np.random.shuffle(ii)
+        bx=np.float32(f['BOXES'])
+        boxes=make_boxes(bx,all_pairs)
+        train_data = all_pairs[ii[0:lltr]]
+        train_data_boxes=boxes[ii[0:lltr]]
+        test_data=all_pairs[ii[lltr:lltr+llte]]
+        test_data_boxes=boxes[ii[lltr:lltr+llte]]
+    with open('texts.txt','r') as f:
+        TEXT = [line.rstrip() for line in f.readlines()]
+        aa=sorted(set(' '.join(TEXT)))
+        print(aa)
+        if (' ' in aa):
+            ll=len(aa)
+            spa=0
+        else:
+            ll=len(aa)+1
+            spa=ll-1
+        args.ll = ll
+        train_t=[TEXT[j] for j in ii[0:lltr]]
+        test_t=[TEXT[j] for j in ii[lltr:lltr+llte]]
+        lens=[len(r) for r in train_t]
+        args.lenc=np.max(lens)
+        train_text=np.ones((len(train_t),args.lenc))*spa
+        for j,tt in enumerate(train_t):
+            for i,ss in enumerate(tt):
+                train_text[j,i]=aa.index(ss)
+        test_text=np.ones((len(test_t),args.lenc))*spa
+        for j,tt in enumerate(test_t):
+            for i,ss in enumerate(tt):
+                test_text[j,i]=aa.index(ss)
+        train_text=np.int32(train_text)
+        test_text=np.int32(test_text)
+        print("hello")
+        args.aa=aa
+
+    return train_data, train_data_boxes, train_text, test_data, test_data_boxes, test_text
+
+def add_shifts(input,target,S):
+
+
+    ss=input.shape
+    ls=len(S)+1
+    input_s=input.repeat(1,ls,1,1).view(ss[0]*ls,ss[1],ss[2],ss[3])
+    l=len(input_s)
+
+    for i,s in enumerate(S):
+        ll=np.arange(i+1,l,ls)
+        input_s[ll,:]=torch.cat((input_s[ll,:,:,s:],torch.zeros(len(ll),ss[1],ss[2],s,dtype=torch.float)),dim=3)
+
+    return input_s

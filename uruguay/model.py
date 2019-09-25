@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from torch import nn, optim
-import h5py
+
 import os
 import sys
 import argparse
@@ -28,8 +28,8 @@ class CLEAN(nn.Module):
         self.drops=args.drops
         ll=len(args.filts)
         self.convs = nn.ModuleList([torch.nn.Conv2d(args.feats[i], args.feats[i+1],args.filts[i],stride=1,padding=np.int32(np.floor(args.filts[i]/2))) for i in range(ll)])
-        self.l_out=None
         self.criterion=nn.CrossEntropyLoss(weight=self.weights)
+        self.criterion_shift=nn.CrossEntropyLoss(reduce=False)
         if (args.optimizer == 'Adam'):
             self.optimizer = optim.Adam(self.parameters(), lr=args.lr)
         else:
@@ -84,7 +84,41 @@ class CLEAN(nn.Module):
         acc=torch.sum(mx.eq(targ))
         acca=torch.sum(mxa.eq(targa))
 
-        return loss, acc, mx, acca, numa
+        return loss, acc, acca, numa, mx
+
+    def get_loss_shift(self,input,target):
+        model.eval()
+        S = [4]
+        ls=len(S)+1
+        trin = input[:, :, 0:self.x_dim, :]
+        num_tr=len(trin)
+        full_loss=0; full_acc=0; full_acca=0; full_numa=0
+        for j in np.arange(0, num_tr, self.bsz):
+
+            data = torch.from_numpy(trin[j:j + self.bsz]).float().to(self.dv)
+            targ = torch.from_numpy(target[j:j + self.bsz]).to(self.dv)
+            targ = targ.type(torch.int64)
+            sinput=aux.add_shifts(data,targ,S)
+            starg=targ.repeat(1,ls).view(-1,self.lenc)
+            out = self.forward(sinput)
+            loss=self.criterion_shift(out.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),starg.reshape(-1))
+
+            sloss=torch.sum(loss.view(-1,self.lenc),dim=1).view(-1,ls)
+
+            v,lossm=torch.max(sloss,1)
+            ii=torch.arange(0,len(sinput),ls)+lossm
+            outs=out[ii]
+            stargs=starg[ii]
+            loss, acc, acca, numa, _ =self.get_acc_and_loss(outs.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),stargs.reshape(-1))
+            trin[j:j+self.bsz]=sinput[ii].data
+            full_loss += loss.item()
+            full_acc += acc.item()
+            full_acca += acca.item()
+            full_numa += numa
+        fout.write('====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}\n'.format(type, epoch,
+                        full_loss / (num_tr / self.bsz),full_acc / (num_tr * model.numc), full_acca / full_numa))
+        return trin
+
 
     def loss_and_grad(self, input, target, type='train'):
 
@@ -92,17 +126,19 @@ class CLEAN(nn.Module):
 
         if (type == 'train'):
             self.optimizer.zero_grad()
-        loss, acc,mx, acca, numa=self.get_acc_and_loss(out.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),target.reshape(-1))
+        loss, acc, acca, numa, mx=self.get_acc_and_loss(out.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),target.reshape(-1))
         if (type == 'train'):
             loss.backward()
             self.optimizer.step()
 
-        return loss, acc, mx, acca, numa
+        return loss, acc, acca, numa, mx
 
     def run_epoch(self, train, text, epoch, fout, type):
 
         if (type=='train'):
             self.train()
+        else:
+            self.eval()
         num_tr=train.shape[0]
         ii = np.arange(0, num_tr, 1)
         if (type=='train'):
@@ -121,7 +157,7 @@ class CLEAN(nn.Module):
             target=target.type(torch.int64)
             #target_boxes = torch.from_numpy(train_boxes[j:j+self.bsz]).float().to(self.dv)
 
-            loss, acc, mx, acca, numa= self.loss_and_grad(data, target, type)
+            loss, acc, acca, numa, mx= self.loss_and_grad(data, target, type)
             full_loss += loss.item()
             full_acc += acc.item()
             full_acca+=acca.item()
@@ -142,66 +178,7 @@ class CLEAN(nn.Module):
 
         return scheduler
 
-def make_boxes(bx,td):
-    standard_size = (35, 150)
-    boxes=[]
-    for b,tr in zip(bx,td):
-        a=np.zeros(standard_size)
-        a[0:np.int32(b[1]),0:np.int32(b[0])]=1
-        #a[tr[0,standard_size[0]:,:]<.3]=2
-        boxes+=[a]
-    boxes=np.array(boxes)
-    return boxes
 
-
-def get_data(args):
-    with h5py.File('pairs.hdf5', 'r') as f:
-        #key = list(f.keys())[0]
-        # Get the data
-        pairs = f['PAIRS']
-        print('tr', pairs.shape)
-        all_pairs=np.float32(pairs)/255.
-        all_pairs=all_pairs[0:args.num_train]
-        all_pairs=all_pairs.reshape(-1,1,all_pairs.shape[1],all_pairs.shape[2])
-        lltr=np.int32(np.ceil(.8*len(all_pairs))//args.bsz *args.bsz)
-        llte=np.int32((len(all_pairs)-lltr)//args.bsz * args.bsz)
-        ii=np.array(range(lltr+llte))
-        np.random.shuffle(ii)
-        bx=np.float32(f['BOXES'])
-        boxes=make_boxes(bx,all_pairs)
-        train_data = all_pairs[ii[0:lltr]]
-        train_data_boxes=boxes[ii[0:lltr]]
-        test_data=all_pairs[ii[lltr:lltr+llte]]
-        test_data_boxes=boxes[ii[lltr:lltr+llte]]
-    with open('texts.txt','r') as f:
-        TEXT = [line.rstrip() for line in f.readlines()]
-        aa=sorted(set(' '.join(TEXT)))
-        print(aa)
-        global ll
-        if (' ' in aa):
-            ll=len(aa)
-            spa=0
-        else:
-            ll=len(aa)+1
-            spa=ll-1
-        train_t=[TEXT[j] for j in ii[0:lltr]]
-        test_t=[TEXT[j] for j in ii[lltr:lltr+llte]]
-        lens=[len(r) for r in train_t]
-        args.lenc=np.max(lens)
-        train_text=np.ones((len(train_t),args.lenc))*spa
-        for j,tt in enumerate(train_t):
-            for i,ss in enumerate(tt):
-                train_text[j,i]=aa.index(ss)
-        test_text=np.ones((len(test_t),args.lenc))*spa
-        for j,tt in enumerate(test_t):
-            for i,ss in enumerate(tt):
-                test_text[j,i]=aa.index(ss)
-        train_text=np.int32(train_text)
-        test_text=np.int32(test_text)
-        print("hello")
-        args.aa=aa
-
-    return train_data, train_data_boxes, train_text, test_data, test_data_boxes, test_text
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
@@ -231,8 +208,8 @@ fout.write('Device,'+str(device)+'\n')
 fout.write('USE_GPU,'+str(use_gpu)+'\n')
 
 ll=0
-train_data, train_data_boxes, train_text, test_data, test_data_boxes, test_text = get_data(args)
-args.ll=ll
+train_data, train_data_boxes, train_text, test_data, test_data_boxes, test_text = aux.get_data(args)
+
 fout.write('num train '+str(train_data.shape[0])+'\n')
 fout.write('num test '+str(test_data.shape[0])+'\n')
 
@@ -253,6 +230,7 @@ for epoch in range(args.nepoch):
             scheduler.step()
     t1=time.time()
     model.run_epoch(train_data, train_text, epoch,fout, 'train')
+    train_data=model.get_loss_shift(train_data,train_text)
     model.run_epoch(test_data, test_text, epoch,fout, 'test')
 
     fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
