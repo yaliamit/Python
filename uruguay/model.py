@@ -110,7 +110,7 @@ class CLEAN(nn.Module):
             outs=out[ii]
             stargs=starg[ii]
             loss, acc, acca, numa, _ =self.get_acc_and_loss(outs.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),stargs.reshape(-1))
-            trin[j:j+self.bsz]=sinput[ii].data
+            trin[j:j+self.bsz]=sinput[ii].cpu().numpy()
             full_loss += loss.item()
             full_acc += acc.item()
             full_acca += acca.item()
