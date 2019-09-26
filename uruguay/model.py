@@ -86,35 +86,32 @@ class CLEAN(nn.Module):
 
         return loss, acc, acca, numa, mx
 
-    def get_loss_shift(self,input,target, fout, type):
+    def get_loss_shift(self,input_shift,target_shift, lst, fout, type):
         self.eval()
-        S = [0,2,4,6]
-        T = [0,4]
-        ls=len(S)
-        lt=len(T)
-        trin = input
-        num_tr=len(trin)
+        num_tr=len(input_shift)
         full_loss=0; full_acc=0; full_acca=0; full_numa=0
-        trin_shift=np.zeros_like(trin)
+        sh=np.array(input_shift.shape)
+        sh[0]/=lst
+        train_choice_shift=np.zeros(sh)
         rmx = []
-        for j in np.arange(0, num_tr, self.bsz):
-
-            data = torch.from_numpy(trin[j:j + self.bsz]).float().to(self.dv)
-            targ = torch.from_numpy(target[j:j + self.bsz]).to(self.dv)
-            targ = targ.type(torch.int64)
-            sinput=aux.add_shifts(data,S,T,model.dv)
-            starg=targ.repeat(1,ls*lt).view(-1,self.lenc)
+        for j in np.arange(0, num_tr, self.bsz*lst):
+            jo=np.int32(j/lst)
+            sinput = torch.from_numpy(input_shift[j:j + self.bsz*lst]).float().to(self.dv)
+            starg = torch.from_numpy(target_shift[j:j + self.bsz*lst]).to(self.dv)
+            starg = starg.type(torch.int64)
+            # sinput=aux.add_shifts(data,S,T,model.dv)
+            # starg=targ.repeat(1,ls*lt).view(-1,self.lenc)
             out = self.forward(sinput)
             loss=self.criterion_shift(out.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),starg.reshape(-1))
 
-            sloss=torch.sum(loss.view(-1,self.lenc),dim=1).view(-1,ls*lt)
+            sloss=torch.sum(loss.view(-1,self.lenc),dim=1).view(-1,lst)
 
             v,lossm=torch.min(sloss,1)
-            ii=torch.arange(0,len(sinput),ls*lt,dtype=torch.long).to(self.dv)+lossm
+            ii=torch.arange(0,len(sinput),lst,dtype=torch.long).to(self.dv)+lossm
             outs=out[ii]
             stargs=starg[ii]
             loss, acc, acca, numa, mx =self.get_acc_and_loss(outs.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),stargs.reshape(-1))
-            trin_shift[j:j+self.bsz]=sinput[ii].cpu().detach().numpy()
+            train_choice_shift[jo:jo+self.bsz]=sinput[ii].cpu().detach().numpy()
             full_loss += loss.item()
             full_acc += acc.item()
             full_acca += acca.item()
@@ -122,7 +119,8 @@ class CLEAN(nn.Module):
             rmx += [mx.cpu().detach().numpy()]
         fout.write('====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}\n'.format(type+'_shift', epoch,
                         full_loss / (num_tr / self.bsz),full_acc / (num_tr * model.numc), full_acca / full_numa))
-        return trin_shift, rmx
+
+        return train_choice_shift, rmx
 
 
     def loss_and_grad(self, input, target, type='train'):
@@ -224,6 +222,14 @@ x_dim=np.int32(train_data[0].shape[1]/2)
 y_dim=train_data[0].shape[2]
 train_data=train_data[:, :, 0:x_dim, :]
 test_data=test_data[:, :, 0:x_dim, :]
+S = [0, 2, 4, 6]
+T = [0, 4]
+lst=len(S)*len(T)
+train_data_shift=aux.add_shifts_new(train_data,S,T)
+test_data_shift=aux.add_shifts_new(test_data,S,T)
+train_text_shift=np.repeat(train_text,lst,axis=0)
+test_text_shift=np.repeat(test_text,lst,axis=0)
+
 
 model=CLEAN(device,x_dim, y_dim, args).to(device)
 tot_pars=0
@@ -238,14 +244,14 @@ for epoch in range(args.nepoch):
     if (scheduler is not None):
             scheduler.step()
     t1=time.time()
-    train_data_shift, _=model.get_loss_shift(train_data,train_text,fout,'train')
-    model.run_epoch(train_data_shift, train_text, epoch,fout, 'train')
-    model.get_loss_shift(test_data, test_text,fout,'test')
+    train_data_choice_shift, _=model.get_loss_shift(train_data_shift,train_text_shift,lst,fout,'train')
+    model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train')
+    model.get_loss_shift(test_data_shift, test_text_shift,lst,fout,'test')
 
     fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
     fout.flush()
 
-test_data_shift,rx=model.get_loss_shift(test_data, test_text, fout,'test')
+test_data_choice_shift,rx=model.get_loss_shift(test_data_shift, test_text_shift,lst, fout,'test')
 rxx=np.int32(np.array(rx)).ravel()
 tt=np.array([args.aa[i] for i in rxx]).reshape(len(test_text),args.lenc)
 aux.create_image(test_data,tt,model.x_dim,'try')

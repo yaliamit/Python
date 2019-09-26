@@ -146,3 +146,22 @@ def add_shifts(input,S,T,dv):
 
 
     return input_s
+
+def add_shifts_new(input,S,T):
+
+
+    ss=input.shape
+    ls=len(S)
+    lt=len(T)
+    input_s=np.repeat(input,ls*lt,axis=0)
+    l=len(input_s)
+
+    for i,s in enumerate(S):
+        lls = np.arange(i*lt, l, ls*lt)
+        for j,t in enumerate(T):
+            llst=lls+j
+            input_s[llst,:]=np.concatenate((input_s[llst,:,:,s:],np.ones((len(llst),ss[1],ss[2],s))),axis=3)
+            input_s[llst,:]=np.concatenate((input_s[llst,:,t:,:],torch.ones((len(llst),ss[1],t,ss[3]))),axis=2)
+
+
+    return input_s
