@@ -83,15 +83,18 @@ class CLEAN(nn.Module):
         numa = targa.shape[0]
         loss=self.criterion(out,targ)
         acc=torch.sum(mx.eq(targ))
+        mxc=1+torch.fmod((mx-1),26)
+        targc=1+torch.fmod((targ-1),26)
+        accc=torch.sum(mxc.eq(targc))
         acca=torch.sum(mxa.eq(targa))
 
-        return loss, acc, acca, numa, mx
+        return loss, acc, acca, numa, accc, mx
 
     def get_loss_shift(self,input_shift,target_shift, lst, fout, type):
         self.eval()
         num_tr=len(input_shift)
         num_tro=num_tr/lst
-        full_loss=0; full_acc=0; full_acca=0; full_numa=0
+        full_loss=0; full_acc=0; full_acca=0; full_numa=0; full_accc=0
         sh=np.array(input_shift.shape)
         sh[0]/=lst
         train_choice_shift=np.zeros(sh)
@@ -110,15 +113,17 @@ class CLEAN(nn.Module):
             ii=torch.arange(0,len(sinput),lst,dtype=torch.long).to(self.dv)+lossm
             outs=out[ii]
             stargs=starg[ii]
-            loss, acc, acca, numa, mx =self.get_acc_and_loss(outs.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),stargs.reshape(-1))
+            loss, acc, acca, numa, accc, mx =self.get_acc_and_loss(outs.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),stargs.reshape(-1))
             train_choice_shift[jo:jo+self.bsz]=sinput[ii].cpu().detach().numpy()
             full_loss += loss.item()
             full_acc += acc.item()
             full_acca += acca.item()
+            full_accc += accc.item()
             full_numa += numa
             rmx += [mx.cpu().detach().numpy()]
-        fout.write('====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}\n'.format(type+'_shift', epoch,
-                        full_loss / (num_tro / self.bsz),full_acc / (num_tro * model.numc), full_acca / full_numa))
+        fout.write('====> {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}, case insensitive acc {:.4F}\n'.format(type+'_shift', epoch,
+                        full_loss / (num_tro / self.bsz),full_acc / (num_tro * model.numc), full_acca / full_numa,
+                                        full_accc / (num_tro * model.numc)))
 
         return train_choice_shift, rmx
 
@@ -129,12 +134,12 @@ class CLEAN(nn.Module):
 
         if (type == 'train'):
             self.optimizer.zero_grad()
-        loss, acc, acca, numa, mx=self.get_acc_and_loss(out.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),target.reshape(-1))
+        loss, acc, acca, numa, accc, mx=self.get_acc_and_loss(out.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),target.reshape(-1))
         if (type == 'train'):
             loss.backward()
             self.optimizer.step()
 
-        return loss, acc, acca, numa, mx
+        return loss, acc, acca, numa, accc, mx
 
     def run_epoch(self, train, text, epoch, fout, type):
 
@@ -149,10 +154,7 @@ class CLEAN(nn.Module):
         trin=train[ii]
         targ=text[ii]
 
-        full_loss=0
-        full_acc=0
-        full_acca=0
-        full_numa=0
+        full_loss=0; full_acc=0; full_acca=0; full_numa=0; full_accc=0
         rmx=[]
         for j in np.arange(0, num_tr, self.bsz):
             data = torch.from_numpy(trin[j:j + self.bsz]).float().to(self.dv)
@@ -160,14 +162,15 @@ class CLEAN(nn.Module):
             target=target.type(torch.int64)
             #target_boxes = torch.from_numpy(train_boxes[j:j+self.bsz]).float().to(self.dv)
 
-            loss, acc, acca, numa, mx= self.loss_and_grad(data, target, type)
+            loss, acc, acca, numa, accc, mx= self.loss_and_grad(data, target, type)
             full_loss += loss.item()
             full_acc += acc.item()
             full_acca+=acca.item()
+            full_accc += accc.item()
             full_numa+=numa
             rmx+=[mx.cpu().detach().numpy()]
-        fout.write('====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}\n'.format(type,epoch,
-                    full_loss /(num_tr/self.bsz), full_acc/(num_tr*model.numc), full_acca/full_numa))
+        fout.write('====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}, case insensitive acc {:.4F}\n'.format(type,epoch,
+                    full_loss /(num_tr/self.bsz), full_acc/(num_tr*model.numc), full_acca/full_numa, full_accc / (num_tr * model.numc)))
 
         return(rmx)
 
