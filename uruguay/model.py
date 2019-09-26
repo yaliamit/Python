@@ -232,6 +232,8 @@ test_text_shift=np.repeat(test_text,lst,axis=0)
 
 
 model=CLEAN(device,x_dim, y_dim, args).to(device)
+model.run_epoch(train_data[0:model.bsz], train_text, 0, fout, 'test')
+
 tot_pars=0
 for keys, vals in model.state_dict().items():
     fout.write(keys+','+str(np.array(vals.shape))+'\n')
