@@ -89,6 +89,7 @@ class CLEAN(nn.Module):
     def get_loss_shift(self,input_shift,target_shift, lst, fout, type):
         self.eval()
         num_tr=len(input_shift)
+        num_tro=num_tr/lst
         full_loss=0; full_acc=0; full_acca=0; full_numa=0
         sh=np.array(input_shift.shape)
         sh[0]/=lst
@@ -118,7 +119,7 @@ class CLEAN(nn.Module):
             full_numa += numa
             rmx += [mx.cpu().detach().numpy()]
         fout.write('====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}\n'.format(type+'_shift', epoch,
-                        full_loss / (num_tr / self.bsz),full_acc / (num_tr * model.numc), full_acca / full_numa))
+                        full_loss / (num_tro / self.bsz),full_acc / (num_tro * model.numc), full_acca / full_numa))
 
         return train_choice_shift, rmx
 
