@@ -166,7 +166,6 @@ class CLEAN(nn.Module):
             full_acca+=acca.item()
             full_numa+=numa
             rmx+=[mx.cpu().detach().numpy()]
-        print('non space',full_numa/(num_tr*args.lenc))
         fout.write('====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}\n'.format(type,epoch,
                     full_loss /(num_tr/self.bsz), full_acc/(num_tr*model.numc), full_acca/full_numa))
 
@@ -247,9 +246,13 @@ for epoch in range(args.nepoch):
             scheduler.step()
     t1=time.time()
     train_data_choice_shift, _=model.get_loss_shift(train_data_shift,train_text_shift,lst,fout,'train')
+    t2=time.time()
+    fout.write('shift: in {:5.3f} seconds\n'.format(t2-t1))
     model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train')
+    t3=time.time()
+    fout.write('epoch:  in {:5.3f} seconds\n'.format(t3-t2))
     model.get_loss_shift(test_data_shift, test_text_shift,lst,fout,'test')
-
+    fout.write('test: in {:5.3f} seconds\n'.format(time.time()-t3))
     fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
     fout.flush()
 
