@@ -8,7 +8,7 @@ def process_args(parser):
     parser.add_argument('--filts', type=int, default=(3,3,3,3), help='size of filters')
     parser.add_argument('--feats', type=int, default=(1,32,32,64,256), help='number of filters')
     parser.add_argument('--pools', type=int, default=   (2, 2, 1, 2), help='pooling')
-    parser.add_argument('--drops', type=float, default=(1.,1.,1.,1.,1.))
+    parser.add_argument('--drops', type=float, default=(1.,1.,1.,1.,.5))
     parser.add_argument('--num_char', type=int, default=5, help='number of characters')
     parser.add_argument('--filt_size_out', type=int, default=3, help='size of last layer filter')
     parser.add_argument('--bsz', type=int, default=100, help='mb_size (default: 500)')
