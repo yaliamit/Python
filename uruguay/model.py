@@ -59,12 +59,13 @@ class CLEAN(nn.Module):
                 self.dr2d=nn.Dropout2d(self.drops[-1])
             out=self.dr2d(out)
         if (self.first):
-            sh2 = out.shape[3]
-            sh1 = out.shape[2]
-            sh2a = np.int32(np.ceil(sh2 / self.lenc))
-            pad = sh2a * (self.lenc)+1 - sh2
-            print('pre final shape',out.shape,sh1,sh2a)
-            self.l_out=torch.nn.Conv2d(out.shape[1],args.ll,[sh1,sh2a+1],stride=[1,sh2a],padding=[0,pad]).to(self.dv)
+            self.sh=out.shape
+            self.sh2a = np.int32(np.ceil(self.sh[3] / self.lenc))
+            self.pad = self.sh2a * (self.lenc)+1 - self.sh[3]
+            print('pre final shape',out.shape,self.sh[2],self.sh2a)
+        out=torch.cat((out,torch.zeros(out.shape[0],self.sh[1],self.sh[2],self.pad).to(self.dv)),dim=3)
+        if (self.first):
+            self.l_out=torch.nn.Conv2d(out.shape[1],args.ll,[self.sh[2],self.sh2a+1],stride=[1,self.sh2a]).to(self.dv)
         out=self.l_out(out)
         if (self.first):
             print('final shape',out.shape)
