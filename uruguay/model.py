@@ -12,7 +12,7 @@ import aux
 class CLEAN(nn.Module):
     def __init__(self, device, x_dim, y_dim, args):
         super(CLEAN, self).__init__()
-        self.fac=.5
+        self.fac=args.space_fac
         self.first=True
         self.lenc=args.lenc
         self.numc=args.num_char
