@@ -91,7 +91,7 @@ class STVAE_mix(models.STVAE):
             self.encoder_mix = encoder_mix(self.x_dim, self.h_dim, self.num_hlayers)
         self.decoder_mix=decoder_mix(self.x_dim,self.h_dim,self.n_mix,self.num_hlayers)
 
-        self.rho = nn.Parameter(torch.zeros(self.n_mix),requires_grad=True)
+        self.rho = nn.Parameter(torch.zeros(self.n_mix),requires_grad=False)
 
         if (args.optimizer=='Adam'):
             self.optimizer=optim.Adam(self.parameters(),lr=args.lr)

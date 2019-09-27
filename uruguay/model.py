@@ -12,7 +12,7 @@ import aux
 class CLEAN(nn.Module):
     def __init__(self, device, x_dim, y_dim, args):
         super(CLEAN, self).__init__()
-
+        self.fac=.5
         self.first=True
         self.lenc=args.lenc
         self.numc=args.num_char
@@ -28,7 +28,7 @@ class CLEAN(nn.Module):
         self.drops=args.drops
         ll=len(args.filts)
         self.convs = nn.ModuleList([torch.nn.Conv2d(args.feats[i], args.feats[i+1],args.filts[i],stride=1,padding=np.int32(np.floor(args.filts[i]/2))) for i in range(ll)])
-        self.criterion=nn.CrossEntropyLoss(weight=self.weights)
+        self.criterion=nn.CrossEntropyLoss(weight=self.weights,reduction='sum')
         self.criterion_shift=nn.CrossEntropyLoss(reduce=False)
         if (args.optimizer == 'Adam'):
             self.optimizer = optim.Adam(self.parameters(), lr=args.lr)
@@ -73,15 +73,30 @@ class CLEAN(nn.Module):
 
         return(out)
 
+    def loss_shift(self,out,targ):
 
+
+        outl=out.permute(1, 0, 2, 3).reshape([self.ll, -1]).transpose(0, 1)
+        targl=targ.reshape(-1)
+        iia=targl>0
+        iis=targl==0
+        loss=torch.zeros_like(targl,dtype=torch.float).to(self.dv)
+        loss[iia] = self.criterion_shift(outl[iia],targl[iia])
+        loss[iis] = self.fac*self.criterion_shift(outl[iis],targl[iis])
+
+        slossa = torch.sum(loss.view(-1, self.lenc), dim=1).view(-1, lst)
+
+        return slossa
 
     def get_acc_and_loss(self,out,targ):
 
         v,mx=torch.max(out,1)
         targa=targ[targ>0]
         mxa=mx[targ>0]
+        targs = targ[targ == 0]
         numa = targa.shape[0]
-        loss=self.criterion(out,targ)
+        loss=self.criterion(out[targ>0],targa)+self.fac*(self.criterion(out[targ==0],targs))
+        loss/=len(targa)
         acc=torch.sum(mx.eq(targ))
         mxc=1+torch.fmod((mx-1),26)
         targc=1+torch.fmod((targ-1),26)
@@ -105,9 +120,8 @@ class CLEAN(nn.Module):
             starg = torch.from_numpy(target_shift[j:j + self.bsz*lst]).to(self.dv)
             starg = starg.type(torch.int64)
             out = self.forward(sinput)
-            loss=self.criterion_shift(out.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),starg.reshape(-1))
 
-            sloss=torch.sum(loss.view(-1,self.lenc),dim=1).view(-1,lst)
+            sloss=self.loss_shift(out,starg)
 
             v,lossm=torch.min(sloss,1)
             ii=torch.arange(0,len(sinput),lst,dtype=torch.long).to(self.dv)+lossm
