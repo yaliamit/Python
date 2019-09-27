@@ -213,14 +213,14 @@ fout.write('Device,'+str(device)+'\n')
 fout.write('USE_GPU,'+str(use_gpu)+'\n')
 
 ll=0
-train_data, train_data_boxes, train_text, test_data, test_data_boxes, test_text = aux.get_data(args)
+train_data,  train_text, test_data, test_text = aux.get_data(args)
 
 
 
 fout.write('num train '+str(train_data.shape[0])+'\n')
 fout.write('num test '+str(test_data.shape[0])+'\n')
 
-x_dim=np.int32(train_data[0].shape[1]/2)
+x_dim=np.int32(train_data[0].shape[1])
 y_dim=train_data[0].shape[2]
 train_data=train_data[:, :, 0:x_dim, :]
 test_data=test_data[:, :, 0:x_dim, :]

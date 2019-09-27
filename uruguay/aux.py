@@ -92,12 +92,12 @@ def get_data(args):
         llte=np.int32((len(all_pairs)-lltr)//args.bsz * args.bsz)
         ii=np.array(range(lltr+llte))
         np.random.shuffle(ii)
-        bx=np.float32(f['BOXES'])
-        boxes=make_boxes(bx,all_pairs)
+        #bx=np.float32(f['BOXES'])
+        #boxes=make_boxes(bx,all_pairs)
         train_data = all_pairs[ii[0:lltr]]
-        train_data_boxes=boxes[ii[0:lltr]]
+        #train_data_boxes=boxes[ii[0:lltr]]
         test_data=all_pairs[ii[lltr:lltr+llte]]
-        test_data_boxes=boxes[ii[lltr:lltr+llte]]
+        #test_data_boxes=boxes[ii[lltr:lltr+llte]]
     with open('texts.txt','r') as f:
         TEXT = [line.rstrip() for line in f.readlines()]
         aa=sorted(set(' '.join(TEXT)))
@@ -126,7 +126,7 @@ def get_data(args):
         print("hello")
         args.aa=aa
 
-    return train_data, train_data_boxes, train_text, test_data, test_data_boxes, test_text
+    return train_data, train_text, test_data, test_text
 
 def add_shifts(input,S,T,dv):
 

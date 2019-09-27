@@ -19,21 +19,22 @@ def create_image(text,old_img,newname,oldname):
     #old_im.save(oldname)
     oibx=oim.getbbox()
     nold_im=np.array(old_im.getdata(),np.uint8).reshape(old_im.size[1], old_im.size[0])
-    img = Image.new('L', (200,40), 0)
-    draw = ImageDraw.Draw(img)
-    font = ImageFont.truetype("Arial.ttf", 16)
-    draw.text((0, 0), text,255,font=font)
-    ibx=img.getbbox()
-    ibx_in=(ibx[0],ibx[1],ibx[2]+1,ibx[3]+1)
-    img=img.crop(ibx_in)
-    img=img.resize(oibx[2:4],resample=Image.BICUBIC)
-    ibx=img.getbbox()
-    img = ImageOps.invert(img)
-    new_im=Image.new('L', standard_size,255)
-    new_im.paste(img,(0,0))
-    nnew_im=np.array(new_im.getdata(),np.uint8).reshape(new_im.size[1], new_im.size[0])
-    IM=np.concatenate([nold_im,nnew_im],axis=0)
-    return IM, ibx[2:4]
+    # img = Image.new('L', (200,40), 0)
+    # draw = ImageDraw.Draw(img)
+    # font = ImageFont.truetype("Arial.ttf", 16)
+    # draw.text((0, 0), text,255,font=font)
+    # ibx=img.getbbox()
+    # ibx_in=(ibx[0],ibx[1],ibx[2]+1,ibx[3]+1)
+    # img=img.crop(ibx_in)
+    # img=img.resize(oibx[2:4],resample=Image.BICUBIC)
+    # ibx=img.getbbox()
+    # img = ImageOps.invert(img)
+    # new_im=Image.new('L', standard_size,255)
+    # new_im.paste(img,(0,0))
+    # nnew_im=np.array(new_im.getdata(),np.uint8).reshape(new_im.size[1], new_im.size[0])
+    # IM=np.concatenate([nold_im,nnew_im],axis=0)
+    IM=nold_im
+    return IM #, ibx[2:4]
 
 #create_image('Shit','out.pdf')
 if ('darwin' in sys.platform):
@@ -67,17 +68,17 @@ def produce_image(r):
                     text=data[0]+' '*(max_length-len(data[0]))
                 else:
                     text=data[0][0:max_length]
-                IM, ibx=create_image(text,oldimg,newr,oldr)
+                IM=create_image(text,oldimg,newr,oldr)
                 global Images, IBX, TEXT
                 Images+=[IM]
-                IBX+=[ibx]
+                #IBX+=[ibx]
                 TEXT+=[text]
 
 
 def make_hpy():
     with h5py.File('pairs.hdf5', 'w') as f:
         dset1 = f.create_dataset("PAIRS", data=np.array(Images))
-        dset2 = f.create_dataset("BOXES", data=np.array(IBX))
+        #dset2 = f.create_dataset("BOXES", data=np.array(IBX))
     with open('texts.txt','w') as f:
         for tx in TEXT:
             f.write('%s\n' % tx)
