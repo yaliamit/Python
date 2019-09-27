@@ -114,6 +114,7 @@ def get_data(args):
         test_t=[TEXT[j] for j in ii[lltr:lltr+llte]]
         lens=[len(r) for r in train_t]
         args.lenc=np.max(lens)
+        print('LENC',args.lenc)
         train_text=np.ones((len(train_t),args.lenc))*spa
         for j,tt in enumerate(train_t):
             for i,ss in enumerate(tt):
@@ -128,25 +129,6 @@ def get_data(args):
         args.aa=aa
 
     return train_data, train_text, test_data, test_text
-
-def add_shifts(input,S,T,dv):
-
-
-    ss=input.shape
-    ls=len(S)
-    lt=len(T)
-    input_s=input.repeat(1,ls*lt,1,1).view(ss[0]*ls*lt,ss[1],ss[2],ss[3])
-    l=len(input_s)
-
-    for i,s in enumerate(S):
-        lls = np.arange(i*lt, l, ls*lt)
-        for j,t in enumerate(T):
-            llst=lls+j
-            input_s[llst,:]=torch.cat((input_s[llst,:,:,s:],torch.zeros(len(llst),ss[1],ss[2],s,dtype=torch.float).to(dv)),dim=3)
-            input_s[llst,:]=torch.cat((input_s[llst,:,t:,:],torch.zeros(len(llst),ss[1],t,ss[3],dtype=torch.float).to(dv)),dim=2)
-
-
-    return input_s
 
 def add_shifts_new(input,S,T):
 
