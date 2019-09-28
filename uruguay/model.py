@@ -15,7 +15,6 @@ class CLEAN(nn.Module):
         self.fac=args.space_fac
         self.first=True
         self.lenc=args.lenc
-        self.numc=args.num_char
         self.bsz=args.bsz
         self.x_dim=x_dim
         self.y_dim=y_dim
@@ -136,8 +135,8 @@ class CLEAN(nn.Module):
             full_numa += numa
             rmx += [mx.cpu().detach().numpy()]
         fout.write('====> {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}, case insensitive acc {:.4F}\n'.format(type+'_shift', epoch,
-                        full_loss / (num_tro / self.bsz),full_acc / (num_tro * model.numc), full_acca / full_numa,
-                                        full_accc / (num_tro * model.numc)))
+                        full_loss / (num_tro / self.bsz),full_acc / (num_tro * model.lenc), full_acca / full_numa,
+                                        full_accc / (num_tro * model.lenc)))
 
         return train_choice_shift, rmx
 
@@ -184,7 +183,7 @@ class CLEAN(nn.Module):
             full_numa+=numa
             rmx+=[mx.cpu().detach().numpy()]
         fout.write('====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}, case insensitive acc {:.4F}\n'.format(type,epoch,
-                    full_loss /(num_tr/self.bsz), full_acc/(num_tr*model.numc), full_acca/full_numa, full_accc / (num_tr * model.numc)))
+                    full_loss /(num_tr/self.bsz), full_acc/(num_tr*model.lenc), full_acca/full_numa, full_accc / (num_tr * model.lenc)))
 
         return(rmx)
 
