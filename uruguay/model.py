@@ -60,7 +60,7 @@ class CLEAN(nn.Module):
             out=self.dr2d(out)
         if (self.first):
             self.sh=out.shape
-            self.sh2a = np.int32(np.ceil(self.sh[3] / self.lenc))
+            self.sh2a = np.int32(np.floor(self.sh[3] / self.lenc))
             self.pad = self.sh2a * (self.lenc)+1 - self.sh[3]
             print('pre final shape',out.shape,self.sh[2],self.sh2a)
         out=torch.cat((out,torch.zeros(out.shape[0],self.sh[1],self.sh[2],self.pad).to(self.dv)),dim=3)
