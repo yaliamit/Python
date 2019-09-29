@@ -2,6 +2,7 @@ import argparse
 import numpy as np
 import torch
 from PIL import Image, ImageDraw, ImageFont, ImageOps
+import scipy.ndimage as scn
 import h5py
 
 def process_args(parser):
@@ -129,10 +130,24 @@ def get_data(args):
 
     return train_data, train_text, test_data, test_text
 
-def add_shifts_new(input,S,T):
+def add_shifts_new(input,S,T,Z=None):
 
 
     ss=input.shape
+    if (Z is not None):
+        input_z=np.repeat(input,len(Z)+1,axis=0)
+        sh=input_z.shape[2:4]
+        for i in np.arange(0,len(input_z),len(Z)+1):
+            for j in range(len(Z)):
+                if (Z[j]>1.):
+                    input_z[i+j+1,0]=np.maximum(0,np.minimum(1.,scn.zoom(input_z[i+j+1,0],zoom=Z[j])[0:sh[0],0:sh[1]]))
+                else:
+                    tmp=np.maximum(0,np.minimum(scn.zoom(input_z[i+j+1,0],zoom=Z[j]),1.))
+                    tmp1=np.ones((sh[0],sh[1]))
+                    tmp1[0:tmp.shape[0],0:tmp.shape[1]]=tmp
+                    input_z[i + j + 1, 0]=tmp1
+        input=input_z
+
     ls=len(S)
     lt=len(T)
     input_s=np.repeat(input,ls*lt,axis=0)

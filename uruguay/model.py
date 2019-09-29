@@ -239,9 +239,10 @@ train_data=train_data[:, :, 0:x_dim, :]
 test_data=test_data[:, :, 0:x_dim, :]
 S = [0, 2, 4, 6]
 T = [0, 4]
-lst=len(S)*len(T)
-train_data_shift=aux.add_shifts_new(train_data,S,T)
-test_data_shift=aux.add_shifts_new(test_data,S,T)
+Z = [.8,1.2]
+lst=len(S)*len(T)*(len(Z)+1)
+train_data_shift=aux.add_shifts_new(train_data,S,T,Z)
+test_data_shift=aux.add_shifts_new(test_data,S,T,Z)
 train_text_shift=np.repeat(train_text,lst,axis=0)
 test_text_shift=np.repeat(test_text,lst,axis=0)
 
