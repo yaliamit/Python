@@ -226,7 +226,7 @@ fout.flush()
 torch.manual_seed(args.seed)
 np.random.seed(args.seed)
 
-cuda_string="cuda:"+str(use_gpu)
+cuda_string="cuda:"+str(use_gpu-1)
 device = torch.device(cuda_string if use_gpu else "cpu")
 fout.write('Device,'+str(device)+'\n')
 fout.write('USE_GPU,'+str(use_gpu)+'\n')
