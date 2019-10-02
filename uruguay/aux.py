@@ -48,7 +48,8 @@ def create_image(trin, TT, x_dim, ex_file):
                     if (t<ll):
                         text=''.join(TT[t,:])
                         img = Image.new('L', (80+5, x_dim+20), 255)
-                        imga = Image.fromarray(np.int8(trin[t,0,0:x_dim]*200))
+                        #imga = Image.fromarray(np.int8(trin[t,0,0:x_dim]*200))
+                        imga = Image.fromarray(trin[t,0,0:x_dim])
                         img.paste(imga, (0,0))
                         draw = ImageDraw.Draw(img)
                         font = ImageFont.truetype("Arial.ttf", 16)
