@@ -102,7 +102,7 @@ class CLEAN(nn.Module):
         targl=targ.reshape(-1)
         loss=self.criterion_shift(outl,targl)
         pp=torch.softmax(outl,dim=1)
-        ent=torch.sum(torch.sum(torch.log(pp)*pp,dim=1).view(-1,self.lenc),dim=1).view(-1,lst)
+        ent=-torch.sum(torch.sum(torch.log(pp)*pp,dim=1).view(-1,self.lenc),dim=1).view(-1,lst)
         # Reshape loss function to have lst columns for each image.
         slossa = torch.sum(loss.view(-1, self.lenc), dim=1).view(-1, lst)
 
@@ -126,21 +126,21 @@ class CLEAN(nn.Module):
         return loss, acc, acca, numa, accc, mx
 
     # Find optimal shift/scale for each image
-    def get_loss_shift(self,input_shift,target_shift, lst, fout, type):
+    def get_loss_shift(self,input_shift,target_shift, fout, type):
         self.eval()
         num_tr=len(input_shift)
         num_tro=num_tr/lst
         full_loss=0; full_acc=0; full_acca=0; full_numa=0; full_accc=0
         sh=np.array(input_shift.shape)
-        sh[0]/=lst
+        sh[0]/=self.lst
         train_choice_shift=np.zeros(sh,dtype=np.uint8)
         rmx = []
         # Loop over batches of training data each lst of them are transformation of same image.
-        for j in np.arange(0, num_tr, self.bsz*lst):
-            jo=np.int32(j/lst)
+        for j in np.arange(0, num_tr, self.bsz*self.lst):
+            jo=np.int32(j/self.lst)
             # Data is stored as uint8 to save space. So transfer to float for gpu.
-            sinput = (torch.from_numpy(input_shift[j:j + self.bsz*lst]).float()/255.).to(self.dv)
-            starg = torch.from_numpy(target_shift[j:j + self.bsz*lst]).to(self.dv)
+            sinput = (torch.from_numpy(input_shift[j:j + self.bsz*self.lst]).float()/255.).to(self.dv)
+            starg = torch.from_numpy(target_shift[j:j + self.bsz*self.lst]).to(self.dv)
             starg = starg.type(torch.int64)
             # Apply network
             out = self.forward(sinput)
@@ -150,7 +150,7 @@ class CLEAN(nn.Module):
 
             # Find best column (transformed image)
             v,lossm=torch.min(sloss,1)
-            ii=torch.arange(0,len(sinput),lst,dtype=torch.long).to(self.dv)+lossm
+            ii=torch.arange(0,len(sinput),self.lst,dtype=torch.long).to(self.dv)+lossm
             # Extract best version of each outputs to compute current loss.
             outs=out[ii]
             stargs=starg[ii]
@@ -206,9 +206,10 @@ class CLEAN(nn.Module):
         full_loss=0; full_acc=0; full_acca=0; full_numa=0; full_accc=0
         rmx=[]
         # Loop over batches.
-        for j in np.arange(0, num_tr, self.bsz):
-            data = (torch.from_numpy(trin[j:j + self.bsz]).float()/255.).to(self.dv)
-            target = torch.from_numpy(targ[j:j + self.bsz]).to(self.dv)
+        jump=self.bsz*self.lst
+        for j in np.arange(0, num_tr, jump):
+            data = (torch.from_numpy(trin[j:j + jump]).float()/255.).to(self.dv)
+            target = torch.from_numpy(targ[j:j + jump]).to(self.dv)
             target=target.type(torch.int64)
 
             loss, acc, acca, numa, accc, mx= self.loss_and_grad(data, target, type)
@@ -265,9 +266,17 @@ fout.write('Device,'+str(device)+'\n')
 fout.write('USE_GPU,'+str(use_gpu)+'\n')
 
 ll=0
+# S,T shifts in x and y directions, Z - scalings
+S = args.S #[0, 2, 4, 6]
+T = args.T #[0, 4]
+Z = args.Z #[.8,1.2]
+# Total number of copies per image.
+lst=1
+if (len(S)>0 and len(T)>0 and len(Z)>=0):
+    lst=len(S)*len(T)*(len(Z)+1)
 
 # Assume data is stored in an hdf5 file, split the data into 80% training and 20% test.
-train_data,  train_text, test_data, test_text = aux.get_data(args)
+train_data,  train_text, test_data, test_text = aux.get_data(args,lst)
 
 fout.write('num train '+str(train_data.shape[0])+'\n')
 fout.write('num test '+str(test_data.shape[0])+'\n')
@@ -279,12 +288,7 @@ y_dim=train_data[0].shape[2]
 train_data=train_data[:, :, 0:x_dim, :]
 test_data=test_data[:, :, 0:x_dim, :]
 
-# S,T shifts in x and y directions, Z - scalings
-S = args.S #[0, 2, 4, 6]
-T = args.T #[0, 4]
-Z = args.Z #[.8,1.2]
-# Total number of copies per image.
-lst=len(S)*len(T)*(len(Z)+1)
+
 # Create the shifts and scales for train and test data
 train_data_shift=aux.add_shifts_new(train_data,S,T,Z)
 fout.write('num train shifted '+str(train_data_shift.shape[0])+'\n')
@@ -297,6 +301,7 @@ train_text_shift=np.repeat(train_text,lst,axis=0)
 
 # Get the model
 model=CLEAN(device,x_dim, y_dim, args).to(device)
+model.lst=lst
 # Run it on a small batch to initialize some modules that need to know dimensions of output
 model.run_epoch(train_data[0:model.bsz], train_text, 0, fout, 'test')
 
@@ -309,19 +314,26 @@ fout.write('tot_pars,'+str(tot_pars)+'\n')
 
 scheduler=model.get_scheduler(args)
 
-# Loop over epochs.
-for epoch in range(args.nepoch):
-    if (scheduler is not None):
+
+if (scheduler is not None):
             scheduler.step()
+# if (args.OPT):
+#     for epoch in range(2):
+#         model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
+#                     # Then test on original test set.
+#         model.run_epoch(test_data, test_text, epoch, fout, 'test')
+# Loop over epochs
+for epoch in range(args.nepoch):
+
     t1=time.time()
     # If optimizing over shifts and scales for each image
     if (args.OPT):
         # with current network parameters find best scale and shift for each image -> train_data_choice_shift
-        train_data_choice_shift, _=model.get_loss_shift(train_data_shift,train_text_shift,lst,fout,'train')
+        train_data_choice_shift, _=model.get_loss_shift(train_data_shift,train_text_shift,fout,'train')
         # Run an iteration of the network training on the chosen shifts/scales
         model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train')
         # Get the results on the test data using the optimal transformation for each image.
-        model.get_loss_shift(test_data_shift, test_text_shift, lst, fout, 'test')
+        model.get_loss_shift(test_data_shift, test_text_shift, fout, 'test')
     # Try training simply on the augmented training set without optimization
     else:
         model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')

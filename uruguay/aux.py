@@ -14,7 +14,7 @@ def process_args(parser):
     parser.add_argument('--drops', type=float, default=(1.,1.,1.,1.,.5))
     parser.add_argument('--space_fac', type=float, default=1.,help='factor on losss for spaces')
     parser.add_argument('--filt_size_out', type=int, default=3, help='size of last layer filter')
-    parser.add_argument('--bsz', type=int, default=100, help='mb_size (default: 500)')
+    parser.add_argument('--bsz', type=int, default=50, help='mb_size (default: 500)')
     parser.add_argument('--nepoch', type=int, default=30, help='number of training epochs')
     parser.add_argument('--gpu', type=int, default=2, help='whether to run in the GPU')
     parser.add_argument('--seed', type=int, default=1345, help='random seed (default: 1111)')
@@ -74,7 +74,7 @@ def create_image(trin, TT, x_dim, ex_file):
 
 
 # Read in data
-def get_data(args):
+def get_data(args,lst):
     with h5py.File('pairs.hdf5', 'r') as f:
         #key = list(f.keys())[0]
         # Get the data
@@ -84,8 +84,9 @@ def get_data(args):
         nt=np.minimum(args.num_train,len(all_pairs))
         all_pairs=all_pairs[0:nt]
         all_pairs=all_pairs.reshape(-1,1,all_pairs.shape[1],all_pairs.shape[2])
-        lltr=np.int32(np.ceil(.8*len(all_pairs))//args.bsz *args.bsz)
-        llte=np.int32((len(all_pairs)-lltr)//args.bsz * args.bsz)
+        chunk=np.int32(args.bsz*lst)
+        lltr=np.int32(np.ceil(.8*len(all_pairs))//chunk * chunk)
+        llte=np.int32((len(all_pairs)-lltr)//chunk * chunk)
         ii=np.array(range(lltr+llte))
         np.random.shuffle(ii)
         train_data = all_pairs[ii[0:lltr]]
