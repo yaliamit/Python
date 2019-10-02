@@ -84,7 +84,7 @@ def get_data(args,lst):
         nt=np.minimum(args.num_train,len(all_pairs))
         all_pairs=all_pairs[0:nt]
         all_pairs=all_pairs.reshape(-1,1,all_pairs.shape[1],all_pairs.shape[2])
-        chunk=np.int32(args.bsz*lst)
+        chunk=np.int32(args.bsz)
         lltr=np.int32(np.ceil(.8*len(all_pairs))//chunk * chunk)
         llte=np.int32((len(all_pairs)-lltr)//chunk * chunk)
         ii=np.array(range(lltr+llte))

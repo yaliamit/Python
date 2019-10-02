@@ -206,7 +206,7 @@ class CLEAN(nn.Module):
         full_loss=0; full_acc=0; full_acca=0; full_numa=0; full_accc=0
         rmx=[]
         # Loop over batches.
-        jump=self.bsz*self.lst
+        jump=self.bsz
         for j in np.arange(0, num_tr, jump):
             data = (torch.from_numpy(trin[j:j + jump]).float()/255.).to(self.dv)
             target = torch.from_numpy(targ[j:j + jump]).to(self.dv)
