@@ -280,9 +280,9 @@ train_data=train_data[:, :, 0:x_dim, :]
 test_data=test_data[:, :, 0:x_dim, :]
 
 # S,T shifts in x and y directions, Z - scalings
-S = [0] #, 2, 4, 6]
-T = [0, 4]
-Z = [] #[.8,1.2]
+S = args.S #[0, 2, 4, 6]
+T = args.T #[0, 4]
+Z = args.Z #[.8,1.2]
 # Total number of copies per image.
 lst=len(S)*len(T)*(len(Z)+1)
 # Create the shifts and scales for train and test data
