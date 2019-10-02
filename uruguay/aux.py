@@ -118,37 +118,39 @@ def get_data(args):
     return train_data, train_text, test_data, test_text
 
 # Create shifts and scales of data.
-def add_shifts_new(input,S,T,Z=None):
+def add_shifts_new(input,S,T,Z=[]):
 
+    if (len(S)==1 and len(T)==1 and len(Z)==0):
+        input_s=input
+    else:
+        ss=input.shape
+        if (len(Z)>0):
+            input_z=np.repeat(input,len(Z)+1,axis=0)
+            sh=input_z.shape[2:4]
+            for i in np.arange(0,len(input_z),len(Z)+1):
+                for j in range(len(Z)):
+                    input_f = np.float32(input_z[i + j + 1, 0]) / 255.
+                    if (Z[j]>1.):
+                        tmp1 = np.maximum(0, np.minimum(1., scn.zoom(input_f, zoom=Z[j])[0:sh[0], 0:sh[1]]))
+                    else:
+                        tmp=np.maximum(0,np.minimum(scn.zoom(input_f,zoom=Z[j]),1.))
+                        tmp1=np.ones((sh[0],sh[1]))
+                        tmp1[0:tmp.shape[0],0:tmp.shape[1]]=tmp
+                    input_z[i + j + 1, 0] = np.uint8(tmp1 * 255.)
 
-    ss=input.shape
-    if (Z is not None):
-        input_z=np.repeat(input,len(Z)+1,axis=0)
-        sh=input_z.shape[2:4]
-        for i in np.arange(0,len(input_z),len(Z)+1):
-            for j in range(len(Z)):
-                input_f = np.float32(input_z[i + j + 1, 0]) / 255.
-                if (Z[j]>1.):
-                    tmp1 = np.maximum(0, np.minimum(1., scn.zoom(input_f, zoom=Z[j])[0:sh[0], 0:sh[1]]))
-                else:
-                    tmp=np.maximum(0,np.minimum(scn.zoom(input_f,zoom=Z[j]),1.))
-                    tmp1=np.ones((sh[0],sh[1]))
-                    tmp1[0:tmp.shape[0],0:tmp.shape[1]]=tmp
-                input_z[i + j + 1, 0] = np.uint8(tmp1 * 255.)
+            input=input_z
 
-        input=input_z
+        ls=len(S)
+        lt=len(T)
+        input_s=np.repeat(input,ls*lt,axis=0)
+        l=len(input_s)
 
-    ls=len(S)
-    lt=len(T)
-    input_s=np.repeat(input,ls*lt,axis=0)
-    l=len(input_s)
-
-    for i,s in enumerate(S):
-        lls = np.arange(i*lt, l, ls*lt)
-        for j,t in enumerate(T):
-            llst=lls+j
-            input_s[llst,:]=np.concatenate((input_s[llst,:,:,s:],255*np.ones((len(llst),ss[1],ss[2],s),dtype=np.uint8)),axis=3)
-            input_s[llst,:]=np.concatenate((input_s[llst,:,t:,:],255*np.ones((len(llst),ss[1],t,ss[3]),dtype=np.uint8)),axis=2)
+        for i,s in enumerate(S):
+            lls = np.arange(i*lt, l, ls*lt)
+            for j,t in enumerate(T):
+                llst=lls+j
+                input_s[llst,:]=np.concatenate((input_s[llst,:,:,s:],255*np.ones((len(llst),ss[1],ss[2],s),dtype=np.uint8)),axis=3)
+                input_s[llst,:]=np.concatenate((input_s[llst,:,t:,:],255*np.ones((len(llst),ss[1],t,ss[3]),dtype=np.uint8)),axis=2)
 
 
     return input_s
