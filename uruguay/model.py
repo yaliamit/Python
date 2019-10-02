@@ -287,6 +287,8 @@ Z = args.Z #[.8,1.2]
 lst=len(S)*len(T)*(len(Z)+1)
 # Create the shifts and scales for train and test data
 train_data_shift=aux.add_shifts_new(train_data,S,T,Z)
+fout.write('num train shifted'+str(train_data_shift.shape[0])+'\n')
+
 if (args.OPT):
     test_data_shift=aux.add_shifts_new(test_data,S,T,Z)
     test_text_shift = np.repeat(test_text, lst, axis=0)
