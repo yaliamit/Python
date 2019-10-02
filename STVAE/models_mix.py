@@ -5,12 +5,6 @@ from tps import TPSGridGen
 import numpy as np
 import models
 
-class encoder_mix(nn.Module):
-    def __init__(self,x_dim,h_dim,num_layers):
-        super(encoder_mix,self).__init__()
-        if (num_layers==1):
-            self.h2he = nn.Linear(h_dim, h_dim)
-        self.x2h = nn.Linear(x_dim, h_dim)
 
 # Create i.i.d normals for each mixture component and a logit for weights
 class toNorm_mix(nn.Module):
@@ -18,11 +12,78 @@ class toNorm_mix(nn.Module):
         super(toNorm_mix,self).__init__()
         self.h2smu = nn.Linear(h_dim, s_dim*n_mix)
         self.h2svar = nn.Linear(h_dim, s_dim*n_mix,bias=False)
+        self.h2pi =nn.Linear(h_dim,n_mix) #nn.Parameter(torch.zeros(h_dim,n_mix))
+
+class encoder_mix(nn.Module):
+    def __init__(self,x_dim,h_dim,s_dim, n_mix, num_layers):
+        super(encoder_mix,self).__init__()
+        self.num_layers=num_layers
+        if (num_layers==1):
+            self.h2he = nn.Linear(h_dim, h_dim)
+        self.x2h = nn.Linear(x_dim, h_dim)
+        self.x2hpi = nn.Linear(x_dim, h_dim)
+        self.toNorm_mix=toNorm_mix(h_dim,s_dim,n_mix)
+
+    def forward(self,inputs):
+        h = F.relu(self.x2h(inputs))
+        hpi = F.relu(self.x2hpi(inputs))
+        if (self.num_layers == 1):
+            h = F.relu(encoder_mix.h2he(h))
+        s_mu = self.toNorm_mix.h2smu(h)
+        s_logvar = F.threshold(self.toNorm_mix.h2svar(h), -6, -6)
+        hm = self.toNorm_mix.h2pi(hpi).clamp(-10., 10.)
+        pi = torch.softmax(hm, dim=1)
+        return s_mu, s_logvar, pi
+
+class toNorm_mix_sep(nn.Module):
+    def __init__(self,h_dim,s_dim, n_mix):
+        super(toNorm_mix_sep,self).__init__()
+        self.h2smu = nn.ModuleList([nn.Linear(h_dim, s_dim) for i in range(n_mix)])
+        self.h2svar = nn.ModuleList([nn.Linear(h_dim, s_dim,bias=False) for i in range(n_mix)])
         self.h2pi = nn.Linear(h_dim,n_mix) #nn.Parameter(torch.zeros(h_dim,n_mix))
+
+
+class encoder_mix_sep(nn.Module):
+    def __init__(self,x_dim,h_dim,s_dim,n_mix):
+        super(encoder_mix_sep,self).__init__()
+        self.n_mix=n_mix
+        self.s_dim=s_dim
+        self.x2h=nn.ModuleList([nn.Linear(x_dim, h_dim) for i in range(n_mix)])
+        self.x2hpi = nn.Linear(x_dim, h_dim)
+        self.toNorm_mix_sep=toNorm_mix_sep(h_dim,s_dim,n_mix)
+
+    def forward(self,inputs):
+        s_mu = []
+        s_logvar = []
+        for i in range(self.n_mix):
+            h = F.relu(self.x2h[i](inputs))
+            s_mu += [self.toNorm_mix_sep.h2smu[i](h)]
+            s_logvar += [F.threshold(self.toNorm_mix_sep.h2svar[i](h), -6, 6)]
+        s_mu = torch.stack(s_mu, dim=0).transpose(0, 1).reshape(-1, self.n_mix * self.s_dim)
+        s_logvar = torch.stack(s_logvar, dim=0).transpose(0, 1).reshape(-1, self.n_mix * self.s_dim)
+        hpi = F.relu(self.x2hpi(inputs))
+        pi = torch.softmax(self.toNorm_mix_sep.h2pi(hpi).clamp(-10., 10.), dim=1)
+
+        return s_mu, s_logvar, pi
+
+class diag(nn.Module):
+    def __init__(self,dim):
+        super(diag,self).__init__()
+
+        self.dim=dim
+        rim=(torch.rand(self.dim) - .5) / np.sqrt(self.dim)
+        self.mu=nn.Parameter(rim)
+        ris=(torch.rand(self.dim) - .5) / np.sqrt(self.dim)
+        self.sigma=nn.Parameter(ris)
+
+    def forward(self,z):
+
+        u=z*self.sigma+self.mu
+        return(u)
 
 # Each set of s_dim normals gets multiplied by its own matrix to correlate
 class fromNorm_mix(nn.Module):
-    def __init__(self,h_dim,z_dim, u_dim, n_mix, type):
+    def __init__(self,h_dim,z_dim, u_dim, n_mix, type, Diag=False):
         super(fromNorm_mix,self).__init__()
         self.z2h=[]
         self.n_mix=n_mix
@@ -31,7 +92,11 @@ class fromNorm_mix(nn.Module):
         self.u_dim=u_dim
         self.type=type
         self.z2h=nn.ModuleList([nn.Linear(z_dim, h_dim) for i in range(n_mix)])
-        self.z2z=nn.ModuleList([nn.Linear(z_dim, z_dim) for i in range(n_mix)])
+
+        if (not Diag):
+            self.z2z=nn.ModuleList([nn.Linear(z_dim, z_dim) for i in range(n_mix)])
+        else:
+            self.z2z=nn.ModuleList(diag(z_dim) for i in range(n_mix))
         if (type == 'tvae'):
             self.u2u = nn.ModuleList([nn.Linear(u_dim, u_dim, bias=False) for i in range(n_mix)])
 
@@ -47,8 +112,6 @@ class fromNorm_mix(nn.Module):
         hh=torch.stack(h,dim=0).transpose(0,1)
         hh=F.relu(hh)
         return hh, v
-
-
 
 
 # Each correlated normal coming out of fromNorm_mix goes through same network to produce an image these get mixed.
@@ -84,11 +147,18 @@ class STVAE_mix(models.STVAE):
 
 
         self.n_mix = args.n_mix
+        self.sep=args.sep
+
+
+
         if (not args.OPT):
-            self.toNorm_mix=toNorm_mix(self.h_dim, self.s_dim, self.n_mix)
-        self.fromNorm_mix=fromNorm_mix(self.h_dim, self.z_dim,self.u_dim,self.n_mix, self.type)
-        if (not args.OPT):
-            self.encoder_mix = encoder_mix(self.x_dim, self.h_dim, self.num_hlayers)
+            if args.sep:
+                self.encoder_mix = encoder_mix_sep(self.x_dim, self.h_dim, self.s_dim, self.n_mix)
+            else:
+                self.encoder_mix = encoder_mix(self.x_dim, self.h_dim, self.s_dim, self.n_mix, self.num_hlayers)
+
+        self.fromNorm_mix = fromNorm_mix(self.h_dim, self.z_dim, self.u_dim, self.n_mix, self.type, args.Diag)
+
         self.decoder_mix=decoder_mix(self.x_dim,self.h_dim,self.n_mix,self.num_hlayers)
 
         self.rho = nn.Parameter(torch.zeros(self.n_mix),requires_grad=False)
@@ -98,16 +168,6 @@ class STVAE_mix(models.STVAE):
         elif (args.optimizer=='Adadelta'):
             self.optimizer = optim.Adadelta(self.parameters())
 
-    def forward_encoder(self, inputs):
-        h=F.relu(self.encoder_mix.x2h(inputs))
-        if (self.num_hlayers==1):
-            h=F.relu(self.encoder_mix.h2he(h))
-        s_mu=self.toNorm_mix.h2smu(h)
-        s_logvar=F.threshold(self.toNorm_mix.h2svar(h),-6,-6)
-        hm=self.toNorm_mix.h2pi(h).clamp(-10.,10.)
-        #hm=torch.matmul(h,self.toNorm_mix.h2pi).clamp(-10.,10.)
-        pi = torch.softmax(hm,dim=1)
-        return s_mu, s_logvar, pi
 
     def decoder_and_trans(self,s):
 
@@ -137,16 +197,18 @@ class STVAE_mix(models.STVAE):
         s_logvar = s_logvar.view(-1, self.n_mix, self.s_dim)
         sd=torch.exp(s_logvar/2)
         var=sd*sd
-        f=[]
-        ss=-.5*((s-s_mu)*(s-s_mu)/var+s_logvar)
-        ss=torch.sum(ss,dim=2)+lpi
-        posterior=torch.sum(pi*ss)
+
+        #ss=-.5*((s-s_mu)*(s-s_mu)/var+s_logvar)
+        #ss=torch.sum(ss,dim=2)+lpi
+        #posterior=torch.sum(pi*ss)
         # Sum along last coordinate to get negative log density of each component.
-
-        pr=-.5*torch.sum((s*s),dim=2)+self.rho-torch.logsumexp(self.rho,0)
-        prior=-torch.sum(pi*pr)
-
-        return prior, posterior
+        KD_dens=-0.5 * torch.sum(1 + s_logvar - s_mu ** 2 - var, dim=2)
+        KD_disc=lpi-self.rho+torch.logsumexp(self.rho,0)
+        tot=torch.sum(pi*(KD_dens+KD_disc))
+        #pr=-.5*torch.sum((s*s),dim=2)+self.rho-torch.logsumexp(self.rho,0)
+        #prior=-torch.sum(pi*pr)
+        prior=0; posterior=0
+        return prior, posterior, tot
 
     def mixed_loss(self,x,data,pi):
         b = []
@@ -169,28 +231,25 @@ class STVAE_mix(models.STVAE):
         else:
             s=mu
         s=s.view(-1,self.n_mix,self.s_dim)
-        pit = pi.reshape(pi.shape[0], 1, pi.shape[1])
         # Apply linear map to entire sampled vector.
         x=self.decoder_and_trans(s)
         lpi=torch.log(pi)
-        prior=0
-        post=0
-        prior, post = self.dens_apply(s,mu,logvar,lpi,pi)
+        prior, post, tot = self.dens_apply(s,mu,logvar,lpi,pi)
         recloss, _=self.mixed_loss(x,inputs,pi)
-        return recloss, prior, post
+        return recloss, prior, post, tot
 
 
 
     def compute_loss_and_grad(self,data,type):
 
-        mu, logvar, pi = self.forward_encoder(data.view(-1, self.x_dim))
 
-        #if (type == 'train'):
+        mu, logvar, pi = self.encoder_mix(data.view(-1, self.x_dim))
+
         self.optimizer.zero_grad()
 
-        recloss, prior, post = self.forward(data,mu,logvar,pi)
+        recloss, prior, post, tot = self.forward(data,mu,logvar,pi)
 
-        loss = recloss + prior + post
+        loss = recloss + tot #prior + post
 
 
         if (type == 'train'):
@@ -232,7 +291,8 @@ class STVAE_mix(models.STVAE):
         num_inp=input.shape[0]
         self.setup_id(num_inp)
         inp = input.to(self.dv)
-        s_mu, s_var, pi = self.forward_encoder(inp.view(-1, self.x_dim))
+        s_mu, s_var, pi = self.encoder_mix(inp.view(-1, self.x_dim))
+
         s_mu = s_mu.view(-1, self.n_mix, self.s_dim)
         ii = torch.argmax(pi, dim=1)
         jj = torch.arange(0,num_inp,dtype=torch.int64).to(self.dv)

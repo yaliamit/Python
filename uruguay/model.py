@@ -61,7 +61,7 @@ class CLEAN(nn.Module):
             self.sh=out.shape
             self.sh2a = np.int32(np.floor(self.sh[3] / self.lenc))
             self.pad = self.sh2a * (self.lenc)+1 - self.sh[3]
-            print('pre final shape',out.shape,self.sh[2],self.sh2a, self.pad)
+            print('pre final shape',out.shape,self.sh[2],self.sh2a, self.pad, self.lenc)
         out=torch.cat((out,torch.zeros(out.shape[0],self.sh[1],self.sh[2],self.pad).to(self.dv)),dim=3)
         if (self.first):
             self.l_out=torch.nn.Conv2d(out.shape[1],args.ll,[self.sh[2],self.sh2a+1],stride=[1,self.sh2a]).to(self.dv)
@@ -262,13 +262,14 @@ for epoch in range(args.nepoch):
     if (scheduler is not None):
             scheduler.step()
     t1=time.time()
-    train_data_choice_shift, _=model.get_loss_shift(train_data_shift,train_text_shift,lst,fout,'train')
-    #t2=time.time()
-    #fout.write('shift: in {:5.3f} seconds\n'.format(t2-t1))
-    model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train')
-    #t3=time.time()
-    #fout.write('epoch:  in {:5.3f} seconds\n'.format(t3-t2))
-    model.get_loss_shift(test_data_shift, test_text_shift,lst,fout,'test')
+    if (args.OPT):
+        train_data_choice_shift, _=model.get_loss_shift(train_data_shift,train_text_shift,lst,fout,'train')
+        model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train')
+        model.get_loss_shift(test_data_shift, test_text_shift, lst, fout, 'test')
+    else:
+        model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
+        model.run_epoch(test_data, train_text, epoch, fout, 'test')
+
     #fout.write('test: in {:5.3f} seconds\n'.format(time.time()-t3))
     fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
     fout.flush()

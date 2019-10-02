@@ -3,7 +3,7 @@
 --sdim=8
 --hdim=256
 --num_hlayers=0
---nepoch=1000
+--nepoch=50
 --gpu=True
 --seed=3251234
 --num_train=60000
@@ -11,6 +11,5 @@
 --model=base
 --lr=.002
 --nval=0
+--Diag
 --optimizer=Adam
---classify
---output_prefix=/Users/amit/Box Sync/EXP_NT60/EXP_NT60_1+120+3+40+6+20_vae+tvae_0/

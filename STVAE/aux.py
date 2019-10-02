@@ -36,6 +36,9 @@ def process_args(parser):
     parser.add_argument('--CONS', action='store_true', help='Output to consol')
     parser.add_argument('--sample', action='store_true', help='sample from distribution')
     parser.add_argument('--classify', action='store_true', help='Output to consol')
+    parser.add_argument('--Diag', action='store_true', help='Output to consol')
+    parser.add_argument('--sep', action='store_true', help='Output to consol')
+
     parser.add_argument('--output_prefix', default='', help='path to model')
 
     #parser = argparse.ArgumentParser(fromfile_prefix_chars='@')
