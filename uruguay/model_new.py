@@ -7,7 +7,7 @@ import os
 import sys
 import argparse
 import time
-import aux
+import aux_new as aux
 
 class CLEAN(nn.Module):
     def __init__(self, device, x_dim, y_dim, args):
@@ -92,10 +92,11 @@ class CLEAN(nn.Module):
         v,mx=torch.max(out,1)
         targa=targ[targ>0]
         mxa=mx[targ>0]
-        targs = targ[targ == 0]
+        #targs = targ[targ == 0]
         numa = targa.shape[0]
-        loss=self.criterion(out[targ>0],targa)+self.fac*(self.criterion(out[targ==0],targs))
-        loss/=len(targa)
+        #loss=self.criterion(out[targ>0],targa)+self.fac*(self.criterion(out[targ==0],targs))
+        loss=self.criterion(out,targ)
+        loss/=len(targ)
         acc=torch.sum(mx.eq(targ))
         mxc=1+torch.fmod((mx-1),26)
         targc=1+torch.fmod((targ-1),26)
@@ -115,7 +116,7 @@ class CLEAN(nn.Module):
         rmx = []
         for j in np.arange(0, num_tr, self.bsz*lst):
             jo=np.int32(j/lst)
-            sinput = torch.from_numpy(input_shift[j:j + self.bsz*lst]).float().to(self.dv)
+            sinput = (torch.from_numpy(input_shift[j:j + self.bsz*lst]).float()/255.).to(self.dv)
             starg = torch.from_numpy(target_shift[j:j + self.bsz*lst]).to(self.dv)
             starg = starg.type(torch.int64)
             out = self.forward(sinput)
@@ -170,7 +171,7 @@ class CLEAN(nn.Module):
         full_loss=0; full_acc=0; full_acca=0; full_numa=0; full_accc=0
         rmx=[]
         for j in np.arange(0, num_tr, self.bsz):
-            data = torch.from_numpy(trin[j:j + self.bsz]).float().to(self.dv)
+            data = (torch.from_numpy(trin[j:j + self.bsz]).float()/255.).to(self.dv)
             target = torch.from_numpy(targ[j:j + self.bsz]).to(self.dv)
             target=target.type(torch.int64)
             #target_boxes = torch.from_numpy(train_boxes[j:j+self.bsz]).float().to(self.dv)
