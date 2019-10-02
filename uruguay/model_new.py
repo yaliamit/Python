@@ -112,7 +112,7 @@ class CLEAN(nn.Module):
         full_loss=0; full_acc=0; full_acca=0; full_numa=0; full_accc=0
         sh=np.array(input_shift.shape)
         sh[0]/=lst
-        train_choice_shift=np.zeros(sh)
+        train_choice_shift=np.zeros(sh,dtype=np.uint8)
         rmx = []
         for j in np.arange(0, num_tr, self.bsz*lst):
             jo=np.int32(j/lst)
@@ -129,7 +129,7 @@ class CLEAN(nn.Module):
             outs=out[ii]
             stargs=starg[ii]
             loss, acc, acca, numa, accc, mx =self.get_acc_and_loss(outs.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),stargs.reshape(-1))
-            train_choice_shift[jo:jo+self.bsz]=input_shift[j+ii] #sinput[ii].cpu().detach().numpy()
+            train_choice_shift[jo:jo+self.bsz]=input_shift[j+ii.cpu().detach().numpy()] #sinput[ii].cpu().detach().numpy()
             full_loss += loss.item()
             full_acc += acc.item()
             full_acca += acca.item()
