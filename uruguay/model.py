@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from torch import nn, optim
-
+import torch.distributions as dist
 import os
 import sys
 import argparse
@@ -101,7 +101,8 @@ class CLEAN(nn.Module):
         outl=out.permute(1, 0, 2, 3).reshape([self.ll, -1]).transpose(0, 1)
         targl=targ.reshape(-1)
         loss=self.criterion_shift(outl,targl)
-
+        pp=torch.softmax(outl,dim=1)
+        ent=-torch.sum(torch.log(pp)*pp,dim=1).view(-1,lst)
         # Reshape loss function to have lst columns for each image.
         slossa = torch.sum(loss.view(-1, self.lenc), dim=1).view(-1, lst)
 
@@ -280,15 +281,17 @@ test_data=test_data[:, :, 0:x_dim, :]
 
 # S,T shifts in x and y directions, Z - scalings
 S = [0] #, 2, 4, 6]
-T = [0] #, 4]
+T = [0, 4]
 Z = [] #[.8,1.2]
 # Total number of copies per image.
 lst=len(S)*len(T)*(len(Z)+1)
 # Create the shifts and scales for train and test data
 train_data_shift=aux.add_shifts_new(train_data,S,T,Z)
-test_data_shift=aux.add_shifts_new(test_data,S,T,Z)
+if (args.OPT):
+    test_data_shift=aux.add_shifts_new(test_data,S,T,Z)
+    test_text_shift = np.repeat(test_text, lst, axis=0)
+
 train_text_shift=np.repeat(train_text,lst,axis=0)
-test_text_shift=np.repeat(test_text,lst,axis=0)
 
 # Get the model
 model=CLEAN(device,x_dim, y_dim, args).to(device)
@@ -321,14 +324,17 @@ for epoch in range(args.nepoch):
     else:
         model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
         # Then test on original test set.
-        model.run_epoch(test_data_shift, test_text_shift, epoch, fout, 'test')
+        model.run_epoch(test_data, test_text, epoch, fout, 'test')
 
     #fout.write('test: in {:5.3f} seconds\n'.format(time.time()-t3))
     fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
     fout.flush()
 
 # Run one more time on test
-test_data_choice_shift,rx=model.get_loss_shift(test_data_shift, test_text_shift,lst, fout,'test')
+if (args.OPT):
+    test_data_choice_shift,rx=model.get_loss_shift(test_data_shift, test_text_shift,lst, fout,'test')
+else:
+    rx=model.run_epoch(test_data, test_text,0,fout, 'test')
 # Get resulting labels for each image.
 rxx=np.int32(np.array(rx)).ravel()
 tt=np.array([args.aa[i] for i in rxx]).reshape(len(test_text),args.lenc)
