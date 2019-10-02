@@ -102,11 +102,11 @@ class CLEAN(nn.Module):
         targl=targ.reshape(-1)
         loss=self.criterion_shift(outl,targl)
         pp=torch.softmax(outl,dim=1)
-        ent=-torch.sum(torch.log(pp)*pp,dim=1).view(-1,lst)
+        ent=torch.sum(torch.sum(torch.log(pp)*pp,dim=1).view(-1,self.lenc),dim=1).view(-1,lst)
         # Reshape loss function to have lst columns for each image.
         slossa = torch.sum(loss.view(-1, self.lenc), dim=1).view(-1, lst)
 
-        return slossa
+        return ent #slossa
 
     # Get loss and accuracy (all characters and non-space characters).
     def get_acc_and_loss(self,out,targ):
@@ -287,7 +287,7 @@ Z = args.Z #[.8,1.2]
 lst=len(S)*len(T)*(len(Z)+1)
 # Create the shifts and scales for train and test data
 train_data_shift=aux.add_shifts_new(train_data,S,T,Z)
-fout.write('num train shifted'+str(train_data_shift.shape[0])+'\n')
+fout.write('num train shifted '+str(train_data_shift.shape[0])+'\n')
 
 if (args.OPT):
     test_data_shift=aux.add_shifts_new(test_data,S,T,Z)
