@@ -9,24 +9,28 @@ import argparse
 import time
 import aux
 
+# Network module
 class CLEAN(nn.Module):
     def __init__(self, device, x_dim, y_dim, args):
         super(CLEAN, self).__init__()
-        self.fac=args.space_fac
+        self.fac=args.space_fac # Unused to balance loss on empty space vs. real characters
         self.first=True
-        self.lenc=args.lenc
-        self.bsz=args.bsz
-        self.x_dim=x_dim
+        self.lenc=args.lenc # Maximal number of characters in string. All strings padded with spaces to that length
+        self.bsz=args.bsz # Batch size - gets multiplied by number of shifts so needs to be quite small.
+        self.x_dim=x_dim # Dimensions of all images.
         self.y_dim=y_dim
         self.full_dim=x_dim*y_dim
         self.dv=device
-        self.ll=args.ll
+        self.ll=args.ll # Number of possible character labels.
         self.weights=torch.ones(self.ll).to(device)
         self.weights[0]=1.
-        self.pools = args.pools
-        self.drops=args.drops
-        ll=len(args.filts)
-        self.convs = nn.ModuleList([torch.nn.Conv2d(args.feats[i], args.feats[i+1],args.filts[i],stride=1,padding=np.int32(np.floor(args.filts[i]/2))) for i in range(ll)])
+        self.pools = args.pools # List of pooling at each level of network
+        self.drops=args.drops # Drop fraction at each level of network
+        ff=len(args.filts) # Number of filters = number of conv layers.
+        # Create list of convolution layers with the appropriate filter size, number of features etc.
+        self.convs = nn.ModuleList([torch.nn.Conv2d(args.feats[i], args.feats[i+1],args.filts[i],stride=1,padding=np.int32(np.floor(args.filts[i]/2))) for i in range(ff)])
+
+        # The loss function
         self.criterion=nn.CrossEntropyLoss(weight=self.weights,reduction='sum')
         self.criterion_shift=nn.CrossEntropyLoss(reduce=False)
         if (args.optimizer == 'Adam'):
@@ -34,6 +38,7 @@ class CLEAN(nn.Module):
         else:
             self.optimizer = optim.SGD(self.parameters(), lr=args.lr)
 
+    # Apply sequence of conv layers up to the final one that will be determined later.
     def forward_pre(self,input):
 
         out=input
@@ -42,29 +47,41 @@ class CLEAN(nn.Module):
                 print(out.shape)
             out=cc(out)
             pp=torch.fmod(torch.tensor(out.shape),self.pools[i])
-            if (self.pools[i]>1):
+            if (self.pools[i]>1 and self.firt):
                 pool=nn.MaxPool2d(self.pools[i],padding=tuple(pp[2:4]))
-                out=pool(out)
+            out=pool(out)
             if (self.drops[i]<1.):
                 out=nn.functional.dropout(out,self.drops[i])
+            # Relu non-linearity at each level.
             out=F.relu(out)
         return(out)
 
+    # Full network
     def forward(self,input):
 
         out=self.forward_pre(input)
+
+        # During first pass check if dropout required.
         if (self.drops[-1]<1.):
             if (self.first):
                 self.dr2d=nn.Dropout2d(self.drops[-1])
             out=self.dr2d(out)
+        # If first time running through setup last layer.
         if (self.first):
+            # Get dimensions of current output
             self.sh=out.shape
+            # Create x-size of new filter, y-size is full y-dimension
             self.sh2a = np.int32(np.floor(self.sh[3] / self.lenc))
+            # Compute padding to the end of the array
             self.pad = self.sh2a * (self.lenc)+1 - self.sh[3]
             print('pre final shape',out.shape,self.sh[2],self.sh2a, self.pad, self.lenc)
+        # Concatenate the padding
         out=torch.cat((out,torch.zeros(out.shape[0],self.sh[1],self.sh[2],self.pad).to(self.dv)),dim=3)
         if (self.first):
+            # Define last conv layer that has as many output features as labels - this is the vector of
+            # of outputs that go to the softmax to define label probs.
             self.l_out=torch.nn.Conv2d(out.shape[1],args.ll,[self.sh[2],self.sh2a+1],stride=[1,self.sh2a]).to(self.dv)
+        # Apply last layer
         out=self.l_out(out)
         if (self.first):
             print('final shape',out.shape)
@@ -72,29 +89,25 @@ class CLEAN(nn.Module):
 
         return(out)
 
+    # Get loss for optimal shift (same as other loss)
     def loss_shift(self,out,targ):
-
 
         outl=out.permute(1, 0, 2, 3).reshape([self.ll, -1]).transpose(0, 1)
         targl=targ.reshape(-1)
-        #iia=targl>0
-        #iis=targl==0
-        loss=self.criterion_shift(outl,targl) #.zeros_like(targl,dtype=torch.float).to(self.dv)
-        #loss[iia] = self.criterion_shift(outl[iia],targl[iia])
-        #loss[iis] = self.fac*self.criterion_shift(outl[iis],targl[iis])
+        loss=self.criterion_shift(outl,targl)
 
+        # Reshape loss function to have lst columns for each image.
         slossa = torch.sum(loss.view(-1, self.lenc), dim=1).view(-1, lst)
 
         return slossa
 
+    # Get loss and accuracy (all characters and non-space characters).
     def get_acc_and_loss(self,out,targ):
 
         v,mx=torch.max(out,1)
         targa=targ[targ>0]
         mxa=mx[targ>0]
-        #targs = targ[targ == 0]
         numa = targa.shape[0]
-        #loss=self.criterion(out[targ>0],targa)+self.fac*(self.criterion(out[targ==0],targs))
         loss=self.criterion(out,targ)
         loss/=len(targ)
         acc=torch.sum(mx.eq(targ))
@@ -105,6 +118,7 @@ class CLEAN(nn.Module):
 
         return loss, acc, acca, numa, accc, mx
 
+    # Find optimal shift/scale for each image
     def get_loss_shift(self,input_shift,target_shift, lst, fout, type):
         self.eval()
         num_tr=len(input_shift)
@@ -114,21 +128,28 @@ class CLEAN(nn.Module):
         sh[0]/=lst
         train_choice_shift=np.zeros(sh,dtype=np.uint8)
         rmx = []
+        # Loop over batches of training data each lst of them are transformation of same image.
         for j in np.arange(0, num_tr, self.bsz*lst):
             jo=np.int32(j/lst)
-            #sinput = torch.from_numpy(input_shift[j:j + self.bsz * lst]).float().to(self.dv)
+            # Data is stored as uint8 to save space. So transfer to float for gpu.
             sinput = (torch.from_numpy(input_shift[j:j + self.bsz*lst]).float()/255.).to(self.dv)
             starg = torch.from_numpy(target_shift[j:j + self.bsz*lst]).to(self.dv)
             starg = starg.type(torch.int64)
+            # Apply network
             out = self.forward(sinput)
 
+            # Compute loss
             sloss=self.loss_shift(out,starg)
 
+            # Find best column (transformed image)
             v,lossm=torch.min(sloss,1)
             ii=torch.arange(0,len(sinput),lst,dtype=torch.long).to(self.dv)+lossm
+            # Extract best version of each outputs to compute current loss.
             outs=out[ii]
             stargs=starg[ii]
             loss, acc, acca, numa, accc, mx =self.get_acc_and_loss(outs.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),stargs.reshape(-1))
+
+            # Extract best version of each image for the network training stage.
             train_choice_shift[jo:jo+self.bsz]=input_shift[j+ii.cpu().detach().numpy()] #sinput[ii].cpu().detach().numpy()
             full_loss += loss.item()
             full_acc += acc.item()
@@ -143,19 +164,25 @@ class CLEAN(nn.Module):
         return train_choice_shift, rmx
 
 
+    # GRADIENT STEP
     def loss_and_grad(self, input, target, type='train'):
 
+        # Get output of network
         out=self.forward(input)
 
         if (type == 'train'):
             self.optimizer.zero_grad()
+        # Compute loss and accuracy
         loss, acc, acca, numa, accc, mx=self.get_acc_and_loss(out.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),target.reshape(-1))
+
+        # Perform optimizer step using loss as criterion
         if (type == 'train'):
             loss.backward()
             self.optimizer.step()
 
         return loss, acc, acca, numa, accc, mx
 
+    # Epoch of network training
     def run_epoch(self, train, text, epoch, fout, type):
 
         if (type=='train'):
@@ -171,12 +198,11 @@ class CLEAN(nn.Module):
 
         full_loss=0; full_acc=0; full_acca=0; full_numa=0; full_accc=0
         rmx=[]
+        # Loop over batches.
         for j in np.arange(0, num_tr, self.bsz):
-            #data = torch.from_numpy(trin[j:j + self.bsz]).float().to(self.dv)
             data = (torch.from_numpy(trin[j:j + self.bsz]).float()/255.).to(self.dv)
             target = torch.from_numpy(targ[j:j + self.bsz]).to(self.dv)
             target=target.type(torch.int64)
-            #target_boxes = torch.from_numpy(train_boxes[j:j+self.bsz]).float().to(self.dv)
 
             loss, acc, acca, numa, accc, mx= self.loss_and_grad(data, target, type)
             full_loss += loss.item()
@@ -232,30 +258,38 @@ fout.write('Device,'+str(device)+'\n')
 fout.write('USE_GPU,'+str(use_gpu)+'\n')
 
 ll=0
+
+# Assume data is stored in an hdf5 file, split the data into 80% training and 20% test.
 train_data,  train_text, test_data, test_text = aux.get_data(args)
-
-
 
 fout.write('num train '+str(train_data.shape[0])+'\n')
 fout.write('num test '+str(test_data.shape[0])+'\n')
 
 x_dim=np.int32(train_data[0].shape[1])
 y_dim=train_data[0].shape[2]
+
+# Add axis for pytorch modules
 train_data=train_data[:, :, 0:x_dim, :]
 test_data=test_data[:, :, 0:x_dim, :]
+
+# S,T shifts in x and y directions, Z - scalings
 S = [0, 2, 4, 6]
 T = [0, 4]
 Z = [.8,1.2]
+# Total number of copies per image.
 lst=len(S)*len(T)*(len(Z)+1)
+# Create the shifts and scales for train and test data
 train_data_shift=aux.add_shifts_new(train_data,S,T,Z)
 test_data_shift=aux.add_shifts_new(test_data,S,T,Z)
 train_text_shift=np.repeat(train_text,lst,axis=0)
 test_text_shift=np.repeat(test_text,lst,axis=0)
 
-
+# Get the model
 model=CLEAN(device,x_dim, y_dim, args).to(device)
+# Run it on a small batch to initialize some modules that need to know dimensions of output
 model.run_epoch(train_data[0:model.bsz], train_text, 0, fout, 'test')
 
+# Output all parameters
 tot_pars=0
 for keys, vals in model.state_dict().items():
     fout.write(keys+','+str(np.array(vals.shape))+'\n')
@@ -264,28 +298,38 @@ fout.write('tot_pars,'+str(tot_pars)+'\n')
 
 scheduler=model.get_scheduler(args)
 
+# Loop over epochs.
 for epoch in range(args.nepoch):
     if (scheduler is not None):
             scheduler.step()
     t1=time.time()
+    # If optimizing over shifts and scales for each image
     if (args.OPT):
+        # with current network parameters find best scale and shift for each image -> train_data_choice_shift
         train_data_choice_shift, _=model.get_loss_shift(train_data_shift,train_text_shift,lst,fout,'train')
+        # Run an iteration of the network training on the chosen shifts/scales
         model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train')
+        # Get the results on the test data using the optimal transformation for each image.
         model.get_loss_shift(test_data_shift, test_text_shift, lst, fout, 'test')
+    # Try training simply on the augmented training set without optimization
     else:
         model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
+        # Then test on original test set.
         model.run_epoch(test_data, train_text, epoch, fout, 'test')
 
     #fout.write('test: in {:5.3f} seconds\n'.format(time.time()-t3))
     fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
     fout.flush()
 
+# Run one more time on test
 test_data_choice_shift,rx=model.get_loss_shift(test_data_shift, test_text_shift,lst, fout,'test')
+# Get resulting labels for each image.
 rxx=np.int32(np.array(rx)).ravel()
 tt=np.array([args.aa[i] for i in rxx]).reshape(len(test_text),args.lenc)
+# Create tif file that pastes the computed labeling below the original image for each test image
 aux.create_image(test_data,tt,model.x_dim,'try')
 
-#model.show_recon(test_data[0:model.bsz],'test')
+# Store the trained model.
 ex_file='MM'
 if not os.path.isfile('_output'):
     os.system('mkdir _output')

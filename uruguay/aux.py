@@ -1,6 +1,5 @@
 import argparse
 import numpy as np
-import torch
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 import scipy.ndimage as scn
 import h5py
@@ -30,6 +29,7 @@ def process_args(parser):
     args = parser.parse_args()
     return (args)
 
+# Save test images together with labels.
 def create_image(trin, TT, x_dim, ex_file):
         mat = []
         t = 0
@@ -68,18 +68,8 @@ def create_image(trin, TT, x_dim, ex_file):
 
         print("Saved the sampled images")
 
-def make_boxes(bx,td):
-    standard_size = (35, 150)
-    boxes=[]
-    for b,tr in zip(bx,td):
-        a=np.zeros(standard_size)
-        a[0:np.int32(b[1]),0:np.int32(b[0])]=1
-        #a[tr[0,standard_size[0]:,:]<.3]=2
-        boxes+=[a]
-    boxes=np.array(boxes)
-    return boxes
 
-
+# Read in data
 def get_data(args):
     with h5py.File('pairs.hdf5', 'r') as f:
         #key = list(f.keys())[0]
@@ -94,12 +84,8 @@ def get_data(args):
         llte=np.int32((len(all_pairs)-lltr)//args.bsz * args.bsz)
         ii=np.array(range(lltr+llte))
         np.random.shuffle(ii)
-        #bx=np.float32(f['BOXES'])
-        #boxes=make_boxes(bx,all_pairs)
         train_data = all_pairs[ii[0:lltr]]
-        #train_data_boxes=boxes[ii[0:lltr]]
         test_data=all_pairs[ii[lltr:lltr+llte]]
-        #test_data_boxes=boxes[ii[lltr:lltr+llte]]
     with open('texts.txt','r') as f:
         TEXT = [line.rstrip() for line in f.readlines()]
         aa=sorted(set(' '.join(TEXT)))
@@ -131,6 +117,7 @@ def get_data(args):
 
     return train_data, train_text, test_data, test_text
 
+# Create shifts and scales of data.
 def add_shifts_new(input,S,T,Z=None):
 
 

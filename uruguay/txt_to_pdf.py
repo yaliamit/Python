@@ -37,12 +37,15 @@ def create_image(old_img):
     IM=nold_im
     return IM, oibx[2:4]
 
+
 if ('darwin' in sys.platform):
     path=os.path.expanduser("~/Desktop/luisa-blocks-real")
 else:
     path="/ga/amit/Desktop/luisa-blocks-real"
 
 print("path")
+
+# Check that text is only regular letters
 def all_alfa(text):
 
     alfa='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
@@ -54,6 +57,7 @@ def all_alfa(text):
     alf=c==lent
     return alf
 
+# Read in image and test and save in global lists
 def produce_image(r):
     with open (r, "r") as f:
         data=f.readlines()
@@ -72,11 +76,10 @@ def produce_image(r):
                 IBX+=[ibx]
                 TEXT+=[text]
 
-
+# Save as hdf5 file
 def make_hpy():
     with h5py.File('pairs.hdf5', 'w') as f:
         dset1 = f.create_dataset("PAIRS", data=np.array(Images))
-        #dset2 = f.create_dataset("BOXES", data=np.array(IBX))
     with open('texts.txt','w') as f:
         for tx in TEXT:
             f.write('%s\n' % tx)
@@ -91,6 +94,7 @@ def im_proc(path,rr):
                 make_hpy()
                 exit()
 
+# Recursively check if folder has images or has only subfolders.
 def check_if_has_images(path):
     rr=os.listdir(path)
     rr.sort()
@@ -107,10 +111,14 @@ Images=[]
 IBX=[]
 TEXT=[]
 
-
+# Number of images to read, max-length of string to use.
 num_images=np.int32(sys.argv[1])
 max_length=np.int32(sys.argv[2])
-standard_size=(np.int32(sys.argv[3]),np.int32(sys.argv[4]))
+# Standard size of image for text of that length 120x35
+sandard_size=(120,35)
+if (len(sys.argv)>3):
+    standard_size=(np.int32(sys.argv[3]),np.int32(sys.argv[4]))
+# Loop over subfolders and process images.
 check_if_has_images(path)
 make_hpy()
 
