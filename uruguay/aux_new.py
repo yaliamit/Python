@@ -87,7 +87,8 @@ def get_data(args):
         pairs = f['PAIRS']
         print('tr', pairs.shape)
         all_pairs=np.uint8(pairs) #/255.
-        all_pairs=all_pairs[0:args.num_train]
+        nt=np.minimum(args.num_train,len(all_pairs))
+        all_pairs=all_pairs[0:nt]
         all_pairs=all_pairs.reshape(-1,1,all_pairs.shape[1],all_pairs.shape[2])
         lltr=np.int32(np.ceil(.8*len(all_pairs))//args.bsz *args.bsz)
         llte=np.int32((len(all_pairs)-lltr)//args.bsz * args.bsz)
