@@ -7,7 +7,7 @@ import os
 import sys
 import argparse
 import time
-import aux_new as aux
+import aux
 
 class CLEAN(nn.Module):
     def __init__(self, device, x_dim, y_dim, args):
