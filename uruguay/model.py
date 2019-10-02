@@ -92,10 +92,11 @@ class CLEAN(nn.Module):
         v,mx=torch.max(out,1)
         targa=targ[targ>0]
         mxa=mx[targ>0]
-        targs = targ[targ == 0]
+        #targs = targ[targ == 0]
         numa = targa.shape[0]
-        loss=self.criterion(out[targ>0],targa)+self.fac*(self.criterion(out[targ==0],targs))
-        loss/=len(targa)
+        #loss=self.criterion(out[targ>0],targa)+self.fac*(self.criterion(out[targ==0],targs))
+        loss=self.criterion(out,targ)
+        loss/=len(targ)
         acc=torch.sum(mx.eq(targ))
         mxc=1+torch.fmod((mx-1),26)
         targc=1+torch.fmod((targ-1),26)
