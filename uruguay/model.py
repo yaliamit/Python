@@ -116,7 +116,7 @@ class CLEAN(nn.Module):
         rmx = []
         for j in np.arange(0, num_tr, self.bsz*lst):
             jo=np.int32(j/lst)
-            sinput = torch.from_numpy(input_shift[j:j + self.bsz*lst]).float().to(self.dv)
+            sinput = (torch.from_numpy(input_shift[j:j + self.bsz*lst]).float()/255.).to(self.dv)
             starg = torch.from_numpy(target_shift[j:j + self.bsz*lst]).to(self.dv)
             starg = starg.type(torch.int64)
             out = self.forward(sinput)
@@ -171,7 +171,7 @@ class CLEAN(nn.Module):
         full_loss=0; full_acc=0; full_acca=0; full_numa=0; full_accc=0
         rmx=[]
         for j in np.arange(0, num_tr, self.bsz):
-            data = torch.from_numpy(trin[j:j + self.bsz]).float().to(self.dv)
+            data = (torch.from_numpy(trin[j:j + self.bsz]).float()/255.).to(self.dv)
             target = torch.from_numpy(targ[j:j + self.bsz]).to(self.dv)
             target=target.type(torch.int64)
             #target_boxes = torch.from_numpy(train_boxes[j:j+self.bsz]).float().to(self.dv)
