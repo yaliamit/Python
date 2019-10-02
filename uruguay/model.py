@@ -42,14 +42,20 @@ class CLEAN(nn.Module):
     def forward_pre(self,input):
 
         out=input
+        if (self.first):
+            self.pool_layers=[]
         for i, cc in enumerate(self.convs):
             if (self.first):
                 print(out.shape)
             out=cc(out)
             pp=torch.fmod(torch.tensor(out.shape),self.pools[i])
-            if (self.pools[i]>1 and self.firt):
-                pool=nn.MaxPool2d(self.pools[i],padding=tuple(pp[2:4]))
-            out=pool(out)
+            if (self.pools[i]>1):
+                if (self.first):
+                    self.pool_layers+=[nn.MaxPool2d(self.pools[i],padding=tuple(pp[2:4]))]
+                out=self.pool_layers[i](out)
+            else:
+                if (self.first):
+                    self.pool_layers+=[None]
             if (self.drops[i]<1.):
                 out=nn.functional.dropout(out,self.drops[i])
             # Relu non-linearity at each level.
