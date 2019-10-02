@@ -86,8 +86,9 @@ def get_data(args):
         # Get the data
         pairs = f['PAIRS']
         print('tr', pairs.shape)
-        all_pairs=np.float32(pairs)/255.
-        all_pairs=all_pairs[0:args.num_train]
+        all_pairs=np.uint8(pairs) #/255.
+        nt=np.minimum(args.num_train,len(all_pairs))
+        all_pairs=all_pairs[0:nt]
         all_pairs=all_pairs.reshape(-1,1,all_pairs.shape[1],all_pairs.shape[2])
         lltr=np.int32(np.ceil(.8*len(all_pairs))//args.bsz *args.bsz)
         llte=np.int32((len(all_pairs)-lltr)//args.bsz * args.bsz)
@@ -139,13 +140,15 @@ def add_shifts_new(input,S,T,Z=None):
         sh=input_z.shape[2:4]
         for i in np.arange(0,len(input_z),len(Z)+1):
             for j in range(len(Z)):
+                input_f = np.float32(input_z[i + j + 1, 0]) / 255.
                 if (Z[j]>1.):
-                    input_z[i+j+1,0]=np.maximum(0,np.minimum(1.,scn.zoom(input_z[i+j+1,0],zoom=Z[j])[0:sh[0],0:sh[1]]))
+                    tmp1 = np.maximum(0, np.minimum(1., scn.zoom(input_f, zoom=Z[j])[0:sh[0], 0:sh[1]]))
                 else:
-                    tmp=np.maximum(0,np.minimum(scn.zoom(input_z[i+j+1,0],zoom=Z[j]),1.))
+                    tmp=np.maximum(0,np.minimum(scn.zoom(input_f,zoom=Z[j]),1.))
                     tmp1=np.ones((sh[0],sh[1]))
                     tmp1[0:tmp.shape[0],0:tmp.shape[1]]=tmp
-                    input_z[i + j + 1, 0]=tmp1
+                input_z[i + j + 1, 0] = np.uint8(tmp1 * 255.)
+
         input=input_z
 
     ls=len(S)
@@ -157,8 +160,8 @@ def add_shifts_new(input,S,T,Z=None):
         lls = np.arange(i*lt, l, ls*lt)
         for j,t in enumerate(T):
             llst=lls+j
-            input_s[llst,:]=np.concatenate((input_s[llst,:,:,s:],np.ones((len(llst),ss[1],ss[2],s))),axis=3)
-            input_s[llst,:]=np.concatenate((input_s[llst,:,t:,:],np.ones((len(llst),ss[1],t,ss[3]))),axis=2)
+            input_s[llst,:]=np.concatenate((input_s[llst,:,:,s:],255*np.ones((len(llst),ss[1],ss[2],s),dtype=np.uint8)),axis=3)
+            input_s[llst,:]=np.concatenate((input_s[llst,:,t:,:],255*np.ones((len(llst),ss[1],t,ss[3]),dtype=np.uint8)),axis=2)
 
 
     return input_s
