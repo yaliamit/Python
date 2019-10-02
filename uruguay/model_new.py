@@ -7,7 +7,7 @@ import os
 import sys
 import argparse
 import time
-import aux_new as aux
+import aux #_new as aux
 
 class CLEAN(nn.Module):
     def __init__(self, device, x_dim, y_dim, args):
@@ -77,11 +77,11 @@ class CLEAN(nn.Module):
 
         outl=out.permute(1, 0, 2, 3).reshape([self.ll, -1]).transpose(0, 1)
         targl=targ.reshape(-1)
-        iia=targl>0
-        iis=targl==0
-        loss=torch.zeros_like(targl,dtype=torch.float).to(self.dv)
-        loss[iia] = self.criterion_shift(outl[iia],targl[iia])
-        loss[iis] = self.fac*self.criterion_shift(outl[iis],targl[iis])
+        #iia=targl>0
+        #iis=targl==0
+        loss=self.criterion_shift(outl,targl) #.zeros_like(targl,dtype=torch.float).to(self.dv)
+        #loss[iia] = self.criterion_shift(outl[iia],targl[iia])
+        #loss[iis] = self.fac*self.criterion_shift(outl[iis],targl[iis])
 
         slossa = torch.sum(loss.view(-1, self.lenc), dim=1).view(-1, lst)
 
@@ -116,7 +116,8 @@ class CLEAN(nn.Module):
         rmx = []
         for j in np.arange(0, num_tr, self.bsz*lst):
             jo=np.int32(j/lst)
-            sinput = (torch.from_numpy(input_shift[j:j + self.bsz*lst]).float()/255.).to(self.dv)
+            sinput = torch.from_numpy(input_shift[j:j + self.bsz * lst]).float().to(self.dv)
+            #sinput = (torch.from_numpy(input_shift[j:j + self.bsz*lst]).float()/255.).to(self.dv)
             starg = torch.from_numpy(target_shift[j:j + self.bsz*lst]).to(self.dv)
             starg = starg.type(torch.int64)
             out = self.forward(sinput)
@@ -171,7 +172,8 @@ class CLEAN(nn.Module):
         full_loss=0; full_acc=0; full_acca=0; full_numa=0; full_accc=0
         rmx=[]
         for j in np.arange(0, num_tr, self.bsz):
-            data = (torch.from_numpy(trin[j:j + self.bsz]).float()/255.).to(self.dv)
+            data = torch.from_numpy(trin[j:j + self.bsz]).float().to(self.dv)
+            #data = (torch.from_numpy(trin[j:j + self.bsz]).float()/255.).to(self.dv)
             target = torch.from_numpy(targ[j:j + self.bsz]).to(self.dv)
             target=target.type(torch.int64)
             #target_boxes = torch.from_numpy(train_boxes[j:j+self.bsz]).float().to(self.dv)
