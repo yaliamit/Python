@@ -28,7 +28,9 @@ class CLEAN(nn.Module):
         self.drops=args.drops # Drop fraction at each level of network
         ff=len(args.filts) # Number of filters = number of conv layers.
         # Create list of convolution layers with the appropriate filter size, number of features etc.
-        self.convs = nn.ModuleList([torch.nn.Conv2d(args.feats[i], args.feats[i+1],args.filts[i],stride=1,padding=np.int32(np.floor(args.filts[i]/2))) for i in range(ff)])
+        self.convs = nn.ModuleList([torch.nn.Conv2d(args.feats[i], args.feats[i+1],
+                                                    args.filts[i],stride=1,padding=np.int32(np.floor(args.filts[i]/2)))
+                                    for i in range(ff)])
 
         # The loss function
         self.criterion=nn.CrossEntropyLoss(weight=self.weights,reduction='sum')
