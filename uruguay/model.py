@@ -110,7 +110,7 @@ class CLEAN(nn.Module):
         # Reshape loss function to have lst columns for each image.
         slossa = torch.sum(loss.view(-1, self.lenc), dim=1).view(-1, lst)
 
-        return ent #slossa
+        return vs #ent #slossa
 
     # Get loss and accuracy (all characters and non-space characters).
     def get_acc_and_loss(self,out,targ):
