@@ -125,7 +125,7 @@ def get_data(args,lst):
 # Create shifts and scales of data.
 def add_shifts_new(input,S,T,Z=[]):
 
-    if (len(S)==1 and len(T)==1 and len(Z)==0):
+    if (len(S)==1 and len(T)==1):
         input_s=input
     else:
         ss=input.shape

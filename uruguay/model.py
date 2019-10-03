@@ -105,6 +105,7 @@ class CLEAN(nn.Module):
         loss=self.criterion_shift(outl,targl)
         pp=torch.softmax(outl,dim=1)
         ent=-torch.sum(torch.sum(torch.log(pp)*pp,dim=1).view(-1,self.lenc),dim=1).view(-1,lst)
+
         # Reshape loss function to have lst columns for each image.
         slossa = torch.sum(loss.view(-1, self.lenc), dim=1).view(-1, lst)
 
@@ -114,15 +115,20 @@ class CLEAN(nn.Module):
     def get_acc_and_loss(self,out,targ):
 
         v,mx=torch.max(out,1)
+        # Non-space characters
         targa=targ[targ>0]
         mxa=mx[targ>0]
         numa = targa.shape[0]
+        # Total loss
         loss=self.criterion(out,targ)
         loss/=len(targ)
+        # total accuracy
         acc=torch.sum(mx.eq(targ))
+        # Accuracy on case insensitive
         mxc=1+torch.fmod((mx-1),26)
         targc=1+torch.fmod((targ-1),26)
         accc=torch.sum(mxc.eq(targc))
+        # Accuracy on non-space
         acca=torch.sum(mxa.eq(targa))
 
         return loss, acc, acca, numa, accc, mx
