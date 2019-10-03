@@ -103,14 +103,14 @@ class CLEAN(nn.Module):
         outl=out.permute(1, 0, 2, 3).reshape([self.ll, -1]).transpose(0, 1)
         targl=targ.reshape(-1)
         loss=self.criterion_shift(outl,targl)
-        pp=torch.softmax(outl,dim=1)
-        ent=-torch.sum(torch.sum(torch.log(pp)*pp,dim=1).view(-1,self.lenc),dim=1).view(-1,lst)
-        v,mx=torch.max(outl,dim=1)
-        vs=-torch.sum(v.view(-1,self.lenc),dim=1).view(-1,lst)
+        #pp=torch.softmax(outl,dim=1)
+        #ent=-torch.sum(torch.sum(torch.log(pp)*pp,dim=1).view(-1,self.lenc),dim=1).view(-1,lst)
+        #v,mx=torch.max(outl,dim=1)
+        #vs=-torch.sum(v.view(-1,self.lenc),dim=1).view(-1,lst)
         # Reshape loss function to have lst columns for each image.
         slossa = torch.sum(loss.view(-1, self.lenc), dim=1).view(-1, lst)
 
-        return vs #ent #slossa
+        return slossa
 
     # Get loss and accuracy (all characters and non-space characters).
     def get_acc_and_loss(self,out,targ):
