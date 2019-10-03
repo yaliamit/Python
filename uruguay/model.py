@@ -105,7 +105,8 @@ class CLEAN(nn.Module):
         loss=self.criterion_shift(outl,targl)
         pp=torch.softmax(outl,dim=1)
         ent=-torch.sum(torch.sum(torch.log(pp)*pp,dim=1).view(-1,self.lenc),dim=1).view(-1,lst)
-
+        v,mx=torch.max(outl,dim=1)
+        vs=-torch.sum(v.view(-1,self.lenc),dim=1).view(-1,lst)
         # Reshape loss function to have lst columns for each image.
         slossa = torch.sum(loss.view(-1, self.lenc), dim=1).view(-1, lst)
 
@@ -354,7 +355,7 @@ for epoch in range(args.nepoch):
 
 # Run one more time on test
 if (args.OPT):
-    test_data_choice_shift,rx=model.get_loss_shift(test_data_shift, test_text_shift,lst, fout,'test')
+    test_data_choice_shift,rx=model.get_loss_shift(test_data_shift, test_text_shift, fout,'test')
 else:
     rx=model.run_epoch(test_data, test_text,0,fout, 'test')
 # Get resulting labels for each image.
