@@ -60,7 +60,7 @@ def create_image(trin, TT, x_dim, ex_file):
                 page+=[COL]
             manifold = np.concatenate(page, axis=1)
             imlist.append(Image.fromarray(manifold))
-        imlist[0].save("_Images/test.tif", compression="tiff_deflate", save_all=True,
+        imlist[0].save("_Images/"+ex_file+".tif", compression="tiff_deflate", save_all=True,
                        append_images=imlist[1:])
 
         #if not os.path.isfile('_Images'):
@@ -68,6 +68,41 @@ def create_image(trin, TT, x_dim, ex_file):
         #imsave('_Images/' + ex_file + '.png', img)
 
         print("Saved the sampled images")
+
+
+def show_shifts(tin_s, tin, x_dim, ex_file):
+    mat = []
+    t = 0
+    ll = len(tin_s) // 63 * 63
+    page = []
+    t = 0
+    imlist = []
+    while (t < ll):
+        page = []
+        for j in range(7):
+            col = []
+            for i in range(9):
+                if (t < ll):
+                    aa=np.zeros((2*tin.shape[2]+3,tin.shape[3]+2))
+                    aa[1:1+tin.shape[2],1:tin.shape[3]+1]=tin[t,0]
+                    aa[2+tin.shape[2]:2+2*tin.shape[2],1:tin.shape[3]+1]=tin_s[t,0]
+                    col += [255-np.uint8(aa)]
+                    t += 1
+                else:
+                    col += [np.ones((x_dim + 20, 85)) * 255]
+
+            COL = np.concatenate(col, axis=0)
+            page += [COL]
+        manifold = np.concatenate(page, axis=1)
+        imlist.append(Image.fromarray(manifold))
+    imlist[0].save("_Images/" + ex_file + ".tif", compression="tiff_deflate", save_all=True,
+                   append_images=imlist[1:])
+
+    # if not os.path.isfile('_Images'):
+    #    os.system('mkdir _Images')
+    # imsave('_Images/' + ex_file + '.png', img)
+
+    print("Saved the sampled images")
 
 
 # Read in data

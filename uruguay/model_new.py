@@ -117,14 +117,7 @@ class CLEAN(nn.Module):
         slossa = torch.sum(loss.reshape(-1, self.lenc), dim=1).reshape(-1, self.lst)
         v, lossm = torch.min(slossa, 1)
         ii=torch.arange(0,len(out),self.lst,dtype=torch.int64)+lossm
-        outll=out[ii] #.permute(1, 0, 2, 3).reshape([self.ll, -1]).transpose(0, 1)
         hhrl=hhr[ii]
-        #lossu_s=self.criterion_shift(outll, hhrl.view(-1))
-        #lossu=self.criterion(outll,hhrl.view(-1))
-        # outll=outl.reshape(-1,self.lenc)
-        # outlll=outll[lossm]
-        # tloss=self.criterion(outlll,hhr.view(-1))
-
         tot_loss=torch.mean(v)
         return ii, tot_loss, hhrl.view(-1)
 
@@ -168,8 +161,6 @@ class CLEAN(nn.Module):
         for j in np.arange(0, num_tr, self.bsz):
             # Data is stored as uint8 to save space. So transfer to float for gpu.
             sinput = (torch.from_numpy(input_shift[j:j + self.bsz]).float()/255.).to(self.dv)
-            #starg = torch.from_numpy(target_shift[j:j + self.bsz]).to(self.dv)
-            #starg = starg.type(torch.int64)
             # Apply network
             out = self.forward(sinput)
             OUT+=[out.detach().cpu()]
@@ -351,7 +342,7 @@ for epoch in range(args.nepoch):
     # If optimizing over shifts and scales for each image
     if (args.OPT):
         # with current network parameters find best scale and shift for each image -> train_data_choice_shift
-        train_data_choice_shift, _=model.get_loss_shift(train_data_shift,train_text_shift,fout,'train')
+        train_data_choice_shift, rxtr=model.get_loss_shift(train_data_shift,train_text_shift,fout,'train')
         # Run an iteration of the network training on the chosen shifts/scales
         model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train')
         # Get the results on the test data using the optimal transformation for each image.
@@ -366,6 +357,8 @@ for epoch in range(args.nepoch):
     fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
     fout.flush()
 
+
+aux.show_shifts(train_data_choice_shift[0:80], train_data[0:80], model.x_dim, 'shifts_'+str(args.nepoch))
 # Run one more time on test
 if (args.OPT):
     test_data_choice_shift,rx=model.get_loss_shift(test_data_shift, test_text_shift, fout,'test')
