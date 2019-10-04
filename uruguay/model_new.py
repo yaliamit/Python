@@ -165,12 +165,11 @@ class CLEAN(nn.Module):
         # Loop over batches of training data each lst of them are transformation of same image.
         OUT=[]
 
-        for j in np.arange(0, num_tr, self.bsz*self.lst):
-            jo=np.int32(j/self.lst)
+        for j in np.arange(0, num_tr, self.bsz):
             # Data is stored as uint8 to save space. So transfer to float for gpu.
-            sinput = (torch.from_numpy(input_shift[j:j + self.bsz*self.lst]).float()/255.).to(self.dv)
-            starg = torch.from_numpy(target_shift[j:j + self.bsz*self.lst]).to(self.dv)
-            starg = starg.type(torch.int64)
+            sinput = (torch.from_numpy(input_shift[j:j + self.bsz]).float()/255.).to(self.dv)
+            #starg = torch.from_numpy(target_shift[j:j + self.bsz]).to(self.dv)
+            #starg = starg.type(torch.int64)
             # Apply network
             out = self.forward(sinput)
             OUT+=[out.detach().cpu()]
