@@ -150,7 +150,6 @@ class CLEAN(nn.Module):
         self.eval()
         num_tr=len(input_shift)
         num_tro=num_tr/lst
-        full_loss=0; full_acc=0; full_acca=0; full_numa=0; full_accc=0
         sh=np.array(input_shift.shape)
         sh[0]/=self.lst
         train_choice_shift=np.zeros(sh,dtype=np.uint8)
@@ -167,7 +166,7 @@ class CLEAN(nn.Module):
 
         OUT=torch.cat(OUT,dim=0)
         TS = (torch.from_numpy(target_shift)).type(torch.int64)
-        ii, loss, mx=self.loss_shift(OUT,TS)
+        ii, shift_loss, mx=self.loss_shift(OUT,TS)
 
         # ii=torch.arange(0,num_tr,self.lst,dtype=torch.int64)+lossm
         #     # Extract best version of each outputs to compute current loss.
@@ -177,10 +176,21 @@ class CLEAN(nn.Module):
 
         # Extract best version of each image for the network training stage.
         train_choice_shift=(input_shift[ii.numpy()])
-        full_loss += loss.item()
+        full_loss = loss.item()
+        full_acc = acc.item()
+        full_acca = acca.item()
+        full_accc = accc.item()
+        full_numa = numa
         rmx += [mx.cpu().detach().numpy()]
-        fout.write('====> {}: {} Full loss: {:.4F}\n'.format(type+'_shift', epoch,
-                        full_loss / (num_tro / self.bsz)))
+
+        fout.write('====> {}: {} Full loss: {:.4F}\n'.format(type + '_shift', epoch,
+                                                             shift_loss.item()))
+        fout.write(
+            '====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}, case insensitive acc {:.4F}\n'.format(
+                type, epoch,
+                full_loss, full_acc / (num_tro * model.lenc), full_acca / full_numa,
+                full_accc / (num_tro * model.lenc)))
+
         return train_choice_shift, rmx
 
 
@@ -342,11 +352,11 @@ for epoch in range(args.nepoch):
     # If optimizing over shifts and scales for each image
     if (args.OPT):
         # with current network parameters find best scale and shift for each image -> train_data_choice_shift
-        train_data_choice_shift, rxtr=model.get_loss_shift(train_data_shift,train_text_shift,fout,'train')
+        train_data_choice_shift, rxtr=model.get_loss_shift(train_data_shift,train_text_shift,fout,'shift_train')
         # Run an iteration of the network training on the chosen shifts/scales
         model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train')
         # Get the results on the test data using the optimal transformation for each image.
-        model.get_loss_shift(test_data_shift, test_text_shift, fout, 'test')
+        model.get_loss_shift(test_data_shift, test_text_shift, fout, 'shift_test')
     # Try training simply on the augmented training set without optimization
     else:
         model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
