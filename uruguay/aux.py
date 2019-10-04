@@ -5,29 +5,26 @@ import scipy.ndimage as scn
 import h5py
 
 def process_args(parser):
-    parser.add_argument('--filts', type=int, default=(3,3,3,3), help='size of filters')
-    parser.add_argument('--feats', type=int, default=(1,32,32,64,256), help='number of filters')
-    parser.add_argument('--pools', type=int, default=   (2, 2, 1, 2), help='pooling')
-    parser.add_argument('--T', type=int, default=[0,4], nargs="+", help='T')
-    parser.add_argument('--S', type=int, default=[0, 2, 4, 6], nargs="+", help='S')
-    parser.add_argument('--Z', type=float, default=[.8,1.2], nargs="+", help='Z')
-    parser.add_argument('--drops', type=float, default=(1.,1.,1.,1.,.5))
-    parser.add_argument('--space_fac', type=float, default=1.,help='factor on losss for spaces')
-    parser.add_argument('--filt_size_out', type=int, default=3, help='size of last layer filter')
-    parser.add_argument('--bsz', type=int, default=50, help='mb_size (default: 500)')
-    parser.add_argument('--nepoch', type=int, default=30, help='number of training epochs')
-    parser.add_argument('--gpu', type=int, default=2, help='whether to run in the GPU')
-    parser.add_argument('--seed', type=int, default=1345, help='random seed (default: 1111)')
-    parser.add_argument('--num_train', type=int, default=60000, help='num train (default: 60000)')
-    parser.add_argument('--nval', type=int, default=(10,10), help='num train (default: 1000)')
-    parser.add_argument('--model', default='base', help='model (default: base)')
-    parser.add_argument('--optimizer', default='Adam', help='Type of optimiser')
-    parser.add_argument('--lr', type=float, default=.001, help='Learning rate (default: .001)')
-    parser.add_argument('--run_existing', action='store_true', help='Use existing model')
-    parser.add_argument('--OPT', action='store_true', help='Optimization instead of encoding')
-    parser.add_argument('--CONS', action='store_true', help='Output to consol')
-    parser.add_argument('--wd', action='store_true', help='Output to consol')
-    parser.add_argument('--output_prefix', default='', help='path to model')
+    parser.add_argument('--filts', type=int, default=(3,3,3,3), help='size of filters') # filter sizes for each layer of network
+    parser.add_argument('--feats', type=int, default=(1,32,32,64,256), help='number of filters') # Number of features at each layer
+    parser.add_argument('--pools', type=int, default=   (2, 2, 1, 2), help='pooling') # Pooling for each layer
+    parser.add_argument('--T', type=int, default=[0,4], nargs="+", help='T') # Vertical shifts for data augmentation
+    parser.add_argument('--S', type=int, default=[0, 2, 4, 6], nargs="+", help='S') # Horizontal shifts for data augmentation
+    parser.add_argument('--Z', type=float, default=[.8,1.2], nargs="+", help='Z') # Scales for data augmentation
+    parser.add_argument('--drops', type=float, default=(1.,1.,1.,1.,.5)) # Dropout for each layer
+    parser.add_argument('--bsz', type=int, default=50, help='mb_size (default: 500)') # Batch size
+    parser.add_argument('--nepoch', type=int, default=30, help='number of training epochs') # Number of epochs
+    parser.add_argument('--gpu', type=int, default=2, help='whether to run in the GPU') # Use gpu
+    parser.add_argument('--seed', type=int, default=1345, help='random seed (default: 1111)') # seed
+    parser.add_argument('--num_train', type=int, default=60000, help='num train (default: 60000)') # number of training data
+    parser.add_argument('--model', default='base', help='model (default: base)') # Name of output file for trained model
+    parser.add_argument('--optimizer', default='Adam', help='Type of optimiser') # Type of optimization
+    parser.add_argument('--lr', type=float, default=.001, help='Learning rate (default: .001)') # Learning rate
+    parser.add_argument('--run_existing', action='store_true', help='Use existing model') # To run existing model (not implemented yet)
+    parser.add_argument('--OPT', action='store_true', help='Optimization instead of encoding') # Find optimal alignment - currently not to be used
+    parser.add_argument('--CONS', action='store_true', help='Output to consol') # Output to console
+    parser.add_argument('--wd', action='store_true', help='Output to consol') # weight decay
+    parser.add_argument('--output_prefix', default='', help='path to model') # Path to model.
 
     args = parser.parse_args()
     return (args)

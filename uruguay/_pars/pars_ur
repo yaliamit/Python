@@ -1,7 +1,2 @@
---nepoch=10
---gpu=True
---seed=3251234
---num_train=60000
---lr=.001
---optimizer=Adam
+num_train=2000
 

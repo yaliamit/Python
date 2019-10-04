@@ -2,6 +2,9 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from torch import nn, optim
+import sklearn.metrics as skm
+from scipy.special import softmax
+import torch.distributions as dist
 import os
 import sys
 import argparse
@@ -96,6 +99,38 @@ class CLEAN(nn.Module):
 
         return(out)
 
+    # Get loss for optimal shift (same as other loss)
+    def loss_shift(self,out,targ):
+
+
+        outl=out.permute(1, 0, 2, 3).reshape([self.ll, -1]).transpose(0, 1)
+        targl=targ.reshape(-1)
+        #loss=self.criterion_shift(oo,targl)
+        #pp=torch.softmax(outl,dim=1)
+        #ent=-torch.sum(torch.sum(torch.log(pp)*pp,dim=1).view(-1,self.lenc),dim=1).view(-1,lst)
+        #v,mx=torch.max(outl,dim=1)
+        #vs=v.view(-1,self.lenc)
+        # Reshape loss function to have lst columns for each image.
+        #slossa_true = torch.sum(loss.view(-1, self.lenc), dim=1).view(-1, lst)
+        #v, lossm_true = torch.min(slossa_true, 1)
+
+        v, mx=torch.max(outl,dim=1)
+
+        mxaa=mx.reshape(-1,self.lst,self.lenc)
+        hh = torch.zeros((len(mxaa),self.lenc),dtype=torch.int64)
+        for i,mxa in enumerate(mxaa):
+            for j in range(self.lenc):
+                kk=torch.unique(mxa[:,j],return_counts=True)
+                kkm=torch.max(kk[1],dim=0)
+                hh[i,j]=kk[0][kkm[1]]
+        hhr=hh.repeat_interleave(self.lst,dim=0)
+        loss = self.criterion_shift(outl, hhr.view(-1))
+        slossa = torch.sum(loss.reshape(-1, self.lenc), dim=1).reshape(-1, self.lst)
+        v, lossm = torch.min(slossa, 1)
+        tot_loss=torch.mean(v)
+        return lossm, tot_loss
+
+
 
     # Get loss and accuracy (all characters and non-space characters).
     def get_acc_and_loss(self,out,targ):
@@ -120,6 +155,49 @@ class CLEAN(nn.Module):
         return loss, acc, acca, numa, accc, mx
 
     # Find optimal shift/scale for each image
+    def get_loss_shift(self,input_shift,target_shift, fout, type):
+        self.eval()
+        num_tr=len(input_shift)
+        num_tro=num_tr/lst
+        full_loss=0; full_acc=0; full_acca=0; full_numa=0; full_accc=0
+        sh=np.array(input_shift.shape)
+        sh[0]/=self.lst
+        train_choice_shift=np.zeros(sh,dtype=np.uint8)
+        rmx = []
+        # Loop over batches of training data each lst of them are transformation of same image.
+        OUT=[]
+        for j in np.arange(0, num_tr, self.bsz*self.lst):
+            jo=np.int32(j/self.lst)
+            # Data is stored as uint8 to save space. So transfer to float for gpu.
+            sinput = (torch.from_numpy(input_shift[j:j + self.bsz*self.lst]).float()/255.).to(self.dv)
+            starg = torch.from_numpy(target_shift[j:j + self.bsz*self.lst]).to(self.dv)
+            starg = starg.type(torch.int64)
+            # Apply network
+            out = self.forward(sinput)
+            OUT+=[out.detach().cpu()]
+
+        OUT=torch.cat(OUT,dim=0)
+        lossm, tot_loss=self.loss_shift(OUT,starg)
+
+        ii=torch.arange(0,num_tr,self.lst,dtype=torch.int64)+lossm
+            # Extract best version of each outputs to compute current loss.
+        outs=OUT[ii]
+        stargs=starg[ii]
+        loss, acc, acca, numa, accc, mx =self.get_acc_and_loss(outs.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),stargs.reshape(-1))
+
+        # Extract best version of each image for the network training stage.
+        train_choice_shift[jo:jo+self.bsz]=input_shift[j+ii.numpy()] #sinput[ii].cpu().detach().numpy()
+        full_loss += loss.item()
+        full_acc += acc.item()
+        full_acca += acca.item()
+        full_accc += accc.item()
+        full_numa += numa
+        rmx += [mx.cpu().detach().numpy()]
+        fout.write('====> {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}, case insensitive acc {:.4F}\n'.format(type+'_shift', epoch,
+                        full_loss / (num_tro / self.bsz),full_acc / (num_tro * model.lenc), full_acca / full_numa,
+                                        full_accc / (num_tro * model.lenc)))
+
+        #return train_choice_shift, rmx
 
 
     # GRADIENT STEP
@@ -240,9 +318,14 @@ train_data=train_data[:, :, 0:x_dim, :]
 test_data=test_data[:, :, 0:x_dim, :]
 
 
-# Create the shifts and scales to augment training data
+# Create the shifts and scales for train and test data
 train_data_shift=aux.add_shifts_new(train_data,S,T,Z)
 fout.write('num train shifted '+str(train_data_shift.shape[0])+'\n')
+
+if (args.OPT):
+    test_data_shift=aux.add_shifts_new(test_data,S,T,Z)
+    test_text_shift = np.repeat(test_text, lst, axis=0)
+
 train_text_shift=np.repeat(train_text,lst,axis=0)
 
 # Get the model
@@ -263,24 +346,38 @@ scheduler=model.get_scheduler(args)
 
 if (scheduler is not None):
             scheduler.step()
-
+if (args.OPT):
+    for epoch in range(2):
+        model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
+                    # Then test on original test set.
+        model.run_epoch(test_data, test_text, epoch, fout, 'test')
 # Loop over epochs
 for epoch in range(args.nepoch):
 
     t1=time.time()
     # If optimizing over shifts and scales for each image
-
-    model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
-    # Then test on original test set.
-    model.run_epoch(test_data, test_text, epoch, fout, 'test')
+    if (args.OPT):
+        # with current network parameters find best scale and shift for each image -> train_data_choice_shift
+        train_data_choice_shift, _=model.get_loss_shift(train_data_shift,train_text_shift,fout,'train')
+        # Run an iteration of the network training on the chosen shifts/scales
+        model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train')
+        # Get the results on the test data using the optimal transformation for each image.
+        model.get_loss_shift(test_data_shift, test_text_shift, fout, 'test')
+    # Try training simply on the augmented training set without optimization
+    else:
+        model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
+        # Then test on original test set.
+        model.run_epoch(test_data, test_text, epoch, fout, 'test')
 
     #fout.write('test: in {:5.3f} seconds\n'.format(time.time()-t3))
     fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
     fout.flush()
 
 # Run one more time on test
-
-rx=model.run_epoch(test_data, test_text,0,fout, 'test')
+if (args.OPT):
+    test_data_choice_shift,rx=model.get_loss_shift(test_data_shift, test_text_shift, fout,'test')
+else:
+    rx=model.run_epoch(test_data, test_text,0,fout, 'test')
 # Get resulting labels for each image.
 rxx=np.int32(np.array(rx)).ravel()
 tt=np.array([args.aa[i] for i in rxx]).reshape(len(test_text),args.lenc)
