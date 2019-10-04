@@ -104,15 +104,7 @@ class CLEAN(nn.Module):
 
 
         outl=out.permute(1, 0, 2, 3).reshape([self.ll, -1]).transpose(0, 1)
-        targl=targ.reshape(-1)
-        #loss=self.criterion_shift(oo,targl)
-        #pp=torch.softmax(outl,dim=1)
-        #ent=-torch.sum(torch.sum(torch.log(pp)*pp,dim=1).view(-1,self.lenc),dim=1).view(-1,lst)
-        #v,mx=torch.max(outl,dim=1)
-        #vs=v.view(-1,self.lenc)
-        # Reshape loss function to have lst columns for each image.
-        #slossa_true = torch.sum(loss.view(-1, self.lenc), dim=1).view(-1, lst)
-        #v, lossm_true = torch.min(slossa_true, 1)
+
 
         v, mx=torch.max(outl,dim=1)
 
@@ -127,8 +119,17 @@ class CLEAN(nn.Module):
         loss = self.criterion_shift(outl, hhr.view(-1))
         slossa = torch.sum(loss.reshape(-1, self.lenc), dim=1).reshape(-1, self.lst)
         v, lossm = torch.min(slossa, 1)
+        ii=torch.arange(0,len(out),self.lst,dtype=torch.int64)+lossm
+        outll=out[ii] #.permute(1, 0, 2, 3).reshape([self.ll, -1]).transpose(0, 1)
+        hhrl=hhr[ii]
+        #lossu_s=self.criterion_shift(outll, hhrl.view(-1))
+        #lossu=self.criterion(outll,hhrl.view(-1))
+        # outll=outl.reshape(-1,self.lenc)
+        # outlll=outll[lossm]
+        # tloss=self.criterion(outlll,hhr.view(-1))
+
         tot_loss=torch.mean(v)
-        return lossm, tot_loss
+        return ii, tot_loss, hhrl.view(-1)
 
 
 
@@ -166,6 +167,7 @@ class CLEAN(nn.Module):
         rmx = []
         # Loop over batches of training data each lst of them are transformation of same image.
         OUT=[]
+
         for j in np.arange(0, num_tr, self.bsz*self.lst):
             jo=np.int32(j/self.lst)
             # Data is stored as uint8 to save space. So transfer to float for gpu.
@@ -177,27 +179,22 @@ class CLEAN(nn.Module):
             OUT+=[out.detach().cpu()]
 
         OUT=torch.cat(OUT,dim=0)
-        lossm, tot_loss=self.loss_shift(OUT,starg)
+        TS = (torch.from_numpy(target_shift)).type(torch.int64)
+        ii, loss, mx=self.loss_shift(OUT,TS)
 
-        ii=torch.arange(0,num_tr,self.lst,dtype=torch.int64)+lossm
-            # Extract best version of each outputs to compute current loss.
-        outs=OUT[ii]
-        stargs=starg[ii]
-        loss, acc, acca, numa, accc, mx =self.get_acc_and_loss(outs.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),stargs.reshape(-1))
+        # ii=torch.arange(0,num_tr,self.lst,dtype=torch.int64)+lossm
+        #     # Extract best version of each outputs to compute current loss.
+        # outs=OUT[ii]
+        # stargs=TS[ii]
+        #loss, acc, acca, numa, accc, mx =self.get_acc_and_loss(outs.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),stargs.reshape(-1))
 
         # Extract best version of each image for the network training stage.
-        train_choice_shift[jo:jo+self.bsz]=input_shift[j+ii.numpy()] #sinput[ii].cpu().detach().numpy()
+        train_choice_shift=(input_shift[ii.numpy()])
         full_loss += loss.item()
-        full_acc += acc.item()
-        full_acca += acca.item()
-        full_accc += accc.item()
-        full_numa += numa
         rmx += [mx.cpu().detach().numpy()]
-        fout.write('====> {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}, case insensitive acc {:.4F}\n'.format(type+'_shift', epoch,
-                        full_loss / (num_tro / self.bsz),full_acc / (num_tro * model.lenc), full_acca / full_numa,
-                                        full_accc / (num_tro * model.lenc)))
-
-        #return train_choice_shift, rmx
+        fout.write('====> {}: {} Full loss: {:.4F}\n'.format(type+'_shift', epoch,
+                        full_loss / (num_tro / self.bsz)))
+        return train_choice_shift, rmx
 
 
     # GRADIENT STEP
@@ -347,7 +344,7 @@ scheduler=model.get_scheduler(args)
 if (scheduler is not None):
             scheduler.step()
 if (args.OPT):
-    for epoch in range(2):
+    for epoch in range(1):
         model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
                     # Then test on original test set.
         model.run_epoch(test_data, test_text, epoch, fout, 'test')
