@@ -32,7 +32,7 @@ class CLEAN(nn.Module):
                                     for i in range(ff)])
 
         # The loss function
-        self.criterion=nn.CrossEntropyLoss(weight=self.weights,reduction='sum')
+        self.criterion=nn.CrossEntropyLoss(reduction='sum')
         self.criterion_shift=nn.CrossEntropyLoss(reduce=False)
         if (args.optimizer == 'Adam'):
             self.optimizer = optim.Adam(self.parameters(), lr=args.lr)
