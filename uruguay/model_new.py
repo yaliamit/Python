@@ -171,9 +171,9 @@ class CLEAN(nn.Module):
 
         # ii=torch.arange(0,num_tr,self.lst,dtype=torch.int64)+lossm
         #     # Extract best version of each outputs to compute current loss.
-        # outs=OUT[ii]
-        # stargs=TS[ii]
-        #loss, acc, acca, numa, accc, mx =self.get_acc_and_loss(outs.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),stargs.reshape(-1))
+        outs=OUT[ii]
+        stargs=TS[ii]
+        loss, acc, acca, numa, accc, mx =self.get_acc_and_loss(outs.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),stargs.reshape(-1))
 
         # Extract best version of each image for the network training stage.
         train_choice_shift=(input_shift[ii.numpy()])
