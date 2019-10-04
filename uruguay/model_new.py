@@ -2,9 +2,6 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from torch import nn, optim
-import sklearn.metrics as skm
-from scipy.special import softmax
-import torch.distributions as dist
 import os
 import sys
 import argparse
