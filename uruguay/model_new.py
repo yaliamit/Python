@@ -123,27 +123,7 @@ class CLEAN(nn.Module):
 
 
 
-    # Get loss and accuracy (all characters and non-space characters).
-    def get_acc_and_loss(self,out,targ):
 
-        v,mx=torch.max(out,1)
-        # Non-space characters
-        targa=targ[targ>0]
-        mxa=mx[targ>0]
-        numa = targa.shape[0]
-        # Total loss
-        loss=self.criterion(out,targ)
-        #loss/=len(targ)
-        # total accuracy
-        acc=torch.sum(mx.eq(targ))
-        # Accuracy on case insensitive
-        mxc=1+torch.fmod((mx-1),26)
-        targc=1+torch.fmod((targ-1),26)
-        accc=torch.sum(mxc.eq(targc))
-        # Accuracy on non-space
-        acca=torch.sum(mxa.eq(targa))
-
-        return loss, acc, acca, numa, accc, mx
 
     # Find optimal shift/scale for each image
     def get_loss_shift(self,input_shift,target_shift, fout, type):
@@ -193,6 +173,25 @@ class CLEAN(nn.Module):
 
         return train_choice_shift, rmx
 
+        # Get loss and accuracy (all characters and non-space characters).
+    def get_acc_and_loss(self, out, targ):
+            v, mx = torch.max(out, 1)
+            # Non-space characters
+            targa = targ[targ > 0]
+            mxa = mx[targ > 0]
+            numa = targa.shape[0]
+            # Total loss
+            loss = self.criterion(out, targ)
+            # total accuracy
+            acc = torch.sum(mx.eq(targ))
+            # Accuracy on case insensitive
+            mxc = 1 + torch.fmod((mx - 1), 26)
+            targc = 1 + torch.fmod((targ - 1), 26)
+            accc = torch.sum(mxc.eq(targc))
+            # Accuracy on non-space
+            acca = torch.sum(mxa.eq(targa))
+
+            return loss, acc, acca, numa, accc, mx
 
     # GRADIENT STEP
     def loss_and_grad(self, input, target, type='train'):
@@ -340,11 +339,10 @@ scheduler=model.get_scheduler(args)
 
 if (scheduler is not None):
             scheduler.step()
-if (args.OPT):
-    for epoch in range(1):
-        model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
-                    # Then test on original test set.
-        model.run_epoch(test_data, test_text, epoch, fout, 'test')
+# if (args.OPT):
+#     for epoch in range(1):
+#         model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
+#         model.run_epoch(test_data, test_text, epoch, fout, 'test')
 # Loop over epochs
 for epoch in range(args.nepoch):
 
