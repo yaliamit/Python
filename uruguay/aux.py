@@ -10,7 +10,7 @@ def process_args(parser):
     parser.add_argument('--pools', type=int, default=   (2, 2, 1, 2), help='pooling') # Pooling for each layer
     parser.add_argument('--T', type=int, default=[0,4], nargs="+", help='T') # Vertical shifts for data augmentation
     parser.add_argument('--S', type=int, default=[0, 2, 4, 6], nargs="+", help='S') # Horizontal shifts for data augmentation
-    parser.add_argument('--Z', type=float, default=[.8,1.2], nargs="+", help='Z') # Scales for data augmentation
+    parser.add_argument('--Z', type=float, default=[], nargs="+", help='Z') # Scales for data augmentation
     parser.add_argument('--drops', type=float, default=(1.,1.,1.,1.,.5)) # Dropout for each layer
     parser.add_argument('--bsz', type=int, default=50, help='mb_size (default: 500)') # Batch size
     parser.add_argument('--nepoch', type=int, default=30, help='number of training epochs') # Number of epochs
