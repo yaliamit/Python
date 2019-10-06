@@ -353,8 +353,11 @@ if (scheduler is not None):
             scheduler.step()
 if (args.OPT):
     for epoch in range(args.pre_nepoch):
+        t1 = time.time()
         model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
         model.run_epoch(test_data, test_text, epoch, fout, 'test')
+        fout.write('pre epoch: {0} in {1:5.3f} seconds\n'.format(epoch, time.time() - t1))
+        fout.flush()
 # Loop over epochs
 for epoch in range(args.nepoch):
 
