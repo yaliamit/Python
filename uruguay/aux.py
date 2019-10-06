@@ -152,7 +152,7 @@ def get_data(args,lst):
         print("hello")
         args.aa=aa
 
-    return train_data, train_text, test_data, test_text
+    return train_data, train_text, test_data, test_text, aa
 
 # Create shifts and scales of data.
 def add_shifts_new(input,S,T,Z=[]):

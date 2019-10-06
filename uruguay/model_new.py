@@ -298,7 +298,7 @@ if (len(S)>0 and len(T)>0 and len(Z)>=0):
     lst=len(S)*len(T)*(len(Z)+1)
 
 # Assume data is stored in an hdf5 file, split the data into 80% training and 20% test.
-train_data,  train_text, test_data, test_text = aux.get_data(args,lst)
+train_data,  train_text, test_data, test_text, aa = aux.get_data(args,lst)
 
 fout.write('num train '+str(train_data.shape[0])+'\n')
 fout.write('num test '+str(test_data.shape[0])+'\n')
@@ -353,9 +353,10 @@ for epoch in range(args.nepoch):
         with torch.no_grad():
             train_data_choice_shift, rxtr=model.get_loss_shift(train_data_shift,train_text_shift,fout,'shift_train')
         # Run an iteration of the network training on the chosen shifts/scales
-        model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train')
+        for ine in range(3):
+            model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train')
         # Get the results on the test data using the optimal transformation for each image.
-        model.get_loss_shift(test_data_shift, test_text_shift, fout, 'shift_test')
+        #model.get_loss_shift(test_data_shift, test_text_shift, fout, 'shift_test')
     # Try training simply on the augmented training set without optimization
     else:
         model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
