@@ -386,7 +386,8 @@ for epoch in range(args.nepoch):
 aux.show_shifts(train_data_choice_shift[0:80], train_data[0:80], model.x_dim, 'shifts_'+str(args.nepoch))
 # Run one more time on test
 if (args.OPT):
-    test_data_choice_shift,rx=model.get_loss_shift(test_data_shift, test_text_shift, fout,'test')
+    with torch.no_grad():
+        test_data_choice_shift,rx=model.get_loss_shift(test_data_shift, test_text_shift, fout,'test')
 else:
     rx=model.run_epoch(test_data, test_text,0,fout, 'test')
 # Get resulting labels for each image.
