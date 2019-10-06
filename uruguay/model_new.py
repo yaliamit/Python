@@ -355,6 +355,8 @@ for epoch in range(args.nepoch):
         # Run an iteration of the network training on the chosen shifts/scales
         for ine in range(3):
             model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train')
+            model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train_test')
+
         # Get the results on the test data using the optimal transformation for each image.
         #model.get_loss_shift(test_data_shift, test_text_shift, fout, 'shift_test')
     # Try training simply on the augmented training set without optimization
