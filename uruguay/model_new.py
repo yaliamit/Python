@@ -126,10 +126,10 @@ class CLEAN(nn.Module):
         loss = self.criterion_shift(outl, hhr.view(-1))
         slossa = torch.sum(loss.reshape(-1, self.lenc), dim=1).reshape(-1, self.lst)
         v, lossm = torch.min(slossa, 1)
-        ii=torch.arange(0,len(out),self.lst,dtype=torch.int64)+lossm
-        hhrl=hhr[ii]
+        # ii=torch.arange(0,len(out),self.lst,dtype=torch.int64)+lossm
+        # hhrl=hhr[ii]
         tot_loss=torch.mean(v)
-        return ii, tot_loss, hhrl.view(-1)
+        return lossm, tot_loss #, hhrl.view(-1)
 
 
 
@@ -156,7 +156,8 @@ class CLEAN(nn.Module):
             OUT+=[out]#'.detach().cpu()]
 
         OUT=torch.cat(OUT,dim=0)
-        ii, shift_loss, mx=self.loss_shift(OUT,TS)
+        lossm, shift_loss=self.loss_shift(OUT,TS)
+        ii=torch.arange(0,len(OUT),self.lst,dtype=torch.int64)+lossm.detach().cpu()
 
         outs=OUT[ii]
         stargs=TS[ii]
