@@ -352,7 +352,7 @@ scheduler=model.get_scheduler(args)
 if (scheduler is not None):
             scheduler.step()
 if (args.OPT):
-    for epoch in range(2):
+    for epoch in range(args.pre_nepoch):
         model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
         model.run_epoch(test_data, test_text, epoch, fout, 'test')
 # Loop over epochs
@@ -366,7 +366,7 @@ for epoch in range(args.nepoch):
             train_data_choice_shift, rxtr=model.get_loss_shift(train_data_shift,train_text_shift,fout,'shift_train')
         # Run an iteration of the network training on the chosen shifts/scales
 
-        for ine in range(3):
+        for ine in range(args.within_nepoch):
                 model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train')
 
         # Get the results on the test data using the optimal transformation for each image.
