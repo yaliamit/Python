@@ -104,20 +104,25 @@ class CLEAN(nn.Module):
 
 
         v, mx=torch.max(outl,dim=1)
+        #mx=mx.random_(0,self.ll)
+        MX=torch.zeros_like(outl) #(len(mx),self.ll)
+        MX.scatter_(1,mx.reshape(-1,1),1)
+        MXX=MX.reshape(-1,self.lst,self.lenc,self.ll)
+        SMXX=torch.sum(MXX,dim=1)
+        VSMXX, MSMXX=torch.max(SMXX,dim=2)
+        # mxaa=mx.reshape(-1,self.lst,self.lenc)
+        # hh = torch.zeros((len(mxaa),self.lenc),dtype=torch.int64)
+        # for i,mxa in enumerate(mxaa):
+        #     t=0
+        #     for j in range(self.lenc):
+        #         kk=torch.unique(mxa[:,j],return_counts=True)
+        #         kkm=torch.max(kk[1],dim=0)
+        #         lab=kk[0][kkm[1]]
+        #         #if (t>0 or (t==0 and lab>0)):
+        #         hh[i,t]=lab
+        #         t+=1
 
-        mxaa=mx.reshape(-1,self.lst,self.lenc)
-        hh = torch.zeros((len(mxaa),self.lenc),dtype=torch.int64)
-        for i,mxa in enumerate(mxaa):
-            t=0
-            for j in range(self.lenc):
-                kk=torch.unique(mxa[:,j],return_counts=True)
-                kkm=torch.max(kk[1],dim=0)
-                lab=kk[0][kkm[1]]
-                if (t>0 or (t==0 and lab>0)):
-                    hh[i,t]=lab
-                    t+=1
-
-        hhr=hh.repeat_interleave(self.lst,dim=0)
+        hhr=MSMXX.repeat_interleave(self.lst,dim=0)
         loss = self.criterion_shift(outl, hhr.view(-1))
         slossa = torch.sum(loss.reshape(-1, self.lenc), dim=1).reshape(-1, self.lst)
         v, lossm = torch.min(slossa, 1)
@@ -141,16 +146,16 @@ class CLEAN(nn.Module):
         rmx = []
         # Loop over batches of training data each lst of them are transformation of same image.
         OUT=[]
+        TS = (torch.from_numpy(target_shift)).type(torch.int64).to(self.dv)
 
         for j in np.arange(0, num_tr, self.bsz):
             # Data is stored as uint8 to save space. So transfer to float for gpu.
             sinput = (torch.from_numpy(input_shift[j:j + self.bsz]).float()/255.).to(self.dv)
             # Apply network
             out = self.forward(sinput)
-            OUT+=[out.detach().cpu()]
+            OUT+=[out]#'.detach().cpu()]
 
         OUT=torch.cat(OUT,dim=0)
-        TS = (torch.from_numpy(target_shift)).type(torch.int64)
         ii, shift_loss, mx=self.loss_shift(OUT,TS)
 
         outs=OUT[ii]
@@ -345,10 +350,10 @@ scheduler=model.get_scheduler(args)
 
 if (scheduler is not None):
             scheduler.step()
-# if (args.OPT):
-#     for epoch in range(1):
-#         model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
-#         model.run_epoch(test_data, test_text, epoch, fout, 'test')
+if (args.OPT):
+    for epoch in range(2):
+        model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
+        model.run_epoch(test_data, test_text, epoch, fout, 'test')
 # Loop over epochs
 for epoch in range(args.nepoch):
 
