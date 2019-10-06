@@ -116,7 +116,7 @@ class CLEAN(nn.Module):
         loss = self.criterion_shift(outl, hhr.view(-1))
         slossa = torch.sum(loss.reshape(-1, self.lenc), dim=1).reshape(-1, self.lst)
         v, lossm = torch.min(slossa, 1)
-        ii=torch.arange(0,len(out),self.lst,dtype=torch.int64)+lossm
+        ii=torch.arange(0,len(out),self.lst,dtype=torch.int64) #+lossm
         hhrl=hhr[ii]
         tot_loss=torch.mean(v)
         return ii, tot_loss, hhrl.view(-1)
@@ -148,14 +148,15 @@ class CLEAN(nn.Module):
         TS = (torch.from_numpy(target_shift)).type(torch.int64)
         ii, shift_loss, mx=self.loss_shift(OUT,TS)
 
-        # ii=torch.arange(0,num_tr,self.lst,dtype=torch.int64)+lossm
-        #     # Extract best version of each outputs to compute current loss.
         outs=OUT[ii]
         stargs=TS[ii]
-        loss, acc, acca, numa, accc, mx =self.get_acc_and_loss(outs.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1),stargs.reshape(-1))
+
+        outsp=outs.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1).to(self.dv)
+        target = (stargs.reshape(-1)).to(self.dv)
+        loss, acc, acca, numa, accc, mx =self.get_acc_and_loss(outsp,target)
 
         # Extract best version of each image for the network training stage.
-        train_choice_shift=(input_shift[ii.numpy()])
+        train_choice_shift=(input_shift[ii])
         full_loss = loss.item()
         full_acc = acc.item()
         full_acca = acca.item()
@@ -219,11 +220,11 @@ class CLEAN(nn.Module):
         else:
             self.eval()
         num_tr=train.shape[0]
-        ii = np.arange(0, num_tr, 1)
+        #ii = np.arange(0, num_tr, 1)
         #if (type=='train'):
         #   np.random.shuffle(ii)
-        trin=train[ii]
-        targ=text[ii]
+        trin=train#[ii]
+        targ=text#[ii]
 
         full_loss=0; full_acc=0; full_acca=0; full_numa=0; full_accc=0
         rmx=[]
@@ -353,6 +354,7 @@ for epoch in range(args.nepoch):
         with torch.no_grad():
             train_data_choice_shift, rxtr=model.get_loss_shift(train_data_shift,train_text_shift,fout,'shift_train')
         # Run an iteration of the network training on the chosen shifts/scales
+
         for ine in range(3):
             model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train')
             model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train_test')
