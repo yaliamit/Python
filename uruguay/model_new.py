@@ -108,15 +108,20 @@ class CLEAN(nn.Module):
         mxaa=mx.reshape(-1,self.lst,self.lenc)
         hh = torch.zeros((len(mxaa),self.lenc),dtype=torch.int64)
         for i,mxa in enumerate(mxaa):
+            t=0
             for j in range(self.lenc):
                 kk=torch.unique(mxa[:,j],return_counts=True)
                 kkm=torch.max(kk[1],dim=0)
-                hh[i,j]=kk[0][kkm[1]]
+                lab=kk[0][kkm[1]]
+                if (t>0 or (t==0 and lab>0)):
+                    hh[i,t]=lab
+                    t+=1
+
         hhr=hh.repeat_interleave(self.lst,dim=0)
         loss = self.criterion_shift(outl, hhr.view(-1))
         slossa = torch.sum(loss.reshape(-1, self.lenc), dim=1).reshape(-1, self.lst)
         v, lossm = torch.min(slossa, 1)
-        ii=torch.arange(0,len(out),self.lst,dtype=torch.int64) #+lossm
+        ii=torch.arange(0,len(out),self.lst,dtype=torch.int64)+lossm
         hhrl=hhr[ii]
         tot_loss=torch.mean(v)
         return ii, tot_loss, hhrl.view(-1)
@@ -356,8 +361,8 @@ for epoch in range(args.nepoch):
         # Run an iteration of the network training on the chosen shifts/scales
 
         for ine in range(3):
-            model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train')
-            model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train_test')
+                model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train')
+            #model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train_test')
 
         # Get the results on the test data using the optimal transformation for each image.
         #model.get_loss_shift(test_data_shift, test_text_shift, fout, 'shift_test')
