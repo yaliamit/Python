@@ -158,7 +158,7 @@ class CLEAN(nn.Module):
             lossmb, s_l=self.loss_shift(OUT[j:j+jump],None)
             lossm+=[lossmb]
             shift_loss+=s_l.item()
-
+        shift_loss/=(num_tr/jump)
         lossm=torch.cat(lossm,dim=0)
         ii=torch.arange(0,len(OUT),self.lst,dtype=torch.int64)+lossm.detach().cpu()
 
