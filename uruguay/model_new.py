@@ -150,7 +150,16 @@ class CLEAN(nn.Module):
             OUT+=[out]#'.detach().cpu()]
 
         OUT=torch.cat(OUT,dim=0)
-        lossm, shift_loss=self.loss_shift(OUT,rxt)
+
+        lossm=[]
+        shift_loss=0
+        jump=self.bsz*self.lst
+        for j in np.arange(0,num_tr,jump):
+            lossmb, s_l=self.loss_shift(OUT[j:j+jump],None)
+            lossm+=[lossm]
+            shift_loss+=s_l.item()
+
+        lossm=torch.cat(lossm,dim=0)
         ii=torch.arange(0,len(OUT),self.lst,dtype=torch.int64)+lossm.detach().cpu()
 
         outs=OUT[ii]
