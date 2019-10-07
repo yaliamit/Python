@@ -179,7 +179,7 @@ class CLEAN(nn.Module):
         rmx += [mx.cpu().detach().numpy()]
 
         fout.write('====> {}: {} Full loss: {:.4F}\n'.format(type + '_shift', epoch,
-                                                             shift_loss.item()))
+                                                             shift_loss))
         fout.write(
             '====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}, case insensitive acc {:.4F}\n'.format(
                 type, epoch,
