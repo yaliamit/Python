@@ -16,6 +16,7 @@ def process_args(parser):
     parser.add_argument('--nepoch', type=int, default=30, help='number of training epochs') # Number of epochs
     parser.add_argument('--pre_nepoch', type=int, default=2, help='number of prior training epochs if OPT') # Number of epochs
     parser.add_argument('--within_nepoch', type=int, default=3, help='number of internal training epochs if OPT') # Number of epochs
+    parser.add_argument('--get_shift_epochs', type=int, default=10, help='number of epochs where you compute optimal shift if OPT') # Number of epochs
     parser.add_argument('--gpu', type=int, default=2, help='whether to run in the GPU') # Use gpu
     parser.add_argument('--seed', type=int, default=15647, help='random seed (default: 1111)') # seed
     parser.add_argument('--num_train', type=int, default=60000, help='num train (default: 60000)') # number of training data
