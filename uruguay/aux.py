@@ -10,13 +10,13 @@ def process_args(parser):
     parser.add_argument('--pools', type=int, default=   (2, 2, 1, 2), help='pooling') # Pooling for each layer
     parser.add_argument('--T', type=int, default=[0,4], nargs="+", help='T') # Vertical shifts for data augmentation
     parser.add_argument('--S', type=int, default=[0, 2, 4, 6], nargs="+", help='S') # Horizontal shifts for data augmentation
-    parser.add_argument('--Z', type=float, default=[], nargs="+", help='Z') # Scales for data augmentation
+    parser.add_argument('--Z', type=float, default=[.8,1.2], nargs="+", help='Z') # Scales for data augmentation
     parser.add_argument('--drops', type=float, default=(1.,1.,1.,1.,1.)) # Dropout for each layer
     parser.add_argument('--bsz', type=int, default=50, help='mb_size (default: 500)') # Batch size
     parser.add_argument('--nepoch', type=int, default=30, help='number of training epochs') # Number of epochs
     parser.add_argument('--pre_nepoch', type=int, default=2, help='number of prior training epochs if OPT') # Number of epochs
     parser.add_argument('--within_nepoch', type=int, default=3, help='number of internal training epochs if OPT') # Number of epochs
-    parser.add_argument('--get_shift_epochs', type=int, default=10, help='number of epochs where you compute optimal shift if OPT') # Number of epochs
+    parser.add_argument('--get_shift_epochs', type=int, default=1000, help='number of epochs where you compute optimal shift if OPT') # Number of epochs
     parser.add_argument('--gpu', type=int, default=2, help='whether to run in the GPU') # Use gpu
     parser.add_argument('--seed', type=int, default=15647, help='random seed (default: 1111)') # seed
     parser.add_argument('--num_train', type=int, default=60000, help='num train (default: 60000)') # number of training data
