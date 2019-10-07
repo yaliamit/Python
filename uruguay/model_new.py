@@ -360,7 +360,7 @@ for epoch in range(args.nepoch):
     # If optimizing over shifts and scales for each image
     if (args.OPT):
         # with current network parameters find best scale and shift for each image -> train_data_choice_shift
-        if (epoch<20):
+        if (epoch<10):
           with torch.no_grad():
             train_data_choice_shift, rxtr=model.get_loss_shift(train_data_shift,train_text_shift,None,fout,'shift_train')
         # Run an iteration of the network training on the chosen shifts/scales
