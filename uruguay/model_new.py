@@ -129,7 +129,7 @@ class CLEAN(nn.Module):
 
 
     # Find optimal shift/scale for each image
-    def get_loss_shift(self,input_shift,target_shift,rx, fout, type):
+    def get_loss_shift(self,input_shift,target_shift, fout, type):
         self.eval()
         num_tr=len(input_shift)
         num_tro=num_tr/lst
@@ -362,7 +362,7 @@ for epoch in range(args.nepoch):
         # with current network parameters find best scale and shift for each image -> train_data_choice_shift
         if (epoch<10):
           with torch.no_grad():
-            train_data_choice_shift, rxtr=model.get_loss_shift(train_data_shift,train_text_shift,None,fout,'shift_train')
+            train_data_choice_shift, rxtr=model.get_loss_shift(train_data_shift,train_text_shift,fout,'shift_train')
         # Run an iteration of the network training on the chosen shifts/scales
 
         for ine in range(args.within_nepoch):
@@ -370,7 +370,7 @@ for epoch in range(args.nepoch):
 
         # Get the results on the test data using the optimal transformation for each image.
         with torch.no_grad():
-                test_data_choice_shift, rxte = model.get_loss_shift(test_data_shift, test_text_shift,None, fout, 'shift_test')
+                test_data_choice_shift, rxte = model.get_loss_shift(test_data_shift, test_text_shift, fout, 'shift_test')
 
     # Try training simply on the augmented training set without optimization
     else:
