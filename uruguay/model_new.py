@@ -141,8 +141,7 @@ class CLEAN(nn.Module):
         OUT=[]
         TS = (torch.from_numpy(target_shift)).type(torch.int64).to(self.dv)
         rxt=None
-        if (rx is not None):
-            rxt=(torch.from_numpy(rx)).type(torch.int64).to(self.dv)
+
         for j in np.arange(0, num_tr, self.bsz):
             # Data is stored as uint8 to save space. So transfer to float for gpu.
             sinput = (torch.from_numpy(input_shift[j:j + self.bsz]).float()/255.).to(self.dv)
@@ -361,23 +360,17 @@ for epoch in range(args.nepoch):
     # If optimizing over shifts and scales for each image
     if (args.OPT):
         # with current network parameters find best scale and shift for each image -> train_data_choice_shift
-        with torch.no_grad():
-            train_data_choice_shift, rxtr=model.get_loss_shift(train_data_shift,train_text_shift,rx,fout,'shift_train')
+        if (epoch<20):
+          with torch.no_grad():
+            train_data_choice_shift, rxtr=model.get_loss_shift(train_data_shift,train_text_shift,None,fout,'shift_train')
         # Run an iteration of the network training on the chosen shifts/scales
 
         for ine in range(args.within_nepoch):
                 rtx=model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train')
-        if (epoch>2):
-            rx = np.int32(np.array(rtx)).ravel()
 
         # Get the results on the test data using the optimal transformation for each image.
         with torch.no_grad():
-            if (epoch<=2):
                 test_data_choice_shift, rxte = model.get_loss_shift(test_data_shift, test_text_shift,None, fout, 'shift_test')
-            else:
-                rtex = model.run_epoch(test_data_choice_shift, test_text,epoch,fout,'test')
-                rtex = np.int32(np.array(rtex)).ravel()
-                test_data_choice_shift, rxte = model.get_loss_shift(test_data_shift, test_text_shift, rtex, fout,'shift_test')
 
     # Try training simply on the augmented training set without optimization
     else:
