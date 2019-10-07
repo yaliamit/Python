@@ -97,32 +97,25 @@ class CLEAN(nn.Module):
         return(out)
 
     # Get loss for optimal shift (same as other loss)
-    def loss_shift(self,out,targ):
+    def loss_shift(self,out,targ=None):
 
 
         outl=out.permute(1, 0, 2, 3).reshape([self.ll, -1]).transpose(0, 1)
 
 
-        v, mx=torch.max(outl,dim=1)
-        #mx=mx.random_(0,self.ll)
-        MX=torch.zeros_like(outl) #(len(mx),self.ll)
-        MX.scatter_(1,mx.reshape(-1,1),1)
-        MXX=MX.reshape(-1,self.lst,self.lenc,self.ll)
-        SMXX=torch.sum(MXX,dim=1)
-        VSMXX, MSMXX=torch.max(SMXX,dim=2)
-        # mxaa=mx.reshape(-1,self.lst,self.lenc)
-        # hh = torch.zeros((len(mxaa),self.lenc),dtype=torch.int64)
-        # for i,mxa in enumerate(mxaa):
-        #     t=0
-        #     for j in range(self.lenc):
-        #         kk=torch.unique(mxa[:,j],return_counts=True)
-        #         kkm=torch.max(kk[1],dim=0)
-        #         lab=kk[0][kkm[1]]
-        #         #if (t>0 or (t==0 and lab>0)):
-        #         hh[i,t]=lab
-        #         t+=1
-
-        hhr=MSMXX.repeat_interleave(self.lst,dim=0)
+        if (targ is None):
+            v, mx=torch.max(outl,dim=1)
+            MX=torch.zeros_like(outl)
+            MX.scatter_(1,mx.reshape(-1,1),1)
+            MX=MX.reshape(-1,self.lst,self.lenc,self.ll)
+            SMX=torch.sum(MX,dim=1)
+            VSMX, MSMX=torch.max(SMX,dim=2)
+            spMX=MSMX[:,0]==0
+            MSMX[spMX,0:self.lenc-1]=MSMX[spMX,1:self.lenc]
+            MSMX[spMX,self.lenc-1]=0
+        else:
+            MSMX=targ.reshape(-1,self.lenc)
+        hhr = MSMX.repeat_interleave(self.lst, dim=0)
         loss = self.criterion_shift(outl, hhr.view(-1))
         slossa = torch.sum(loss.reshape(-1, self.lenc), dim=1).reshape(-1, self.lst)
         v, lossm = torch.min(slossa, 1)
@@ -136,7 +129,7 @@ class CLEAN(nn.Module):
 
 
     # Find optimal shift/scale for each image
-    def get_loss_shift(self,input_shift,target_shift, fout, type):
+    def get_loss_shift(self,input_shift,target_shift,rx, fout, type):
         self.eval()
         num_tr=len(input_shift)
         num_tro=num_tr/lst
@@ -147,7 +140,9 @@ class CLEAN(nn.Module):
         # Loop over batches of training data each lst of them are transformation of same image.
         OUT=[]
         TS = (torch.from_numpy(target_shift)).type(torch.int64).to(self.dv)
-
+        rxt=None
+        if (rx is not None):
+            rxt=(torch.from_numpy(rx)).type(torch.int64).to(self.dv)
         for j in np.arange(0, num_tr, self.bsz):
             # Data is stored as uint8 to save space. So transfer to float for gpu.
             sinput = (torch.from_numpy(input_shift[j:j + self.bsz]).float()/255.).to(self.dv)
@@ -156,7 +151,7 @@ class CLEAN(nn.Module):
             OUT+=[out]#'.detach().cpu()]
 
         OUT=torch.cat(OUT,dim=0)
-        lossm, shift_loss=self.loss_shift(OUT,TS)
+        lossm, shift_loss=self.loss_shift(OUT,rxt)
         ii=torch.arange(0,len(OUT),self.lst,dtype=torch.int64)+lossm.detach().cpu()
 
         outs=OUT[ii]
@@ -359,6 +354,7 @@ if (args.OPT):
         fout.write('pre epoch: {0} in {1:5.3f} seconds\n'.format(epoch, time.time() - t1))
         fout.flush()
 # Loop over epochs
+rx=None
 for epoch in range(args.nepoch):
 
     t1=time.time()
@@ -366,15 +362,23 @@ for epoch in range(args.nepoch):
     if (args.OPT):
         # with current network parameters find best scale and shift for each image -> train_data_choice_shift
         with torch.no_grad():
-            train_data_choice_shift, rxtr=model.get_loss_shift(train_data_shift,train_text_shift,fout,'shift_train')
+            train_data_choice_shift, rxtr=model.get_loss_shift(train_data_shift,train_text_shift,rx,fout,'shift_train')
         # Run an iteration of the network training on the chosen shifts/scales
 
         for ine in range(args.within_nepoch):
-                model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train')
+                rtx=model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train')
+        if (epoch>2):
+            rx = np.int32(np.array(rtx)).ravel()
 
         # Get the results on the test data using the optimal transformation for each image.
         with torch.no_grad():
-            model.get_loss_shift(test_data_shift, test_text_shift, fout, 'shift_test')
+            if (epoch<=2):
+                test_data_choice_shift, rxte = model.get_loss_shift(test_data_shift, test_text_shift,None, fout, 'shift_test')
+            else:
+                rtex = model.run_epoch(test_data_choice_shift, test_text,epoch,fout,'test')
+                rtex = np.int32(np.array(rtex)).ravel()
+                test_data_choice_shift, rxte = model.get_loss_shift(test_data_shift, test_text_shift, rtex, fout,'shift_test')
+
     # Try training simply on the augmented training set without optimization
     else:
         model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
@@ -386,9 +390,9 @@ for epoch in range(args.nepoch):
     fout.flush()
 
 
-aux.show_shifts(train_data_choice_shift[0:80], train_data[0:80], model.x_dim, 'shifts_'+str(args.nepoch))
 # Run one more time on test
 if (args.OPT):
+    aux.show_shifts(train_data_choice_shift[0:80], train_data[0:80], model.x_dim, 'shifts_' + str(args.nepoch))
     with torch.no_grad():
         test_data_choice_shift,rx=model.get_loss_shift(test_data_shift, test_text_shift, fout,'test')
 else:
