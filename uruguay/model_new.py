@@ -156,7 +156,7 @@ class CLEAN(nn.Module):
         jump=self.bsz*self.lst
         for j in np.arange(0,num_tr,jump):
             lossmb, s_l=self.loss_shift(OUT[j:j+jump],None)
-            lossm+=[lossm]
+            lossm+=[lossmb]
             shift_loss+=s_l.item()
 
         lossm=torch.cat(lossm,dim=0)
