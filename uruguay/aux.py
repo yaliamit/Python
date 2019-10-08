@@ -32,6 +32,15 @@ def process_args(parser):
     args = parser.parse_args()
     return (args)
 
+def image_from_text(x_dim,y_dim,text):
+    img = Image.new('L', (x_dim,y_dim), 0)
+    # imga = Image.fromarray(np.int8(trin[t,0,0:x_dim]*200))
+    draw = ImageDraw.Draw(img)
+    font = ImageFont.truetype("Arial.ttf", 16)
+    draw.text((0,0), text, 255, font=font)
+    out=np.array(img.getdata(), np.uint8).reshape(img.size[1], img.size[0])
+    return out
+
 # Save test images together with labels.
 def create_image(trin, TT, x_dim, ex_file):
         mat = []
@@ -72,12 +81,17 @@ def create_image(trin, TT, x_dim, ex_file):
 
         print("Saved the sampled images")
 
+def nums_to_text(msmx,aa, lenc):
+    msmx=np.array(msmx)
+    msmx=np.int32(msmx).ravel()
+    ttmx = np.array([aa[i] for i in msmx]).reshape(-1,lenc)
+    return ttmx
 
-def show_shifts(tin_s, tin, x_dim, ex_file):
-    mat = []
-    t = 0
+def show_shifts(tin_s, tin, msmx, rx, x_dim, ex_file, aa, lenc):
+
+    msmx=nums_to_text(msmx,aa, lenc)
+    rx=nums_to_text(rx,aa, lenc)
     ll = len(tin_s) // 63 * 63
-    page = []
     t = 0
     imlist = []
     while (t < ll):
@@ -86,10 +100,15 @@ def show_shifts(tin_s, tin, x_dim, ex_file):
             col = []
             for i in range(9):
                 if (t < ll):
-                    aa=np.zeros((2*tin.shape[2]+3,tin.shape[3]+2))
+                    aa=np.zeros((3*tin.shape[2]+3,tin.shape[3]+2))
                     aa[1:1+tin.shape[2],1:tin.shape[3]+1]=tin[t,0]
-                    aa[2+tin.shape[2]:2+2*tin.shape[2],1:tin.shape[3]+1]=tin_s[t,0]
-                    col += [255-np.uint8(aa)]
+                    aa[2+tin.shape[2]:2+2*tin.shape[2],1:(tin.shape[3]+1)]=tin_s[t,0]
+                    text1=''.join(msmx[t])
+                    text2=''.join(rx[t])
+                    text=text1+'\n'+text2
+                    bb=image_from_text(tin.shape[3],tin.shape[2],text)
+                    aa[2+2*tin.shape[2]:2+3*tin.shape[2],1:(tin.shape[3]+1)]=255-bb
+                    col += [255 - np.uint8(aa)]
                     t += 1
                 else:
                     col += [np.ones((x_dim + 20, 85)) * 255]
@@ -101,15 +120,11 @@ def show_shifts(tin_s, tin, x_dim, ex_file):
     imlist[0].save("_Images/" + ex_file + ".tif", compression="tiff_deflate", save_all=True,
                    append_images=imlist[1:])
 
-    # if not os.path.isfile('_Images'):
-    #    os.system('mkdir _Images')
-    # imsave('_Images/' + ex_file + '.png', img)
-
     print("Saved the sampled images")
 
 
 # Read in data
-def get_data(args,lst):
+def get_data(args, fout):
     with h5py.File('pairs.hdf5', 'r') as f:
         #key = list(f.keys())[0]
         # Get the data
@@ -155,11 +170,22 @@ def get_data(args,lst):
         print("hello")
         args.aa=aa
 
-    return train_data, train_text, test_data, test_text, aa
+    fout.write('num train ' + str(train_data.shape[0]) + '\n')
+    fout.write('num test ' + str(test_data.shape[0]) + '\n')
+
+    x_dim = np.int32(train_data[0].shape[1])
+    y_dim = train_data[0].shape[2]
+
+    # Add axis for pytorch modules
+    train_data = train_data[:, :, 0:x_dim, :]
+    test_data = test_data[:, :, 0:x_dim, :]
+
+    return train_data, train_text, test_data, test_text, aa, x_dim, y_dim
 
 # Create shifts and scales of data.
-def add_shifts_new(input,S,T,Z=[]):
-
+def add_shifts_new(input,input_text, args):
+    S=args.S; T=args.T; Z=args.Z
+    lst = len(args.S) * len(args.T) * (len(args.Z) + 1)
     if (len(S)==1 and len(T)==1):
         input_s=input
     else:
@@ -192,5 +218,5 @@ def add_shifts_new(input,S,T,Z=[]):
                 input_s[llst,:]=np.concatenate((input_s[llst,:,:,s:],255*np.ones((len(llst),ss[1],ss[2],s),dtype=np.uint8)),axis=3)
                 input_s[llst,:]=np.concatenate((input_s[llst,:,t:,:],255*np.ones((len(llst),ss[1],t,ss[3]),dtype=np.uint8)),axis=2)
 
-
-    return input_s
+        input_text_shift = np.repeat(input_text, lst, axis=0)
+    return input_s, input_text_shift

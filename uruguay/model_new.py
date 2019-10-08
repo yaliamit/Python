@@ -87,7 +87,7 @@ class CLEAN(nn.Module):
         if (self.first):
             # Define last conv layer that has as many output features as labels - this is the vector of
             # of outputs that go to the softmax to define label probs.
-            self.l_out=torch.nn.Conv2d(out.shape[1],args.ll,[self.sh[2],self.sh2a+1],stride=[1,self.sh2a]).to(self.dv)
+            self.l_out=torch.nn.Conv2d(out.shape[1],self.ll,[self.sh[2],self.sh2a+1],stride=[1,self.sh2a]).to(self.dv)
         # Apply last layer
         out=self.l_out(out)
         if (self.first):
@@ -102,80 +102,86 @@ class CLEAN(nn.Module):
 
         outl=out.permute(1, 0, 2, 3).reshape([self.ll, -1]).transpose(0, 1)
 
-
-        if (targ is None):
-            v, mx=torch.max(outl,dim=1)
-            MX=torch.zeros_like(outl)
-            MX.scatter_(1,mx.reshape(-1,1),1)
-            MX=MX.reshape(-1,self.lst,self.lenc,self.ll)
-            SMX=torch.sum(MX,dim=1)
-            VSMX, MSMX=torch.max(SMX,dim=2)
-            spMX=MSMX[:,0]==0
-            MSMX[spMX,0:self.lenc-1]=MSMX[spMX,1:self.lenc]
-            MSMX[spMX,self.lenc-1]=0
-        else:
-            MSMX=targ.reshape(-1,self.lenc)
-        hhr = MSMX.repeat_interleave(self.lst, dim=0)
-        loss = self.criterion_shift(outl, hhr.view(-1))
-        slossa = torch.sum(loss.reshape(-1, self.lenc), dim=1).reshape(-1, self.lst)
-        v, lossm = torch.min(slossa, 1)
-        # ii=torch.arange(0,len(out),self.lst,dtype=torch.int64)+lossm
-        # hhrl=hhr[ii]
-        tot_loss=torch.mean(v)
-        return lossm, tot_loss #, hhrl.view(-1)
+        poutl=torch.softmax(outl,dim=1)
+        v, mx = torch.max(poutl, dim=1)
+        PMX = torch.zeros_like(poutl)
+        PMX.scatter_(1, mx.reshape(-1, 1), 1)
+        poutl2=poutl-PMX*poutl
+        v2, mx2 = torch.max(poutl2,dim=1)
+        vv=v-v2
+        vv=torch.sum(vv.reshape(-1,self.lenc),dim=1)
+        vv=vv.reshape(-1,self.lst)
+        u,lossm=torch.max(vv,1)
+        MX = mx.reshape(-1, self.lenc)
+        ii = torch.arange(0, len(MX), self.lst, dtype=torch.int64).to(self.dv) + lossm
+        MSMX=MX[ii]
+        tot_loss=torch.tensor(0)
+        #if (targ is None):
+        # v, mx=torch.max(outl,dim=1)
+        #
+        # MX=torch.zeros_like(outl)
+        # MX.scatter_(1,mx.reshape(-1,1),1)
+        # MX=MX.reshape(-1,self.lst,self.lenc,self.ll)
+        # SMX=torch.sum(MX,dim=1)
+        # VSMX, MSMX=torch.max(SMX,dim=2)
+        # spMX=MSMX[:,0]==0
+        # MSMX[spMX,0:self.lenc-1]=MSMX[spMX,1:self.lenc]
+        # MSMX[spMX,self.lenc-1]=0
+        # hhr = MSMX.repeat_interleave(self.lst, dim=0)
+        # loss = self.criterion_shift(outl, hhr.view(-1))
+        # slossa = torch.sum(loss.reshape(-1, self.lenc), dim=1).reshape(-1, self.lst)
+        # v, lossm = torch.min(slossa, 1)
+        #
+        # tot_loss=torch.mean(v)
+        return lossm, tot_loss, MSMX
 
 
 
 
 
     # Find optimal shift/scale for each image
-    def get_loss_shift(self,input_shift,target_shift, fout, type):
+    def get_loss_shift(self,input_shift,target_shift, epoch, fout, type):
         self.eval()
         num_tr=len(input_shift)
-        num_tro=num_tr/lst
-        sh=np.array(input_shift.shape)
-        sh[0]/=self.lst
-        train_choice_shift=np.zeros(sh,dtype=np.uint8)
+        num_tro=num_tr/self.lst
         rmx = []
         # Loop over batches of training data each lst of them are transformation of same image.
         OUT=[]
         TS = (torch.from_numpy(target_shift)).type(torch.int64).to(self.dv)
-        rxt=None
-
         for j in np.arange(0, num_tr, self.bsz):
             # Data is stored as uint8 to save space. So transfer to float for gpu.
             sinput = (torch.from_numpy(input_shift[j:j + self.bsz]).float()/255.).to(self.dv)
             # Apply network
             out = self.forward(sinput)
-            OUT+=[out]#'.detach().cpu()]
+            OUT+=[out]
 
         OUT=torch.cat(OUT,dim=0)
 
+        # CHoose shift/scale based on labels obtained from a vote at each location.
         lossm=[]
         shift_loss=0
         jump=self.bsz*self.lst
+        MSMX=[]
         for j in np.arange(0,num_tr,jump):
-            lossmb, s_l=self.loss_shift(OUT[j:j+jump],None)
+            lossmb, s_l, msmx=self.loss_shift(OUT[j:j+jump],target_shift[j:j+jump])
             lossm+=[lossmb]
             shift_loss+=s_l.item()
+            MSMX+=[msmx]
         shift_loss/=(num_tr/jump)
         lossm=torch.cat(lossm,dim=0)
+        MSMX=torch.cat(MSMX,dim=0).detach().cpu().numpy()
         ii=torch.arange(0,len(OUT),self.lst,dtype=torch.int64)+lossm.detach().cpu()
 
         outs=OUT[ii]
         stargs=TS[ii]
 
+        # Get accuracy for chosen shift/scales
         outsp=outs.permute(1,0,2,3).reshape([self.ll,-1]).transpose(0,1).to(self.dv)
         target = (stargs.reshape(-1)).to(self.dv)
         loss, acc, acca, numa, accc, mx =self.get_acc_and_loss(outsp,target)
 
         # Extract best version of each image for the network training stage.
         train_choice_shift=(input_shift[ii])
-        full_loss = loss.item()
-        full_acc = acc.item()
-        full_acca = acca.item()
-        full_accc = accc.item()
-        full_numa = numa
         rmx += [mx.cpu().detach().numpy()]
 
         fout.write('====> {}: {} Full loss: {:.4F}\n'.format(type + '_shift', epoch,
@@ -183,10 +189,10 @@ class CLEAN(nn.Module):
         fout.write(
             '====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}, case insensitive acc {:.4F}\n'.format(
                 type, epoch,
-                full_loss, full_acc / (num_tro * model.lenc), full_acca / full_numa,
-                full_accc / (num_tro * model.lenc)))
+                loss.item(), acc.item() / (num_tro * self.lenc), acca.item() / numa,
+                accc.item() / (num_tro * self.lenc)))
 
-        return train_choice_shift, rmx
+        return train_choice_shift, rmx, MSMX
 
         # Get loss and accuracy (all characters and non-space characters).
     def get_acc_and_loss(self, out, targ):
@@ -257,7 +263,7 @@ class CLEAN(nn.Module):
             full_numa+=numa
             rmx+=[mx.cpu().detach().numpy()]
         fout.write('====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}, case insensitive acc {:.4F}\n'.format(type,epoch,
-                    full_loss /(num_tr/self.bsz), full_acc/(num_tr*model.lenc), full_acca/full_numa, full_accc / (num_tr * model.lenc)))
+                    full_loss /(num_tr/self.bsz), full_acc/(num_tr*self.lenc), full_acca/full_numa, full_accc / (num_tr * self.lenc)))
 
         return(rmx)
 
@@ -272,146 +278,3 @@ class CLEAN(nn.Module):
 
 
 
-os.environ['KMP_DUPLICATE_LIB_OK']='True'
-
-parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
-    description='Variational Autoencoder with Spatial Transformation'
-)
-
-
-args=aux.process_args(parser)
-
-use_gpu=0
-if (torch.cuda.is_available()):
-    use_gpu = args.gpu
-if (use_gpu and not args.CONS):
-    fout=open('OUT.txt','w')
-else:
-    args.CONS=True
-    fout=sys.stdout
-
-fout.write(str(args)+'\n')
-args.fout=fout
-fout.flush()
-
-torch.manual_seed(args.seed)
-np.random.seed(args.seed)
-
-cuda_string="cuda:"+str(use_gpu-1)
-device = torch.device(cuda_string if use_gpu else "cpu")
-fout.write('Device,'+str(device)+'\n')
-fout.write('USE_GPU,'+str(use_gpu)+'\n')
-
-ll=0
-# S,T shifts in x and y directions, Z - scalings
-S = args.S #[0, 2, 4, 6]
-T = args.T #[0, 4]
-Z = args.Z #[.8,1.2]
-# Total number of copies per image.
-lst=1
-if (len(S)>0 and len(T)>0 and len(Z)>=0):
-    lst=len(S)*len(T)*(len(Z)+1)
-
-# Assume data is stored in an hdf5 file, split the data into 80% training and 20% test.
-train_data,  train_text, test_data, test_text, aa = aux.get_data(args,lst)
-
-fout.write('num train '+str(train_data.shape[0])+'\n')
-fout.write('num test '+str(test_data.shape[0])+'\n')
-
-x_dim=np.int32(train_data[0].shape[1])
-y_dim=train_data[0].shape[2]
-
-# Add axis for pytorch modules
-train_data=train_data[:, :, 0:x_dim, :]
-test_data=test_data[:, :, 0:x_dim, :]
-
-
-# Create the shifts and scales for train and test data
-train_data_shift=aux.add_shifts_new(train_data,S,T,Z)
-fout.write('num train shifted '+str(train_data_shift.shape[0])+'\n')
-
-if (args.OPT):
-    test_data_shift=aux.add_shifts_new(test_data,S,T,Z)
-    test_text_shift = np.repeat(test_text, lst, axis=0)
-
-train_text_shift=np.repeat(train_text,lst,axis=0)
-
-# Get the model
-model=CLEAN(device,x_dim, y_dim, args).to(device)
-model.lst=lst
-# Run it on a small batch to initialize some modules that need to know dimensions of output
-model.run_epoch(train_data[0:model.bsz], train_text, 0, fout, 'test')
-
-# Output all parameters
-tot_pars=0
-for keys, vals in model.state_dict().items():
-    fout.write(keys+','+str(np.array(vals.shape))+'\n')
-    tot_pars+=np.prod(np.array(vals.shape))
-fout.write('tot_pars,'+str(tot_pars)+'\n')
-
-scheduler=model.get_scheduler(args)
-
-
-if (scheduler is not None):
-            scheduler.step()
-if (args.OPT):
-    for epoch in range(args.pre_nepoch):
-        t1 = time.time()
-        model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
-        model.run_epoch(test_data, test_text, epoch, fout, 'test')
-        fout.write('pre epoch: {0} in {1:5.3f} seconds\n'.format(epoch, time.time() - t1))
-        fout.flush()
-# Loop over epochs
-rx=None
-for epoch in range(args.nepoch):
-
-    t1=time.time()
-    # If optimizing over shifts and scales for each image
-    if (args.OPT):
-        # with current network parameters find best scale and shift for each image -> train_data_choice_shift
-        if (epoch<args.get_shift_epochs):
-          with torch.no_grad():
-            train_data_choice_shift, rxtr=model.get_loss_shift(train_data_shift,train_text_shift,fout,'shift_train')
-        # Run an iteration of the network training on the chosen shifts/scales
-
-        for ine in range(args.within_nepoch):
-                rtx=model.run_epoch(train_data_choice_shift, train_text, epoch,fout, 'train')
-
-        # Get the results on the test data using the optimal transformation for each image.
-        with torch.no_grad():
-                test_data_choice_shift, rxte = model.get_loss_shift(test_data_shift, test_text_shift, fout, 'shift_test')
-
-    # Try training simply on the augmented training set without optimization
-    else:
-        model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
-        # Then test on original test set.
-        model.run_epoch(test_data, test_text, epoch, fout, 'test')
-
-    #fout.write('test: in {:5.3f} seconds\n'.format(time.time()-t3))
-    fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
-    fout.flush()
-
-
-# Run one more time on test
-if (args.OPT):
-    aux.show_shifts(train_data_choice_shift[0:80], train_data[0:80], model.x_dim, 'shifts_' + str(args.nepoch))
-    with torch.no_grad():
-        test_data_choice_shift,rx=model.get_loss_shift(test_data_shift, test_text_shift, fout,'test')
-else:
-    rx=model.run_epoch(test_data, test_text,0,fout, 'test')
-# Get resulting labels for each image.
-rxx=np.int32(np.array(rx)).ravel()
-tt=np.array([args.aa[i] for i in rxx]).reshape(len(test_text),args.lenc)
-# Create tif file that pastes the computed labeling below the original image for each test image
-aux.create_image(test_data,tt,model.x_dim,'try')
-
-# Store the trained model.
-ex_file=args.model
-if not os.path.isfile('_output'):
-    os.system('mkdir _output')
-torch.save(model.state_dict(),'_output/'+ex_file+'.pt')
-fout.write("DONE\n")
-fout.flush()
-
-if (not args.CONS):
-    fout.close()

@@ -28,7 +28,7 @@ class encoder_mix(nn.Module):
         h = F.relu(self.x2h(inputs))
         hpi = F.relu(self.x2hpi(inputs))
         if (self.num_layers == 1):
-            h = F.relu(encoder_mix.h2he(h))
+            h = F.relu(self.h2he(h))
         s_mu = self.toNorm_mix.h2smu(h)
         s_logvar = F.threshold(self.toNorm_mix.h2svar(h), -6, -6)
         hm = self.toNorm_mix.h2pi(hpi).clamp(-10., 10.)
@@ -148,9 +148,7 @@ class STVAE_mix(models.STVAE):
 
         self.n_mix = args.n_mix
         self.sep=args.sep
-
-
-
+        self.num_hlayers=args.num_hlayers
         if (not args.OPT):
             if args.sep:
                 self.encoder_mix = encoder_mix_sep(self.x_dim, self.h_dim, self.s_dim, self.n_mix)

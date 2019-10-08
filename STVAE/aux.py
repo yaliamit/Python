@@ -1,10 +1,9 @@
 import numpy as np
 import pylab as py
 import torch
-from scipy.misc import imsave
+from imageio import imsave
 import os
-import sys
-import argparse
+
 
 def process_args(parser):
     parser.add_argument('--transformation', default='aff', help='type of transformation: aff or tps')
