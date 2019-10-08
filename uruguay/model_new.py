@@ -101,38 +101,36 @@ class CLEAN(nn.Module):
 
 
         outl=out.permute(1, 0, 2, 3).reshape([self.ll, -1]).transpose(0, 1)
-
-        poutl=torch.softmax(outl,dim=1)
-        v, mx = torch.max(poutl, dim=1)
-        PMX = torch.zeros_like(poutl)
-        PMX.scatter_(1, mx.reshape(-1, 1), 1)
-        poutl2=poutl-PMX*poutl
-        v2, mx2 = torch.max(poutl2,dim=1)
-        vv=v-v2
-        vv=torch.sum(vv.reshape(-1,self.lenc),dim=1)
-        vv=vv.reshape(-1,self.lst)
-        u,lossm=torch.max(vv,1)
-        MX = mx.reshape(-1, self.lenc)
-        ii = torch.arange(0, len(MX), self.lst, dtype=torch.int64).to(self.dv) + lossm
-        MSMX=MX[ii]
-        tot_loss=torch.tensor(0)
+        # poutl=torch.softmax(outl,dim=1)
+        # v, mx = torch.max(poutl, dim=1)
+        # PMX = torch.zeros_like(poutl)
+        # PMX.scatter_(1, mx.reshape(-1, 1), 1)
+        # poutl2=poutl-PMX*poutl
+        # v2, mx2 = torch.max(poutl2,dim=1)
+        # vv=v-v2
+        # vv=torch.sum(vv.reshape(-1,self.lenc),dim=1)
+        # vv=vv.reshape(-1,self.lst)
+        # u,lossm=torch.max(vv,1)
+        # MX = mx.reshape(-1, self.lenc)
+        # ii = torch.arange(0, len(MX), self.lst, dtype=torch.int64).to(self.dv) + lossm
+        # MSMX=MX[ii]
+        # tot_loss=torch.tensor(0)
         #if (targ is None):
-        # v, mx=torch.max(outl,dim=1)
-        #
-        # MX=torch.zeros_like(outl)
-        # MX.scatter_(1,mx.reshape(-1,1),1)
-        # MX=MX.reshape(-1,self.lst,self.lenc,self.ll)
-        # SMX=torch.sum(MX,dim=1)
-        # VSMX, MSMX=torch.max(SMX,dim=2)
-        # spMX=MSMX[:,0]==0
-        # MSMX[spMX,0:self.lenc-1]=MSMX[spMX,1:self.lenc]
-        # MSMX[spMX,self.lenc-1]=0
-        # hhr = MSMX.repeat_interleave(self.lst, dim=0)
-        # loss = self.criterion_shift(outl, hhr.view(-1))
-        # slossa = torch.sum(loss.reshape(-1, self.lenc), dim=1).reshape(-1, self.lst)
-        # v, lossm = torch.min(slossa, 1)
-        #
-        # tot_loss=torch.mean(v)
+        v, mx=torch.max(outl,dim=1)
+        MX=torch.zeros_like(outl)
+        MX.scatter_(1,mx.reshape(-1,1),1)
+        MX=MX.reshape(-1,self.lst,self.lenc,self.ll)
+        SMX=torch.sum(MX,dim=1)
+        VSMX, MSMX=torch.max(SMX,dim=2)
+        spMX=MSMX[:,0]==0
+        MSMX[spMX,0:self.lenc-1]=MSMX[spMX,1:self.lenc]
+        MSMX[spMX,self.lenc-1]=0
+        hhr = MSMX.repeat_interleave(self.lst, dim=0)
+        loss = self.criterion_shift(outl, hhr.view(-1))
+        slossa = torch.sum(loss.reshape(-1, self.lenc), dim=1).reshape(-1, self.lst)
+        v, lossm = torch.min(slossa, 1)
+
+        tot_loss=torch.mean(v)
         return lossm, tot_loss, MSMX
 
 
