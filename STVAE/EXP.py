@@ -119,7 +119,7 @@ def run_exp(nh,mx, type, numt=60000):
             com = 'grep test '+file_br+' | cut -d":" -f3 | cut -d"," -f1 > junk'
             os.system(com)
             aa=np.loadtxt('junk')
-            if len(aa.shape==0):
+            if len(aa.shape)==0:
                 RR['test_recon_loss'][mkey][ty][OP] = np.asscalar(aa)
             else:
                 RR['test_recon_loss'][mkey][ty][OP] = aa
