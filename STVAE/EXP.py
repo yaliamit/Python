@@ -33,11 +33,11 @@ def produce_B(b):
                         print(keyd, valued)
                         v = np.array(valued).reshape(1, -1)
                         B[keya][keyb][keyc][keyd][0] += v[0]
-                        if (ll>2):
-                            B[keya][keyb][keyc][keyd][1] += valued[0] * valued[0]
+                        if (ll>=2):
+                            B[keya][keyb][keyc][keyd][1] += v[0] * v[0]
                         if (v.shape[1]>1):
                             B[keya][keyb][keyc][keyd][2] += valued[1]
-                            if (ll>2):
+                            if (ll>=2):
                                 B[keya][keyb][keyc][keyd][3] += valued[1] * valued[1]
     for keya, valuea in B.items():
         print(keya)
@@ -48,7 +48,7 @@ def produce_B(b):
                 for keyd, valued in valuec.items():
                     print(keyd, valued)
                     B[keya][keyb][keyc][keyd] /= ll
-                    if (ll>2):
+                    if (ll>=2):
                       for j in [1, 3]:
                         B[keya][keyb][keyc][keyd][j] = np.sqrt(B[keya][keyb][keyc][keyd][j] -
                                                                B[keya][keyb][keyc][keyd][j - 1] *
@@ -170,7 +170,7 @@ def read_e(nh,mx,type,nt):
 l=len(sys.argv)
 
 new=True
-ntk=5
+ntk=20
 if (l>1):
     new=(sys.argv[1]=='new')
 if (l>2):
@@ -197,7 +197,7 @@ if new:
         run_e(nh,mx,mtype,numt)
 else:
     b=[]
-    for i in range(1):
+    for i in range(2):
         dir_name=dir_name_base+'_'+str(i)
         os.listdir(dir_name)
         b=b+[read_e(nh,mx,mtype,ntk)]
