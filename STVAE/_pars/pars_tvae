@@ -4,6 +4,7 @@
 --hdim=256
 --num_hlayers=0
 --nepoch=50
+--gpu=True
 --seed=3251234
 --num_train=60000
 --mb_size=500

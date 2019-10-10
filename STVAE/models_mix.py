@@ -132,6 +132,7 @@ class decoder_mix(nn.Module):
                 for i in range(self.n_mix):
                     hh=hh+[self.h2hd(h[:,i,:])]
                 h=torch.stack(hh,dim=0).transpose(0,1)
+                h=F.relu(h)
             x=[]
             for i in range(self.n_mix):
                 x=x+[self.h2x(h[:,i,:])]
