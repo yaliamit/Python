@@ -84,7 +84,6 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         y = train[1][ii]
         mu=MU[ii]
         logvar=LOGVAR[ii]
-        print(logvar.is_cuda)
         pi=PI[ii]
         batch_size = self.bsz
         for j in np.arange(0, len(y), batch_size):
@@ -94,12 +93,11 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             self.update_s(mu[j:j+batch_size, :], logvar[j:j+batch_size, :], pi[j:j+batch_size])
             for it in range(num_mu_iter):
                self.compute_loss_and_grad(data, type,self.optimizer_s,opt='mu')
-            mu[j:j + batch_size] = self.mu.data
-            logvar[j:j + batch_size] = self.logvar.data
-            pi[j:j + batch_size]=self.pi.data
             with torch.no_grad() if (type !='train') else dummy_context_mgr():
                 recon_loss, loss, _ = self.compute_loss_and_grad(data,type,self.optimizer)
-
+            mu[j:j + batch_size] = self.mu.data
+            logvar[j:j + batch_size] = self.logvar.data
+            pi[j:j + batch_size] = self.pi.data
             tr_recon_loss += recon_loss
             tr_full_loss += loss
 
