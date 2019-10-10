@@ -66,7 +66,10 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             loss.backward()
             optim.step()
 
-        return recon_loss.item(), loss.item(), recon
+        ls=loss.item()
+        rcs=recon_loss.item()
+        rec=recon.detach().cpu()
+        return rcs, ls, rec
 
     def run_epoch(self, train,  epoch,num_mu_iter,MU, LOGVAR, PI, type='test',fout=None):
 
