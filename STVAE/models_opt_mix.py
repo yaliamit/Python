@@ -98,6 +98,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             mu[j:j + batch_size] = self.mu.data
             logvar[j:j + batch_size] = self.logvar.data
             pi[j:j + batch_size] = self.pi.data
+            del self.mu, self.logvar, self.pi
             tr_recon_loss += recon_loss
             tr_full_loss += loss
 
