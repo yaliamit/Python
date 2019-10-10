@@ -165,7 +165,7 @@ def read_e(nh,mx,type,nt):
 l=len(sys.argv)
 
 new=True
-ntk=5
+ntk=20
 if (l>1):
     new=(sys.argv[1]=='new')
 if (l>2):
@@ -187,7 +187,7 @@ print(dir_name_base)
 
 nh=1
 if new:
-    for i in range(1):
+    for i in range(10):
         dir_name=dir_name_base+'_'+str(i)
         run_e(nh,mx,type,numt)
 else:
