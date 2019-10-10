@@ -72,9 +72,6 @@ for keys, vals in model.state_dict().items():
 fout.write('tot_pars,'+str(tot_pars)+'\n')
 
 
-
-
-
 if (args.run_existing):
     model.load_state_dict(torch.load(args.output_prefix+'_output/'+ex_file+'.pt',map_location=device))
     testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
