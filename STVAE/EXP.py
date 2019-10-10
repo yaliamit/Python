@@ -31,10 +31,14 @@ def produce_B(b):
                     print(keyc)
                     for keyd, valued in valuec.items():
                         print(keyd, valued)
-                        B[keya][keyb][keyc][keyd][0] += valued[0]
-                        B[keya][keyb][keyc][keyd][1] += valued[0] * valued[0]
-                        B[keya][keyb][keyc][keyd][2] += valued[1]
-                        B[keya][keyb][keyc][keyd][3] += valued[1] * valued[1]
+                        v = np.array(valued).reshape(1, -1)
+                        B[keya][keyb][keyc][keyd][0] += v[0]
+                        if (ll>2):
+                            B[keya][keyb][keyc][keyd][1] += valued[0] * valued[0]
+                        if (v.shape[1]>1):
+                            B[keya][keyb][keyc][keyd][2] += valued[1]
+                            if (ll>2):
+                                B[keya][keyb][keyc][keyd][3] += valued[1] * valued[1]
     for keya, valuea in B.items():
         print(keya)
         for keyb, valueb in valuea.items():
@@ -44,7 +48,8 @@ def produce_B(b):
                 for keyd, valued in valuec.items():
                     print(keyd, valued)
                     B[keya][keyb][keyc][keyd] /= ll
-                    for j in [1, 3]:
+                    if (ll>2):
+                      for j in [1, 3]:
                         B[keya][keyb][keyc][keyd][j] = np.sqrt(B[keya][keyb][keyc][keyd][j] -
                                                                B[keya][keyb][keyc][keyd][j - 1] *
                                                                B[keya][keyb][keyc][keyd][j - 1])
@@ -165,7 +170,7 @@ def read_e(nh,mx,type,nt):
 l=len(sys.argv)
 
 new=True
-ntk=20
+ntk=5
 if (l>1):
     new=(sys.argv[1]=='new')
 if (l>2):
@@ -176,26 +181,26 @@ mx='1+120+3+40+6+20'
 
 if (l>3):
     mx=sys.argv[3]
-type='vae+tvae'
+mtype='vae+tvae'
 
 if (l>4):
-    type=sys.argv[4]
+    mtype=sys.argv[4]
 OPT='_OPT'
 #/Users/amit/Box Sync/EXP_NT60/
-dir_name_base='EXP'+'_NT'+str(ntk)+'_'+mx+'_'+type
+dir_name_base='EXP'+'_NT'+str(ntk)+'_'+mx+'_'+mtype
 print(dir_name_base)
 
 nh=1
 if new:
     for i in range(10):
         dir_name=dir_name_base+'_'+str(i)
-        run_e(nh,mx,type,numt)
+        run_e(nh,mx,mtype,numt)
 else:
     b=[]
-    for i in range(2):
+    for i in range(1):
         dir_name=dir_name_base+'_'+str(i)
         os.listdir(dir_name)
-        b=b+[read_e(nh,mx,type,ntk)]
+        b=b+[read_e(nh,mx,mtype,ntk)]
 
     B=produce_B(b)
     np.set_printoptions(precision=4)
