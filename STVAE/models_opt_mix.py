@@ -120,7 +120,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         self.setup_id(num_inp)
         mu, logvar, pi=self.initialize_mus(input,True)
         data = input.to(self.dv)
-        self.update_s(mu, logvar, pi)
+        self.update_s(mu, logvar, pi,201)
         for it in range(num_mu_iter):
             self.compute_loss_and_grad(data, type, self.optimizer_s, opt='mu')
         ii = torch.argmax(self.pi, dim=1)
