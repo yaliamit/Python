@@ -20,7 +20,7 @@ def process_args(parser):
     parser.add_argument('--model', default='base', help='model (default: base)')
     parser.add_argument('--optimizer', default='Adam', help='Type of optimiser')
     parser.add_argument('--lr', type=float, default=.001, help='Learning rate (default: .001)')
-    parser.add_argument('--mu_lr', type=float, default=.05, help='Learning rate (default: .05)')
+    parser.add_argument('--mu_lr', type=float, default=[.05,.01], help='Learning rate (default: .05)')
     parser.add_argument('--lamda', type=float, default=0.0, help='Weight decay (default: 0)')
     parser.add_argument('--num_mu_iter', type=int, default=10, help='Learning rate (default: .05)')
     parser.add_argument('--wd', action='store_true', help='Use weight decay')
