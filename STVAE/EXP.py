@@ -198,9 +198,11 @@ if new:
 else:
     b=[]
     dd=os.listdir('./')
+    nn=0
     for d in dd:
-        if 
-    for i in range(2):
+        if dir_name_base in d:
+            nn+=1
+    for i in range(nn):
         dir_name=dir_name_base+'_'+str(i)
         os.listdir(dir_name)
         b=b+[read_e(nh,mx,mtype,ntk)]
