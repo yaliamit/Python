@@ -177,7 +177,8 @@ if (l>2):
     ntk=np.int32(sys.argv[2])
 numt=ntk*1000
 #mx='1+120+3+40+6+20'
-mx='6+20'
+#mx='6+20'
+mx='1+120+3+40'
 
 if (l>3):
     mx=sys.argv[3]
@@ -192,7 +193,7 @@ print(dir_name_base)
 
 nh=1
 if new:
-    for i in range(10):
+    for i in range(1,2):
         dir_name=dir_name_base+'_'+str(i)
         run_e(nh,mx,mtype,numt)
 else:

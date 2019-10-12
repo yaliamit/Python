@@ -91,7 +91,7 @@ class fromNorm_mix(nn.Module):
         self.h_dim=h_dim
         self.u_dim=u_dim
         self.type=type
-        self.z2h=nn.Linear(z_dim, h_dim)  #nn.ModuleList([nn.Linear(z_dim, h_dim) for i in range(n_mix)])
+        self.z2h=nn.ModuleList([nn.Linear(z_dim, h_dim) for i in range(n_mix)])
 
         if (not Diag):
             self.z2z=nn.ModuleList([nn.Linear(z_dim, z_dim) for i in range(n_mix)])
@@ -105,7 +105,7 @@ class fromNorm_mix(nn.Module):
         h=[]
         v=[]
         for i in range(self.n_mix):
-            h=h+[self.z2h(self.z2z[i](z[:,i,:]))] #[self.z2h[i](self.z2z[i](z[:,i,:]))]
+            h=h+[self.z2h[i](self.z2z[i](z[:,i,:]))]
             if (self.type=='tvae'):
                 v=v+[self.u2u[i](u[:,i,:])]
 
