@@ -26,12 +26,11 @@ class encoder_mix(nn.Module):
     def forward(self,inputs):
         h = F.relu(self.x2h(inputs))
         hpi = F.relu(self.x2hpi(inputs))
-        #hpi=h
         if (self.num_layers == 1):
             h = F.relu(self.h2he(h))
         s_mu = self.toNorm_mix.h2smu(h)
         s_logvar = F.threshold(self.toNorm_mix.h2svar(h), -6, -6)
-        hm = self.toNorm_mix.h2pi(hpi).clamp(-10., 10.)
+        hm = self.toNorm_mix.h2pi(hpi).clamp(-1., 1.)
         pi = torch.softmax(hm, dim=1)
         return s_mu, s_logvar, pi
 

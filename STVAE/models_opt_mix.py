@@ -1,9 +1,7 @@
 import torch
-import torch.nn.functional as F
 from torch import nn, optim
 import numpy as np
 import models_mix
-import time
 
 import contextlib
 
@@ -71,7 +69,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
 
         ls=loss.item()
         rcs=recon_loss.item()
-        #rec=recon.detach().cpu()
+
         return rcs, ls
 
     def run_epoch(self, train,  epoch,num_mu_iter,MU, LOGVAR, PI, type='test',fout=None):
