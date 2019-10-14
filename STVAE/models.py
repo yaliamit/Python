@@ -200,7 +200,7 @@ class STVAE(nn.Module):
 
         recon_batch, smu, slogvar, ss_prior, ss_posterior = self(data)
         recon_loss, kl = self.loss_V(recon_batch, data, smu, slogvar)
-        loss = recon_loss.item()+ ss_prior.item() + ss_posterior.item()
+        loss = recon_loss+ kl #ss_prior.item() + ss_posterior.item()
 
         if (type == 'train'):
             loss.backward()
