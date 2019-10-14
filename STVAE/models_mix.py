@@ -30,7 +30,7 @@ class encoder_mix(nn.Module):
             h = F.relu(self.h2he(h))
         s_mu = self.toNorm_mix.h2smu(h)
         s_logvar = F.threshold(self.toNorm_mix.h2svar(h), -6, -6)
-        hm = self.toNorm_mix.h2pi(hpi).clamp(-3., 3.)
+        hm = self.toNorm_mix.h2pi(hpi).clamp(-10., 10.)
         pi = torch.softmax(hm, dim=1)
         return s_mu, s_logvar, pi
 

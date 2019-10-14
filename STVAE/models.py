@@ -90,13 +90,6 @@ class STVAE(nn.Module):
                 self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
             elif (args.optimizer=='Adadelta'):
                 self.optimizer = optim.Adadelta(self.parameters())
-            else:
-                self.optimizer = optim.SGD([
-                    {'params':self.encoder.parameters()},
-                    {'params': self.decoder.parameters()},
-                    {'params':self.toNorm.parameters(),'lr':1e-5},
-                    {'params': self.fromNorm.parameters(), 'lr': 1e-5}
-                    ],lr=args.lr)
         args.fout.write('s_dim,'+str(self.s_dim)+', u_dim,'+str(self.u_dim)+', z_dim,' + str(self.z_dim)+','+self.type+'\n')
 
 
@@ -218,6 +211,10 @@ class STVAE(nn.Module):
         #   np.random.shuffle(ii)
         tr = train[0][ii].transpose(0, 3, 1, 2)
         y = train[1][ii]
+
+        if epoch==100:
+            for param_group in self.optimizer.param_groups:
+                    param_group['lr'] = param_group['lr']/2
 
         for j in np.arange(0, len(y), self.bsz):
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
