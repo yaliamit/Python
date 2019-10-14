@@ -53,14 +53,14 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
 
         # if (opt=='mu' and self.MM):
         #     self.pi=torch.autograd.Variable(torch.softmax(b,dim=1))
-        return recon_loss, prior, post, tot, x
+        return recon_loss, prior, post, tot
 
 
     def compute_loss_and_grad(self,data, type, optim, opt='par'):
 
         optim.zero_grad()
 
-        recon_loss, prior, post, tot, recon = self.forward(data,opt)
+        recon_loss, prior, post, tot= self.forward(data,opt)
 
         loss = recon_loss + tot #prior + post
 
@@ -71,8 +71,8 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
 
         ls=loss.item()
         rcs=recon_loss.item()
-        rec=recon.detach().cpu()
-        return rcs, ls, rec
+        #rec=recon.detach().cpu()
+        return rcs, ls
 
     def run_epoch(self, train,  epoch,num_mu_iter,MU, LOGVAR, PI, type='test',fout=None):
 
@@ -97,7 +97,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
             for it in range(num_mu_iter):
                self.compute_loss_and_grad(data, type,self.optimizer_s,opt='mu')
             with torch.no_grad() if (type !='train') else dummy_context_mgr():
-                recon_loss, loss, _ = self.compute_loss_and_grad(data,type,self.optimizer)
+                recon_loss, loss = self.compute_loss_and_grad(data,type,self.optimizer)
             mu[j:j + batch_size] = self.mu.data
             logvar[j:j + batch_size] = self.logvar.data
             pi[j:j + batch_size] = self.pi.data
@@ -126,7 +126,9 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         ii = torch.argmax(self.pi, dim=1)
         jj = torch.arange(0, num_inp, dtype=torch.int64).to(self.dv)
         kk = ii + jj * self.n_mix
-        recon_loss, loss, recon_batch = self.compute_loss_and_grad(data, 'test', self.optimizer)
+        s_mu = (self.mu).view(-1, self.n_mix, self.s_dim)
+        recon_batch=self.decoder_and_trans(s_mu)
+        #recon_loss, loss, recon_batch = self.compute_loss_and_grad(data, 'test', self.optimizer)
         recon = recon_batch.reshape(self.n_mix * num_inp, -1)
         rr = recon[kk]
         return rr
