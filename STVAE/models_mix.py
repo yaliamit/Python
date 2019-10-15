@@ -3,6 +3,7 @@ import torch.nn.functional as F
 from torch import nn, optim
 import numpy as np
 import models
+from Sep import encoder_mix_sep
 
 
 # Create i.i.d normals for each mixture component and a logit for weights
@@ -11,12 +12,13 @@ class toNorm_mix(nn.Module):
         super(toNorm_mix,self).__init__()
         self.h2smu = nn.Linear(h_dim, s_dim*n_mix)
         self.h2svar = nn.Linear(h_dim, s_dim*n_mix,bias=False)
-        self.h2pi =nn.Linear(h_dim,n_mix) #nn.Parameter(torch.zeros(h_dim,n_mix))
+        self.h2pi =  nn.Linear(h_dim,n_mix)
 
 class encoder_mix(nn.Module):
     def __init__(self,x_dim,h_dim,s_dim, n_mix, num_layers):
         super(encoder_mix,self).__init__()
         self.num_layers=num_layers
+        self.n_mix=n_mix
         if (num_layers==1):
             self.h2he = nn.Linear(h_dim, h_dim)
         self.x2h = nn.Linear(x_dim, h_dim)
@@ -31,7 +33,7 @@ class encoder_mix(nn.Module):
         s_mu = self.toNorm_mix.h2smu(h)
         s_logvar = F.threshold(self.toNorm_mix.h2svar(h), -6, -6)
         hm = self.toNorm_mix.h2pi(hpi).clamp(-10., 10.)
-        pi = torch.softmax(hm, dim=1)
+        pi = torch.ones(self.n_mix) #torch.softmax(hm, dim=1)
         return s_mu, s_logvar, pi
 
 
@@ -85,17 +87,23 @@ class fromNorm_mix(nn.Module):
 
 # Each correlated normal coming out of fromNorm_mix goes through same network to produce an image these get mixed.
 class decoder_mix(nn.Module):
-    def __init__(self,x_dim,h_dim,n_mix,num_layers):
+    def __init__(self,x_dim,h_dim,z_dim, u_dim, n_mix, type,num_layers, diag):
         super(decoder_mix,self).__init__()
         self.x_dim=x_dim
         self.n_mix=n_mix
+        self.u_dim=u_dim
+        self.z_dim=z_dim
         self.num_layers=num_layers
         if (num_layers==1):
             self.h2hd = nn.Linear(h_dim, h_dim)
         self.h2x = nn.Linear(h_dim, x_dim)
+        self.fromNorm_mix = fromNorm_mix(h_dim, z_dim, u_dim, n_mix, type, diag)
 
-    def forward(self,input):
-            h=input
+    def forward(self,s):
+
+            u = s.narrow(len(s.shape) - 1, 0, self.u_dim)
+            z = s.narrow(len(s.shape) - 1, self.u_dim, self.z_dim)
+            h, u = self.fromNorm_mix.forward(z, u)
             if (self.num_layers==1):
                 hh=[]
                 for i in range(self.n_mix):
@@ -107,7 +115,7 @@ class decoder_mix(nn.Module):
                 x=x+[self.h2x(h[:,i,:])]
             xx=torch.stack(x,dim=0).transpose(0,1)
             xx=torch.sigmoid(xx)
-            return(xx)
+            return(xx,u)
 
 
 class STVAE_mix(models.STVAE):
@@ -125,9 +133,9 @@ class STVAE_mix(models.STVAE):
             else:
                 self.encoder_mix = encoder_mix(self.x_dim, self.h_dim, self.s_dim, self.n_mix, self.num_hlayers)
 
-        self.fromNorm_mix = fromNorm_mix(self.h_dim, self.z_dim, self.u_dim, self.n_mix, self.type, args.Diag)
+        #self.fromNorm_mix = fromNorm_mix(self.h_dim, self.z_dim, self.u_dim, self.n_mix, self.type, args.Diag)
 
-        self.decoder_mix=decoder_mix(self.x_dim,self.h_dim,self.n_mix,self.num_hlayers)
+        self.decoder_mix=decoder_mix(self.x_dim,self.h_dim,self.z_dim, self.u_dim, self.n_mix, self.type, self.num_hlayers, args.Diag)
 
         self.rho = nn.Parameter(torch.zeros(self.n_mix),requires_grad=False)
 
@@ -139,12 +147,12 @@ class STVAE_mix(models.STVAE):
 
     def decoder_and_trans(self,s):
 
-        u = s.narrow(len(s.shape)-1,0,self.u_dim)
-        z = s.narrow(len(s.shape)-1,self.u_dim,self.z_dim)
+        #u = s.narrow(len(s.shape)-1,0,self.u_dim)
+        #z = s.narrow(len(s.shape)-1,self.u_dim,self.z_dim)
         # Create image
-        h,u = self.fromNorm_mix.forward(z,u)
+        #h,u = self.fromNorm_mix.forward(z,u)
 
-        x = self.decoder_mix.forward(h)
+        x, u = self.decoder_mix.forward(s)
         # Transform
 
         if (self.u_dim>0):
@@ -191,8 +199,9 @@ class STVAE_mix(models.STVAE):
         recloss = torch.sum(pi*b)
         return recloss, b
 
-    def forward(self, inputs,mu,logvar,pi):
+    def forward(self, data):
 
+        mu, logvar, pi = self.encoder_mix(data.view(-1, self.x_dim))
 
         if (self.type is not 'ae'):
             s = self.sample(mu, logvar, self.s_dim*self.n_mix)
@@ -203,19 +212,16 @@ class STVAE_mix(models.STVAE):
         x=self.decoder_and_trans(s)
         lpi=torch.log(pi)
         prior, post, tot = self.dens_apply(s,mu,logvar,lpi,pi)
-        recloss, _=self.mixed_loss(x,inputs,pi)
+        recloss, _=self.mixed_loss(x,data,pi)
         return recloss, prior, post, tot
 
 
 
     def compute_loss_and_grad(self,data,type):
 
-
-        mu, logvar, pi = self.encoder_mix(data.view(-1, self.x_dim))
-
         self.optimizer.zero_grad()
 
-        recloss, prior, post, tot = self.forward(data,mu,logvar,pi)
+        recloss, prior, post, tot = self.forward(data)
 
         loss = recloss + tot #prior + post
 
@@ -224,7 +230,7 @@ class STVAE_mix(models.STVAE):
             loss.backward()
             self.optimizer.step()
 
-        return recloss.item(), loss.item(), mu, logvar, pi
+        return recloss.item(), loss.item()
 
     def run_epoch(self, train, epoch,num, MU, LOGVAR,PI, type='test',fout=None):
 
@@ -241,10 +247,7 @@ class STVAE_mix(models.STVAE):
             #print(j)
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
-            recon_loss, loss, mu, logvar, pi=self.compute_loss_and_grad(data,type)
-            MU[j:j+self.bsz]=mu.detach()
-            LOGVAR[j:j+self.bsz]=logvar.detach()
-            PI[j:j+self.bsz]=pi.detach()
+            recon_loss, loss=self.compute_loss_and_grad(data,type)
             tr_recon_loss += recon_loss
             tr_full_loss += loss
 

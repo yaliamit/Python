@@ -11,5 +11,4 @@
 --model=base
 --lr=.002
 --nval=0
---Diag
 --optimizer=Adam
