@@ -123,6 +123,7 @@ class CLEAN(nn.Module):
         SMX=torch.sum(MX,dim=1)
         VSMX, MSMX=torch.max(SMX,dim=2)
         spMX=MSMX[:,0]==0
+        print(torch.sum(spMX))
         MSMX[spMX,0:self.lenc-1]=MSMX[spMX,1:self.lenc]
         MSMX[spMX,self.lenc-1]=0
         hhr = MSMX.repeat_interleave(self.lst, dim=0)

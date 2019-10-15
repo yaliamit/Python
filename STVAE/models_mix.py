@@ -133,8 +133,6 @@ class STVAE_mix(models.STVAE):
             else:
                 self.encoder_mix = encoder_mix(self.x_dim, self.h_dim, self.s_dim, self.n_mix, self.num_hlayers)
 
-        #self.fromNorm_mix = fromNorm_mix(self.h_dim, self.z_dim, self.u_dim, self.n_mix, self.type, args.Diag)
-
         self.decoder_mix=decoder_mix(self.x_dim,self.h_dim,self.z_dim, self.u_dim, self.n_mix, self.type, self.num_hlayers, args.Diag)
 
         self.rho = nn.Parameter(torch.zeros(self.n_mix),requires_grad=False)
@@ -211,6 +209,7 @@ class STVAE_mix(models.STVAE):
         # Apply linear map to entire sampled vector.
         x=self.decoder_and_trans(s)
         lpi=torch.log(pi)
+
         prior, post, tot = self.dens_apply(s,mu,logvar,lpi,pi)
         recloss, _=self.mixed_loss(x,data,pi)
         return recloss, prior, post, tot
