@@ -32,6 +32,7 @@ def create_model(args, x_dim, y_dim, lst, train_data, train_text, device, fout):
     return model
 
 def train_model(model, args, train_data_shift, test_data_shift, fout):
+
     for epoch in range(args.nepoch):
 
         t1 = time.time()
@@ -56,7 +57,7 @@ def train_model(model, args, train_data_shift, test_data_shift, fout):
         else:
             model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
             # Then test on original test set.
-            model.run_epoch(test_data, test_text, epoch, fout, 'test')
+            model.run_epoch(test_data_shift, test_text_shift, epoch, fout, 'test')
 
         # fout.write('test: in {:5.3f} seconds\n'.format(time.time()-t3))
         fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch, time.time() - t1))
@@ -104,6 +105,9 @@ train_data_shift, train_text_shift=aux.add_shifts_new(train_data,train_text,args
 fout.write('num train shifted '+str(train_data_shift.shape[0])+'\n')
 if (args.OPT):
     test_data_shift, test_text_shift=aux.add_shifts_new(test_data,test_text,args)
+else:
+    test_data_shift=test_data
+    test_text_shift=test_text
 
 model=create_model(args,x_dim,y_dim,lst,train_data,train_text, device, fout)
 # Get the model
