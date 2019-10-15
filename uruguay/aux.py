@@ -25,6 +25,7 @@ def process_args(parser):
     parser.add_argument('--lr', type=float, default=.001, help='Learning rate (default: .001)') # Learning rate
     parser.add_argument('--run_existing', action='store_true', help='Use existing model') # To run existing model (not implemented yet)
     parser.add_argument('--OPT', action='store_true', help='Optimization instead of encoding') # Find optimal alignment - currently not to be used
+    parser.add_argument('--merge', action='store_true', help='merge transformed versions into one input') # Find optimal alignment - currently not to be used
     parser.add_argument('--CONS', action='store_true', help='Output to consol') # Output to console
     parser.add_argument('--wd', action='store_true', help='Output to consol') # weight decay
     parser.add_argument('--output_prefix', default='', help='path to model') # Path to model.
@@ -219,4 +220,13 @@ def add_shifts_new(input,input_text, args):
                 input_s[llst,:]=np.concatenate((input_s[llst,:,t:,:],255*np.ones((len(llst),ss[1],t,ss[3]),dtype=np.uint8)),axis=2)
 
         input_text_shift = np.repeat(input_text, lst, axis=0)
+        if (args.merge):
+            input_s=input_s.reshape(-1,lst,input_s.shape[2],input_s.shape[3])
+            input_text_shift=input_text
+            feats=np.array(args.feats)
+            feats[0]=lst
+            args.feats=list(feats)
+        else:
+            input_text_shift = np.repeat(input_text, lst, axis=0)
+
     return input_s, input_text_shift

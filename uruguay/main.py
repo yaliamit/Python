@@ -103,13 +103,13 @@ train_data,  train_text, test_data, test_text, aa, x_dim, y_dim = aux.get_data(a
 # Create the shifts and scales for train and test data
 train_data_shift, train_text_shift=aux.add_shifts_new(train_data,train_text,args)
 fout.write('num train shifted '+str(train_data_shift.shape[0])+'\n')
-if (args.OPT):
+if (args.OPT or args.merge):
     test_data_shift, test_text_shift=aux.add_shifts_new(test_data,test_text,args)
 else:
     test_data_shift=test_data
     test_text_shift=test_text
 
-model=create_model(args,x_dim,y_dim,lst,train_data,train_text, device, fout)
+model=create_model(args,x_dim,y_dim,lst,train_data_shift,train_text_shift, device, fout)
 # Get the model
 
 
@@ -126,7 +126,7 @@ if (args.OPT):
     aux.show_shifts(test_data_choice_shift[0:80], test_data[0:80], msmx, rx, model.x_dim, 'shifts_' + str(args.nepoch),args.aa, args.lenc)
 
 else:
-    rx=model.run_epoch(test_data, test_text,0,fout, 'test')
+    rx=model.run_epoch(test_data_shift, test_text_shift,0,fout, 'test')
 # Get resulting labels for each image.
 rxx=np.int32(np.array(rx)).ravel()
 tt=np.array([args.aa[i] for i in rxx]).reshape(len(test_text),args.lenc)
