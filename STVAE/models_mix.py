@@ -179,6 +179,8 @@ class STVAE_mix(models.STVAE):
         #posterior=torch.sum(pi*ss)
         # Sum along last coordinate to get negative log density of each component.
         KD_dens=-0.5 * torch.sum(1 + s_logvar - s_mu ** 2 - var, dim=2)
+        print(lpi.is_cuda)
+        print(self.rho.is_cuda)
         KD_disc=lpi-self.rho+torch.logsumexp(self.rho,0)
         tot=torch.sum(pi*(KD_dens+KD_disc))
         #pr=-.5*torch.sum((s*s),dim=2)+self.rho-torch.logsumexp(self.rho,0)
