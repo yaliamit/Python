@@ -49,12 +49,12 @@ class CLEAN(nn.Module):
         if (self.first):
             self.pool_layers=[]
 
-        if (self.select):
-            #ind = torch.range(0, input.shape[0] - 1, self.lst, dtype=torch.long).to(self.dv)
-            tmp=input.view(-1,self.sel_len)
-            tmp = nn.functional.dropout(tmp, .5)
-            tmp = self.seln(tmp)
-            weights=torch.softmax(tmp.view(-1,self.lst),dim=1)
+        # if (self.select):
+        #     #ind = torch.range(0, input.shape[0] - 1, self.lst, dtype=torch.long).to(self.dv)
+        #     tmp=input.view(-1,self.sel_len)
+        #     tmp = nn.functional.dropout(tmp, .5)
+        #     tmp = self.seln(tmp)
+        #    weights=torch.softmax(tmp.view(-1,self.lst),dim=1)
         for i, cc in enumerate(self.convs):
             if (self.first):
                 print(out.shape)
@@ -71,6 +71,13 @@ class CLEAN(nn.Module):
                 out=nn.functional.dropout(out,self.drops[i])
             # Relu non-linearity at each level.
             out=F.relu(out)
+            if (i==(self.select-1)):
+                if (self.first):
+                    self.seln = nn.Linear(torch.prod(torch.tensor(out.shape[1:4]))*self.lst, self.lst)
+                tmp=out.reshape(-1,self.lst,out.shape[1],out.shape[2],out.shape[3])
+                tmp=tmp.reshape(tmp.shape[0],-1)
+                tmp=nn.functional.dropout(tmp,.5)
+                weights=torch.softmax(self.seln(tmp),dim=1)
         return(out,weights)
 
     # Full network

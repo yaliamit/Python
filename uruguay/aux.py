@@ -20,13 +20,13 @@ def process_args(parser):
     parser.add_argument('--gpu', type=int, default=2, help='whether to run in the GPU') # Use gpu
     parser.add_argument('--seed', type=int, default=15647, help='random seed (default: 1111)') # seed
     parser.add_argument('--num_train', type=int, default=60000, help='num train (default: 60000)') # number of training data
+    parser.add_argument('--select', type=int, default=2, help='select perturbations)') # number of training data
     parser.add_argument('--model', default='base', help='model (default: base)') # Name of output file for trained model
     parser.add_argument('--optimizer', default='Adam', help='Type of optimiser') # Type of optimization
     parser.add_argument('--lr', type=float, default=.001, help='Learning rate (default: .001)') # Learning rate
     parser.add_argument('--run_existing', action='store_true', help='Use existing model') # To run existing model (not implemented yet)
     parser.add_argument('--OPT', action='store_true', help='Optimization instead of encoding') # Find optimal alignment - currently not to be used
     parser.add_argument('--merge', action='store_true', help='merge transformed versions into one input') # Find optimal alignment - currently not to be used
-    parser.add_argument('--select', action='store_true', help='merge transformed versions into one input') # Find optimal alignment - currently not to be used
     parser.add_argument('--CONS', action='store_true', help='Output to consol') # Output to console
     parser.add_argument('--wd', action='store_true', help='Output to consol') # weight decay
     parser.add_argument('--output_prefix', default='', help='path to model') # Path to model.
