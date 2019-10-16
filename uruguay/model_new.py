@@ -73,7 +73,7 @@ class CLEAN(nn.Module):
             out=F.relu(out)
             if (i==(self.select-1)):
                 if (self.first):
-                    self.seln = nn.Linear(torch.prod(torch.tensor(out.shape[1:4]))*self.lst, self.lst)
+                    self.seln = nn.Linear(torch.prod(torch.tensor(out.shape[1:4]))*self.lst, self.lst).to(dv)
                 tmp=out.reshape(-1,self.lst,out.shape[1],out.shape[2],out.shape[3])
                 tmp=tmp.reshape(tmp.shape[0],-1)
                 tmp=nn.functional.dropout(tmp,.5)
