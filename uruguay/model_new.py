@@ -29,9 +29,9 @@ class CLEAN(nn.Module):
         self.convs = nn.ModuleList([torch.nn.Conv2d(args.feats[i], args.feats[i+1],
                                                     args.filts[i],stride=1,padding=np.int32(np.floor(args.filts[i]/2)))
                                     for i in range(ff)])
-        if (self.select):
-            self.sel_len=self.lst*x_dim*y_dim
-            self.seln=nn.Linear(self.sel_len,self.lst)
+        #if (self.select):
+        #    self.sel_len=self.lst*x_dim*y_dim
+        #    self.seln=nn.Linear(self.sel_len,self.lst)
 
         # The loss function
         self.criterion=nn.CrossEntropyLoss()
@@ -73,6 +73,7 @@ class CLEAN(nn.Module):
             out=F.relu(out)
             if (i==(self.select-1)):
                 if (self.first):
+                    print('at select',out.shape)
                     self.seln = nn.Linear(torch.prod(torch.tensor(out.shape[1:4]))*self.lst, self.lst).to(self.dv)
                 tmp=out.reshape(-1,self.lst,out.shape[1],out.shape[2],out.shape[3])
                 tmp=tmp.reshape(tmp.shape[0],-1)
