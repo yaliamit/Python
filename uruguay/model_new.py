@@ -49,7 +49,7 @@ class CLEAN(nn.Module):
             self.sel_len=input.shape[2]*input.shape[3]
             self.seln=nn.Linear(self.sel_len,self.lst)
         if (self.select):
-            ind = torch.range(0, input.shape[0] - 1, self.lst, dtype=torch.long)
+            ind = torch.range(0, input.shape[0] - 1, self.lst, dtype=torch.long).to(self.dv)
             tmp=torch.index_select(input.view(-1,self.sel_len),0,ind)
             tmp = self.seln(tmp)
             print('tmp',tmp.is_cuda())
