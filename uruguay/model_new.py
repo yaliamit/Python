@@ -52,7 +52,6 @@ class CLEAN(nn.Module):
         if (self.select):
             ind = torch.range(0, input.shape[0] - 1, self.lst, dtype=torch.long).to(self.dv)
             tmp=torch.index_select(input.view(-1,self.sel_len),0,ind)
-            print('tmp', tmp.is_cuda)
             tmp = self.seln(tmp)
             weights=torch.softmax(tmp.view(-1,self.lst),dim=1)
         for i, cc in enumerate(self.convs):
@@ -71,7 +70,6 @@ class CLEAN(nn.Module):
                 out=nn.functional.dropout(out,self.drops[i])
             # Relu non-linearity at each level.
             out=F.relu(out)
-            print('weights',weights.is_cuda)
         return(out,weights)
 
     # Full network
