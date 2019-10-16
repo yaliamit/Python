@@ -74,8 +74,9 @@ class CLEAN(nn.Module):
             if (i==(self.select-1)):
                 if (self.first):
                     print('at select',out.shape)
-                    self.seln = nn.Linear(torch.prod(torch.tensor(out.shape[1:4]))*self.lst, self.lst).to(self.dv)
+                    self.seln = nn.Linear(torch.prod(torch.tensor(out.shape[1:4])), self.lst).to(self.dv)
                 tmp=out.reshape(-1,self.lst,out.shape[1],out.shape[2],out.shape[3])
+                tmp=tmp[:,0,:,:,:]
                 tmp=tmp.reshape(tmp.shape[0],-1)
                 tmp=nn.functional.dropout(tmp,.5)
                 weights=torch.softmax(self.seln(tmp),dim=1)
