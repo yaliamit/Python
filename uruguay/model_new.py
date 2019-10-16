@@ -29,6 +29,9 @@ class CLEAN(nn.Module):
         self.convs = nn.ModuleList([torch.nn.Conv2d(args.feats[i], args.feats[i+1],
                                                     args.filts[i],stride=1,padding=np.int32(np.floor(args.filts[i]/2)))
                                     for i in range(ff)])
+        if (self.select):
+            self.sel_len=x_dim*y_dim
+            self.seln=nn.Linear(self.sel_len,self.lst)
 
         # The loss function
         self.criterion=nn.CrossEntropyLoss()
@@ -45,15 +48,12 @@ class CLEAN(nn.Module):
         out=input
         if (self.first):
             self.pool_layers=[]
-        if (self.select and self.first):
-            self.sel_len=input.shape[2]*input.shape[3]
-            self.seln=nn.Linear(self.sel_len,self.lst)
+
         if (self.select):
             ind = torch.range(0, input.shape[0] - 1, self.lst, dtype=torch.long).to(self.dv)
             tmp=torch.index_select(input.view(-1,self.sel_len),0,ind)
             print('tmp', tmp.is_cuda)
             tmp = self.seln(tmp)
-
             weights=torch.softmax(tmp.view(-1,self.lst),dim=1)
         for i, cc in enumerate(self.convs):
             if (self.first):
