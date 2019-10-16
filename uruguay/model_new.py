@@ -105,7 +105,7 @@ class CLEAN(nn.Module):
 
         if (self.select):
             out_t=out.reshape(-1,self.lst,out.shape[1]*out.shape[2]*out.shape[3])
-        out = torch.sum(weights.unsqueeze(2) * out_t, dim=1).reshape(-1, out.shape[1], out.shape[2], out.shape[3])
+            out = torch.sum(weights.unsqueeze(2) * out_t, dim=1).reshape(-1, out.shape[1], out.shape[2], out.shape[3])
         return(out)
 
 
