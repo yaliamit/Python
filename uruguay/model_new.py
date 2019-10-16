@@ -68,6 +68,7 @@ class CLEAN(nn.Module):
                 out=nn.functional.dropout(out,self.drops[i])
             # Relu non-linearity at each level.
             out=F.relu(out)
+            print('weights',weights.is_cuda())
         return(out,weights)
 
     # Full network
