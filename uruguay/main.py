@@ -6,6 +6,7 @@ import argparse
 import time
 import aux
 from model_new import CLEAN
+from Shift import get_loss_shift
 
 
 
@@ -18,10 +19,14 @@ parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
 
 
 def create_model(args, x_dim, y_dim, lst, train_data, train_text, device, fout):
-    model = CLEAN(device, x_dim, y_dim, args).to(device)
+    model = CLEAN(device, x_dim, y_dim, lst, args).to(device)
     model.lst = lst
     # Run it on a small batch to initialize some modules that need to know dimensions of output
-    model.run_epoch(train_data[0:model.bsz], train_text, 0, fout, 'test')
+    jump=model.bsz
+    if (model.select):
+        jump*=model.lst
+
+    model.run_epoch(train_data[0:jump], train_text, 0, fout, 'test')
 
     # Output all parameters
     tot_pars = 0
@@ -41,7 +46,7 @@ def train_model(model, args, train_data_shift, test_data_shift, fout):
             # with current network parameters find best scale and shift for each image -> train_data_choice_shift
 
             with torch.no_grad():
-                train_data_choice_shift, rxtr, msmx = model.get_loss_shift(train_data_shift, train_text_shift, epoch, fout,
+                train_data_choice_shift, rxtr, msmx = get_loss_shift(model,train_data_shift, train_text_shift, epoch, fout,
                                                                      'shift_train')
             # Run an iteration of the network training on the chosen shifts/scales
 
@@ -103,7 +108,7 @@ train_data,  train_text, test_data, test_text, aa, x_dim, y_dim = aux.get_data(a
 # Create the shifts and scales for train and test data
 train_data_shift, train_text_shift=aux.add_shifts_new(train_data,train_text,args)
 fout.write('num train shifted '+str(train_data_shift.shape[0])+'\n')
-if (args.OPT or args.merge):
+if (args.OPT or args.merge or args.select):
     test_data_shift, test_text_shift=aux.add_shifts_new(test_data,test_text,args)
 else:
     test_data_shift=test_data
