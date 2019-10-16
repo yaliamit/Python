@@ -51,8 +51,9 @@ class CLEAN(nn.Module):
         if (self.select):
             ind = torch.range(0, input.shape[0] - 1, self.lst, dtype=torch.long).to(self.dv)
             tmp=torch.index_select(input.view(-1,self.sel_len),0,ind)
+            print('tmp', tmp.is_cuda())
             tmp = self.seln(tmp)
-            print('tmp',tmp.is_cuda())
+
             weights=torch.softmax(tmp.view(-1,self.lst),dim=1)
         for i, cc in enumerate(self.convs):
             if (self.first):
