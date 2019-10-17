@@ -29,12 +29,9 @@ class CLEAN(nn.Module):
         self.convs = nn.ModuleList([torch.nn.Conv2d(args.feats[i], args.feats[i+1],
                                                     args.filts[i],stride=1,padding=np.int32(np.floor(args.filts[i]/2)))
                                     for i in range(ff)])
-        #if (self.select):
-        #    self.sel_len=self.lst*x_dim*y_dim
-        #    self.seln=nn.Linear(self.sel_len,self.lst)
 
         # The loss function
-        self.criterion=nn.CrossEntropyLoss()
+        self.criterion=nn.NLLLoss() #nn.CrossEntropyLoss()
         self.criterion_shift=nn.CrossEntropyLoss(reduce=False)
         if (args.optimizer == 'Adam'):
             self.optimizer = optim.Adam(self.parameters(), lr=args.lr)
@@ -49,12 +46,6 @@ class CLEAN(nn.Module):
         if (self.first):
             self.pool_layers=[]
 
-        # if (self.select):
-        #     #ind = torch.range(0, input.shape[0] - 1, self.lst, dtype=torch.long).to(self.dv)
-        #     tmp=input.view(-1,self.sel_len)
-        #     tmp = nn.functional.dropout(tmp, .5)
-        #     tmp = self.seln(tmp)
-        #    weights=torch.softmax(tmp.view(-1,self.lst),dim=1)
         for i, cc in enumerate(self.convs):
             if (self.first):
                 print(out.shape)
@@ -112,8 +103,9 @@ class CLEAN(nn.Module):
         if (self.first):
             print('final shape',out.shape)
             self.first=False
-
+        out=torch.softmax(out,dim=1)
         if (self.select):
+
             out_t=out.reshape(-1,self.lst,out.shape[1]*out.shape[2]*out.shape[3])
             out = torch.sum(weights.unsqueeze(2) * out_t, dim=1).reshape(-1, out.shape[1], out.shape[2], out.shape[3])
         return(out)
