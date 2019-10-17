@@ -67,8 +67,12 @@ class CLEAN(nn.Module):
                 tmp=tmp.reshape(-1,self.lst,out.shape[1],out.shape[2],out.shape[3])
                 if (self.first):
                     print('at select',tmp.shape)
-                    self.seln = nn.Linear(torch.prod(torch.tensor(tmp.shape[1:])), self.lst).to(self.dv)
-                #tmp=tmp[:,0,:,:,:]
+                    self.seln = nn.Linear(torch.prod(torch.tensor(tmp.shape[2:])), self.lst).to(self.dv)
+                # Use the output at layer self.select only for the image at original pose to predict the best pose.
+                # Could use all of the outputs of the self.lst poses but it didn't seem to matter, so keep it simple.
+                # Also in terms of computation, if the best pose is predicted a-priori only that pose needs to be computed in
+                # real test time.
+                tmp=tmp[:,0,:,:,:]
                 tmp=tmp.reshape(tmp.shape[0],-1)
                 tmp=nn.functional.dropout(tmp,.5)
                 weights=torch.softmax(self.seln(tmp),dim=1)
@@ -108,7 +112,7 @@ class CLEAN(nn.Module):
         if (self.select):
             out_t=out.reshape(-1,self.lst,out.shape[1]*out.shape[2]*out.shape[3])
             out = torch.sum(weights.unsqueeze(2) * out_t, dim=1).reshape(-1, out.shape[1], out.shape[2], out.shape[3])
-        return(out)
+        return(out, weights)
 
 
 
@@ -136,7 +140,7 @@ class CLEAN(nn.Module):
     def loss_and_grad(self, input, target, type='train'):
 
         # Get output of network
-        out=self.forward(input)
+        out, weights=self.forward(input)
 
         if (type == 'train'):
             self.optimizer.zero_grad()
@@ -148,7 +152,7 @@ class CLEAN(nn.Module):
             loss.backward()
             self.optimizer.step()
 
-        return loss, acc, acca, numa, accc, mx
+        return loss, acc, acca, numa, accc, mx, weights
 
     # Epoch of network training
     def run_epoch(self, train, text, epoch, fout, type):
@@ -183,13 +187,15 @@ class CLEAN(nn.Module):
             target = torch.from_numpy(targ_in[j:j + jump]).to(self.dv)
             target=target.type(torch.int64)
 
-            loss, acc, acca, numa, accc, mx= self.loss_and_grad(data, target, type)
+            loss, acc, acca, numa, accc, mx, weights= self.loss_and_grad(data, target, type)
             full_loss += loss.item()
             full_acc += acc.item()
             full_acca+=acca.item()
             full_accc += accc.item()
             full_numa+=numa
             rmx+=[mx.cpu().detach().numpy()]
+            if (epoch==10):
+                print(weights.cpu().detach().numpy())
         fout.write('====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F}, Non space acc: {:.4F}, case insensitive acc {:.4F}\n'.format(type,epoch,
                     full_loss /(num_tr/self.bsz), full_acc/(num_tr*self.lenc), full_acca/full_numa, full_accc / (num_tr * self.lenc)))
 
