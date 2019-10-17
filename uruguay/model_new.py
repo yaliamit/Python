@@ -103,9 +103,9 @@ class CLEAN(nn.Module):
         if (self.first):
             print('final shape',out.shape)
             self.first=False
-        #out=torch.softmax(out,dim=1)
+        #
         if (self.select):
-
+            out = torch.softmax(out, dim=1)
             out_t=out.reshape(-1,self.lst,out.shape[1]*out.shape[2]*out.shape[3])
             out = torch.sum(weights.unsqueeze(2) * out_t, dim=1).reshape(-1, out.shape[1], out.shape[2], out.shape[3])
         return(out)
@@ -120,8 +120,10 @@ class CLEAN(nn.Module):
             mxa = mx[targ > 0]
             numa = targa.shape[0]
             # Total loss
-            #loss = -torch.mean(torch.log(torch.gather(out,1,targ.unsqueeze(1))))
-            loss = self.criterion(out, targ)
+            if (self.select):
+                loss = -torch.mean(torch.log(torch.gather(out,1,targ.unsqueeze(1))))
+            else:
+                loss = self.criterion(out, targ)
             # total accuracy
             acc = torch.sum(mx.eq(targ))
             # Accuracy on case insensitive
