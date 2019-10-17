@@ -20,7 +20,7 @@ def process_args(parser):
     parser.add_argument('--gpu', type=int, default=2, help='whether to run in the GPU') # Use gpu
     parser.add_argument('--seed', type=int, default=15647, help='random seed (default: 1111)') # seed
     parser.add_argument('--num_train', type=int, default=60000, help='num train (default: 60000)') # number of training data
-    parser.add_argument('--select', type=int, default=2, help='select perturbations)') # number of training data
+    parser.add_argument('--select', type=int, default=0, help='select perturbations)') # number of training data
     parser.add_argument('--model', default='base', help='model (default: base)') # Name of output file for trained model
     parser.add_argument('--optimizer', default='Adam', help='Type of optimiser') # Type of optimization
     parser.add_argument('--lr', type=float, default=.001, help='Learning rate (default: .001)') # Learning rate
