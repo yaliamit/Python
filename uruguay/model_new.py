@@ -63,11 +63,12 @@ class CLEAN(nn.Module):
             # Relu non-linearity at each level.
             out=F.relu(out)
             if (i==(self.select-1)):
+                tmp=out
+                tmp=tmp.reshape(-1,self.lst,out.shape[1],out.shape[2],out.shape[3])
                 if (self.first):
-                    print('at select',out.shape)
-                    self.seln = nn.Linear(torch.prod(torch.tensor(out.shape[1:4])), self.lst).to(self.dv)
-                tmp=out.reshape(-1,self.lst,out.shape[1],out.shape[2],out.shape[3])
-                tmp=tmp[:,0,:,:,:]
+                    print('at select',tmp.shape)
+                    self.seln = nn.Linear(torch.prod(torch.tensor(tmp.shape[1:])), self.lst).to(self.dv)
+                #tmp=tmp[:,0,:,:,:]
                 tmp=tmp.reshape(tmp.shape[0],-1)
                 tmp=nn.functional.dropout(tmp,.5)
                 weights=torch.softmax(self.seln(tmp),dim=1)
@@ -105,7 +106,6 @@ class CLEAN(nn.Module):
             self.first=False
         #
         if (self.select):
-            out = torch.softmax(out, dim=1)
             out_t=out.reshape(-1,self.lst,out.shape[1]*out.shape[2]*out.shape[3])
             out = torch.sum(weights.unsqueeze(2) * out_t, dim=1).reshape(-1, out.shape[1], out.shape[2], out.shape[3])
         return(out)
@@ -120,10 +120,7 @@ class CLEAN(nn.Module):
             mxa = mx[targ > 0]
             numa = targa.shape[0]
             # Total loss
-            if (self.select):
-                loss = -torch.mean(torch.log(torch.gather(out,1,targ.unsqueeze(1))))
-            else:
-                loss = self.criterion(out, targ)
+            loss = self.criterion(out, targ)
             # total accuracy
             acc = torch.sum(mx.eq(targ))
             # Accuracy on case insensitive
