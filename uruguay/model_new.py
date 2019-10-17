@@ -103,7 +103,7 @@ class CLEAN(nn.Module):
         if (self.first):
             print('final shape',out.shape)
             self.first=False
-        out=torch.softmax(out,dim=1)
+        #out=torch.softmax(out,dim=1)
         if (self.select):
 
             out_t=out.reshape(-1,self.lst,out.shape[1]*out.shape[2]*out.shape[3])
