@@ -31,7 +31,7 @@ class CLEAN(nn.Module):
                                     for i in range(ff)])
 
         # The loss function
-        self.criterion=nn.NLLLoss() #nn.CrossEntropyLoss()
+        self.criterion=nn.CrossEntropyLoss()
         self.criterion_shift=nn.CrossEntropyLoss(reduce=False)
         if (args.optimizer == 'Adam'):
             self.optimizer = optim.Adam(self.parameters(), lr=args.lr)
@@ -120,8 +120,8 @@ class CLEAN(nn.Module):
             mxa = mx[targ > 0]
             numa = targa.shape[0]
             # Total loss
-            loss = -torch.mean(torch.log(torch.gather(out,1,targ.unsqueeze(1))))
-            #loss = self.criterion(out, targ)
+            #loss = -torch.mean(torch.log(torch.gather(out,1,targ.unsqueeze(1))))
+            loss = self.criterion(out, targ)
             # total accuracy
             acc = torch.sum(mx.eq(targ))
             # Accuracy on case insensitive
