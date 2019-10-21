@@ -33,7 +33,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         self.pi = torch.autograd.Variable(pi.to(self.dv), requires_grad=True)
         self.optimizer_s = optim.Adam([self.mu, self.logvar,self.pi], mu_lr)
 
-    def forward(self,data,opt):
+    def forward(self,data):
 
         pit=torch.softmax(self.pi, dim=1)
         return self.get_loss(data,self.mu, self.logvar, pit) #recon_loss, tot
@@ -43,7 +43,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
 
         optim.zero_grad()
 
-        recon_loss, tot= self.forward(data,opt)
+        recon_loss, tot= self.forward(data)
 
         loss = recon_loss + tot #prior + post
 

@@ -2,7 +2,11 @@ import torch
 from torch import nn, optim
 import numpy as np
 import models_mix_by_class
-
+import models_opt_mix
+import contextlib
+@contextlib.contextmanager
+def dummy_context_mgr():
+    yield None
 
 class STVAE_opt_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
 
@@ -28,28 +32,32 @@ class STVAE_opt_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         self.pi = torch.autograd.Variable(pi.to(self.dv), requires_grad=True)
         self.optimizer_s = optim.Adam([self.mu, self.logvar, self.pi], mu_lr)
 
-    def forward(self, data, targ):
 
-        mu, logvar, pi = self.encoder_mix(data.view(-1, self.x_dim))
-        return self.get_loss(data,targ,mu,logvar,pi)
+    def forward(self,data,targ):
+
+        pit=torch.softmax(self.pi, dim=1)
+        return self.get_loss(data,targ, self.mu, self.logvar, pit)
+
+    def compute_loss_and_grad(self,data, targ, type, optim, opt='par'):
+
+        optim.zero_grad()
+
+        recon_loss, tot= self.forward(data,targ)
+
+        loss = recon_loss + tot
 
 
-    def compute_loss_and_grad(self,data,targ, type):
-
-        self.optimizer.zero_grad()
-
-        recloss, tot = self.forward(data,targ)
-
-        loss = recloss + tot #prior + post
-
-
-        if (type == 'train'):
+        if (type == 'train' or opt=='mu'):
             loss.backward()
-            self.optimizer.step()
+            optim.step()
 
-        return recloss.item(), loss.item()
+        ls=loss.item()
+        rcs=recon_loss.item()
 
-    def run_epoch(self, train, epoch,num, MU, LOGVAR,PI, type='test',fout=None):
+        return rcs, ls
+
+
+    def run_epoch(self, train, epoch,num_mu_iter, MU, LOGVAR,PI, type='test',fout=None):
 
         if (type=='train'):
             self.train()
@@ -59,11 +67,19 @@ class STVAE_opt_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         #   np.random.shuffle(ii)
         tr = train[0][ii].transpose(0, 3, 1, 2)
         y = np.argmax(train[1][ii],axis=1)
-
+        mu = MU[ii]
+        logvar = LOGVAR[ii]
+        pi = PI[ii]
+        batch_size = self.bsz
         for j in np.arange(0, len(y), self.bsz):
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
-            recon_loss, loss=self.compute_loss_and_grad(data,target,type)
+            self.update_s(mu[j:j + batch_size, :], logvar[j:j + batch_size, :], pi[j:j + batch_size], epoch)
+            for it in range(num_mu_iter):
+                self.compute_loss_and_grad(data, target, type, self.optimizer_s, opt='mu')
+            with torch.no_grad() if (type != 'train') else dummy_context_mgr():
+                recon_loss, loss = self.compute_loss_and_grad(data, target, type, self.optimizer)
+
             tr_recon_loss += recon_loss
             tr_full_loss += loss
 
@@ -73,33 +89,34 @@ class STVAE_opt_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
 
         return MU, LOGVAR, PI
 
-    def run_epoch_classify(self, train, epoch,num, MU, LOGVAR,PI, type='test',fout=None):
+    def run_epoch_classify(self, train, epoch, num_mu_iter, fout=None):
 
-        if (type=='train'):
-            self.train()
-        tr_recon_loss = 0;tr_full_loss = 0
+        self.eval()
         ii = np.arange(0, train[0].shape[0], 1)
         # if (type=='train'):
         #   np.random.shuffle(ii)
         tr = train[0][ii].transpose(0, 3, 1, 2)
         y = np.argmax(train[1][ii],axis=1)
-
+        acc=0
         for j in np.arange(0, len(y), self.bsz):
-            #print(j)
+
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
-            s_mu, s_var, pi = self.encoder_mix(data.view(-1, self.x_dim))
-            s_mu = s_mu.view(-1, self.n_mix, self.s_dim)
-            #pi = pi.view(-1, self.n_class, self.n_mix_perclass)
-            #pi = pi[:, cl, :]
+            for it in range(num_mu_iter):
+                models_opt_mix.compute_loss_and_grad(data, type, self.optimizer_s, opt='mu')
+
+            s_mu = self.mu.view(-1, self.n_mix, self.s_dim)
             recon_batch = self.decoder_and_trans(s_mu)
-            #recon_loss, loss=self.compute_loss_and_grad(data,target,type)
-            tr_recon_loss += recon_loss
-            tr_full_loss += loss
+            b = self.mixed_loss_pre(recon_batch, data, self.pi.shape[1])
+            vy, by= torch.min(b,1)
+            by=np.int32(by.detach().cpu().numpy()/self.n_mix_perclass)
+
+            acc+=np.sum(np.equal(by,y[j:j+self.bsz]))
+
+        fout.write('====> Epoch {}: {} Accuracy: {:.4f}\n'.format(type,
+        epoch, acc/ len(tr)))
 
 
-        fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(type,
-        epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
 
 
     def recon(self,input,num_mu_iter,cl):

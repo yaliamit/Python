@@ -66,7 +66,7 @@ class STVAE_mix_by_class(models_mix.STVAE_mix):
 
         recloss, tot = self.forward(data,targ)
 
-        loss = recloss + tot #prior + post
+        loss = recloss + tot
 
 
         if (type == 'train'):
