@@ -3,6 +3,7 @@ from models_opt import STVAE_OPT
 from models_mix import STVAE_mix
 from models import STVAE
 from models_opt_mix import STVAE_OPT_mix
+from models_mix_by_class import STVAE_mix_by_class
 import numpy as np
 import os
 import sys
@@ -22,14 +23,16 @@ parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
 args=aux.process_args(parser)
 
 
-opt_pre=''; mm_pre=''; opt_post=''; opt_mix=''
+opt_pre=''; mm_pre=''; opt_post=''; opt_mix=''; opt_class=''
 if (args.OPT):
     opt_pre='OPT_';opt_post='_OPT';
 if (args.n_mix>=1):
     opt_mix='_mix'
 if (args.MM):
     mm_pre='_MM'
-ex_file=opt_pre+args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_mx_'+str(args.n_mix)+'_sd_'+str(args.sdim)+'_'+args.optimizer+mm_pre
+if (args.n_class>0):
+    opt_class='_by_class'
+ex_file=opt_pre+opt_class+args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_mx_'+str(args.n_mix)+'_sd_'+str(args.sdim)+'_'+args.optimizer+mm_pre
 
 use_gpu = args.gpu and torch.cuda.is_available()
 if (use_gpu and not args.CONS):
@@ -64,7 +67,7 @@ train, val, test, image_dim = get_data(PARS)
 
 h=train[0].shape[1]
 w=train[0].shape[2]
-model=locals()['STVAE'+opt_post+opt_mix](h, w,  device, args).to(device)
+model=locals()['STVAE'+opt_post+opt_mix+opt_class](h, w,  device, args).to(device)
 tot_pars=0
 for keys, vals in model.state_dict().items():
     fout.write(keys+','+str(np.array(vals.shape))+'\n')
@@ -115,8 +118,11 @@ else:
         fout.flush()
 
 
-    aux.make_images(test,model,ex_file,args)
+    aux.make_images(train,model,ex_file,args)
     model.run_epoch(test,0,args.nti,testMU, testLOGVAR,testPI, type='test',fout=fout)
+    if (args.n_class):
+        model.run_epoch_classify(train, epoch,fout=fout)
+        model.run_epoch_classify(test, epoch,fout=fout)
 
     fout.write('writing to '+ex_file+'\n')
     torch.save(model.state_dict(),'_output/'+ex_file+'.pt')

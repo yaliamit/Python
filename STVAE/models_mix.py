@@ -145,14 +145,8 @@ class STVAE_mix(models.STVAE):
 
     def decoder_and_trans(self,s):
 
-        #u = s.narrow(len(s.shape)-1,0,self.u_dim)
-        #z = s.narrow(len(s.shape)-1,self.u_dim,self.z_dim)
-        # Create image
-        #h,u = self.fromNorm_mix.forward(z,u)
-
         x, u = self.decoder_mix.forward(s)
         # Transform
-
         if (self.u_dim>0):
            xt = []
            for i in range(self.n_mix):
@@ -166,9 +160,10 @@ class STVAE_mix(models.STVAE):
         eps = torch.randn(mu.shape[0],dim).to(self.dv)
         return mu + torch.exp(logvar/2) * eps
 
-    def dens_apply(self,s,s_mu,s_logvar,lpi,pi):
-        s_mu = s_mu.view(-1, self.n_mix, self.s_dim)
-        s_logvar = s_logvar.view(-1, self.n_mix, self.s_dim)
+    def dens_apply(self,s_mu,s_logvar,lpi,pi,rho):
+        n_mix=pi.shape[1]
+        s_mu = s_mu.view(-1, n_mix, self.s_dim)
+        s_logvar = s_logvar.view(-1, n_mix, self.s_dim)
         sd=torch.exp(s_logvar/2)
         var=sd*sd
 
@@ -177,30 +172,31 @@ class STVAE_mix(models.STVAE):
         #posterior=torch.sum(pi*ss)
         # Sum along last coordinate to get negative log density of each component.
         KD_dens=-0.5 * torch.sum(1 + s_logvar - s_mu ** 2 - var, dim=2)
-        KD_disc=lpi-self.rho+torch.logsumexp(self.rho,0)
+        KD_disc=lpi-rho+torch.logsumexp(rho,0)
         tot=torch.sum(pi*(KD_dens+KD_disc))
         #pr=-.5*torch.sum((s*s),dim=2)+self.rho-torch.logsumexp(self.rho,0)
         #prior=-torch.sum(pi*pr)
-        prior=0; posterior=0
-        return prior, posterior, tot
+        #prior=0; posterior=0
+        return tot #prior, posterior
 
-    def mixed_loss(self,x,data,pi):
+    def mixed_loss_pre(self,x,data,n_mix):
         b = []
 
-        for i in range(self.n_mix):
+        for i in range(n_mix):
             a = F.binary_cross_entropy(x[:, i, :].squeeze().view(-1, self.x_dim), data.view(-1, self.x_dim),
                                        reduction='none')
             a = torch.sum(a, dim=1)
             b = b + [a]
         b = torch.stack(b).transpose(0, 1)
+        return(b)
 
+    def mixed_loss(self,x,data,pi):
+
+        b=self.mixed_loss_pre(x,data, pi.shape[1])
         recloss = torch.sum(pi*b)
-        return recloss, b
+        return recloss #, b
 
-    def forward(self, data):
-
-        mu, logvar, pi = self.encoder_mix(data.view(-1, self.x_dim))
-
+    def get_loss(self,data,mu,logvar,pi):
         if (self.type is not 'ae'):
             s = self.sample(mu, logvar, self.s_dim*self.n_mix)
         else:
@@ -210,9 +206,20 @@ class STVAE_mix(models.STVAE):
         x=self.decoder_and_trans(s)
         lpi=torch.log(pi)
 
-        prior, post, tot = self.dens_apply(s,mu,logvar,lpi,pi)
-        recloss, _=self.mixed_loss(x,data,pi)
-        return recloss, prior, post, tot
+        tot = self.dens_apply(mu,logvar,lpi,pi,self.rho)
+        recloss=self.mixed_loss(x,data,pi)
+        return recloss, tot
+
+
+    def forward(self, data):
+
+        mu, logvar, pi = self.encoder_mix(data.view(-1, self.x_dim))
+
+        return self.get_loss(data,mu,logvar,pi)
+
+
+
+
 
 
 
@@ -220,7 +227,7 @@ class STVAE_mix(models.STVAE):
 
         self.optimizer.zero_grad()
 
-        recloss, prior, post, tot = self.forward(data)
+        recloss, tot = self.forward(data)
 
         loss = recloss + tot #prior + post
 

@@ -35,28 +35,15 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
 
     def forward(self,data,opt):
 
-
-        if (self.type is not 'ae'): # and not self.MM):
-            s = self.sample(self.mu, self.logvar, self.s_dim*self.n_mix)
-        else:
-            s=self.mu
-
-        s = s.view(-1, self.n_mix, self.s_dim)
-        x = self.decoder_and_trans(s)
-
-        pit = torch.softmax(self.pi,dim=1)
-        lpi=torch.log(pit)
-        prior, post, tot = self.dens_apply(s, self.mu, self.logvar, lpi,pit)
-        recon_loss, _=self.mixed_loss(x,data,pit)
-
-        return recon_loss, prior, post, tot
+        pit=torch.softmax(self.pi, dim=1)
+        return self.get_loss(data,self.mu, self.logvar, pit) #recon_loss, tot
 
 
     def compute_loss_and_grad(self,data, type, optim, opt='par'):
 
         optim.zero_grad()
 
-        recon_loss, prior, post, tot= self.forward(data,opt)
+        recon_loss, tot= self.forward(data,opt)
 
         loss = recon_loss + tot #prior + post
 

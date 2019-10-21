@@ -17,6 +17,7 @@ def process_args(parser):
     parser.add_argument('--num_train', type=int, default=60000, help='num train (default: 60000)')
     parser.add_argument('--nval', type=int, default=1000, help='num train (default: 1000)')
     parser.add_argument('--mb_size', type=int, default=100, help='mb_size (default: 500)')
+    parser.add_argument('--n_class', type=int, default=0, help='number of classes')
     parser.add_argument('--model', default='base', help='model (default: base)')
     parser.add_argument('--optimizer', default='Adam', help='Type of optimiser')
     parser.add_argument('--lr', type=float, default=.001, help='Learning rate (default: .001)')
@@ -52,7 +53,13 @@ def make_images(test,model,ex_file,args):
         num_mu_iter=None
         torch.manual_seed(args.seed)
         np.random.seed(args.seed)
-        show_reconstructed_images(test,model,ex_file,args.nti)
+        if (args.n_class):
+            for c in range(model.n_class):
+                ind=(np.argmax(test[1],axis=1)==c)
+                show_reconstructed_images([test[0][ind],test[1][ind]],model,ex_file,args.nti,c)
+        else:
+            show_reconstructed_images(test,model,ex_file,args.nti)
+
         if args.n_mix>0:
             for clust in range(args.n_mix):
                 show_sampled_images(model,ex_file,clust)
@@ -75,11 +82,11 @@ def create_image(XX, ex_file):
     manifold = manifold[np.newaxis, :]
     img = np.concatenate([manifold, manifold, manifold], axis=0).transpose(1,2,0)
 
-    if not os.path.isfile('_Images'):
+    if not os.path.isdir('_Images'):
         os.system('mkdir _Images')
-    imsave('_Images/'+ex_file+'.png', img)
+    imsave('_Images/'+ex_file+'.png', np.uint8(img*255))
 
-    print("Saved the sampled images")
+    #print("Saved the sampled images")
 
 def show_sampled_images(model,ex_file,clust=None):
     theta = torch.zeros(model.bsz, 6)
@@ -90,15 +97,19 @@ def show_sampled_images(model,ex_file,clust=None):
     create_image(XX, ex_file)
 
 
-def show_reconstructed_images(test,model,ex_file,num_iter=None):
+def show_reconstructed_images(test,model,ex_file,num_iter=None, cl=None):
 
     inp = torch.from_numpy(test[0][0:100].transpose(0, 3, 1, 2))
-
-    X=model.recon(inp,num_iter)
+    if (cl is not None):
+        X=model.recon(inp,num_iter,cl)
+    else:
+        X = model.recon(inp, num_iter)
     X = X.cpu().detach().numpy().reshape(inp.shape)
     XX=np.concatenate([inp[0:50],X[0:50]])
-    create_image(XX,ex_file+'_recon')
-
+    if (cl is not None):
+        create_image(XX,ex_file+'_recon'+'_'+str(cl))
+    else:
+        create_image(XX, ex_file + '_recon')
 
 def add_occlusion(recon_data):
     recon_data[0][0:20,0:13,:,:]=0
