@@ -4,6 +4,7 @@ from models_mix import STVAE_mix
 from models import STVAE
 from models_opt_mix import STVAE_OPT_mix
 from models_mix_by_class import STVAE_mix_by_class
+from models_opt_mix_by_class import STVAE_OPT_mix_by_class
 import numpy as np
 import os
 import sys
