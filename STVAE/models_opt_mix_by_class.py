@@ -8,10 +8,10 @@ import contextlib
 def dummy_context_mgr():
     yield None
 
-class STVAE_opt_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
+class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
 
     def __init__(self, x_h, x_w, device, args):
-        super(STVAE_opt_mix_by_class, self).__init__(x_h, x_w, device, args)
+        super(STVAE_OPT_mix_by_class, self).__init__(x_h, x_w, device, args)
 
         self.n_class=args.n_class
         self.n_mix_perclass=np.int32(self.n_mix/self.n_class)
