@@ -2,7 +2,7 @@ import torch
 from torch import nn, optim
 import numpy as np
 import models_mix_by_class
-import models_opt_mix
+from models_opt_mix import STVAE_OPT_mix
 import contextlib
 @contextlib.contextmanager
 def dummy_context_mgr():
@@ -103,7 +103,7 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
             for it in range(num_mu_iter):
-                models_opt_mix.compute_loss_and_grad(data, type, self.optimizer_s, opt='mu')
+                STVAE_OPT_mix.compute_loss_and_grad(data, type, self.optimizer_s, opt='mu')
 
             s_mu = self.mu.view(-1, self.n_mix, self.s_dim)
             recon_batch = self.decoder_and_trans(s_mu)
@@ -128,7 +128,7 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         mu, logvar, pi = self.initialize_mus(input, True)
         self.update_s(mu, logvar, pi, 0)
         for it in range(num_mu_iter):
-            models_opt_mix.compute_loss_and_grad(input, type, self.optimizer_s, opt='mu')
+            STVAE_OPT_mix.compute_loss_and_grad(input, type, self.optimizer_s, opt='mu')
         s_mu = self.mu.view(-1, self.n_mix, self.s_dim)
         pi = self.pi.view(-1,self.n_class,self.n_mix_perclass)
         pi= pi[:,cl,:]
