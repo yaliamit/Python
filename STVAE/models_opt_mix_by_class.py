@@ -131,7 +131,7 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         mu, logvar, pi = self.initialize_mus(input, True)
         self.update_s(mu, logvar, pi, 0)
         for it in range(num_mu_iter):
-            self.compute_loss_and_grad(input, None, 'test', self.optimizer_s, opt='mu')
+            self.compute_loss_and_grad(inp, None, 'test', self.optimizer_s, opt='mu')
         s_mu = self.mu.view(-1, self.n_mix, self.s_dim)
         pi = self.pi.view(-1,self.n_class,self.n_mix_perclass)
         pi= pi[:,cl,:]
