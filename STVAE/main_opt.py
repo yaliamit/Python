@@ -120,10 +120,10 @@ else:
 
 
     aux.make_images(train,model,ex_file,args)
-    model.run_epoch(test,0,args.nti,testMU, testLOGVAR,testPI, type='test',fout=fout)
+    #model.run_epoch(test,0,args.nti,testMU, testLOGVAR,testPI, type='test',fout=fout)
     if (args.n_class):
-        model.run_epoch_classify(train, epoch,fout=fout)
-        model.run_epoch_classify(test, epoch,fout=fout)
+        model.run_epoch_classify(train, epoch,fout=fout,num_mu_iter=args.nti)
+        model.run_epoch_classify(test, epoch,fout=fout, num_mu_iter=args.nti)
 
     fout.write('writing to '+ex_file+'\n')
     torch.save(model.state_dict(),'_output/'+ex_file+'.pt')

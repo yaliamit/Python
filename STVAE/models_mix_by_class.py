@@ -31,9 +31,11 @@ class STVAE_mix_by_class(models_mix.STVAE_mix):
         self.optimizer_s = optim.Adam([self.mu, self.logvar, self.pi], mu_lr)
 
     def get_loss(self,data,targ,mu,logvar,pi):
-        pi=pi.reshape(-1,self.n_class,self.n_mix_perclass)
-        pis=torch.sum(pi,2)
-        pi = pi/pis.unsqueeze(2)
+
+        if (targ is not None):
+            pi=pi.reshape(-1,self.n_class,self.n_mix_perclass)
+            pis=torch.sum(pi,2)
+            pi = pi/pis.unsqueeze(2)
         lpi = torch.log(pi)
 
         if (self.type is not 'ae'):
@@ -43,15 +45,21 @@ class STVAE_mix_by_class(models_mix.STVAE_mix):
         s=s.view(-1,self.n_mix,self.s_dim)
         # Apply linear map to entire sampled vector.
         x=self.decoder_and_trans(s)
-        x=x.reshape(-1,self.n_class,self.n_mix_perclass,x.shape[-1])
-        mu=mu.reshape(-1,self.n_class,self.n_mix_perclass*self.s_dim)
-        logvar=logvar.reshape(-1,self.n_class,self.n_mix_perclass*self.s_dim)
-        tot=0
-        recloss=0
-        for c in range(self.n_class):
-            ind = (targ == c)
-            tot += self.dens_apply(mu[ind,c,:],logvar[ind,c,:],lpi[ind,c,:],pi[ind,c,:],self.rho[c*self.n_mix_perclass:(c+1)*self.n_mix_perclass])
-            recloss+=self.mixed_loss(x[ind,c,:,:],data[ind],pi[ind,c,:])
+
+        if (targ is not None):
+            x=x.reshape(-1,self.n_class,self.n_mix_perclass,x.shape[-1])
+            mu=mu.reshape(-1,self.n_class,self.n_mix_perclass*self.s_dim)
+            logvar=logvar.reshape(-1,self.n_class,self.n_mix_perclass*self.s_dim)
+            tot=0
+            recloss=0
+
+            for c in range(self.n_class):
+                ind = (targ == c)
+                tot += self.dens_apply(mu[ind,c,:],logvar[ind,c,:],lpi[ind,c,:],pi[ind,c,:],self.rho[c*self.n_mix_perclass:(c+1)*self.n_mix_perclass])
+                recloss+=self.mixed_loss(x[ind,c,:,:],data[ind],pi[ind,c,:])
+        else:
+            tot = self.dens_apply(mu, logvar, lpi, pi, self.rho)
+            recloss = self.mixed_loss(x, data, pi)
         return recloss, tot
 
     def forward(self, data, targ):
@@ -100,7 +108,7 @@ class STVAE_mix_by_class(models_mix.STVAE_mix):
 
         return MU, LOGVAR, PI
 
-    def run_epoch_classify(self, train, epoch,fout=None):
+    def run_epoch_classify(self, train, epoch,fout=None, num_mu_iter=None):
 
         self.eval()
         tr_recon_loss = 0;tr_full_loss = 0
@@ -157,6 +165,7 @@ class STVAE_mix_by_class(models_mix.STVAE_mix):
             ii=clust*torch.ones(self.bsz, dtype=torch.int64).to(self.dv)
         else:
             ii=torch.multinomial(rho_dist,self.bsz,replacement=True)
+        self.setup_id(self.bsz)
         s = torch.randn(self.bsz, self.s_dim*self.n_mix).to(self.dv)
         s = s.view(-1, self.n_mix, self.s_dim)
         if (theta is not None and self.u_dim>0):

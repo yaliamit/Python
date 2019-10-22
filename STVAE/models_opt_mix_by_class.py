@@ -89,10 +89,13 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
 
         return MU, LOGVAR, PI
 
-    def run_epoch_classify(self, train, epoch, num_mu_iter, fout=None):
+    def run_epoch_classify(self, train, epoch, fout=None, num_mu_iter=10):
+
+        mu, logvar, pi = self.initialize_mus(train[0], True)
 
         self.eval()
         ii = np.arange(0, train[0].shape[0], 1)
+        self.setup_id(self.bsz)
         # if (type=='train'):
         #   np.random.shuffle(ii)
         tr = train[0][ii].transpose(0, 3, 1, 2)
@@ -101,9 +104,9 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         for j in np.arange(0, len(y), self.bsz):
 
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
-            target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
+            self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], pi[j:j + self.bsz], epoch)
             for it in range(num_mu_iter):
-                STVAE_OPT_mix.compute_loss_and_grad(data, type, self.optimizer_s, opt='mu')
+                self.compute_loss_and_grad(data, None, 'test', self.optimizer_s, opt='mu')
 
             s_mu = self.mu.view(-1, self.n_mix, self.s_dim)
             recon_batch = self.decoder_and_trans(s_mu)
@@ -128,7 +131,7 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         mu, logvar, pi = self.initialize_mus(input, True)
         self.update_s(mu, logvar, pi, 0)
         for it in range(num_mu_iter):
-            STVAE_OPT_mix.compute_loss_and_grad(input, type, self.optimizer_s, opt='mu')
+            self.compute_loss_and_grad(input, None, 'test', self.optimizer_s, opt='mu')
         s_mu = self.mu.view(-1, self.n_mix, self.s_dim)
         pi = self.pi.view(-1,self.n_class,self.n_mix_perclass)
         pi= pi[:,cl,:]
@@ -142,30 +145,6 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         rr=recon[kk]
 
         return rr
-
-
-    def sample_from_z_prior(self,theta=None, clust=None):
-        self.eval()
-        ee=torch.eye(self.n_mix).to(self.dv)
-        rho_dist=torch.exp(self.rho-torch.logsumexp(self.rho,dim=0))
-        if (clust is not None):
-            ii=clust*torch.ones(self.bsz, dtype=torch.int64).to(self.dv)
-        else:
-            ii=torch.multinomial(rho_dist,self.bsz,replacement=True)
-        s = torch.randn(self.bsz, self.s_dim*self.n_mix).to(self.dv)
-        s = s.view(-1, self.n_mix, self.s_dim)
-        if (theta is not None and self.u_dim>0):
-            theta = theta.to(self.dv)
-            for i in range(self.n_mix):
-                s[:,i,0:self.u_dim]=theta
-        x=self.decoder_and_trans(s)
-        jj = torch.arange(0, self.bsz, dtype=torch.int64).to(self.dv)
-        kk = ii + jj * self.n_mix
-        recon = x.reshape(self.n_mix * self.bsz, -1)
-        rr = recon[kk]
-
-        return rr
-
 
 
 def get_scheduler(args,model):

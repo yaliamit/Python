@@ -75,7 +75,10 @@ def create_image(XX, ex_file):
     for i in range(10):
         line = []
         for j in range(10):
-            line += [XX[t].reshape((28,28))]
+            if (t<len(XX)):
+                line += [XX[t].reshape((28,28))]
+            else:
+                line += [np.zeros((28,28))]
             t+=1
         mat+=[np.concatenate(line,axis=0)]
     manifold = np.concatenate(mat, axis=1)
