@@ -52,6 +52,23 @@ class diag(nn.Module):
         u=z*self.sigma+self.mu
         return(u)
 
+class bias(nn.Module):
+    def __init__(self,dim):
+        super(bias,self).__init__()
+
+        self.dim=dim
+        self.bias=nn.Parameter((torch.rand(self.dim) - .5) / np.sqrt(self.dim))
+
+    def forward(self,z):
+        return(self.bias.repeat(z.shape[0],1))
+
+class ident(nn.Module):
+    def __init__(self):
+        super(ident,self).__init__()
+
+    def forward(self,z):
+        return(torch.ones(z.shape[0]))
+
 # Each set of s_dim normals gets multiplied by its own matrix to correlate
 class fromNorm_mix(nn.Module):
     def __init__(self,h_dim,z_dim, u_dim, n_mix, type, Diag=False):
@@ -62,12 +79,17 @@ class fromNorm_mix(nn.Module):
         self.h_dim=h_dim
         self.u_dim=u_dim
         self.type=type
-        self.z2h=nn.ModuleList([nn.Linear(z_dim, h_dim) for i in range(n_mix)])
-
-        if (not Diag):
-            self.z2z=nn.ModuleList([nn.Linear(z_dim, z_dim) for i in range(n_mix)])
+        if (z_dim>0):
+            self.z2h=nn.ModuleList([nn.Linear(z_dim, h_dim) for i in range(n_mix)])
         else:
-            self.z2z=nn.ModuleList(diag(z_dim) for i in range(n_mix))
+            self.z2h=nn.ModuleList([bias(h_dim) for i in range(n_mix)])
+        if (z_dim > 0):
+            if (not Diag):
+                self.z2z=nn.ModuleList([nn.Linear(z_dim, z_dim) for i in range(n_mix)])
+            else:
+                self.z2z=nn.ModuleList(diag(z_dim) for i in range(n_mix))
+        else:
+            self.z2z=nn.ModuleList(ident() for i in range(n_mix))
         if (type == 'tvae'):
             self.u2u = nn.ModuleList([nn.Linear(u_dim, u_dim, bias=False) for i in range(n_mix)])
 

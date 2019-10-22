@@ -79,25 +79,28 @@ fout.write('tot_pars,'+str(tot_pars)+'\n')
 if (args.run_existing):
     model.load_state_dict(torch.load(args.output_prefix+'_output/'+ex_file+'.pt',map_location=device))
     testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
-    if (not args.sample):
-        model.run_epoch(test,0,args.nti,testMU, testLOGVAR,testPI, type='test',fout=fout)
+    #if (not args.sample):
+    #    model.run_epoch(test,0,args.nti,testMU, testLOGVAR,testPI, type='test',fout=fout)
     if (args.classify and not args.sample):
         train_new(model,args,train,test,device)
     else:
-        if (not args.sample):
-            aux.show_reconstructed_images(test,model,ex_file,args.nti)
-            if args.n_mix>0:
-                for clust in range(args.n_mix):
-                    aux.show_sampled_images(model,ex_file,clust)
-        else:
-            XXX=[]
-            for j in range(np.int32(10000/model.bsz)):
-                X = model.sample_from_z_prior(theta=None, clust=None)
-                XX = X.cpu().detach().numpy()
-                XXX+=[XX]
-            XXX=np.concatenate(XXX,axis=0)
-            np.save(ex_file,XXX)
-            print("Hello")
+        #aux.make_images(test,model,ex_file,args)
+        model.run_epoch_classify(test, 0,fout=fout, num_mu_iter=args.nti)
+
+        # if (not args.sample):
+        #     aux.show_reconstructed_images(test,model,ex_file,args.nti)
+        #     if args.n_mix>0:
+        #         for clust in range(args.n_mix):
+        #             aux.show_sampled_images(model,ex_file,clust)
+        # else:
+        #     XXX=[]
+        #     for j in range(np.int32(10000/model.bsz)):
+        #         X = model.sample_from_z_prior(theta=None, clust=None)
+        #         XX = X.cpu().detach().numpy()
+        #         XXX+=[XX]
+        #     XXX=np.concatenate(XXX,axis=0)
+        #     np.save(ex_file,XXX)
+        #     print("Hello")
 
 
 else:
