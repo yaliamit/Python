@@ -79,7 +79,10 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
                 self.compute_loss_and_grad(data, target, type, self.optimizer_s, opt='mu')
             with torch.no_grad() if (type != 'train') else dummy_context_mgr():
                 recon_loss, loss = self.compute_loss_and_grad(data, target, type, self.optimizer)
-
+            mu[j:j + batch_size] = self.mu.data
+            logvar[j:j + batch_size] = self.logvar.data
+            pi[j:j + batch_size] = self.pi.data
+            del self.mu, self.logvar, self.pi
             tr_recon_loss += recon_loss
             tr_full_loss += loss
 
@@ -87,7 +90,7 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(type,
         epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
 
-        return MU, LOGVAR, PI
+        return mu, logvar, pi
 
     def run_epoch_classify(self, train, epoch, fout=None, num_mu_iter=10):
 
@@ -116,7 +119,7 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
 
             acc+=np.sum(np.equal(by,y[j:j+self.bsz]))
 
-        fout.write('====> Epoch {}: {} Accuracy: {:.4f}\n'.format(type,
+        fout.write('====> Epoch {}: Accuracy: {:.4f}\n'.format(
         epoch, acc/ len(tr)))
 
 
