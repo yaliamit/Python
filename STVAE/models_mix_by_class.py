@@ -21,14 +21,12 @@ class STVAE_mix_by_class(models_mix.STVAE_mix):
         elif (args.optimizer == 'Adadelta'):
             self.optimizer = optim.Adadelta(self.parameters())
 
-    def update_s(self, mu, logvar, pi, epoch):
-        mu_lr = self.mu_lr[0]
-        if epoch > 200:
-            mu_lr = self.mu_lr[1]
+    def update_s(self, mu, logvar, pi, mu_lr, wd=1):
+
         self.mu = torch.autograd.Variable(mu.to(self.dv), requires_grad=True)
         self.logvar = torch.autograd.Variable(logvar.to(self.dv), requires_grad=True)
         self.pi = torch.autograd.Variable(pi.to(self.dv), requires_grad=True)
-        self.optimizer_s = optim.Adam([self.mu, self.logvar, self.pi], mu_lr)
+        self.optimizer_s = optim.Adam([self.mu, self.logvar, self.pi], mu_lr, weight_decay=wd)
 
     def get_loss(self,data,targ,mu,logvar,pi):
 

@@ -92,7 +92,7 @@ def create_image(XX, ex_file):
     #print("Saved the sampled images")
 
 def show_sampled_images(model,ex_file,clust=None):
-    theta = torch.zeros(model.bsz, 6)
+    theta = torch.zeros(model.bsz, model.u_dim)
     X=model.sample_from_z_prior(theta,clust)
     XX=X.cpu().detach().numpy()
     if clust is not None:
