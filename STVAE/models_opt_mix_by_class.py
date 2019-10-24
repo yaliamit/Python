@@ -104,6 +104,7 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         tr = train[0][ii].transpose(0, 3, 1, 2)
         y = np.argmax(train[1][ii],axis=1)
         acc=0
+        #wd=0.
         for j in np.arange(0, len(y), self.bsz):
             if (np.mod(j,100)==0):
                 print(j)
@@ -113,6 +114,7 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
                 self.compute_loss_and_grad(data, None, 'test', self.optimizer_s, opt='mu')
 
             s_mu = self.mu.view(-1, self.n_mix, self.s_dim)
+            #l2_loss=wd*torch.sum(s_mu*s_mu,2)
             with torch.no_grad():
                 recon_batch = self.decoder_and_trans(s_mu)
                 b = self.mixed_loss_pre(recon_batch, data, self.pi.shape[1])
