@@ -81,7 +81,7 @@ if (args.run_existing):
     testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
     #if (not args.sample):
     #    model.run_epoch(test,0,args.nti,testMU, testLOGVAR,testPI, type='test',fout=fout)
-    if (args.classify and not args.sample):
+    if (args.classify):
         train_new(model,args,train,test,device)
     else:
         #aux.make_images(test,model,ex_file,args)
