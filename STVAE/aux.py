@@ -8,6 +8,7 @@ import os
 def process_args(parser):
     parser.add_argument('--transformation', default='aff', help='type of transformation: aff or tps')
     parser.add_argument('--type', default='vae', help='type of transformation: aff or tps')
+    parser.add_argument('--tps_num', type=int, default=3, help='dimension of s')
     parser.add_argument('--sdim', type=int, default=26, help='dimension of s')
     parser.add_argument('--hdim', type=int, default=256, help='dimension of h')
     parser.add_argument('--hdim_dec',type=int, default=None, help='dims of decoder')

@@ -113,9 +113,9 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
                 self.compute_loss_and_grad(data, None, 'test', self.optimizer_s, opt='mu')
 
             s_mu = self.mu.view(-1, self.n_mix, self.s_dim)
-
-            recon_batch = self.decoder_and_trans(s_mu)
-            b = self.mixed_loss_pre(recon_batch, data, self.pi.shape[1])
+            with torch.no_grad():
+                recon_batch = self.decoder_and_trans(s_mu)
+                b = self.mixed_loss_pre(recon_batch, data, self.pi.shape[1])
             vy, by= torch.min(b,1)
             by=np.int32(by.detach().cpu().numpy()/self.n_mix_perclass)
 

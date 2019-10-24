@@ -50,6 +50,7 @@ class STVAE(nn.Module):
         self.n_mix=args.n_mix
         self.num_hlayers=args.num_hlayers
         self.dv=device
+        self.tps_num=args.tps_num
 
         """
         encoder: two fc layers
@@ -63,8 +64,8 @@ class STVAE(nn.Module):
                 self.u_dim = 6
                 self.idty = torch.cat((torch.eye(2),torch.zeros(2).unsqueeze(1)),dim=1)
             elif self.tf == 'tps':
-                self.u_dim = 18 # 2 * 3 ** 2
-                self.gridGen = TPSGridGen(out_h=self.h,out_w=self.w,device=self.dv)
+                self.u_dim = self.tps_num*self.tps_num*2 # 2 * 3 ** 2
+                self.gridGen = TPSGridGen(out_h=self.h,out_w=self.w,grid_size=self.tps_num,device=self.dv)
                 px = self.gridGen.PX.squeeze(0).squeeze(0).squeeze(0).squeeze(0)
                 py = self.gridGen.PY.squeeze(0).squeeze(0).squeeze(0).squeeze(0)
                 self.idty = torch.cat((px,py))
