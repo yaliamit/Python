@@ -8,22 +8,22 @@ from Sep import encoder_mix_sep
 
 # Create i.i.d normals for each mixture component and a logit for weights
 class toNorm_mix(nn.Module):
-    def __init__(self,h_dim,s_dim, n_mix):
+    def __init__(self,model):
         super(toNorm_mix,self).__init__()
-        self.h2smu = nn.Linear(h_dim, s_dim*n_mix)
-        self.h2svar = nn.Linear(h_dim, s_dim*n_mix,bias=False)
-        self.h2pi =  nn.Linear(h_dim,n_mix)
+        self.h2smu = nn.Linear(model.h_dim, model.s_dim*model.n_mix)
+        self.h2svar = nn.Linear(model.h_dim, model.s_dim*model.n_mix,bias=False)
+        self.h2pi =  nn.Linear(model.h_dim,model.n_mix)
 
 class encoder_mix(nn.Module):
-    def __init__(self,x_dim,h_dim,s_dim, n_mix, num_layers):
+    def __init__(self,model):
         super(encoder_mix,self).__init__()
-        self.num_layers=num_layers
-        self.n_mix=n_mix
-        if (num_layers==1):
-            self.h2he = nn.Linear(h_dim, h_dim)
-        self.x2h = nn.Linear(x_dim, h_dim)
-        self.x2hpi = nn.Linear(x_dim, h_dim)
-        self.toNorm_mix=toNorm_mix(h_dim,s_dim,n_mix)
+        self.num_layers=model.num_hlayers
+        self.n_mix=model.n_mix
+        if (self.num_layers==1):
+            self.h2he = nn.Linear(model.h_dim, model.h_dim)
+        self.x2h = nn.Linear(model.x_dim, model.h_dim)
+        self.x2hpi = nn.Linear(model.x_dim, model.h_dim)
+        self.toNorm_mix=toNorm_mix(model)
 
     def forward(self,inputs):
         h = F.relu(self.x2h(inputs))
@@ -71,27 +71,33 @@ class ident(nn.Module):
 
 # Each set of s_dim normals gets multiplied by its own matrix to correlate
 class fromNorm_mix(nn.Module):
-    def __init__(self,h_dim,z_dim, u_dim, n_mix, type, Diag=False):
+    def __init__(self,model):
         super(fromNorm_mix,self).__init__()
         self.z2h=[]
-        self.n_mix=n_mix
-        self.z_dim=z_dim
-        self.h_dim=h_dim
-        self.u_dim=u_dim
-        self.type=type
-        if (z_dim>0):
-            self.z2h=nn.ModuleList([nn.Linear(z_dim, h_dim) for i in range(n_mix)])
+        self.n_mix=model.n_mix
+        self.z_dim=model.z_dim
+        self.h_dim=model.h_dim
+        self.u_dim=model.u_dim
+        self.diag=model.diag
+        self.type=model.type
+        self.h_dim_dec = model.h_dim_dec
+        if (self.h_dim_dec is None):
+            h_dim=self.h_dim
         else:
-            self.z2h=nn.ModuleList([bias(h_dim) for i in range(n_mix)])
-        if (z_dim > 0):
-            if (not Diag):
-                self.z2z=nn.ModuleList([nn.Linear(z_dim, z_dim) for i in range(n_mix)])
+            h_dim=self.h_dim_dec
+        if (self.z_dim>0):
+                self.z2h=nn.ModuleList([nn.Linear(self.z_dim, h_dim) for i in range(self.n_mix)])
+        else:
+                self.z2h=nn.ModuleList([bias(h_dim) for i in range(self.n_mix)])
+        if (self.z_dim > 0):
+            if (not self.diag):
+                self.z2z=nn.ModuleList([nn.Linear(self.z_dim, self.z_dim) for i in range(self.n_mix)])
             else:
-                self.z2z=nn.ModuleList(diag(z_dim) for i in range(n_mix))
+                self.z2z=nn.ModuleList(diag(self.z_dim) for i in range(self.n_mix))
         else:
-            self.z2z=nn.ModuleList(ident() for i in range(n_mix))
-        if (type == 'tvae'):
-            self.u2u = nn.ModuleList([nn.Linear(u_dim, u_dim, bias=False) for i in range(n_mix)])
+            self.z2z=nn.ModuleList(ident() for i in range(self.n_mix))
+        if (self.type == 'tvae'):
+            self.u2u = nn.ModuleList([nn.Linear(self.u_dim, self.u_dim, bias=False) for i in range(self.n_mix)])
 
     def forward(self,z,u):
 
@@ -109,17 +115,24 @@ class fromNorm_mix(nn.Module):
 
 # Each correlated normal coming out of fromNorm_mix goes through same network to produce an image these get mixed.
 class decoder_mix(nn.Module):
-    def __init__(self,x_dim,h_dim,z_dim, u_dim, n_mix, type,num_layers, diag):
+    def __init__(self,model,args):
         super(decoder_mix,self).__init__()
-        self.x_dim=x_dim
-        self.n_mix=n_mix
-        self.u_dim=u_dim
-        self.z_dim=z_dim
-        self.num_layers=num_layers
-        if (num_layers==1):
-            self.h2hd = nn.Linear(h_dim, h_dim)
-        self.h2x = nn.Linear(h_dim, x_dim)
-        self.fromNorm_mix = fromNorm_mix(h_dim, z_dim, u_dim, n_mix, type, diag)
+        self.x_dim=model.x_dim
+        self.n_mix=model.n_mix
+        self.u_dim=model.u_dim
+        self.z_dim=model.z_dim
+        self.h_dim=model.h_dim
+        self.h_dim_dec=args.hdim_dec
+        self.num_layers=model.num_hlayers
+        self.type=model.type
+        self.diag=args.Diag
+        if (self.num_layers==1):
+            if self.h_dim_dec is None:
+                self.h2hd = nn.Linear(self.h_dim, self.h_dim)
+            else:
+                self.h2hd = nn.ModuleList([nn.Linear(self.h_dim_dec,self.h_dim) for i in range(self.n_mix)])
+        self.h2x = nn.Linear(self.h_dim, self.x_dim)
+        self.fromNorm_mix = fromNorm_mix(self)
 
     def forward(self,s):
 
@@ -129,7 +142,10 @@ class decoder_mix(nn.Module):
             if (self.num_layers==1):
                 hh=[]
                 for i in range(self.n_mix):
-                    hh=hh+[self.h2hd(h[:,i,:])]
+                    if self.h_dim_dec is None:
+                        hh=hh+[self.h2hd(h[:,i,:])]
+                    else:
+                        hh=hh+[self.h2hd[i](h[:,i,:])]
                 h=torch.stack(hh,dim=0).transpose(0,1)
                 h=F.relu(h)
             x=[]
@@ -151,11 +167,11 @@ class STVAE_mix(models.STVAE):
         self.num_hlayers=args.num_hlayers
         if (not args.OPT):
             if args.sep:
-                self.encoder_mix = encoder_mix_sep(self.x_dim, self.h_dim, self.s_dim, self.n_mix)
+                self.encoder_mix = encoder_mix_sep(self)
             else:
-                self.encoder_mix = encoder_mix(self.x_dim, self.h_dim, self.s_dim, self.n_mix, self.num_hlayers)
+                self.encoder_mix = encoder_mix(self)
 
-        self.decoder_mix=decoder_mix(self.x_dim,self.h_dim,self.z_dim, self.u_dim, self.n_mix, self.type, self.num_hlayers, args.Diag)
+        self.decoder_mix=decoder_mix(self,args)
 
         self.rho = nn.Parameter(torch.zeros(self.n_mix),requires_grad=False)
 

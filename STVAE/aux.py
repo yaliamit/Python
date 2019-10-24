@@ -10,6 +10,7 @@ def process_args(parser):
     parser.add_argument('--type', default='vae', help='type of transformation: aff or tps')
     parser.add_argument('--sdim', type=int, default=26, help='dimension of s')
     parser.add_argument('--hdim', type=int, default=256, help='dimension of h')
+    parser.add_argument('--hdim_dec',type=int, default=None, help='dims of decoder')
     parser.add_argument('--num_hlayers', type=int, default=0, help='number of hlayers')
     parser.add_argument('--nepoch', type=int, default=40, help='number of training epochs')
     parser.add_argument('--gpu', type=bool, default=False, help='whether to run in the GPU')
@@ -132,26 +133,6 @@ def add_clutter(recon_data):
 
     return recon_data
 
-def test_with_noise(test,model):
 
-    ii=np.arange(0,test[0].shape[0],1)
-    np.random.shuffle(ii)
-    recon_data=[test[0][ii[0:20]].copy(),test[1][ii[0:20]].copy()]
-    recon_data=add_clutter(recon_data)
-    recon_ims=model.recon(recon_data, num_mu_iter=args.nti)
-    rec=recon_ims.detach().cpu()
-    py.figure(figsize=(3, 20))
-    for t in range(20):
-            py.subplot(20,3,3*t+1)
-            py.imshow(test[0][ii[t],:,:,0])
-            py.axis('off')
-            py.subplot(20,3,3*t+2)
-            py.imshow(recon_data[0][t, :, :, 0])
-            py.axis('off')
-            py.subplot(20,3,3*t+3)
-            py.imshow(rec[t,0,:,:])
-            py.axis('off')
-    py.show()
-    print("hello")
 
 
