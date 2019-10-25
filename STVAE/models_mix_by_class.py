@@ -3,10 +3,10 @@ import torch.nn.functional as F
 from torch import nn, optim
 import numpy as np
 import models
-import models_mix
+from models_mix_try import STVAE_mix
 
 
-class STVAE_mix_by_class(models_mix.STVAE_mix):
+class STVAE_mix_by_class(STVAE_mix):
 
     def __init__(self, x_h, x_w, device, args):
         super(STVAE_mix_by_class, self).__init__(x_h, x_w, device, args)
@@ -40,21 +40,24 @@ class STVAE_mix_by_class(models_mix.STVAE_mix):
             s = self.sample(mu, logvar, self.s_dim*self.n_mix)
         else:
             s=mu
-        s=s.view(-1,self.n_mix,self.s_dim)
+        s=s.view(-1,self.n_mix,self.s_dim).transpose(0,1)
         # Apply linear map to entire sampled vector.
         x=self.decoder_and_trans(s)
 
         if (targ is not None):
+            x=x.transpose(0,1)
             x=x.reshape(-1,self.n_class,self.n_mix_perclass,x.shape[-1])
             mu=mu.reshape(-1,self.n_class,self.n_mix_perclass*self.s_dim)
             logvar=logvar.reshape(-1,self.n_class,self.n_mix_perclass*self.s_dim)
+            rho=self.rho.reshape(self.n_mix_perclass,self.n_class)
             tot=0
             recloss=0
 
             for c in range(self.n_class):
                 ind = (targ == c)
-                tot += self.dens_apply(mu[ind,c,:],logvar[ind,c,:],lpi[ind,c,:],pi[ind,c,:],self.rho[c*self.n_mix_perclass:(c+1)*self.n_mix_perclass])
-                recloss+=self.mixed_loss(x[ind,c,:,:],data[ind],pi[ind,c,:])
+                tot += self.dens_apply(mu[ind,c,:],logvar[ind,c,:],lpi[ind,c,:],pi[ind,c,:],
+                                       rho[:,c])
+                recloss+=self.mixed_loss(x[ind,c,:,:].transpose(0,1),data[ind],pi[ind,c,:])
         else:
             tot = self.dens_apply(mu, logvar, lpi, pi, self.rho)
             recloss = self.mixed_loss(x, data, pi)
@@ -140,7 +143,7 @@ class STVAE_mix_by_class(models_mix.STVAE_mix):
         inp = input.to(self.dv)
 
         s_mu, s_var, pi = self.encoder_mix(inp.view(-1, self.x_dim))
-        s_mu = s_mu.view(-1, self.n_mix, self.s_dim)
+        s_mu = s_mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
         pi = pi.view(-1,self.n_class,self.n_mix_perclass)
         pi= pi[:,cl,:]
         recon_batch = self.decoder_and_trans(s_mu)
@@ -170,6 +173,7 @@ class STVAE_mix_by_class(models_mix.STVAE_mix):
             theta = theta.to(self.dv)
             for i in range(self.n_mix):
                 s[:,i,0:self.u_dim]=theta
+        s=s.transpose(0,1)
         x=self.decoder_and_trans(s)
         jj = torch.arange(0, self.bsz, dtype=torch.int64).to(self.dv)
         kk = ii + jj * self.n_mix
