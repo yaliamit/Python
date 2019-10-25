@@ -312,6 +312,7 @@ class STVAE_mix(models.STVAE):
         jj = torch.arange(0,num_inp,dtype=torch.int64).to(self.dv)
         kk = ii+jj*self.n_mix
         recon_batch = self.decoder_and_trans(s_mu)
+        recon_batch = recon_batch.transpose(0, 1)
         recon=recon_batch.reshape(self.n_mix*num_inp,-1)
         rr=recon[kk]
 
@@ -334,6 +335,7 @@ class STVAE_mix(models.STVAE):
             for i in range(self.n_mix):
                 s[:,i,0:self.u_dim]=theta
         x=self.decoder_and_trans(s)
+        x=x.transpose(0,1)
         jj = torch.arange(0, self.bsz, dtype=torch.int64).to(self.dv)
         kk = ii + jj * self.n_mix
         recon = x.reshape(self.n_mix * self.bsz, -1)
