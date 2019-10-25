@@ -139,7 +139,7 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         self.update_s(mu, logvar, pi, self.mu_lr[0])
         for it in range(num_mu_iter):
             self.compute_loss_and_grad(inp, None, 'test', self.optimizer_s, opt='mu')
-        s_mu = self.mu.view(-1, self.n_mix, self.s_dim)
+        s_mu = self.mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
         pi = self.pi.view(-1,self.n_class,self.n_mix_perclass)
         pi= pi[:,cl,:]
         recon_batch = self.decoder_and_trans(s_mu)
