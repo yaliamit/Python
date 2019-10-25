@@ -106,8 +106,7 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         acc=0
         #wd=0.
         for j in np.arange(0, len(y), self.bsz):
-            if (np.mod(j,100)==0):
-                print(j)
+            print(j)
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], pi[j:j + self.bsz], self.mu_lr[0])
             for it in range(num_mu_iter):
@@ -118,11 +117,11 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
             with torch.no_grad():
                 recon_batch = self.decoder_and_trans(s_mu)
                 b = self.mixed_loss_pre(recon_batch, data, self.pi.shape[1])
-            vy, by= torch.min(b,1)
-            by=np.int32(by.detach().cpu().numpy()/self.n_mix_perclass)
+                vy, by= torch.min(b,1)
+                by=np.int32(by.detach().cpu().numpy()/self.n_mix_perclass)
 
-            acc+=np.sum(np.equal(by,y[j:j+self.bsz]))
-            print(np.float32(acc)/self.bsz*j)
+                acc+=np.sum(np.equal(by,y[j:j+self.bsz]))
+            print(np.float32(acc)/(self.bsz*j))
 
         fout.write('====> Epoch {}: Accuracy: {:.4f}\n'.format(
         epoch, acc/ len(tr)))
