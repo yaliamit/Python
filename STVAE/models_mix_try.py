@@ -318,6 +318,7 @@ class STVAE_mix(models.STVAE):
         return rr
 
 
+
     def sample_from_z_prior(self,theta=None, clust=None):
         self.eval()
         ee=torch.eye(self.n_mix).to(self.dv)
