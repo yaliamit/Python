@@ -143,6 +143,7 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         pi = self.pi.view(-1,self.n_class,self.n_mix_perclass)
         pi= pi[:,cl,:]
         recon_batch = self.decoder_and_trans(s_mu)
+        recon_batch=recon_batch.transpose(0,1)
         recon_batch=recon_batch.reshape(-1,self.n_class,self.n_mix_perclass,recon_batch.shape[-1])
         ii = torch.argmax(pi, dim=1)
         recon_batch=recon_batch[:,cl,:,:]
