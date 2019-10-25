@@ -113,7 +113,7 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
             for it in range(num_mu_iter):
                 self.compute_loss_and_grad(data, None, 'test', self.optimizer_s, opt='mu')
 
-            s_mu = self.mu.view(-1, self.n_mix, self.s_dim)
+            s_mu = self.mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
             #l2_loss=wd*torch.sum(s_mu*s_mu,2)
             with torch.no_grad():
                 recon_batch = self.decoder_and_trans(s_mu)
