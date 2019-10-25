@@ -14,7 +14,7 @@ def process_args(parser):
     parser.add_argument('--hdim_dec',type=int, default=None, help='dims of decoder')
     parser.add_argument('--num_hlayers', type=int, default=0, help='number of hlayers')
     parser.add_argument('--nepoch', type=int, default=40, help='number of training epochs')
-    parser.add_argument('--gpu', type=bool, default=False, help='whether to run in the GPU')
+    parser.add_argument('--gpu', type=int, default=2, help='whether to run in the GPU')
     parser.add_argument('--seed', type=int, default=1111, help='random seed (default: 1111)')
     parser.add_argument('--num_train', type=int, default=60000, help='num train (default: 60000)')
     parser.add_argument('--nval', type=int, default=1000, help='num train (default: 1000)')
