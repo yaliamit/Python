@@ -67,9 +67,12 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         #   np.random.shuffle(ii)
         tr = train[0][ii].transpose(0, 3, 1, 2)
         y = np.argmax(train[1][ii],axis=1)
-        mu = MU[ii]
-        logvar = LOGVAR[ii]
-        pi = PI[ii]
+        iic=np.argsort(y)
+        y=y[iic]
+        tr=tr[iic]
+        mu = MU #[ii]
+        logvar = LOGVAR #[ii]
+        pi = PI #[ii]
         batch_size = self.bsz
         for j in np.arange(0, len(y), self.bsz):
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
