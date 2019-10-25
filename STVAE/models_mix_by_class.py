@@ -124,7 +124,7 @@ class STVAE_mix_by_class(STVAE_mix):
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
 
             s_mu, s_var, pi = self.encoder_mix(data.view(-1, self.x_dim))
-            s_mu = s_mu.view(-1, self.n_mix, self.s_dim)
+            s_mu = s_mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
             recon_batch = self.decoder_and_trans(s_mu)
             b = self.mixed_loss_pre(recon_batch, data, pi.shape[1])
             vy, by= torch.min(b,1)
@@ -148,6 +148,7 @@ class STVAE_mix_by_class(STVAE_mix):
         pi= pi[:,cl,:]
         recon_batch = self.decoder_and_trans(s_mu)
         recon_batch=recon_batch.reshape(-1,self.n_class,self.n_mix_perclass,recon_batch.shape[-1])
+        recon_batch.transpose(0,1)
         ii = torch.argmax(pi, dim=1)
         recon_batch=recon_batch[:,cl,:,:]
         jj = torch.arange(0,num_inp,dtype=torch.int64).to(self.dv)
@@ -175,6 +176,7 @@ class STVAE_mix_by_class(STVAE_mix):
                 s[:,i,0:self.u_dim]=theta
         s=s.transpose(0,1)
         x=self.decoder_and_trans(s)
+        x.transpose(0,1)
         jj = torch.arange(0, self.bsz, dtype=torch.int64).to(self.dv)
         kk = ii + jj * self.n_mix
         recon = x.reshape(self.n_mix * self.bsz, -1)
