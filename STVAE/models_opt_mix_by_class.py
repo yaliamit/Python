@@ -122,6 +122,7 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
             by=np.int32(by.detach().cpu().numpy()/self.n_mix_perclass)
 
             acc+=np.sum(np.equal(by,y[j:j+self.bsz]))
+            print(np.float32(acc)/self.bsz*j)
 
         fout.write('====> Epoch {}: Accuracy: {:.4f}\n'.format(
         epoch, acc/ len(tr)))
