@@ -1,6 +1,6 @@
 import torch
 from models_opt import STVAE_OPT
-from models_mix import STVAE_mix
+from models_mix_try import STVAE_mix
 from models import STVAE
 from models_opt_mix import STVAE_OPT_mix
 from models_mix_by_class import STVAE_mix_by_class
