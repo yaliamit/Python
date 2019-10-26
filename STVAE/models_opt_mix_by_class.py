@@ -23,15 +23,6 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         elif (args.optimizer == 'Adadelta'):
             self.optimizer = optim.Adadelta(self.parameters())
 
-    # def update_s(self, mu, logvar, pi, epoch):
-    #     mu_lr = self.mu_lr[0]
-    #     if epoch > 200:
-    #         mu_lr = self.mu_lr[1]
-    #     self.mu = torch.autograd.Variable(mu.to(self.dv), requires_grad=True)
-    #     self.logvar = torch.autograd.Variable(logvar.to(self.dv), requires_grad=True)
-    #     self.pi = torch.autograd.Variable(pi.to(self.dv), requires_grad=True)
-    #     self.optimizer_s = optim.Adam([self.mu, self.logvar, self.pi], mu_lr)
-
 
     def forward(self,data,targ):
 
@@ -67,9 +58,6 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         #   np.random.shuffle(ii)
         tr = train[0][ii].transpose(0, 3, 1, 2)
         y = np.argmax(train[1][ii],axis=1)
-        iic=np.argsort(y)
-        y=y[iic]
-        tr=tr[iic]
         mu = MU #[ii]
         logvar = LOGVAR #[ii]
         pi = PI #[ii]

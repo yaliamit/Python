@@ -93,11 +93,17 @@ if (args.run_existing):
         #aux.make_images(test,model,ex_file,args)
         model.run_epoch_classify(test, 0,fout=fout, num_mu_iter=args.nti)
 else:
+
+    iic = np.argsort(np.argmax(train[1], axis=1))
+    train = [train[0][iic], train[1][iic]]
+
     trainMU, trainLOGVAR, trPI = model.initialize_mus(train[0], args.OPT)
     valMU, valLOGVAR, valPI = model.initialize_mus(val[0], args.OPT)
     testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
 
     scheduler=get_scheduler(args,model)
+
+
 
     for epoch in range(args.nepoch):
         if (scheduler is not None):
