@@ -50,8 +50,8 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
             rcs+=rc.detach()
         else:
             self.optimizer.zero_grad()
-            rc = torch.sum(torch.cat(recon_loss,dim=0))
-            to = torch.sum(torch.cat(tot,dim=0))
+            rc = torch.sum(torch.stack(recon_loss))
+            to = torch.sum(torch.stack(tot))
             loss = rc + to
             if (type == 'train'):
                 loss.backward()

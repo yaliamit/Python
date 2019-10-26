@@ -83,7 +83,7 @@ class STVAE_mix_by_class(STVAE_mix):
         rcs=rc.item()
         ls=loss.item()
 
-        return ls,rcs
+        return rcs,ls
 
 
     def run_epoch(self, train, epoch,num, MU, LOGVAR,PI, type='test',fout=None):
