@@ -75,6 +75,7 @@ w=train[0].shape[2]
 model=locals()['STVAE'+opt_post+opt_mix+opt_class](h, w,  device, args).to(device)
 tot_pars=0
 
+
 for keys, vals in model.state_dict().items():
     fout.write(keys+','+str(np.array(vals.shape))+'\n')
     tot_pars+=np.prod(np.array(vals.shape))
