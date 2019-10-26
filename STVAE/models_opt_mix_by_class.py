@@ -26,24 +26,31 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
 
     def forward(self,data,targ):
 
-        pit=torch.softmax(self.pi, dim=1)
-        return self.get_loss(data,targ, self.mu, self.logvar, pit)
+       pit=torch.softmax(self.pi, dim=1)
+       return self.get_loss(data,targ, self.mu, self.logvar, pit)
+
+
 
     def compute_loss_and_grad(self,data, targ, type, optim, opt='par'):
 
-        optim.zero_grad()
-
-        recon_loss, tot= self.forward(data,targ)
-
-        loss = recon_loss + tot
 
 
-        if (type == 'train' or opt=='mu'):
-            loss.backward()
-            optim.step()
+        recon_loss,tot=self.forward(data,targ)
+        ls=0.
+        rcs=0.
+        for rc,to in zip(recon_loss,tot):
 
-        ls=loss.item()
-        rcs=recon_loss.item()
+            optim.zero_grad()
+
+            tloss = rc+to
+
+
+            if (type == 'train' or opt=='mu'):
+                tloss.backward(retain_graph=True)
+                optim.step()
+
+            ls+=tloss.detach()
+            rcs+=rc.detach()
 
         return rcs, ls
 

@@ -94,8 +94,8 @@ if (args.run_existing):
         model.run_epoch_classify(test, 0,fout=fout, num_mu_iter=args.nti)
 else:
 
-    iic = np.argsort(np.argmax(train[1], axis=1))
-    train = [train[0][iic], train[1][iic]]
+    #iic = np.argsort(np.argmax(train[1], axis=1))
+    #train = [train[0][iic], train[1][iic]]
 
     trainMU, trainLOGVAR, trPI = model.initialize_mus(train[0], args.OPT)
     valMU, valLOGVAR, valPI = model.initialize_mus(val[0], args.OPT)

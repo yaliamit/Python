@@ -50,14 +50,14 @@ class STVAE_mix_by_class(STVAE_mix):
             mu=mu.reshape(-1,self.n_class,self.n_mix_perclass*self.s_dim)
             logvar=logvar.reshape(-1,self.n_class,self.n_mix_perclass*self.s_dim)
             rho=self.rho.reshape(self.n_mix_perclass,self.n_class)
-            tot=0
-            recloss=0
+            tot=[]
+            recloss=[]
 
             for c in range(self.n_class):
                 ind = (targ == c)
-                tot += self.dens_apply(mu[ind,c,:],logvar[ind,c,:],lpi[ind,c,:],pi[ind,c,:],
-                                       rho[:,c])
-                recloss+=self.mixed_loss(x[ind,c,:,:].transpose(0,1),data[ind],pi[ind,c,:])
+                tot += [self.dens_apply(mu[ind,c,:],logvar[ind,c,:],lpi[ind,c,:],pi[ind,c,:],
+                                       rho[:,c])]
+                recloss+=[self.mixed_loss(x[ind,c,:,:].transpose(0,1),data[ind],pi[ind,c,:])]
         else:
             tot = self.dens_apply(mu, logvar, lpi, pi, self.rho)
             recloss = self.mixed_loss(x, data, pi)
