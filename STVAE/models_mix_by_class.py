@@ -71,18 +71,18 @@ class STVAE_mix_by_class(STVAE_mix):
 
     def compute_loss_and_grad(self,data,targ, type):
 
+        recloss, tot = self.forward(data, targ)
+
         self.optimizer.zero_grad()
-
-        recloss, tot = self.forward(data,targ)
-
-        loss = recloss + tot
-
-
+        rc = torch.sum(recloss)
+        to=torch.sum(tot)
+        loss=rc+to
         if (type == 'train'):
             loss.backward()
             self.optimizer.step()
+        rcs=recloss.item()
+        ls=loss.item()
 
-        return recloss.item(), loss.item()
 
     def run_epoch(self, train, epoch,num, MU, LOGVAR,PI, type='test',fout=None):
 
