@@ -15,6 +15,9 @@ from models import  get_scheduler
 import aux
 from class_on_hidden import train_new
 
+
+
+
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
@@ -66,6 +69,7 @@ if args.cl is not None:
 train, val, test, image_dim = get_data(PARS)
 
 
+
 h=train[0].shape[1]
 w=train[0].shape[2]
 model=locals()['STVAE'+opt_post+opt_mix+opt_class](h, w,  device, args).to(device)
@@ -86,23 +90,6 @@ if (args.run_existing):
     else:
         #aux.make_images(test,model,ex_file,args)
         model.run_epoch_classify(test, 0,fout=fout, num_mu_iter=args.nti)
-
-        # if (not args.sample):
-        #     aux.show_reconstructed_images(test,model,ex_file,args.nti)
-        #     if args.n_mix>0:
-        #         for clust in range(args.n_mix):
-        #             aux.show_sampled_images(model,ex_file,clust)
-        # else:
-        #     XXX=[]
-        #     for j in range(np.int32(10000/model.bsz)):
-        #         X = model.sample_from_z_prior(theta=None, clust=None)
-        #         XX = X.cpu().detach().numpy()
-        #         XXX+=[XX]
-        #     XXX=np.concatenate(XXX,axis=0)
-        #     np.save(ex_file,XXX)
-        #     print("Hello")
-
-
 else:
     trainMU, trainLOGVAR, trPI = model.initialize_mus(train[0], args.OPT)
     valMU, valLOGVAR, valPI = model.initialize_mus(val[0], args.OPT)
