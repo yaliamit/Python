@@ -11,3 +11,4 @@
 --lr=.002
 --nval=0
 --optimizer=Adam
+--mu_lr=[.01,.01]
