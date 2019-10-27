@@ -73,7 +73,7 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
             mulr=self.mu_lr[0]
-            if (epoch>20):
+            if (epoch>200):
                 mulr=self.mu_lr[1]
             self.update_s(mu[j:j + batch_size, :], logvar[j:j + batch_size, :], pi[j:j + batch_size], mulr)
             for it in range(num_mu_iter):
