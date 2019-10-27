@@ -23,7 +23,7 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         elif (args.optimizer == 'Adadelta'):
             self.optimizer = optim.Adadelta(self.parameters())
 
-    def update_s(self, mu, logvar, pi, mu_lr, wd=1):
+    def update_s(self, mu, logvar, pi, mu_lr, wd=0):
 
         self.mu = torch.autograd.Variable(mu.to(self.dv), requires_grad=True)
         self.logvar = torch.autograd.Variable(logvar.to(self.dv), requires_grad=True)
