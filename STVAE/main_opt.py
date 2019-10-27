@@ -40,7 +40,7 @@ cll=''
 if (args.cl is not None):
     cll=str(args.cl)
 
-ex_file=opt_pre+opt_class+args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_mx_'+str(args.n_mix)+'_sd_'+str(args.sdim)+'_'+cll
+ex_file=opt_pre+opt_class+args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_mx_'+str(args.n_mix)+'_sd_'+str(args.sdim)+'_cl_'+cll
 
 use_gpu = args.gpu and torch.cuda.is_available()
 if (use_gpu and not args.CONS):
