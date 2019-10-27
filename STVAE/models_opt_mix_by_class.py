@@ -23,6 +23,12 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         elif (args.optimizer == 'Adadelta'):
             self.optimizer = optim.Adadelta(self.parameters())
 
+    def update_s(self, mu, logvar, pi, mu_lr, wd=1):
+
+        self.mu = torch.autograd.Variable(mu.to(self.dv), requires_grad=True)
+        self.logvar = torch.autograd.Variable(logvar.to(self.dv), requires_grad=True)
+        self.pi = torch.autograd.Variable(pi.to(self.dv), requires_grad=True)
+        self.optimizer_s = optim.Adam([self.mu, self.logvar, self.pi], mu_lr, weight_decay=wd)
 
     def forward(self,data,targ):
 
@@ -66,7 +72,10 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         for j in np.arange(0, len(y), self.bsz):
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
-            self.update_s(mu[j:j + batch_size, :], logvar[j:j + batch_size, :], pi[j:j + batch_size], self.mu_lr[0])
+            mulr=self.mu_lr[0]
+            if (epoch>20):
+                mulr=self.mu_lr[1]
+            self.update_s(mu[j:j + batch_size, :], logvar[j:j + batch_size, :], pi[j:j + batch_size], mulr)
             for it in range(num_mu_iter):
                 self.compute_loss_and_grad(data, target, type, self.optimizer_s, opt='mu')
             with torch.no_grad() if (type != 'train') else dummy_context_mgr():
