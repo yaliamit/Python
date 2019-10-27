@@ -35,24 +35,11 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
 
 
 
-        recon_loss,tot=self.forward(data,targ)
-        ls=0.
-        rcs=0.
+        rc,tot=self.forward(data,targ)
 
-        # if (opt=='mu'):
-        #     for rc,to in zip(recon_loss,tot):
-        #
-        #         optim.zero_grad()
-        #         tloss = rc+to
-        #         tloss.backward(retain_graph=True)
-        #         optim.step()
-        #     ls+=tloss.detach()
-        #     rcs+=rc.detach()
-        # else:
         self.optimizer.zero_grad()
-        rc = torch.sum(torch.stack(recon_loss))
-        to = torch.sum(torch.stack(tot))
-        loss = rc + to
+
+        loss = rc + tot
         if (type == 'train' or opt=='mu'):
             loss.backward()
             self.optimizer.step()
