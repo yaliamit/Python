@@ -35,8 +35,12 @@ if (args.n_mix>=1):
 if (args.MM):
     mm_pre='_MM'
 if (args.n_class>0):
-    opt_class='_by_class'
-ex_file=opt_pre+opt_class+args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_mx_'+str(args.n_mix)+'_sd_'+str(args.sdim)+'_'+args.optimizer+mm_pre
+    opt_class='by_class_'
+cll=''
+if (args.cl is not None):
+    cll=str(args.cl)
+
+ex_file=opt_pre+opt_class+args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_mx_'+str(args.n_mix)+'_sd_'+str(args.sdim)+'_'+cll
 
 use_gpu = args.gpu and torch.cuda.is_available()
 if (use_gpu and not args.CONS):
