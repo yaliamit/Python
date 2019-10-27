@@ -39,25 +39,25 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         ls=0.
         rcs=0.
 
-        if (opt=='mu'):
-            for rc,to in zip(recon_loss,tot):
-
-                optim.zero_grad()
-                tloss = rc+to
-                tloss.backward(retain_graph=True)
-                optim.step()
-            ls+=tloss.detach()
-            rcs+=rc.detach()
-        else:
-            self.optimizer.zero_grad()
-            rc = torch.sum(torch.stack(recon_loss))
-            to = torch.sum(torch.stack(tot))
-            loss = rc + to
-            if (type == 'train'):
-                loss.backward()
-                self.optimizer.step()
-            rcs = rc.item()
-            ls = loss.item()
+        # if (opt=='mu'):
+        #     for rc,to in zip(recon_loss,tot):
+        #
+        #         optim.zero_grad()
+        #         tloss = rc+to
+        #         tloss.backward(retain_graph=True)
+        #         optim.step()
+        #     ls+=tloss.detach()
+        #     rcs+=rc.detach()
+        # else:
+        self.optimizer.zero_grad()
+        rc = torch.sum(torch.stack(recon_loss))
+        to = torch.sum(torch.stack(tot))
+        loss = rc + to
+        if (type == 'train' or opt=='mu'):
+            loss.backward()
+            self.optimizer.step()
+        rcs = rc.item()
+        ls = loss.item()
 
         return rcs, ls
 
