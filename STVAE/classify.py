@@ -28,7 +28,7 @@ def run_classify(train,opt_pre,opt_post,opt_mix,opt_class,device,args,fout,locs,
         V=run_epoch_classify(model,train,args.nti)
         VV+=[V]
     VVV=np.stack(VV,axis=1)
-    hy=np.argmin(VVV)
+    hy=np.argmin(VVV,axis=1)
     y = np.argmax(train[1], axis=1)
     acc=np.mean(np.equal(hy,y))
     fout.write('====> {} Accuracy {:.4F}\n'.format(type,acc))
