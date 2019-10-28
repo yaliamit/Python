@@ -1,7 +1,7 @@
 import torch
 from torch import nn, optim
 import numpy as np
-import models_mix_try
+import models_mix
 
 import contextlib
 
@@ -9,7 +9,7 @@ import contextlib
 def dummy_context_mgr():
     yield None
 
-class STVAE_OPT_mix(models_mix_try.STVAE_mix):
+class STVAE_OPT_mix(models_mix.STVAE_mix):
 
     def __init__(self, x_h, x_w, device, args):
         super(STVAE_OPT_mix, self).__init__(x_h, x_w, device, args)
@@ -109,10 +109,18 @@ class STVAE_OPT_mix(models_mix_try.STVAE_mix):
         ii = torch.argmax(self.pi, dim=1)
         jj = torch.arange(0, num_inp, dtype=torch.int64).to(self.dv)
         kk = ii + jj * self.n_mix
-        s_mu = (self.mu).view(-1, self.n_mix, self.s_dim).transpose(0,1)
-        recon_batch=self.decoder_and_trans(s_mu)
+        ss_mu = (self.mu).view(-1, self.n_mix, self.s_dim).transpose(0,1)
+        recon_batch=self.decoder_and_trans(ss_mu)
+
+        tpi=torch.softmax(self.pi, dim=1)
+        lpi = torch.log(tpi)
+        tot = self.dens_apply(self.mu, self.logvar, lpi, self.pi, self.rho)
+        recloss = self.mixed_loss(recon_batch, input, tpi)
+        print('LOSS', (tot + recloss)/num_inp)
         #recon_loss, loss, recon_batch = self.compute_loss_and_grad(data, 'test', self.optimizer)
+        recon_batch = recon_batch.transpose(0, 1)
         recon = recon_batch.reshape(self.n_mix * num_inp, -1)
+
         rr = recon[kk]
         return rr
     

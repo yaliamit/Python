@@ -3,7 +3,7 @@ import torch.nn.functional as F
 from torch import nn, optim
 import numpy as np
 import models
-from models_mix_try import STVAE_mix
+from models_mix import STVAE_mix
 
 
 class STVAE_mix_by_class(STVAE_mix):

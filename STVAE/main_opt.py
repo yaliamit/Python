@@ -1,6 +1,6 @@
 import torch
 from models_opt import STVAE_OPT
-from models_mix_try import STVAE_mix
+from models_mix import STVAE_mix
 from models import STVAE
 from models_opt_mix import STVAE_OPT_mix
 from models_mix_by_class import STVAE_mix_by_class
@@ -41,7 +41,8 @@ cll=''
 if (args.cl is not None):
     cll=str(args.cl)
 
-ex_file=opt_pre+opt_class+args.type + '_' + args.transformation + '_' + str(args.num_hlayers)+'_mx_'+str(args.n_mix)+'_sd_'+str(args.sdim)+'_cl_'+cll
+ex_file=opt_pre+opt_class+args.type + '_' + args.transformation + \
+        '_' + str(args.num_hlayers)+'_mx_'+str(args.n_mix)+'_sd_'+str(args.sdim)+'_cl_'+cll
 
 use_gpu = args.gpu and torch.cuda.is_available()
 if (use_gpu and not args.CONS):
@@ -97,8 +98,8 @@ if (args.run_existing):
     #if (args.classify):
     #   train_new(model,args,train,test,device)
     #else:
-        #aux.make_images(test,model,ex_file,args)
-    model.run_epoch_classify(test, 0,fout=fout, num_mu_iter=args.nti)
+    aux.make_images(test,model,ex_file,args)
+    #model.run_epoch_classify(test, 0,fout=fout, num_mu_iter=args.nti)
 else:
 
     #iic = np.argsort(np.argmax(train[1], axis=1))

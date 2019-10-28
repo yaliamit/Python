@@ -1,6 +1,6 @@
 import torch
 from models_opt import STVAE_OPT
-from models_mix_try import STVAE_mix
+from models_mix import STVAE_mix
 from models import STVAE
 from models_opt_mix import STVAE_OPT_mix
 from models_mix_by_class import STVAE_mix_by_class
@@ -20,6 +20,7 @@ def classify(train,test,image_dim,opt_pre,opt_post,opt_mix,opt_class,device,args
 def run_classify(train,opt_pre,opt_post,opt_mix,opt_class,device,args,fout,locs,type):
     VV=[]
     for cl in range(10):
+        print(cl)
         h=train[0].shape[1]
         w=train[0].shape[2]
         model=locs['STVAE'+opt_post+opt_mix+opt_class](h, w,  device, args).to(device)
@@ -52,14 +53,13 @@ def run_epoch_classify(model, train, num_mu_iter=10):
                 for it in range(num_mu_iter):
                     model.compute_loss_and_grad(data, 'test', model.optimizer_s, opt='mu')
                 s_mu = model.mu.view(-1, model.n_mix, model.s_dim).transpose(0,1)
-                pi=model.pi
+                tpi=model.pi
             else:
-                s_mu, s_var, pi = model.encoder_mix(data.view(-1, model.x_dim))
+                s_mu, s_var, tpi = model.encoder_mix(data.view(-1, model.x_dim))
                 s_mu = s_mu.view(-1, model.n_mix, model.s_dim).transpose(0,1)
-
             with torch.no_grad():
                 recon_batch = model.decoder_and_trans(s_mu)
-                b = model.mixed_loss_pre(recon_batch, data, pi.shape[1])
+                b = model.mixed_loss(recon_batch, data, tpi)
                 vy, by= torch.min(b,1)
                 V+=[vy.detach().cpu().numpy()]
 

@@ -57,7 +57,7 @@ class bias(nn.Module):
         super(bias,self).__init__()
 
         self.dim=dim
-        self.bias=nn.Parameter((torch.rand(self.dim) - .5) / np.sqrt(self.dim))
+        self.bias=nn.Parameter(6*(torch.rand(self.dim) - .5)/ np.sqrt(self.dim))
 
     def forward(self,z):
         return(self.bias.repeat(z.shape[0],1))
@@ -68,6 +68,13 @@ class ident(nn.Module):
 
     def forward(self,z):
         return(torch.ones(z.shape[0]))
+
+class iden_copy(nn.Module):
+    def __init__(self):
+        super(iden_copy,self).__init__()
+
+    def forward(self,z):
+        return(z)
 
 # Each set of s_dim normals gets multiplied by its own matrix to correlate
 class fromNorm_mix(nn.Module):
@@ -98,6 +105,8 @@ class fromNorm_mix(nn.Module):
             self.z2z=nn.ModuleList(ident() for i in range(self.n_mix))
         if (self.type == 'tvae'):
             self.u2u = nn.ModuleList([nn.Linear(self.u_dim, self.u_dim, bias=False) for i in range(self.n_mix)])
+            for ll in self.u2u:
+                ll.weight.data.fill_(0.)
 
     def forward(self,z,u):
 
@@ -129,11 +138,21 @@ class decoder_mix(nn.Module):
         if (self.num_layers==1):
             if self.h_dim_dec is None:
                 self.h2hd = nn.Linear(self.h_dim, self.h_dim)
-                self.h2x = nn.Linear(self.h_dim, self.x_dim)
+
             else:
                 self.h2hd = nn.ModuleList([nn.Linear(self.h_dim_dec,self.h_dim) for i in range(self.n_mix)])
-                self.h2x = nn.ModuleList([nn.Linear(self.h_dim, self.x_dim) for i in range(self.n_mix)])
+        # The bias term estimated in fromNorm is the template.
 
+        if self.h_dim_dec is None:
+            if (self.h_dim==self.x_dim):
+                self.h2x=nn.Identity()
+            else:
+                self.h2x = nn.Linear(self.h_dim, self.x_dim)
+        else:
+            if (self.h_dim==self.x_dim):
+                self.h2x=nn.ModuleList(nn.Identity() for i in range(self.n_mix))
+            else:
+                self.h2x = nn.ModuleList([nn.Linear(self.h_dim, self.x_dim) for i in range(self.n_mix)])
         self.fromNorm_mix = fromNorm_mix(self)
 
     def forward(self,s):
@@ -210,17 +229,12 @@ class STVAE_mix(models.STVAE):
         sd=torch.exp(s_logvar/2)
         var=sd*sd
 
-        #ss=-.5*((s-s_mu)*(s-s_mu)/var+s_logvar)
-        #ss=torch.sum(ss,dim=2)+lpi
-        #posterior=torch.sum(pi*ss)
         # Sum along last coordinate to get negative log density of each component.
         KD_dens=-0.5 * torch.sum(1 + s_logvar - s_mu ** 2 - var, dim=2)
         KD_disc=lpi-rho+torch.logsumexp(rho,0)
         tot=torch.sum(pi*(KD_dens+KD_disc))
-        #pr=-.5*torch.sum((s*s),dim=2)+self.rho-torch.logsumexp(self.rho,0)
-        #prior=-torch.sum(pi*pr)
-        #prior=0; posterior=0
-        return tot #prior, posterior
+
+        return tot
 
     def mixed_loss_pre(self,x,data,n_mix):
         b = []
@@ -307,14 +321,19 @@ class STVAE_mix(models.STVAE):
         inp = input.to(self.dv)
         s_mu, s_var, pi = self.encoder_mix(inp.view(-1, self.x_dim))
 
-        s_mu = s_mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
+        ss_mu = s_mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
         ii = torch.argmax(pi, dim=1)
         jj = torch.arange(0,num_inp,dtype=torch.int64).to(self.dv)
         kk = ii+jj*self.n_mix
-        recon_batch = self.decoder_and_trans(s_mu)
+        lpi = torch.log(pi)
+        recon_batch = self.decoder_and_trans(ss_mu)
+        tot = self.dens_apply(s_mu, s_var, lpi, pi, self.rho)
+        recloss = self.mixed_loss(recon_batch, input, pi)
+        print('LOSS', (tot + recloss)/num_inp)
         recon_batch = recon_batch.transpose(0, 1)
         recon=recon_batch.reshape(self.n_mix*num_inp,-1)
         rr=recon[kk]
+
 
         return rr
 
