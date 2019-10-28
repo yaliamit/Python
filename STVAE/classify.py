@@ -51,14 +51,15 @@ def run_epoch_classify(model, train, num_mu_iter=10):
                 model.update_s(mu[j:j + model.bsz, :], logvar[j:j + model.bsz, :], pi[j:j + model.bsz], model.mu_lr[0])
                 for it in range(num_mu_iter):
                     model.compute_loss_and_grad(data, 'test', model.optimizer_s, opt='mu')
-                s_mu = model.mu.view(-1, model.n_mix, model.s_dim)
+                s_mu = model.mu.view(-1, model.n_mix, model.s_dim).transpose(0,1)
+                pi=model.pi
             else:
                 s_mu, s_var, pi = model.encoder_mix(data.view(-1, model.x_dim))
-                s_mu = s_mu.view(-1, model.n_mix, model.s_dim)
+                s_mu = s_mu.view(-1, model.n_mix, model.s_dim).transpose(0,1)
 
             with torch.no_grad():
                 recon_batch = model.decoder_and_trans(s_mu)
-                b = model.mixed_loss_pre(recon_batch, data, model.pi.shape[1])
+                b = model.mixed_loss_pre(recon_batch, data, pi.shape[1])
                 vy, by= torch.min(b,1)
                 V+=[vy.detach().cpu().numpy()]
 

@@ -1,7 +1,7 @@
 import torch
 from torch import nn, optim
 import numpy as np
-import models_mix
+import models_mix_try
 
 import contextlib
 
@@ -9,7 +9,7 @@ import contextlib
 def dummy_context_mgr():
     yield None
 
-class STVAE_OPT_mix(models_mix.STVAE_mix):
+class STVAE_OPT_mix(models_mix_try.STVAE_mix):
 
     def __init__(self, x_h, x_w, device, args):
         super(STVAE_OPT_mix, self).__init__(x_h, x_w, device, args)

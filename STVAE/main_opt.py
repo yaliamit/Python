@@ -75,6 +75,7 @@ train, val, test, image_dim = get_data(PARS)
 
 if (args.classify):
     classify(train,test,image_dim,opt_pre,opt_post,opt_mix,opt_class,device,args,fout,locals())
+    exit()
 
 h=train[0].shape[1]
 w=train[0].shape[2]
