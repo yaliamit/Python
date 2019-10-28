@@ -109,7 +109,7 @@ class STVAE_OPT_mix(models_mix_try.STVAE_mix):
         ii = torch.argmax(self.pi, dim=1)
         jj = torch.arange(0, num_inp, dtype=torch.int64).to(self.dv)
         kk = ii + jj * self.n_mix
-        s_mu = (self.mu).view(-1, self.n_mix, self.s_dim)
+        s_mu = (self.mu).view(-1, self.n_mix, self.s_dim).transpose(0,1)
         recon_batch=self.decoder_and_trans(s_mu)
         #recon_loss, loss, recon_batch = self.compute_loss_and_grad(data, 'test', self.optimizer)
         recon = recon_batch.reshape(self.n_mix * num_inp, -1)
