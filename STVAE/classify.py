@@ -60,7 +60,7 @@ def run_epoch_classify(model, train, num_mu_iter=10):
                 recon_batch = model.decoder_and_trans(s_mu)
                 b = model.mixed_loss_pre(recon_batch, data, model.pi.shape[1])
                 vy, by= torch.min(b,1)
-                V+=[vy.detach().numpy()]
+                V+=[vy.detach().cpu().numpy()]
 
 
         V=np.concatenate(V)
