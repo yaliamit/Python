@@ -328,7 +328,7 @@ class STVAE_mix(models.STVAE):
         lpi = torch.log(pi)
         recon_batch = self.decoder_and_trans(ss_mu)
         tot = self.dens_apply(s_mu, s_var, lpi, pi, self.rho)
-        recloss = self.mixed_loss(recon_batch, input, pi)
+        recloss = self.mixed_loss(recon_batch, inp, pi)
         print('LOSS', (tot + recloss)/num_inp)
         recon_batch = recon_batch.transpose(0, 1)
         recon=recon_batch.reshape(self.n_mix*num_inp,-1)

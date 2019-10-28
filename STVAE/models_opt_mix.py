@@ -115,7 +115,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         tpi=torch.softmax(self.pi, dim=1)
         lpi = torch.log(tpi)
         tot = self.dens_apply(self.mu, self.logvar, lpi, self.pi, self.rho)
-        recloss = self.mixed_loss(recon_batch, input, tpi)
+        recloss = self.mixed_loss(recon_batch, data, tpi)
         print('LOSS', (tot + recloss)/num_inp)
         #recon_loss, loss, recon_batch = self.compute_loss_and_grad(data, 'test', self.optimizer)
         recon_batch = recon_batch.transpose(0, 1)
