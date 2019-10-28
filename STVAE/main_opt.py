@@ -14,6 +14,7 @@ from Conv_data import get_data
 from models import  get_scheduler
 import aux
 from class_on_hidden import train_new
+from classify import classify
 
 
 
@@ -72,7 +73,8 @@ if args.cl is not None:
 
 train, val, test, image_dim = get_data(PARS)
 
-
+if (args.classify):
+    classify(train,test,image_dim,opt_pre,opt_post,opt_mix,opt_class,device,args,fout,locals())
 
 h=train[0].shape[1]
 w=train[0].shape[2]
@@ -91,11 +93,11 @@ if (args.run_existing):
     testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
     #if (not args.sample):
     #    model.run_epoch(test,0,args.nti,testMU, testLOGVAR,testPI, type='test',fout=fout)
-    if (args.classify):
-        train_new(model,args,train,test,device)
-    else:
+    #if (args.classify):
+    #   train_new(model,args,train,test,device)
+    #else:
         #aux.make_images(test,model,ex_file,args)
-        model.run_epoch_classify(test, 0,fout=fout, num_mu_iter=args.nti)
+    model.run_epoch_classify(test, 0,fout=fout, num_mu_iter=args.nti)
 else:
 
     #iic = np.argsort(np.argmax(train[1], axis=1))

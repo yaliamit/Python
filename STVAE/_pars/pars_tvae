@@ -11,4 +11,3 @@
 --lr=.002
 --nval=0
 --optimizer=Adam
-
