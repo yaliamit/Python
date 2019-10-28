@@ -1,6 +1,7 @@
 import os
 import socket
-
+import sys
+l=len(sys.argv)
 if ('marx' in socket.gethostname()):
     scr = 'mrunber.py'
 else:
