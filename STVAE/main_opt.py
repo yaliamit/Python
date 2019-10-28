@@ -73,7 +73,7 @@ if args.cl is not None:
     PARS['one_class']=args.cl
 
 train, val, test, image_dim = get_data(PARS)
-
+print('num_train',train[0].shape[0])
 if (args.classify):
     classify(train,test,image_dim,opt_pre,opt_post,opt_mix,opt_class,device,args,fout,locals())
     exit()
