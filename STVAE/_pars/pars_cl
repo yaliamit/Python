@@ -1,0 +1,13 @@
+--transformation=aff
+--type=vae
+--sdim=8
+--hdim=256
+--num_hlayers=0
+--nepoch=50
+--seed=3251234
+--num_train=60000
+--mb_size=500
+--model=base
+--lr=.002
+--nval=0
+--optimizer=Adam
