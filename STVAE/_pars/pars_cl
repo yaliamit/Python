@@ -8,5 +8,6 @@
 --hdim_dec=64
 --mb_size=100
 --lr=.005
+--nval=0
 --nti=500
 --CONS

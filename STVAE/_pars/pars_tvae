@@ -9,5 +9,5 @@
 --mb_size=500
 --model=base
 --lr=.002
---nval=0
+
 --optimizer=Adam
