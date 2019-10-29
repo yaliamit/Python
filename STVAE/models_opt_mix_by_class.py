@@ -41,10 +41,10 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
     def compute_loss_and_grad(self,data, targ, type, optim, opt='par'):
 
 
-
+        optim.zero_grad()
+        
         rc,tot=self.forward(data,targ)
 
-        self.optimizer.zero_grad()
 
         loss = rc + tot
         if (type == 'train' or opt=='mu'):

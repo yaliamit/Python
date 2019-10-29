@@ -14,6 +14,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
     def __init__(self, x_h, x_w, device, args):
         super(STVAE_OPT_mix, self).__init__(x_h, x_w, device, args)
 
+        self.opt=True
         self.mu_lr=args.mu_lr
         self.eyy=torch.eye(self.n_mix).to(self.dv)
         if (args.optimizer=='Adam'):
@@ -33,66 +34,66 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         self.pi = torch.autograd.Variable(pi.to(self.dv), requires_grad=True)
         self.optimizer_s = optim.Adam([self.mu, self.logvar,self.pi], lr=mu_lr,weight_decay=wd)
 
-    def forward(self,data):
-
-        pit=torch.softmax(self.pi, dim=1)
-        return self.get_loss(data,self.mu, self.logvar, pit) #recon_loss, tot
-
-
-    def compute_loss_and_grad(self,data, type, optim, opt='par'):
-
-        optim.zero_grad()
-
-        recon_loss, tot= self.forward(data)
-
-        loss = recon_loss + tot
-
-        if (type == 'train' or opt=='mu'):
-            loss.backward()
-            optim.step()
-
-        ls=loss.item()
-        rcs=recon_loss.item()
-
-        return rcs, ls
-
-    def run_epoch(self, train,  epoch,num_mu_iter,MU, LOGVAR, PI, type='test',fout=None):
-
-        if (type=='train'):
-            self.train()
-
-        tr_recon_loss = 0; tr_full_loss=0
-        ii = np.arange(0, train[0].shape[0], 1)
-        #if (type=='train'):
-        #   np.random.shuffle(ii)
-        tr =train[0][ii].transpose(0,3,1,2)
-        y = train[1][ii]
-        mu=MU[ii]
-        logvar=LOGVAR[ii]
-        pi=PI[ii]
-        batch_size = self.bsz
-        for j in np.arange(0, len(y), batch_size):
-
-            data = torch.tensor(tr[j:j + batch_size]).float()
-            data = data.to(self.dv)
-            self.update_s(mu[j:j+batch_size, :], logvar[j:j+batch_size, :], pi[j:j+batch_size],self.mu_lr[0])
-            for it in range(num_mu_iter):
-               self.compute_loss_and_grad(data, type,self.optimizer_s,opt='mu')
-            with torch.no_grad() if (type !='train') else dummy_context_mgr():
-                recon_loss, loss = self.compute_loss_and_grad(data,type,self.optimizer)
-            mu[j:j + batch_size] = self.mu.data
-            logvar[j:j + batch_size] = self.logvar.data
-            pi[j:j + batch_size] = self.pi.data
-            del self.mu, self.logvar, self.pi
-            tr_recon_loss += recon_loss
-            tr_full_loss += loss
-
-        if (fout is  None):
-            print('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}'.format(type,
-                    epoch, tr_recon_loss/len(tr), tr_full_loss/len(tr)))
-        else:
-            fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(type,
-                    epoch, tr_recon_loss/len(tr), tr_full_loss/len(tr)))
-        return mu,logvar, pi
+    # def forward(self,data):
+    #
+    #     pit=torch.softmax(self.pi, dim=1)
+    #     return self.get_loss(data,self.mu, self.logvar, pit) #recon_loss, tot
+    #
+    #
+    # def compute_loss_and_grad(self,data, type, optim, opt='par'):
+    #
+    #     optim.zero_grad()
+    #
+    #     recon_loss, tot= self.forward(data)
+    #
+    #     loss = recon_loss + tot
+    #
+    #     if (type == 'train' or opt=='mu'):
+    #         loss.backward()
+    #         optim.step()
+    #
+    #     ls=loss.item()
+    #     rcs=recon_loss.item()
+    #
+    #     return rcs, ls
+    #
+    # def run_epoch(self, train,  epoch,num_mu_iter,MU, LOGVAR, PI, type='test',fout=None):
+    #
+    #     if (type=='train'):
+    #         self.train()
+    #
+    #     tr_recon_loss = 0; tr_full_loss=0
+    #     ii = np.arange(0, train[0].shape[0], 1)
+    #     #if (type=='train'):
+    #     #   np.random.shuffle(ii)
+    #     tr =train[0][ii].transpose(0,3,1,2)
+    #     y = train[1][ii]
+    #     mu=MU[ii]
+    #     logvar=LOGVAR[ii]
+    #     pi=PI[ii]
+    #     batch_size = self.bsz
+    #     for j in np.arange(0, len(y), batch_size):
+    #         print(j)
+    #         data = torch.tensor(tr[j:j + batch_size]).float()
+    #         data = data.to(self.dv)
+    #         self.update_s(mu[j:j+batch_size, :], logvar[j:j+batch_size, :], pi[j:j+batch_size],self.mu_lr[0])
+    #         for it in range(num_mu_iter):
+    #            self.compute_loss_and_grad(data, type,self.optimizer_s,opt='mu')
+    #         with torch.no_grad() if (type !='train') else dummy_context_mgr():
+    #             recon_loss, loss = self.compute_loss_and_grad(data,type,self.optimizer)
+    #         mu[j:j + batch_size] = self.mu.data
+    #         logvar[j:j + batch_size] = self.logvar.data
+    #         pi[j:j + batch_size] = self.pi.data
+    #         del self.mu, self.logvar, self.pi
+    #         tr_recon_loss += recon_loss
+    #         tr_full_loss += loss
+    #
+    #     if (fout is  None):
+    #         print('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}'.format(type,
+    #                 epoch, tr_recon_loss/len(tr), tr_full_loss/len(tr)))
+    #     else:
+    #         fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(type,
+    #                 epoch, tr_recon_loss/len(tr), tr_full_loss/len(tr)))
+    #     return mu,logvar, pi
 
 

@@ -5,6 +5,10 @@ import numpy as np
 import models
 from Sep import encoder_mix_sep
 
+import contextlib
+@contextlib.contextmanager
+def dummy_context_mgr():
+    yield None
 
 # Create i.i.d normals for each mixture component and a logit for weights
 class toNorm_mix(nn.Module):
@@ -80,6 +84,7 @@ class iden_copy(nn.Module):
 class fromNorm_mix(nn.Module):
     def __init__(self,model):
         super(fromNorm_mix,self).__init__()
+
         self.z2h=[]
         self.n_mix=model.n_mix
         self.z_dim=model.z_dim
@@ -185,7 +190,8 @@ class STVAE_mix(models.STVAE):
     def __init__(self, x_h, x_w, device, args):
         super(STVAE_mix, self).__init__(x_h, x_w, device, args)
 
-
+        self.opt = args.OPT
+        self.mu_lr = args.mu_lr
         self.n_mix = args.n_mix
         self.sep=args.sep
         self.num_hlayers=args.num_hlayers
@@ -203,6 +209,15 @@ class STVAE_mix(models.STVAE):
             self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
         elif (args.optimizer=='Adadelta'):
             self.optimizer = optim.Adadelta(self.parameters())
+
+    def update_s(self,mu,logvar,pi,mu_lr,wd=0):
+        # mu_lr=self.mu_lr[0]
+        # if epoch>200:
+        #     mu_lr=self.mu_lr[1]
+        self.mu=torch.autograd.Variable(mu.to(self.dv), requires_grad=True)
+        self.logvar = torch.autograd.Variable(logvar.to(self.dv), requires_grad=True)
+        self.pi = torch.autograd.Variable(pi.to(self.dv), requires_grad=True)
+        self.optimizer_s = optim.Adam([self.mu, self.logvar,self.pi], lr=mu_lr,weight_decay=wd)
 
 
     def decoder_and_trans(self,s):
@@ -272,26 +287,32 @@ class STVAE_mix(models.STVAE):
 
     def forward(self, data):
 
-        mu, logvar, pi = self.encoder_mix(data.view(-1, self.x_dim))
+        if (self.opt):
+            pi = torch.softmax(self.pi, dim=1)
+            logvar=self.logvar
+            mu=self.mu
+        else:
+            mu, logvar, pi = self.encoder_mix(data.view(-1, self.x_dim))
 
         return self.get_loss(data,mu,logvar,pi)
 
-    def compute_loss_and_grad(self,data,type):
+    def compute_loss_and_grad(self,data,type,optim, opt='par'):
 
-        self.optimizer.zero_grad()
+        optim.zero_grad()
 
         recloss, tot = self.forward(data)
 
         loss = recloss + tot #prior + post
 
 
-        if (type == 'train'):
+        if (type == 'train' or opt=='mu'):
             loss.backward()
-            self.optimizer.step()
+            optim.step()
 
         return recloss.item(), loss.item()
 
-    def run_epoch(self, train, epoch,num, MU, LOGVAR,PI, type='test',fout=None):
+    def run_epoch(self, train, epoch,num, MU, LOGVAR,PI,num_mu_iter=10, type='test',fout=None):
+
 
         if (type=='train'):
             self.train()
@@ -301,12 +322,24 @@ class STVAE_mix(models.STVAE):
         #   np.random.shuffle(ii)
         tr = train[0][ii].transpose(0, 3, 1, 2)
         y = train[1][ii]
-
+        mu = MU[ii]
+        logvar = LOGVAR[ii]
+        pi = PI[ii]
         for j in np.arange(0, len(y), self.bsz):
             #print(j)
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
-            recon_loss, loss=self.compute_loss_and_grad(data,type)
+            if self.opt:
+                self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], pi[j:j + self.bsz], self.mu_lr[0])
+                for it in range(num_mu_iter):
+                    self.compute_loss_and_grad(data, type, self.optimizer_s, opt='mu')
+            with torch.no_grad() if (type != 'train') else dummy_context_mgr():
+                recon_loss, loss=self.compute_loss_and_grad(data,type,self.optimizer)
+            if self.opt:
+                mu[j:j + self.bsz] = self.mu.data
+                logvar[j:j + self.bsz] = self.logvar.data
+                pi[j:j + self.bsz] = self.pi.data
+                del self.mu, self.logvar, self.pi
             tr_recon_loss += recon_loss
             tr_full_loss += loss
 
@@ -314,18 +347,18 @@ class STVAE_mix(models.STVAE):
         fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(type,
         epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
 
-        return MU, LOGVAR, PI
+        return mu, logvar, pi
 
     def recon(self,input,num_mu_iter=None):
 
-        opt = 'OPT' in (self.__class__.__name__)
-        if opt:
+
+        if self.opt:
             mu, logvar, ppi = self.initialize_mus(input, True)
 
         num_inp=input.shape[0]
         self.setup_id(num_inp)
         inp = input.to(self.dv)
-        if opt:
+        if self.opt:
             self.update_s(mu, logvar, ppi, self.mu_lr[0])
             for it in range(num_mu_iter):
                 self.compute_loss_and_grad(inp, 'test', self.optimizer_s, opt='mu')

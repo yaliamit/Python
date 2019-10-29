@@ -2,7 +2,7 @@ import torch
 from models_opt import STVAE_OPT
 from models_mix import STVAE_mix
 from models import STVAE
-from models_opt_mix import STVAE_OPT_mix
+#from models_opt_mix import STVAE_OPT_mix
 from models_mix_by_class import STVAE_mix_by_class
 from models_opt_mix_by_class import STVAE_OPT_mix_by_class
 import numpy as np
@@ -80,7 +80,10 @@ if (args.classify):
 
 h=train[0].shape[1]
 w=train[0].shape[2]
-model=locals()['STVAE'+opt_post+opt_mix+opt_class](h, w,  device, args).to(device)
+#model=locals()['STVAE'+opt_post+opt_mix+opt_class](h, w,  device, args).to(device)
+model=locals()['STVAE'+opt_mix+opt_class](h, w,  device, args).to(device)
+
+
 tot_pars=0
 
 
