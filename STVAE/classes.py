@@ -19,6 +19,6 @@ for cl in range(10):
     os.system(com)
     print(cl)
 
-com = 'python _scripts/'+scr+' main_opt.py _pars/pars_cl '+OPT+' --nti=500 --classify OUT_'+opt
+com = 'python _scripts/'+scr+' main_opt.py _pars/pars_cl '+OPT+' --nti=500 --num_train=1000 --mb_size=500 --classify OUT_'+opt
 print(com)
 os.system(com)
