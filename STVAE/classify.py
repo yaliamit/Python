@@ -34,6 +34,7 @@ def run_classify(train,opt_pre,opt_post,opt_mix,opt_class,device,args,fout,locs,
     VV=[]
     for cl in range(10):
         fout.write(str(cl)+'\n')
+        fout.flush()
         h=train[0].shape[1]
         w=train[0].shape[2]
         model=locs['STVAE'+opt_post+opt_mix+opt_class](h, w,  device, args).to(device)
@@ -60,6 +61,7 @@ def run_epoch_classify(model, train, num_mu_iter,fout):
         V=[]
         for j in np.arange(0, len(y), model.bsz):
             fout.write(str(j)+'\n')
+            fout.flush()
             data = torch.from_numpy(tr[j:j + model.bsz]).float().to(model.dv)
             if ('OPT' in model.__class__.__name__):
                 model.update_s(mu[j:j + model.bsz, :], logvar[j:j + model.bsz, :], pi[j:j + model.bsz], model.mu_lr[0])
