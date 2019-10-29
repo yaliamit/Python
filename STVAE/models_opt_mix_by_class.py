@@ -95,32 +95,6 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         return mu, logvar, pi
 
 
-    # def recon(self,input,num_mu_iter,cl):
-    #
-    #     num_inp=input.shape[0]
-    #     self.setup_id(num_inp)
-    #     inp = input.to(self.dv)
-    #
-    #     mu, logvar, pi = self.initialize_mus(input, True)
-    #     self.update_s(mu, logvar, pi, self.mu_lr[0])
-    #     for it in range(num_mu_iter):
-    #         self.compute_loss_and_grad(inp, None, 'test', self.optimizer_s, opt='mu')
-    #     s_mu = self.mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
-    #     pi = self.pi.view(-1,self.n_class,self.n_mix_perclass)
-    #     pi= pi[:,cl,:]
-    #     recon_batch = self.decoder_and_trans(s_mu)
-    #     recon_batch=recon_batch.transpose(0,1)
-    #     recon_batch=recon_batch.reshape(-1,self.n_class,self.n_mix_perclass,recon_batch.shape[-1])
-    #     ii = torch.argmax(pi, dim=1)
-    #     recon_batch=recon_batch[:,cl,:,:]
-    #     jj = torch.arange(0,num_inp,dtype=torch.int64).to(self.dv)
-    #     kk = ii+jj*self.n_mix_perclass
-    #     recon=recon_batch.reshape(self.n_mix_perclass*num_inp,-1)
-    #     rr=recon[kk]
-    #
-    #     return rr
-
-
 def get_scheduler(args,model):
     scheduler=None
     if args.wd:
