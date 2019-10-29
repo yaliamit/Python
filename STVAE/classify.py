@@ -15,7 +15,7 @@ import time
 def classify(train,test,image_dim,opt_pre,opt_post,opt_mix,opt_class,device,args,fout,locs):
     run_classify(train, opt_pre, opt_post, opt_mix, opt_class, device, args, fout, locs,'train')
     run_classify(test, opt_pre, opt_post, opt_mix, opt_class, device, args, fout, locs,'test')
-
+    fout.write('DONE\n')
 
 def dens_apply(model,s_mu,s_logvar,lpi,pi,rho):
         n_mix=pi.shape[1]
