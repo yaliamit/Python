@@ -45,8 +45,7 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
 
         recon_loss, tot= self.forward(data)
 
-        loss = recon_loss + tot #prior + post
-
+        loss = recon_loss + tot
 
         if (type == 'train' or opt=='mu'):
             loss.backward()
