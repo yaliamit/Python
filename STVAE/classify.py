@@ -2,9 +2,9 @@ import torch
 from models_opt import STVAE_OPT
 from models_mix import STVAE_mix
 from models import STVAE
-from models_opt_mix import STVAE_OPT_mix
+#from models_opt_mix import STVAE_OPT_mix
 from models_mix_by_class import STVAE_mix_by_class
-from models_opt_mix_by_class import STVAE_OPT_mix_by_class
+#from models_opt_mix_by_class import STVAE_OPT_mix_by_class
 import numpy as np
 import os
 import sys
@@ -37,7 +37,7 @@ def run_classify(train,opt_pre,opt_post,opt_mix,opt_class,device,args,fout,locs,
         fout.flush()
         h=train[0].shape[1]
         w=train[0].shape[2]
-        model=locs['STVAE'+opt_post+opt_mix+opt_class](h, w,  device, args).to(device)
+        model=locs['STVAE'+opt_mix+opt_class](h, w,  device, args).to(device)
         ex_file = opt_pre + opt_class + args.type + '_' + args.transformation + '_' + str(args.num_hlayers) + '_mx_' + str(args.n_mix) + '_sd_' + str(args.sdim) + '_cl_' +str(cl)
         model.load_state_dict(torch.load(args.output_prefix + '_output/' + ex_file + '.pt', map_location=device))
         V=run_epoch_classify(model,train,args.nti,fout)
@@ -63,7 +63,7 @@ def run_epoch_classify(model, train, num_mu_iter,fout):
             fout.write(str(j)+'\n')
             fout.flush()
             data = torch.from_numpy(tr[j:j + model.bsz]).float().to(model.dv)
-            if ('OPT' in model.__class__.__name__):
+            if (model.opt):
                 model.update_s(mu[j:j + model.bsz, :], logvar[j:j + model.bsz, :], pi[j:j + model.bsz], model.mu_lr[0])
                 for it in range(num_mu_iter):
                     model.compute_loss_and_grad(data, 'test', model.optimizer_s, opt='mu')

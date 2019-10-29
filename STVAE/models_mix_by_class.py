@@ -10,18 +10,7 @@ import contextlib
 def dummy_context_mgr():
     yield None
 
-def dens_apply(model, s_mu, s_logvar, lpi, pi, rho):
-    n_mix = pi.shape[1]
-    s_mu = s_mu.view(-1, n_mix, model.s_dim)
-    s_logvar = s_logvar.view(-1, n_mix, model.s_dim)
-    sd = torch.exp(s_logvar / 2)
-    var = sd * sd
 
-    # Sum along last coordinate to get negative log density of each component.
-    KD_dens = -0.5 * torch.sum(1 + s_logvar - s_mu ** 2 - var, dim=2)
-    KD_disc = lpi - rho + torch.logsumexp(rho, 0)
-    KD = torch.sum(pi * (KD_dens + KD_disc), dim=1)
-    return KD
 
 class STVAE_mix_by_class(STVAE_mix):
 
@@ -38,6 +27,18 @@ class STVAE_mix_by_class(STVAE_mix):
         elif (args.optimizer == 'Adadelta'):
             self.optimizer = optim.Adadelta(self.parameters())
 
+    def dens_apply(self, s_mu, s_logvar, lpi, pi, rho):
+        n_mix = pi.shape[1]
+        s_mu = s_mu.view(-1, n_mix, self.s_dim)
+        s_logvar = s_logvar.view(-1, n_mix, self.s_dim)
+        sd = torch.exp(s_logvar / 2)
+        var = sd * sd
+
+        # Sum along last coordinate to get negative log density of each component.
+        KD_dens = -0.5 * torch.sum(1 + s_logvar - s_mu ** 2 - var, dim=2)
+        KD_disc = lpi - rho + torch.logsumexp(rho, 0)
+        KD = torch.sum(pi * (KD_dens + KD_disc), dim=1)
+        return KD
 
 
     def get_loss(self,data,targ,mu,logvar,pi):
@@ -177,7 +178,7 @@ class STVAE_mix_by_class(STVAE_mix):
             KD=[]
             BB=[]
             for c in range(self.n_class):
-                KD += [dens_apply(self,s_mu[:,c,:], s_var[:,c,:], lpi[:,c,:], tpi[:,c,:], rho[:,c])]
+                KD += [self.dens_apply(s_mu[:,c,:], s_var[:,c,:], lpi[:,c,:], tpi[:,c,:], rho[:,c])]
                 BB += [torch.logsumexp(lpi[:,c,:]+b[:,c,:],dim=1)]
             KD=torch.stack(KD,dim=1)
             BB=torch.stack(BB, dim=1)

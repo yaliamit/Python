@@ -1,6 +1,5 @@
 import torch
 import sys
-import models_opt_mix
 from torch import nn, optim
 import numpy as np
 import time
