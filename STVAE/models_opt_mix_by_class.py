@@ -3,6 +3,7 @@ from torch import nn, optim
 import numpy as np
 import models_mix_by_class
 from models_opt_mix import STVAE_OPT_mix
+from models_mix_by_class import dens_apply
 import contextlib
 @contextlib.contextmanager
 def dummy_context_mgr():
@@ -105,22 +106,25 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         tr = train[0][ii].transpose(0, 3, 1, 2)
         y = np.argmax(train[1][ii],axis=1)
         acc=0
-        #wd=0.
         for j in np.arange(0, len(y), self.bsz):
             print(j)
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], pi[j:j + self.bsz], self.mu_lr[0])
             for it in range(num_mu_iter):
                 self.compute_loss_and_grad(data, None, 'test', self.optimizer_s, opt='mu')
-
-            s_mu = self.mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
-            #l2_loss=wd*torch.sum(s_mu*s_mu,2)
+            s_mu = self.mu
+            s_var = self.logvar
+            ss_mu = self.mu.view(-1, self.n_mix, self.s_dim).transpose(0, 1)
+            tpi = torch.softmax(self.pi, dim=1)
             with torch.no_grad():
-                recon_batch = self.decoder_and_trans(s_mu)
-                b = self.mixed_loss_pre(recon_batch, data, self.pi.shape[1])
-                vy, by= torch.min(b,1)
-                by=np.int32(by.detach().cpu().numpy()/self.n_mix_perclass)
-
+                recon_batch = self.decoder_and_trans(ss_mu)
+                lpi = torch.log(tpi)
+                b = self.mixed_loss_pre(recon_batch, data)
+                KD = dens_apply(self,s_mu, s_var, lpi, tpi, self.rho)
+                recloss = torch.sum(tpi * b, dim=1)
+                rr = recloss + KD
+                vy, by= torch.min(rr,1)
+                by=np.int32(by.detach().cpu().numpy())
                 acc+=np.sum(np.equal(by,y[j:j+self.bsz]))
             print(np.float32(acc)/(j+self.bsz))
 

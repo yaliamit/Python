@@ -6,6 +6,20 @@ import models
 from models_mix import STVAE_mix
 
 
+
+def dens_apply(model, s_mu, s_logvar, lpi, pi, rho):
+    n_mix = pi.shape[1]
+    s_mu = s_mu.view(-1, n_mix, model.s_dim)
+    s_logvar = s_logvar.view(-1, n_mix, model.s_dim)
+    sd = torch.exp(s_logvar / 2)
+    var = sd * sd
+
+    # Sum along last coordinate to get negative log density of each component.
+    KD_dens = -0.5 * torch.sum(1 + s_logvar - s_mu ** 2 - var, dim=2)
+    KD_disc = lpi - rho + torch.logsumexp(rho, 0)
+    KD = torch.sum(pi * (KD_dens + KD_disc), dim=1)
+    return KD
+
 class STVAE_mix_by_class(STVAE_mix):
 
     def __init__(self, x_h, x_w, device, args):
@@ -120,13 +134,26 @@ class STVAE_mix_by_class(STVAE_mix):
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
 
             s_mu, s_var, pi = self.encoder_mix(data.view(-1, self.x_dim))
-            s_mu = s_mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
-            recon_batch = self.decoder_and_trans(s_mu)
-            b = self.mixed_loss_pre(recon_batch, data, pi.shape[1])
-            vy, by= torch.min(b,1)
-            by=np.int32(by.detach().cpu().numpy()/self.n_mix_perclass)
-
-            acc+=np.sum(np.equal(by,y[j:j+self.bsz]))
+            ss_mu = s_mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
+            recon_batch = self.decoder_and_trans(ss_mu)
+            b = self.mixed_loss_pre(recon_batch, data)
+            b = b.reshape(-1,self.n_class,self.n_mix_perclass)
+            s_mu = s_mu.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim)
+            s_var = s_var.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim)
+            rho = self.rho.reshape(self.n_mix_perclass, self.n_class)
+            tpi=pi.reshape(-1,self.n_class,self.n_mix_perclass)
+            lpi=torch.log(tpi)
+            KD=[]
+            BB=[]
+            for c in range(self.n_class):
+                KD += [dens_apply(self,s_mu[:,c,:], s_var[:,c,:], lpi[:,c,:], tpi[:,c,:], rho[:,c])]
+                BB += [torch.sum(tpi[:,c,:]*b[:,c,:],dim=1)]
+            KD=torch.stack(KD,dim=1)
+            BB=torch.stack(BB, dim=1)
+            rr = BB + KD
+            vy, by = torch.min(rr, 1)
+            by = np.int32(by.detach().cpu().numpy())
+            acc += np.sum(np.equal(by, y[j:j + self.bsz]))
 
         fout.write('====> Epoch {}: {} Accuracy: {:.4f}\n'.format(type,
         epoch, acc/ len(tr)))

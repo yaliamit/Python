@@ -36,7 +36,7 @@ if (args.n_mix>=1):
 if (args.MM):
     mm_pre='_MM'
 if (args.n_class>0):
-    opt_class='by_class_'
+    opt_class='_by_class'
 cll=''
 if (args.cl is not None):
     cll=str(args.cl)
