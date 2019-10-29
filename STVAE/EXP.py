@@ -118,7 +118,7 @@ def run_exp(nh,mx, type, numt=60000):
             sys.stdout.flush()
             file='OUT'
             file_br='_OUTPUTS/'+file+'-br.txt'
-            com = 'python _scripts/'+scr+' main_opt.py _pars/pars_tvae --type='+ty+' --n_mix='+m+' --num_train='+str(numt)+' --num_hlayers='+str(nh)+' --nepoch='+str(ne)+' --seed='+str(seed)+' --nti=500 --CONS --sdim='+h+' '+OP+' '+file
+            com = 'python _scripts/'+scr+' main_opt.py _pars/pars_tvae_orig --type='+ty+' --n_mix='+m+' --num_train='+str(numt)+' --num_hlayers='+str(nh)+' --nepoch='+str(ne)+' --seed='+str(seed)+' --nti=500 --CONS --sdim='+h+' '+OP+' '+file
             print(com)
             os.system(com)
             com = 'grep test '+file_br+' | cut -d":" -f3 | cut -d"," -f1 > junk'
