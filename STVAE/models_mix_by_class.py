@@ -121,6 +121,7 @@ class STVAE_mix_by_class(STVAE_mix):
 
     def run_epoch_classify(self, train, epoch,fout=None, num_mu_iter=None):
 
+        print(model.__class__.__name__)
         self.eval()
         tr_recon_loss = 0;tr_full_loss = 0
         ii = np.arange(0, train[0].shape[0], 1)
