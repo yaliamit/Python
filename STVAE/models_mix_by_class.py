@@ -121,9 +121,11 @@ class STVAE_mix_by_class(STVAE_mix):
 
     def run_epoch_classify(self, train, epoch,fout=None, num_mu_iter=None):
 
-        print(self.__class__.__name__)
+        opt='OPT' in (self.__class__.__name__)
         self.eval()
-        tr_recon_loss = 0;tr_full_loss = 0
+        if opt:
+            mu, logvar, ppi = self.initialize_mus(train[0], True)
+
         ii = np.arange(0, train[0].shape[0], 1)
         # if (type=='train'):
         #   np.random.shuffle(ii)
@@ -133,8 +135,15 @@ class STVAE_mix_by_class(STVAE_mix):
         for j in np.arange(0, len(y), self.bsz):
 
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
-
-            s_mu, s_var, pi = self.encoder_mix(data.view(-1, self.x_dim))
+            if opt:
+                self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], ppi[j:j + self.bsz], self.mu_lr[0])
+                for it in range(num_mu_iter):
+                         self.compute_loss_and_grad(data, None, 'test', self.optimizer_s, opt='mu')
+                s_mu = self.mu
+                s_var = self.logvar
+                pi = torch.softmax(self.pi, dim=1)
+            else:
+                s_mu, s_var, pi = self.encoder_mix(data.view(-1, self.x_dim))
             ss_mu = s_mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
             recon_batch = self.decoder_and_trans(ss_mu)
             b = self.mixed_loss_pre(recon_batch, data)
