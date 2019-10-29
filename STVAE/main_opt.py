@@ -80,8 +80,8 @@ if (args.classify):
 
 h=train[0].shape[1]
 w=train[0].shape[2]
-#model=locals()['STVAE'+opt_post+opt_mix+opt_class](h, w,  device, args).to(device)
-model=locals()['STVAE'+opt_mix+opt_class](h, w,  device, args).to(device)
+model=locals()['STVAE'+opt_post+opt_mix+opt_class](h, w,  device, args).to(device)
+#model=locals()['STVAE'+opt_mix+opt_class](h, w,  device, args).to(device)
 
 
 tot_pars=0

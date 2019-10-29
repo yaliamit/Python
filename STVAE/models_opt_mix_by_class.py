@@ -42,7 +42,7 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
 
 
         optim.zero_grad()
-        
+
         rc,tot=self.forward(data,targ)
 
 
