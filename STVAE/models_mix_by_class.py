@@ -78,16 +78,17 @@ class STVAE_mix_by_class(STVAE_mix):
         return self.get_loss(data,targ,mu,logvar,pi)
 
 
-    def compute_loss_and_grad(self,data,targ, type):
+    def compute_loss_and_grad(self,data,targ, optim, type, opt='par'):
+
+        optim.zero_grad()
 
         rc, tot = self.forward(data, targ)
 
-        self.optimizer.zero_grad()
 
         loss=rc+tot
-        if (type == 'train'):
+        if (type == 'train' or opt=='mu'):
             loss.backward()
-            self.optimizer.step()
+            optim.step()
         rcs=rc.item()
         ls=loss.item()
 
@@ -109,7 +110,7 @@ class STVAE_mix_by_class(STVAE_mix):
             #print(j)
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
-            recon_loss, loss=self.compute_loss_and_grad(data,target,type)
+            recon_loss, loss=self.compute_loss_and_grad(data,target,self.optimizer,type)
             tr_recon_loss += recon_loss
             tr_full_loss += loss
 

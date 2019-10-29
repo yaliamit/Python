@@ -49,7 +49,7 @@ class STVAE_OPT_mix_by_class(models_mix_by_class.STVAE_mix_by_class):
         loss = rc + tot
         if (type == 'train' or opt=='mu'):
             loss.backward()
-            self.optimizer.step()
+            optim.step()
         rcs = rc.item()
         ls = loss.item()
 
