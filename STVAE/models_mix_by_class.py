@@ -127,8 +127,6 @@ class STVAE_mix_by_class(STVAE_mix):
             mu, logvar, ppi = self.initialize_mus(train[0], True)
 
         ii = np.arange(0, train[0].shape[0], 1)
-        # if (type=='train'):
-        #   np.random.shuffle(ii)
         tr = train[0][ii].transpose(0, 3, 1, 2)
         y = np.argmax(train[1][ii],axis=1)
         acc=0
@@ -171,18 +169,28 @@ class STVAE_mix_by_class(STVAE_mix):
 
     def recon(self,input,num_mu_iter,cl):
 
+        opt = 'OPT' in (self.__class__.__name__)
+        if opt:
+            mu, logvar, ppi = self.initialize_mus(input, True)
+
         num_inp=input.shape[0]
         self.setup_id(num_inp)
         inp = input.to(self.dv)
-
-        s_mu, s_var, pi = self.encoder_mix(inp.view(-1, self.x_dim))
+        if opt:
+            self.update_s(mu, logvar, ppi, self.mu_lr[0])
+            for it in range(num_mu_iter):
+                self.compute_loss_and_grad(inp, 'test', self.optimizer_s, opt='mu')
+            s_mu = self.mu
+            s_var = self.logvar
+            pi = torch.softmax(self.pi, dim=1)
+        else:
+            s_mu, s_var, pi = self.encoder_mix(inp.view(-1, self.x_dim))
         s_mu = s_mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
         pi = pi.view(-1,self.n_class,self.n_mix_perclass)
         pi= pi[:,cl,:]
         recon_batch = self.decoder_and_trans(s_mu)
         recon_batch = recon_batch.transpose(0, 1)
         recon_batch=recon_batch.reshape(-1,self.n_class,self.n_mix_perclass,recon_batch.shape[-1])
-
         ii = torch.argmax(pi, dim=1)
         recon_batch=recon_batch[:,cl,:,:]
         jj = torch.arange(0,num_inp,dtype=torch.int64).to(self.dv)

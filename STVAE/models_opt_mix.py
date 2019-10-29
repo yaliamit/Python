@@ -97,32 +97,3 @@ class STVAE_OPT_mix(models_mix.STVAE_mix):
         return mu,logvar, pi
 
 
-    def recon(self,input,num_mu_iter=10):
-
-        num_inp=input.shape[0]
-        self.setup_id(num_inp)
-        mu, logvar, pi=self.initialize_mus(input,True)
-        data = input.to(self.dv)
-        self.update_s(mu, logvar, pi,self.mu_lr[0])
-        for it in range(num_mu_iter):
-            self.compute_loss_and_grad(data, type, self.optimizer_s, opt='mu')
-        ii = torch.argmax(self.pi, dim=1)
-        jj = torch.arange(0, num_inp, dtype=torch.int64).to(self.dv)
-        kk = ii + jj * self.n_mix
-        ss_mu = (self.mu).view(-1, self.n_mix, self.s_dim).transpose(0,1)
-        recon_batch=self.decoder_and_trans(ss_mu)
-
-        tpi=torch.softmax(self.pi, dim=1)
-        lpi = torch.log(tpi)
-        tot= self.dens_apply(self.mu, self.logvar, lpi, self.pi, self.rho)
-        recloss = self.mixed_loss(recon_batch, data, lpi)
-        print('LOSS', (tot + recloss)/num_inp)
-        #recon_loss, loss, recon_batch = self.compute_loss_and_grad(data, 'test', self.optimizer)
-        recon_batch = recon_batch.transpose(0, 1)
-        recon = recon_batch.reshape(self.n_mix * num_inp, -1)
-
-        rr = recon[kk]
-        return rr
-    
-    
-
