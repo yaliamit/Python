@@ -311,7 +311,7 @@ class STVAE_mix(models.STVAE):
 
         return recloss.item(), loss.item()
 
-    def run_epoch(self, train, epoch,num, MU, LOGVAR,PI,num_mu_iter=10, type='test',fout=None):
+    def run_epoch(self, train, epoch,num_mu_iter, MU, LOGVAR,PI, type='test',fout=None):
 
 
         if (type=='train'):

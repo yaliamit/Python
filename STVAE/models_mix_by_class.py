@@ -5,7 +5,10 @@ import numpy as np
 import models
 from models_mix import STVAE_mix
 
-
+import contextlib
+@contextlib.contextmanager
+def dummy_context_mgr():
+    yield None
 
 def dens_apply(model, s_mu, s_logvar, lpi, pi, rho):
     n_mix = pi.shape[1]
@@ -73,12 +76,16 @@ class STVAE_mix_by_class(STVAE_mix):
         return recloss, tot
 
     def forward(self, data, targ):
-
-        mu, logvar, pi = self.encoder_mix(data.view(-1, self.x_dim))
+        if self.opt:
+            pi = torch.softmax(self.pi, dim=1)
+            logvar = self.logvar
+            mu = self.mu
+        else:
+            mu, logvar, pi = self.encoder_mix(data.view(-1, self.x_dim))
         return self.get_loss(data,targ,mu,logvar,pi)
 
 
-    def compute_loss_and_grad(self,data,targ, optim, type, opt='par'):
+    def compute_loss_and_grad(self,data,targ, type, optim, opt='par'):
 
         optim.zero_grad()
 
@@ -95,7 +102,7 @@ class STVAE_mix_by_class(STVAE_mix):
         return rcs,ls
 
 
-    def run_epoch(self, train, epoch,num, MU, LOGVAR,PI, type='test',fout=None):
+    def run_epoch(self, train, epoch,num_mu_iter, MU, LOGVAR,PI,type='test',fout=None):
 
         if (type=='train'):
             self.train()
@@ -105,12 +112,27 @@ class STVAE_mix_by_class(STVAE_mix):
         #   np.random.shuffle(ii)
         tr = train[0][ii].transpose(0, 3, 1, 2)
         y = np.argmax(train[1][ii],axis=1)
-
+        mu = MU
+        logvar = LOGVAR
+        pi = PI
         for j in np.arange(0, len(y), self.bsz):
             #print(j)
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
-            recon_loss, loss=self.compute_loss_and_grad(data,target,self.optimizer,type)
+            if self.opt:
+                mulr = self.mu_lr[0]
+                if (epoch > 200):
+                    mulr = self.mu_lr[1]
+                self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], pi[j:j + self.bsz], mulr)
+                for it in range(num_mu_iter):
+                    self.compute_loss_and_grad(data, target, type, self.optimizer_s, opt='mu')
+            with torch.no_grad() if (type != 'train') else dummy_context_mgr():
+                recon_loss, loss=self.compute_loss_and_grad(data,target,type,self.optimizer)
+            if self.opt:
+                mu[j:j + self.bsz] = self.mu.data
+                logvar[j:j + self.bsz] = self.logvar.data
+                pi[j:j + self.bsz] = self.pi.data
+                del self.mu, self.logvar, self.pi
             tr_recon_loss += recon_loss
             tr_full_loss += loss
 
@@ -122,9 +144,9 @@ class STVAE_mix_by_class(STVAE_mix):
 
     def run_epoch_classify(self, train, epoch,fout=None, num_mu_iter=None):
 
-        opt='OPT' in (self.__class__.__name__)
+
         self.eval()
-        if opt:
+        if self.opt:
             mu, logvar, ppi = self.initialize_mus(train[0], True)
 
         ii = np.arange(0, train[0].shape[0], 1)
@@ -134,7 +156,7 @@ class STVAE_mix_by_class(STVAE_mix):
         for j in np.arange(0, len(y), self.bsz):
 
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
-            if opt:
+            if self.opt:
                 self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], ppi[j:j + self.bsz], self.mu_lr[0])
                 for it in range(num_mu_iter):
                          self.compute_loss_and_grad(data, None, 'test', self.optimizer_s, opt='mu')
@@ -170,14 +192,13 @@ class STVAE_mix_by_class(STVAE_mix):
 
     def recon(self,input,num_mu_iter,cl):
 
-        opt = 'OPT' in (self.__class__.__name__)
-        if opt:
+        if self.opt:
             mu, logvar, ppi = self.initialize_mus(input, True)
 
         num_inp=input.shape[0]
         self.setup_id(num_inp)
         inp = input.to(self.dv)
-        if opt:
+        if self.opt:
             self.update_s(mu, logvar, ppi, self.mu_lr[0])
             for it in range(num_mu_iter):
                 self.compute_loss_and_grad(inp, None, 'test', self.optimizer_s, opt='mu')
