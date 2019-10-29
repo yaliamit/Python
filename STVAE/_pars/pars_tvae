@@ -3,7 +3,7 @@
 --sdim=18
 --num_train=1000
 --num_hlayers=1
---nepoch=2
+--nepoch=20
 --transformation=tps
 --hdim_dec=64
 --mb_size=500
