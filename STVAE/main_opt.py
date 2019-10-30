@@ -132,7 +132,7 @@ else:
     if (args.n_class):
         model.run_epoch_classify(train, epoch,fout=fout,num_mu_iter=args.nti)
         model.run_epoch_classify(test, epoch,fout=fout, num_mu_iter=args.nti)
-    else:
+    elif args.cl is None:
         model.run_epoch(test, 0, args.nti, testMU, testLOGVAR, testPI, d_type='test', fout=fout)
 
     fout.write('writing to '+ex_file+'\n')
