@@ -189,7 +189,7 @@ class STVAE_mix_by_class(STVAE_mix):
             for c in range(self.n_class):
                 KD += [self.dens_apply_test(s_mu[:,c,:], s_var[:,c,:], lpi[:,c,:], tpi[:,c,:], rho[:,c])]
                 #BB += [torch.sum(pi[:,c,:]*b[:,c,:],dim=1)]
-                BB += [torch.logsumexp(lpi[:,c,:]+b[:,c,:],dim=1)]
+                BB +=  [self.weighted_sum_of_likelihoods(lpi[:,c,:],b[:,c,:])]
             KD=torch.stack(KD,dim=1)
             BB=torch.stack(BB, dim=1)
             rr = BB + KD
