@@ -128,7 +128,7 @@ else:
         fout.flush()
 
 
-    #aux.make_images(train,model,ex_file,args)
+    aux.make_images(train,model,ex_file,args)
     if (args.n_class):
         model.run_epoch_classify(train, epoch,fout=fout,num_mu_iter=args.nti)
         model.run_epoch_classify(test, epoch,fout=fout, num_mu_iter=args.nti)
