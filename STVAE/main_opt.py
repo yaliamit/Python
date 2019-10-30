@@ -120,16 +120,16 @@ else:
         if (scheduler is not None):
             scheduler.step()
         t1=time.time()
-        trainMU, trainLOGVAR, trPI= model.run_epoch(train,epoch,args.num_mu_iter,trainMU,trainLOGVAR,trPI, type='train',fout=fout)
+        trainMU, trainLOGVAR, trPI= model.run_epoch(train,epoch,args.num_mu_iter,trainMU,trainLOGVAR,trPI, d_type='train',fout=fout)
         if (val[0] is not None):
-                model.run_epoch(val,epoch,args.nvi,valMU,valLOGVAR,valPI, type='val',fout=fout)
+                model.run_epoch(val,epoch,args.nvi,valMU,valLOGVAR,valPI, d_type='val',fout=fout)
 
         fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
         fout.flush()
 
 
     aux.make_images(train,model,ex_file,args)
-    model.run_epoch(test,0,args.nti,testMU, testLOGVAR,testPI, type='test',fout=fout)
+    #model.run_epoch(test,0,args.nti,testMU, testLOGVAR,testPI, type='test',fout=fout)
     if (args.n_class):
         model.run_epoch_classify(train, epoch,fout=fout,num_mu_iter=args.nti)
         model.run_epoch_classify(test, epoch,fout=fout, num_mu_iter=args.nti)

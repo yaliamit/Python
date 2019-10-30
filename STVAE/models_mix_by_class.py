@@ -27,7 +27,7 @@ class STVAE_mix_by_class(STVAE_mix):
         elif (args.optimizer == 'Adadelta'):
             self.optimizer = optim.Adadelta(self.parameters())
 
-    def dens_apply(self, s_mu, s_logvar, lpi, pi, rho):
+    def dens_apply_test(self, s_mu, s_logvar, lpi, pi, rho):
         n_mix = pi.shape[1]
         s_mu = s_mu.view(-1, n_mix, self.s_dim)
         s_logvar = s_logvar.view(-1, n_mix, self.s_dim)
@@ -37,7 +37,7 @@ class STVAE_mix_by_class(STVAE_mix):
         # Sum along last coordinate to get negative log density of each component.
         KD_dens = -0.5 * torch.sum(1 + s_logvar - s_mu ** 2 - var, dim=2)
         KD_disc = lpi - rho + torch.logsumexp(rho, 0)
-        KD = torch.sum(pi * (KD_dens + KD_disc))
+        KD = torch.sum(pi * (KD_dens + KD_disc),dim=1)
         return KD
 
 
@@ -58,6 +58,7 @@ class STVAE_mix_by_class(STVAE_mix):
         x=self.decoder_and_trans(s)
 
         if (targ is not None):
+
             x=x.transpose(0,1)
             x=x.reshape(-1,self.n_class,self.n_mix_perclass,x.shape[-1])
             mu=mu.reshape(-1,self.n_class,self.n_mix_perclass*self.s_dim)
@@ -65,11 +66,14 @@ class STVAE_mix_by_class(STVAE_mix):
             rho=self.rho.reshape(self.n_mix_perclass,self.n_class)
             tot=0
             recloss=0
-
-            for c in range(self.n_class):
-                ind = (targ == c)
-                tot += self.dens_apply(mu[ind,c,:],logvar[ind,c,:],lpi[ind,c,:],pi[ind,c,:],rho[:,c])
-                recloss+=self.mixed_loss(x[ind,c,:,:].transpose(0,1),data[ind],pi[ind,c,:])
+            if (type(targ) == torch.Tensor):
+                for c in range(self.n_class):
+                    ind = (targ == c)
+                    tot += self.dens_apply(mu[ind,c,:],logvar[ind,c,:],lpi[ind,c,:],pi[ind,c,:],rho[:,c])
+                    recloss+=self.mixed_loss(x[ind,c,:,:].transpose(0,1),data[ind],pi[ind,c,:])
+            else:
+                 tot += self.dens_apply(mu[:, targ, :], logvar[:, targ, :], lpi[:, targ, :], pi[:, targ, :], rho[:, targ])
+                 recloss += self.mixed_loss(x[:, targ, :, :].transpose(0, 1), data, pi[:, targ, :])
         else:
             tot = self.dens_apply(mu, logvar, lpi, pi, self.rho)
             recloss = self.mixed_loss(x, data, pi)
@@ -85,7 +89,7 @@ class STVAE_mix_by_class(STVAE_mix):
         return self.get_loss(data,targ,mu,logvar,pi)
 
 
-    def compute_loss_and_grad(self,data,targ, type, optim, opt='par'):
+    def compute_loss_and_grad(self,data,targ, d_type, optim, opt='par'):
 
         optim.zero_grad()
 
@@ -93,7 +97,7 @@ class STVAE_mix_by_class(STVAE_mix):
 
 
         loss=rc+tot
-        if (type == 'train' or opt=='mu'):
+        if (d_type == 'train' or opt=='mu'):
             loss.backward()
             optim.step()
         rcs=rc.item()
@@ -102,13 +106,13 @@ class STVAE_mix_by_class(STVAE_mix):
         return rcs,ls
 
 
-    def run_epoch(self, train, epoch,num_mu_iter, MU, LOGVAR,PI,type='test',fout=None):
+    def run_epoch(self, train, epoch,num_mu_iter, MU, LOGVAR,PI,d_type='test',fout=None):
 
-        if (type=='train'):
+        if (d_type=='train'):
             self.train()
         tr_recon_loss = 0;tr_full_loss = 0
         ii = np.arange(0, train[0].shape[0], 1)
-        # if (type=='train'):
+        # if (d_type=='train'):
         #   np.random.shuffle(ii)
         tr = train[0][ii].transpose(0, 3, 1, 2)
         y = np.argmax(train[1][ii],axis=1)
@@ -125,9 +129,9 @@ class STVAE_mix_by_class(STVAE_mix):
                     mulr = self.mu_lr[1]
                 self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], pi[j:j + self.bsz], mulr)
                 for it in range(num_mu_iter):
-                    self.compute_loss_and_grad(data, target, type, self.optimizer_s, opt='mu')
-            with torch.no_grad() if (type != 'train') else dummy_context_mgr():
-                recon_loss, loss=self.compute_loss_and_grad(data,target,type,self.optimizer)
+                    self.compute_loss_and_grad(data, target, d_type, self.optimizer_s, opt='mu')
+            with torch.no_grad() if (d_type != 'train') else dummy_context_mgr():
+                recon_loss, loss=self.compute_loss_and_grad(data,target,d_type,self.optimizer)
             if self.opt:
                 mu[j:j + self.bsz] = self.mu.data
                 logvar[j:j + self.bsz] = self.logvar.data
@@ -137,7 +141,7 @@ class STVAE_mix_by_class(STVAE_mix):
             tr_full_loss += loss
 
 
-        fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(type,
+        fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(d_type,
         epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
 
         return MU, LOGVAR, PI
@@ -158,13 +162,15 @@ class STVAE_mix_by_class(STVAE_mix):
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             if self.opt:
                 for c in range(self.n_class):
-                    self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], ppi[j:j + self.bsz], self.mu_lr[0],
-                                  cl=c)
+                    self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], ppi[j:j + self.bsz], self.mu_lr[0])
                     for it in range(num_mu_iter):
-                            self.compute_loss_and_grad(data, None, 'test', self.optimizer_s, opt='mu')
-                    s_mu = self.mu
-                    s_var = self.logvar
-                    pi = torch.softmax(self.pi, dim=1)
+                            self.compute_loss_and_grad(data, c, 'test', self.optimizer_s, opt='mu')
+                    mu[j:j + self.bsz] = self.mu.data
+                    logvar[j:j + self.bsz] = self.logvar.data
+                    ppi[j:j + self.bsz] = self.pi.data
+                s_mu=self.mu
+                s_var=self.logvar
+                pi = torch.softmax(self.pi, dim=1)
             else:
                 s_mu, s_var, pi = self.encoder_mix(data.view(-1, self.x_dim))
             ss_mu = s_mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
@@ -179,7 +185,7 @@ class STVAE_mix_by_class(STVAE_mix):
             KD=[]
             BB=[]
             for c in range(self.n_class):
-                KD += [self.dens_apply(s_mu[:,c,:], s_var[:,c,:], lpi[:,c,:], tpi[:,c,:], rho[:,c])]
+                KD += [self.dens_apply_test(s_mu[:,c,:], s_var[:,c,:], lpi[:,c,:], tpi[:,c,:], rho[:,c])]
                 BB += [torch.logsumexp(lpi[:,c,:]+b[:,c,:],dim=1)]
             KD=torch.stack(KD,dim=1)
             BB=torch.stack(BB, dim=1)

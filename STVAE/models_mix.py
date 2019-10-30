@@ -220,8 +220,8 @@ class STVAE_mix(models.STVAE):
         if (cl is None):
             self.optimizer_s = optim.Adam([self.mu, self.logvar,self.pi], lr=mu_lr,weight_decay=wd)
         else:
-            jump1=cl*self.n_mix_preclass*self.s_dim
-            jump2=(cl+1)*self.n_mix_preclass*self.s_dim
+            jump1=cl*self.n_mix_perclass*self.s_dim
+            jump2=(cl+1)*self.n_mix_perclass*self.s_dim
             self.optimizer_s = optim.Adam([self.mu[:,jump1:jump2],
                                            self.logvar[:,jump1:jump2],
                                            self.pi[:,(cl*self.n_mix_perclass):((cl+1)*self.n_mix_perclass)]],
@@ -274,8 +274,9 @@ class STVAE_mix(models.STVAE):
     def mixed_loss(self,x,data,lpi):
 
         b=self.mixed_loss_pre(x,data)
-        pre_recloss=torch.logsumexp(lpi+b,dim=1)
-        recloss = torch.sum(pre_recloss)
+        recloss=torch.sum(pi*b)
+        #pre_recloss=torch.logsumexp(lpi+b,dim=1)
+        #recloss = torch.sum(pre_recloss)
         return recloss
 
 
@@ -320,14 +321,14 @@ class STVAE_mix(models.STVAE):
 
         return recloss.item(), loss.item()
 
-    def run_epoch(self, train, epoch,num_mu_iter, MU, LOGVAR,PI, type='test',fout=None):
+    def run_epoch(self, train, epoch,num_mu_iter, MU, LOGVAR,PI, d_type='test',fout=None):
 
 
-        if (type=='train'):
+        if (d_type=='train'):
             self.train()
         tr_recon_loss = 0;tr_full_loss = 0
         ii = np.arange(0, train[0].shape[0], 1)
-        # if (type=='train'):
+        # if (d_type=='train'):
         #   np.random.shuffle(ii)
         tr = train[0][ii].transpose(0, 3, 1, 2)
         y = train[1][ii]
@@ -341,9 +342,9 @@ class STVAE_mix(models.STVAE):
             if self.opt:
                 self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], pi[j:j + self.bsz], self.mu_lr[0])
                 for it in range(num_mu_iter):
-                    self.compute_loss_and_grad(data, type, self.optimizer_s, opt='mu')
-            with torch.no_grad() if (type != 'train') else dummy_context_mgr():
-                recon_loss, loss=self.compute_loss_and_grad(data,type,self.optimizer)
+                    self.compute_loss_and_grad(data, d_type, self.optimizer_s, opt='mu')
+            with torch.no_grad() if (d_type != 'train') else dummy_context_mgr():
+                recon_loss, loss=self.compute_loss_and_grad(data,d_type,self.optimizer)
             if self.opt:
                 mu[j:j + self.bsz] = self.mu.data
                 logvar[j:j + self.bsz] = self.logvar.data
@@ -353,7 +354,7 @@ class STVAE_mix(models.STVAE):
             tr_full_loss += loss
 
 
-        fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(type,
+        fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(d_type,
         epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
 
         return mu, logvar, pi
