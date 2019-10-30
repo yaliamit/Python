@@ -158,7 +158,7 @@ class STVAE_mix_by_class(STVAE_mix):
         y = np.argmax(train[1][ii],axis=1)
         acc=0
         for j in np.arange(0, len(y), self.bsz):
-
+            fout.write('Batch '+str(j))
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             if self.opt:
                 for c in range(self.n_class):
