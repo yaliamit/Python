@@ -70,13 +70,13 @@ class STVAE_mix_by_class(STVAE_mix):
                 for c in range(self.n_class):
                     ind = (targ == c)
                     tot += self.dens_apply(mu[ind,c,:],logvar[ind,c,:],lpi[ind,c,:],pi[ind,c,:],rho[:,c])
-                    recloss+=self.mixed_loss(x[ind,c,:,:].transpose(0,1),data[ind],pi[ind,c,:])
+                    recloss+=self.mixed_loss(x[ind,c,:,:].transpose(0,1),data[ind],lpi[ind,c,:],pi[ind,c,:])
             else:
                  tot += self.dens_apply(mu[:, targ, :], logvar[:, targ, :], lpi[:, targ, :], pi[:, targ, :], rho[:, targ])
-                 recloss += self.mixed_loss(x[:, targ, :, :].transpose(0, 1), data, pi[:, targ, :])
+                 recloss += self.mixed_loss(x[:, targ, :, :].transpose(0, 1), data, lpi[:,targ,:],pi[:, targ, :])
         else:
             tot = self.dens_apply(mu, logvar, lpi, pi, self.rho)
-            recloss = self.mixed_loss(x, data, pi)
+            recloss = self.mixed_loss(x, data, lpi, pi)
         return recloss, tot
 
     def forward(self, data, targ):
