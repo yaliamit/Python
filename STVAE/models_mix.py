@@ -337,7 +337,7 @@ class STVAE_mix(models.STVAE):
         for j in np.arange(0, len(y), self.bsz):
             #print(j)
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
-            target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
+            #target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
             if self.opt:
                 self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], pi[j:j + self.bsz], self.mu_lr[0])
                 for it in range(num_mu_iter):

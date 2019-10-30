@@ -37,7 +37,7 @@ class STVAE_mix_by_class(STVAE_mix):
         # Sum along last coordinate to get negative log density of each component.
         KD_dens = -0.5 * torch.sum(1 + s_logvar - s_mu ** 2 - var, dim=2)
         KD_disc = lpi - rho + torch.logsumexp(rho, 0)
-        KD = torch.sum(pi * (KD_dens + KD_disc), dim=1)
+        KD = torch.sum(pi * (KD_dens + KD_disc))
         return KD
 
 
@@ -68,8 +68,7 @@ class STVAE_mix_by_class(STVAE_mix):
 
             for c in range(self.n_class):
                 ind = (targ == c)
-                tot += self.dens_apply(mu[ind,c,:],logvar[ind,c,:],lpi[ind,c,:],pi[ind,c,:],
-                                       rho[:,c])
+                tot += self.dens_apply(mu[ind,c,:],logvar[ind,c,:],lpi[ind,c,:],pi[ind,c,:],rho[:,c])
                 recloss+=self.mixed_loss(x[ind,c,:,:].transpose(0,1),data[ind],pi[ind,c,:])
         else:
             tot = self.dens_apply(mu, logvar, lpi, pi, self.rho)
