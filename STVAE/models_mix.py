@@ -274,9 +274,9 @@ class STVAE_mix(models.STVAE):
     def mixed_loss(self,x,data,lpi,pi):
 
         b=self.mixed_loss_pre(x,data)
-        recloss=torch.sum(pi*b)
-        #pre_recloss=torch.logsumexp(lpi+b,dim=1)
-        #recloss = torch.sum(pre_recloss)
+        #recloss=torch.sum(pi*b)
+        pre_recloss=torch.logsumexp(lpi+b,dim=1)
+        recloss = torch.sum(pre_recloss)
         return recloss
 
 
