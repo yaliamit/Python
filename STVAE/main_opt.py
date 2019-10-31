@@ -75,7 +75,9 @@ if args.cl is not None:
 train, val, test, image_dim = get_data(PARS)
 print('num_train',train[0].shape[0])
 if (args.classify):
+    t1 = time.time()
     classify(train,test,image_dim,opt_pre,opt_post,opt_mix,opt_class,device,args,fout,locals())
+    fout.write('Classified in {1:5.3f} seconds\n'.format(time.time()-t1))
     exit()
 
 h=train[0].shape[1]
