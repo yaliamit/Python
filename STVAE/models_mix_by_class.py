@@ -49,7 +49,7 @@ class STVAE_mix_by_class(STVAE_mix):
             pi = pi/pis.unsqueeze(2)
         lpi = torch.log(pi)
         n_mix = self.n_mix
-        if (targ == None and self.n_class > 0):
+        if (targ is None and self.n_class > 0):
             n_mix = self.n_mix_perclass
         if (self.type is not 'ae'):
             s = self.sample(mu, logvar, self.s_dim*n_mix)
