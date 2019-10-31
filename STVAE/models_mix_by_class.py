@@ -3,6 +3,7 @@ import torch.nn.functional as F
 from torch import nn, optim
 import numpy as np
 import models
+import time
 from models_mix import STVAE_mix
 
 import contextlib
@@ -167,6 +168,7 @@ class STVAE_mix_by_class(STVAE_mix):
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             if self.opt:
                 for c in range(self.n_class):
+                    t1=time.time()
                     rng = range(c * self.n_mix_perclass, (c + 1) * self.n_mix_perclass)
                     fout.write('Class '+str(c)+'\n')
                     fout.flush()
@@ -181,6 +183,8 @@ class STVAE_mix_by_class(STVAE_mix):
                     B = torch.sum(pi * b, dim=1)
                     BB += [B]
                     KD += [self.dens_apply_test(self.mu, self.logvar, lpi, pi)]
+                    fout.write('class: {0} in {1:5.3f} seconds\n'.format(c, time.time() - t1))
+
 
             else:
                 s_mu, s_var, pi = self.encoder_mix(data.view(-1, self.x_dim))
