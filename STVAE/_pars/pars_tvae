@@ -5,7 +5,6 @@
 --num_hlayers=1
 --nepoch=20
 --transformation=tps
---hdim_dec=64
 --mb_size=500
 --lr=.005
 --nval=0
