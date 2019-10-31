@@ -199,7 +199,8 @@ class STVAE_mix_by_class(STVAE_mix):
 
                 for c in range(self.n_class):
                     KD += [self.dens_apply_test(s_mu[:,c,:], s_var[:,c,:], lpi[:,c,:], tpi[:,c,:])]
-                    BB += [torch.sum(tpi[:,c,:]*b[:,c,:],dim=1)]
+                    tpic=tpi[:,c,:]/torch.sum(tpi[:,c,:],dim=1).unsqueeze(1)
+                    BB += [torch.sum(tpic*b[:,c,:],dim=1)]
             KD=torch.stack(KD,dim=1)
             BB=torch.stack(BB, dim=1)
             rr = BB + KD
