@@ -43,7 +43,8 @@ def run_classify(train,opt_pre,opt_post,opt_mix,opt_class,device,args,fout,locs,
         model.load_state_dict(torch.load(args.output_prefix + '_output/' + ex_file + '.pt', map_location=device))
         V=run_epoch_classify(model,train,args.nti,fout)
         VV+=[V]
-        fout.write('Classified in {1:5.3f} seconds\n'.format(time.time() - t1))
+        fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(cl,time.time()-t1))
+
     VVV=np.stack(VV,axis=1)
     hy=np.argmin(VVV,axis=1)
     y = np.argmax(train[1], axis=1)
