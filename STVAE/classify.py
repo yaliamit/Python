@@ -60,8 +60,9 @@ def run_epoch_classify(model, train, num_mu_iter,fout):
         y = np.argmax(train[1],axis=1)
         V=[]
         for j in np.arange(0, len(y), model.bsz):
-            fout.write(str(j)+'\n')
-            fout.flush()
+            if (np.mod(j,2000)==0):
+                fout.write(str(j)+'\n')
+                fout.flush()
             data = torch.from_numpy(tr[j:j + model.bsz]).float().to(model.dv)
             if (model.opt):
                 model.update_s(mu[j:j + model.bsz, :], logvar[j:j + model.bsz, :], pi[j:j + model.bsz], model.mu_lr[0])
