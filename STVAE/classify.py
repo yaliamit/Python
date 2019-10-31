@@ -79,7 +79,7 @@ def run_epoch_classify(model, train, num_mu_iter,fout):
                 lpi=torch.log(tpi)
                 b = model.mixed_loss_pre(recon_batch, data)
                 KD=dens_apply(model,s_mu,s_var,lpi,tpi,model.rho)
-                recloss = torch.sum(tpi*b)
+                recloss = torch.sum(tpi*b,dim=1)
                 vy=recloss+KD
                 #vy, by= torch.min(b,1)
                 V+=[vy.detach().cpu().numpy()]
