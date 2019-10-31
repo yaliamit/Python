@@ -127,7 +127,8 @@ else:
         fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
         fout.flush()
 
-
+    fout.write('writing to ' + ex_file + '\n')
+    torch.save(model.state_dict(), '_output/' + ex_file + '.pt')
     aux.make_images(train,model,ex_file,args)
     if (args.n_class):
         model.run_epoch_classify(train, epoch,fout=fout,num_mu_iter=args.nti)
@@ -135,8 +136,7 @@ else:
     elif args.cl is None:
         model.run_epoch(test, 0, args.nti, testMU, testLOGVAR, testPI, d_type='test', fout=fout)
 
-    fout.write('writing to '+ex_file+'\n')
-    torch.save(model.state_dict(),'_output/'+ex_file+'.pt')
+
     trainMU=None;trainLOGVAR=None;trainPI=None
     if args.classify:
         args.nepoch=1000
