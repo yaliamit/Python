@@ -50,10 +50,10 @@ class STVAE_mix(models.STVAE):
 
 
 
-    def decoder_and_trans(self,s):
+    def decoder_and_trans(self,s, rng=None):
 
         n_mix=s.shape[0]
-        x, u = self.decoder_mix.forward(s)
+        x, u = self.decoder_mix.forward(s,rng)
         # Transform
         if (self.u_dim>0):
            xt = []

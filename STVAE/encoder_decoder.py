@@ -107,14 +107,20 @@ class fromNorm_mix(nn.Module):
             for ll in self.u2u:
                 ll.weight.data.fill_(0.)
 
-    def forward(self,z,u):
+    def forward(self,z,u,rng=None):
 
         h=[]
         v=[]
-        for i,(zz,vv) in enumerate(zip(z,u)):
-            h=h+[self.z2h[i](self.z2z[i](zz))]
-            if (self.type=='tvae'):
-                v=v+[self.u2u[i](vv)]
+        if (rng is None):
+            for i,(zz,vv) in enumerate(zip(z,u)):
+                h=h+[self.z2h[i](self.z2z[i](zz))]
+                if (self.type=='tvae'):
+                    v=v+[self.u2u[i](vv)]
+        else:
+            for i,zz,vv in zip(rng,z,u):
+                h = h + [self.z2h[i](self.z2z[i](zz))]
+                if (self.type=='tvae'):
+                    v=v+[self.u2u[i](vv)]
 
         hh=torch.stack(h,dim=0) #.transpose(0,1)
         hh=F.relu(hh)
@@ -154,26 +160,42 @@ class decoder_mix(nn.Module):
                 self.h2x = nn.ModuleList([nn.Linear(self.h_dim, self.x_dim) for i in range(self.n_mix)])
         self.fromNorm_mix = fromNorm_mix(self)
 
-    def forward(self,s):
+    def forward(self,s,rng=None):
 
             u = s.narrow(len(s.shape) - 1, 0, self.u_dim)
             z = s.narrow(len(s.shape) - 1, self.u_dim, self.z_dim)
-            h, u = self.fromNorm_mix.forward(z, u)
+            h, u = self.fromNorm_mix.forward(z, u, rng)
             if (self.num_layers==1):
                 hh=[]
-                for i,h_ in enumerate(h):
-                    if self.h_dim_dec is None:
-                        hh=hh+[self.h2hd(h_)]
-                    else:
-                        hh=hh+[self.h2hd[i](h_)]
+                if (rng is None):
+                    for i,h_ in enumerate(h):
+                        if self.h_dim_dec is None:
+                            hh=hh+[self.h2hd(h_)]
+                        else:
+                            hh=hh+[self.h2hd[i](h_)]
+                else:
+                    for h_,r in zip(h,rng):
+                        if self.h_dim_dec is None:
+                            hh=hh+[self.h2hd(h_)]
+                        else:
+                            hh = hh + [self.h2hd[r](h_)]
                 h=torch.stack(hh,dim=0)
                 h=F.relu(h)
             x=[]
-            for i,h_ in enumerate(h):
-                if self.h_dim_dec is None:
-                    x=x+[self.h2x(h_)]
-                else:
-                    x=x+[self.h2x[i](h_)]
+
+            if (rng is None):
+                for i,h_ in enumerate(h):
+                    if self.h_dim_dec is None:
+                        x=x+[self.h2x(h_)]
+                    else:
+                        x=x+[self.h2x[i](h_)]
+            else:
+                for h_, r in zip(h, rng):
+                    if self.h_dim_dec is None:
+                        x = x + [self.h2x(h_)]
+                    else:
+                        x = x + [self.h2x[r](h_)]
+
             xx=torch.stack(x,dim=0)
             xx=torch.sigmoid(xx)
             return(xx,u)

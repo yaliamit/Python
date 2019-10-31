@@ -101,8 +101,8 @@ if (args.run_existing):
     #if (args.classify):
     #   train_new(model,args,train,test,device)
     #else:
-    aux.make_images(test,model,ex_file,args)
-    #model.run_epoch_classify(test, 0,fout=fout, num_mu_iter=args.nti)
+    #aux.make_images(test,model,ex_file,args)
+    model.run_epoch_classify(test, 0,fout=fout, num_mu_iter=args.nti)
 else:
 
     #iic = np.argsort(np.argmax(train[1], axis=1))
