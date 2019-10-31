@@ -147,7 +147,7 @@ class STVAE_mix_by_class(STVAE_mix):
 
         return MU, LOGVAR, PI
 
-    def run_epoch_classify(self, train, epoch,fout=None, num_mu_iter=None):
+    def run_epoch_classify(self, train, d_type, fout=None, num_mu_iter=None):
 
 
         self.eval()
@@ -164,14 +164,14 @@ class STVAE_mix_by_class(STVAE_mix):
         for j in np.arange(0, len(y), self.bsz):
             KD = []
             BB = []
-            fout.write('Batch '+str(j)+'\n')
+            #fout.write('Batch '+str(j)+'\n')
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             if self.opt:
                 for c in range(self.n_class):
-                    t1=time.time()
+                    #t1=time.time()
                     rng = range(c * self.n_mix_perclass, (c + 1) * self.n_mix_perclass)
-                    fout.write('Class '+str(c)+'\n')
-                    fout.flush()
+                    #fout.write('Class '+str(c)+'\n')
+                    #fout.flush()
                     self.update_s(mu[c][j:j + self.bsz], logvar[c][j:j + self.bsz], ppi[c][j:j + self.bsz], self.mu_lr[0])
                     for it in range(num_mu_iter):
                             self.compute_loss_and_grad(data, None, 'test', self.optimizer_s, opt='mu',rng=rng)
@@ -183,7 +183,7 @@ class STVAE_mix_by_class(STVAE_mix):
                     B = torch.sum(pi * b, dim=1)
                     BB += [B]
                     KD += [self.dens_apply_test(self.mu, self.logvar, lpi, pi)]
-                    fout.write('class: {0} in {1:5.3f} seconds\n'.format(c, time.time() - t1))
+                    #fout.write('class: {0} in {1:5.3f} seconds\n'.format(c, time.time() - t1))
 
 
             else:
@@ -207,8 +207,7 @@ class STVAE_mix_by_class(STVAE_mix):
             by = np.int32(by.detach().cpu().numpy())
             acc += np.sum(np.equal(by, y[j:j + self.bsz]))
 
-        fout.write('====> Epoch {}: {} Accuracy: {:.4f}\n'.format(type,
-        epoch, acc/ len(tr)))
+        fout.write('====> Epoch {}: Accuracy: {:.4f}\n'.format(d_type, acc/ len(tr)))
 
 
     def recon(self,input,num_mu_iter,cl):
@@ -224,7 +223,7 @@ class STVAE_mix_by_class(STVAE_mix):
         inp = input.to(self.dv)
         c = cl
         rng = range(c * self.n_mix_perclass, (c + 1) * self.n_mix_perclass)
-        print('Class ' + str(c) + '\n')
+        #print('Class ' + str(c) + '\n')
         if self.opt:
                 self.update_s(mu[c], logvar[c], ppi[c], self.mu_lr[0])
                 for it in range(num_mu_iter):

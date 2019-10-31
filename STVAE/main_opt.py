@@ -104,7 +104,7 @@ if (args.run_existing):
     #   train_new(model,args,train,test,device)
     #else:
     #aux.make_images(test,model,ex_file,args)
-    model.run_epoch_classify(test, 0,fout=fout, num_mu_iter=args.nti)
+    model.run_epoch_classify(test, 'test',fout=fout, num_mu_iter=args.nti)
 else:
 
     #iic = np.argsort(np.argmax(train[1], axis=1))
@@ -133,8 +133,8 @@ else:
     torch.save(model.state_dict(), '_output/' + ex_file + '.pt')
     aux.make_images(train,model,ex_file,args)
     if (args.n_class):
-        model.run_epoch_classify(train, epoch,fout=fout,num_mu_iter=args.nti)
-        model.run_epoch_classify(test, epoch,fout=fout, num_mu_iter=args.nti)
+        model.run_epoch_classify(train, 'train',fout=fout,num_mu_iter=args.nti)
+        model.run_epoch_classify(test, 'test',fout=fout, num_mu_iter=args.nti)
     elif args.cl is None:
         model.run_epoch(test, 0, args.nti, testMU, testLOGVAR, testPI, d_type='test', fout=fout)
 
