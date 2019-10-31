@@ -100,8 +100,6 @@ class STVAE_mix(models.STVAE):
 
         b=self.mixed_loss_pre(x,data)
         recloss=torch.sum(pi*b)
-        #pre_recloss=self.weighted_sum_of_likelihoods(lpi,b)
-        #recloss = torch.sum(pre_recloss)
         return recloss
 
 
