@@ -27,7 +27,7 @@ class STVAE_mix_by_class(STVAE_mix):
         elif (args.optimizer == 'Adadelta'):
             self.optimizer = optim.Adadelta(self.parameters())
 
-    def dens_apply_test(self, s_mu, s_logvar, lpi, pi, rho):
+    def dens_apply_test(self, s_mu, s_logvar, lpi, pi):
         n_mix = pi.shape[1]
         s_mu = s_mu.view(-1, n_mix, self.s_dim)
         s_logvar = s_logvar.view(-1, n_mix, self.s_dim)
@@ -36,7 +36,7 @@ class STVAE_mix_by_class(STVAE_mix):
 
         # Sum along last coordinate to get negative log density of each component.
         KD_dens = -0.5 * torch.sum(1 + s_logvar - s_mu ** 2 - var, dim=2)
-        KD_disc = lpi - rho + torch.logsumexp(rho, 0)
+        KD_disc = lpi - torch.log(n_mix)
         KD = torch.sum(pi * (KD_dens + KD_disc),dim=1)
         return KD
 
@@ -48,34 +48,34 @@ class STVAE_mix_by_class(STVAE_mix):
             pis=torch.sum(pi,2)
             pi = pi/pis.unsqueeze(2)
         lpi = torch.log(pi)
-
+        n_mix = self.n_mix
+        if (targ == None and self.n_class > 0):
+            n_mix = self.n_mix_perclass
         if (self.type is not 'ae'):
-            s = self.sample(mu, logvar, self.s_dim*self.n_mix)
+            s = self.sample(mu, logvar, self.s_dim*n_mix)
         else:
             s=mu
-        s=s.view(-1,self.n_mix,self.s_dim).transpose(0,1)
+        s=s.view(-1,n_mix,self.s_dim).transpose(0,1)
         # Apply linear map to entire sampled vector.
         x=self.decoder_and_trans(s)
 
         if (targ is not None):
-
             x=x.transpose(0,1)
             x=x.reshape(-1,self.n_class,self.n_mix_perclass,x.shape[-1])
             mu=mu.reshape(-1,self.n_class,self.n_mix_perclass*self.s_dim)
             logvar=logvar.reshape(-1,self.n_class,self.n_mix_perclass*self.s_dim)
-            rho=self.rho.reshape(self.n_mix_perclass,self.n_class)
             tot=0
             recloss=0
             if (type(targ) == torch.Tensor):
                 for c in range(self.n_class):
                     ind = (targ == c)
-                    tot += self.dens_apply(mu[ind,c,:],logvar[ind,c,:],lpi[ind,c,:],pi[ind,c,:],rho[:,c])
+                    tot += self.dens_apply(mu[ind,c,:],logvar[ind,c,:],lpi[ind,c,:],pi[ind,c,:])
                     recloss+=self.mixed_loss(x[ind,c,:,:].transpose(0,1),data[ind],lpi[ind,c,:],pi[ind,c,:])
             else:
-                 tot += self.dens_apply(mu[:, targ, :], logvar[:, targ, :], lpi[:, targ, :], pi[:, targ, :], rho[:, targ])
+                 tot += self.dens_apply(mu[:, targ, :], logvar[:, targ, :], lpi[:, targ, :], pi[:, targ, :])
                  recloss += self.mixed_loss(x[:, targ, :, :].transpose(0, 1), data, lpi[:,targ,:],pi[:, targ, :])
         else:
-            tot = self.dens_apply(mu, logvar, lpi, pi, self.rho)
+            tot = self.dens_apply(mu, logvar, lpi, pi)
             recloss = self.mixed_loss(x, data, lpi, pi)
         return recloss, tot
 
@@ -181,13 +181,12 @@ class STVAE_mix_by_class(STVAE_mix):
             b = b.reshape(-1,self.n_class,self.n_mix_perclass)
             s_mu = s_mu.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim)
             s_var = s_var.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim)
-            rho = self.rho.reshape(self.n_mix_perclass, self.n_class)
             tpi=pi.reshape(-1,self.n_class,self.n_mix_perclass)
             lpi=torch.log(tpi)
             KD=[]
             BB=[]
             for c in range(self.n_class):
-                KD += [self.dens_apply_test(s_mu[:,c,:], s_var[:,c,:], lpi[:,c,:], tpi[:,c,:], rho[:,c])]
+                KD += [self.dens_apply_test(s_mu[:,c,:], s_var[:,c,:], lpi[:,c,:], tpi[:,c,:])]
                 BB += [torch.sum(tpi[:,c,:]*b[:,c,:],dim=1)]
                 #BB +=  [self.weighted_sum_of_likelihoods(lpi[:,c,:],b[:,c,:])]
             KD=torch.stack(KD,dim=1)
@@ -205,15 +204,15 @@ class STVAE_mix_by_class(STVAE_mix):
 
         if self.opt:
             mu, logvar, ppi = self.initialize_mus(input, True)
-            mu=mu.reshape(-1,self.n_class,self.n_mix_perclass*self.s_dim)
-            logvar=logvar.reshape(-1,self.n_class,self.n_mix_perclass*self.s_dim)
-            ppi=ppi.reshape(-1,self.n_class,self.n_mix_perclass)
+            mu=mu.reshape(-1,self.n_class,self.n_mix_perclass*self.s_dim).transpose(0,1)
+            logvar=logvar.reshape(-1,self.n_class,self.n_mix_perclass*self.s_dim).transpose(0,1)
+            ppi=ppi.reshape(-1,self.n_class,self.n_mix_perclass).transpose(0,1)
 
         num_inp=input.shape[0]
         self.setup_id(num_inp)
         inp = input.to(self.dv)
         if self.opt:
-            self.update_s(mu, logvar, ppi, self.mu_lr[0])
+            #self.update_s(mu, logvar, ppi, self.mu_lr[0])
             for c in range(self.n_class):
                 print('Class ' + str(c) + '\n')
                 self.update_s(mu[c], logvar[c], ppi[c], self.mu_lr[0])

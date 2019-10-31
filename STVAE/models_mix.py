@@ -52,13 +52,14 @@ class STVAE_mix(models.STVAE):
 
     def decoder_and_trans(self,s):
 
+        n_mix=s.shape[0]
         x, u = self.decoder_mix.forward(s)
         # Transform
         if (self.u_dim>0):
            xt = []
            for xx,uu in zip(x,u):
                 xt=xt+[self.apply_trans(xx,uu).squeeze()]
-           x=torch.stack(xt,dim=0).view(self.n_mix,-1,self.x_dim)
+           x=torch.stack(xt,dim=0).view(n_mix,-1,self.x_dim)
         xx = torch.clamp(x, 1e-6, 1 - 1e-6)
         return xx
 
@@ -67,7 +68,7 @@ class STVAE_mix(models.STVAE):
         eps = torch.randn(mu.shape[0],dim).to(self.dv)
         return mu + torch.exp(logvar/2) * eps
 
-    def dens_apply(self,s_mu,s_logvar,lpi,pi,rho):
+    def dens_apply(self,s_mu,s_logvar,lpi,pi):
         n_mix=pi.shape[1]
         s_mu = s_mu.view(-1, n_mix, self.s_dim)
         s_logvar = s_logvar.view(-1, n_mix, self.s_dim)
@@ -76,7 +77,7 @@ class STVAE_mix(models.STVAE):
 
         # Sum along last coordinate to get negative log density of each component.
         KD_dens=-0.5 * torch.sum(1 + s_logvar - s_mu ** 2 - var, dim=2)
-        KD_disc=lpi-rho+torch.logsumexp(rho,0)
+        KD_disc=lpi-torch.log(torch.tensor(n_mix,dtype=torch.float))
         tot=torch.sum(pi*(KD_dens+KD_disc))
 
         return tot #, pre_tot
@@ -114,7 +115,7 @@ class STVAE_mix(models.STVAE):
         x=self.decoder_and_trans(s)
         lpi=torch.log(pi)
 
-        tot= self.dens_apply(mu,logvar,lpi,pi,self.rho)
+        tot= self.dens_apply(mu,logvar,lpi,pi)
         recloss =self.mixed_loss(x,data,lpi,pi)
         return recloss, tot
 
@@ -208,7 +209,7 @@ class STVAE_mix(models.STVAE):
         kk = ii+jj*self.n_mix
         lpi = torch.log(pi)
         recon_batch = self.decoder_and_trans(ss_mu)
-        tot = self.dens_apply(s_mu, s_var, lpi, pi, self.rho)
+        tot = self.dens_apply(s_mu, s_var, lpi, pi)
         recloss = self.mixed_loss(recon_batch, inp, lpi,pi)
         print('LOSS', (tot + recloss)/num_inp)
         recon_batch = recon_batch.transpose(0, 1)
