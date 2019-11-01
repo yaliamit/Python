@@ -96,6 +96,11 @@ fout.write('tot_pars,'+str(tot_pars)+'\n')
 
 
 if (args.run_existing):
+    opt_pre=''
+    args.OPT=False
+    ex_file = opt_pre + opt_class + args.type + '_' + args.transformation + \
+              '_' + str(args.num_hlayers) + '_mx_' + str(args.n_mix) + '_sd_' + str(args.sdim) + '_cl_' + cll
+    model = locals()['STVAE' + opt_mix + opt_class](h, w, device, args).to(device)
     model.load_state_dict(torch.load(args.output_prefix+'_output/'+ex_file+'.pt',map_location=device))
     testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
     #if (not args.sample):
@@ -104,8 +109,17 @@ if (args.run_existing):
     #   train_new(model,args,train,test,device)
     #else:
     #aux.make_images(test,model,ex_file,args)
-    model.run_epoch_classify(test, 'train',fout=fout, num_mu_iter=args.nti)
-    model.run_epoch_classify(test, 'test',fout=fout, num_mu_iter=args.nti)
+    iid,RY,cl_rate,acc=model.run_epoch_classify(test, 'train',fout=fout, num_mu_iter=args.nti)
+    print(np.sum(np.logical_not(iid))*cl_rate,np.sum(iid))
+    opt_pre = 'OPT_'
+    args.OPT=True
+    ex_file = opt_pre + opt_class + args.type + '_' + args.transformation + \
+              '_' + str(args.num_hlayers) + '_mx_' + str(args.n_mix) + '_sd_' + str(args.sdim) + '_cl_' + cll
+    model = locals()['STVAE' + opt_mix + opt_class](h, w, device, args).to(device)
+    model.load_state_dict(torch.load(args.output_prefix + '_output/' + ex_file + '.pt', map_location=device))
+    iid1,RY1,cl_rate1,acc1=model.run_epoch_classify([test[0][iid],test[1][iid]], 'test',fout=fout, num_mu_iter=args.nti)
+    print(np.sum(iid)*cl_rate1)
+    print((np.sum(np.logical_not(iid))*cl_rate+np.sum(iid)*acc1)/len(test[0]))
 else:
 
     #iic = np.argsort(np.argmax(train[1], axis=1))

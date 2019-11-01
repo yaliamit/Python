@@ -162,12 +162,15 @@ class STVAE_mix_by_class(STVAE_mix):
         y = np.argmax(train[1][ii],axis=1)
         acc=0
         accb=0
+        DF=[]; RY=[]
         for j in np.arange(0, len(y), self.bsz):
             KD = []
             BB = []
             fout.write('Batch '+str(j)+'\n')
             fout.flush()
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
+            if (len(data)<self.bsz):
+                self.setup_id(len(data))
             if self.opt:
                 for c in range(self.n_class):
                     #t1=time.time()
@@ -195,7 +198,7 @@ class STVAE_mix_by_class(STVAE_mix):
 
                 # by = np.int32(by.detach().cpu().numpy())
                 # by = np.int32(np.floor(by / self.n_mix_perclass))
-                # b = b.reshape(-1,self.n_class,self.n_mix_perclass)
+                b = b.reshape(-1,self.n_class,self.n_mix_perclass)
                 s_mu = s_mu.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim)
                 s_var = s_var.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim)
                 tpi=pi.reshape(-1,self.n_class,self.n_mix_perclass)
@@ -210,12 +213,20 @@ class STVAE_mix_by_class(STVAE_mix):
             rr = BB + KD
             vy, ry = torch.min(rr, 1)
             ry = np.int32(ry.detach().cpu().numpy())
+            RY+=[ry]
+            rr=rr.detach().cpu().numpy()
+            ii=np.argsort(rr,axis=1)
+            DF+=[np.diff(np.take_along_axis(rr, ii[:, 0:2], axis=1), axis=1)]
             acc += np.sum(np.equal(ry, y[j:j + self.bsz]))
             #accb += np.sum(np.equal(by, y[j:j + self.bsz]))
-
-
-        fout.write('====> Epoch {}: Accuracy: {:.4f}\n'.format(d_type, acc/ len(tr)))
-
+        RY=np.concatenate(RY)
+        DF=np.concatenate(DF,axis=0)
+        iip = DF[:,0]>=30
+        iid = np.logical_not(iip)
+        cl_rate=np.sum(np.equal(RY[iip],y[iip]))/np.sum(iip)
+        acc/=len(tr)
+        fout.write('====> Epoch {}: Accuracy: {:.4f}\n'.format(d_type,acc))
+        return(iid,RY,cl_rate,acc)
 
     def recon(self,input,num_mu_iter,cl):
 
