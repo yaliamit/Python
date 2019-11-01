@@ -145,7 +145,6 @@ class decoder_mix(nn.Module):
         if (self.num_layers==1):
             if self.h_dim_dec is None:
                 self.h2hd = nn.Linear(self.h_dim, self.h_dim)
-
             else:
                 self.h2hd = nn.ModuleList([nn.Linear(self.h_dim_dec,self.h_dim) for i in range(self.n_mix)])
         # The bias term estimated in fromNorm is the template.
