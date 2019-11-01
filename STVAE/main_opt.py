@@ -104,6 +104,7 @@ if (args.run_existing):
     #   train_new(model,args,train,test,device)
     #else:
     #aux.make_images(test,model,ex_file,args)
+    model.run_epoch_classify(test, 'train',fout=fout, num_mu_iter=args.nti)
     model.run_epoch_classify(test, 'test',fout=fout, num_mu_iter=args.nti)
 else:
 

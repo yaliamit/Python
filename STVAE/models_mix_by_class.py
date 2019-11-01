@@ -166,6 +166,7 @@ class STVAE_mix_by_class(STVAE_mix):
             KD = []
             BB = []
             fout.write('Batch '+str(j)+'\n')
+            fout.flush()
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             if self.opt:
                 for c in range(self.n_class):
@@ -213,7 +214,7 @@ class STVAE_mix_by_class(STVAE_mix):
             #accb += np.sum(np.equal(by, y[j:j + self.bsz]))
 
 
-        fout.write('====> Epoch {}: Accuracy: {:.4f}, {:.4f}\n'.format(d_type, acc/ len(tr), accb/len(tr)))
+        fout.write('====> Epoch {}: Accuracy: {:.4f}\n'.format(d_type, acc/ len(tr)))
 
 
     def recon(self,input,num_mu_iter,cl):
