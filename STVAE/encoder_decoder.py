@@ -97,8 +97,8 @@ class fromNorm_mix(nn.Module):
             # If full matrix we get correlated gaussian in next level
             if (not self.diag):
                 self.z2z=nn.ModuleList([nn.Linear(self.z_dim, self.z_dim) for i in range(self.n_mix)])
-                for ll in self.z2z:
-                    ll.weight.data.fill_(0.)
+                # for ll in self.z2z:
+                #     ll.weight.data.fill_(0.)
             # Diagonal covariance matrix for next level
             else:
                 self.z2z=nn.ModuleList(diag(self.z_dim) for i in range(self.n_mix))
