@@ -4,6 +4,7 @@ from torch import nn, optim
 import numpy as np
 
 
+
 # Create i.i.d normals for each mixture component and a logit for weights
 class toNorm_mix(nn.Module):
     def __init__(self,model):
@@ -96,7 +97,7 @@ class fromNorm_mix(nn.Module):
         if (self.z_dim > 0):
             # If full matrix we get correlated gaussian in next level
             if (not self.diag):
-                self.z2z=nn.ModuleList([nn.Linear(self.z_dim, self.z_dim,bias=False) for i in range(self.n_mix)])
+                self.z2z=nn.ModuleList([nn.Linear(self.z_dim, self.z_dim) for i in range(self.n_mix)])
             # Diagonal covariance matrix for next level
             else:
                 self.z2z=nn.ModuleList(diag(self.z_dim) for i in range(self.n_mix))
