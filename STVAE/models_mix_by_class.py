@@ -175,8 +175,6 @@ class STVAE_mix_by_class(STVAE_mix):
                 for c in range(self.n_class):
                     #t1=time.time()
                     rng = range(c * self.n_mix_perclass, (c + 1) * self.n_mix_perclass)
-                    #fout.write('Class '+str(c)+'\n')
-                    #fout.flush()
                     self.update_s(mu[c][j:j + self.bsz], logvar[c][j:j + self.bsz], ppi[c][j:j + self.bsz], self.mu_lr[0])
                     for it in range(num_mu_iter):
                             self.compute_loss_and_grad(data, None, 'test', self.optimizer_s, opt='mu',rng=rng)
@@ -188,16 +186,11 @@ class STVAE_mix_by_class(STVAE_mix):
                     B = torch.sum(pi * b, dim=1)
                     BB += [B]
                     KD += [self.dens_apply_test(self.mu, self.logvar, lpi, pi)]
-                    #fout.write('class: {0} in {1:5.3f} seconds\n'.format(c, time.time() - t1))
             else:
                 s_mu, s_var, pi = self.encoder_mix(data.view(-1, self.x_dim))
                 ss_mu = s_mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
                 recon_batch = self.decoder_and_trans(ss_mu)
                 b = self.mixed_loss_pre(recon_batch, data)
-                w, by = torch.min(b,1)
-
-                # by = np.int32(by.detach().cpu().numpy())
-                # by = np.int32(np.floor(by / self.n_mix_perclass))
                 b = b.reshape(-1,self.n_class,self.n_mix_perclass)
                 s_mu = s_mu.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim)
                 s_var = s_var.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim)
@@ -218,6 +211,9 @@ class STVAE_mix_by_class(STVAE_mix):
             ii=np.argsort(rr,axis=1)
             DF+=[np.diff(np.take_along_axis(rr, ii[:, 0:2], axis=1), axis=1)]
             acc += np.sum(np.equal(ry, y[j:j + self.bsz]))
+            acc_temp = acc/(j+self.bsz)
+            fout.write('====> Epoch {}: Accuracy: {:.4f}\n'.format(d_type, acc_temp))
+            fout.flush()
             #accb += np.sum(np.equal(by, y[j:j + self.bsz]))
         RY=np.concatenate(RY)
         DF=np.concatenate(DF,axis=0)

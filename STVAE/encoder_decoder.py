@@ -4,34 +4,29 @@ from torch import nn, optim
 import numpy as np
 
 
-
-# Create i.i.d normals for each mixture component and a logit for weights
-class toNorm_mix(nn.Module):
-    def __init__(self,model):
-        super(toNorm_mix,self).__init__()
-        self.h2smu = nn.Linear(model.h_dim, model.s_dim*model.n_mix)
-        self.h2svar = nn.Linear(model.h_dim, model.s_dim*model.n_mix,bias=False)
-        self.h2pi =  nn.Linear(model.h_dim,model.n_mix)
-
 class encoder_mix(nn.Module):
     def __init__(self,model):
         super(encoder_mix,self).__init__()
         self.num_layers=model.num_hlayers
         self.n_mix=model.n_mix
+
         if (self.num_layers==1):
             self.h2he = nn.Linear(model.h_dim, model.h_dim)
         self.x2h = nn.Linear(model.x_dim, model.h_dim)
         self.x2hpi = nn.Linear(model.x_dim, model.h_dim)
-        self.toNorm_mix=toNorm_mix(model)
+        self.h2smu = nn.Linear(model.h_dim, model.s_dim * model.n_mix)
+        self.h2svar = nn.Linear(model.h_dim, model.s_dim * model.n_mix, bias=False)
+        self.h2pi = nn.Linear(model.h_dim, model.n_mix)
+
 
     def forward(self,inputs):
         h = F.relu(self.x2h(inputs))
         hpi = F.relu(self.x2hpi(inputs))
         if (self.num_layers == 1):
             h = F.relu(self.h2he(h))
-        s_mu = self.toNorm_mix.h2smu(h)
-        s_logvar = F.threshold(self.toNorm_mix.h2svar(h), -6, -6)
-        hm = self.toNorm_mix.h2pi(hpi).clamp(-10., 10.)
+        s_mu = self.h2smu(h)
+        s_logvar = F.threshold(self.h2svar(h), -6, -6)
+        hm = self.h2pi(hpi).clamp(-10., 10.)
         pi = torch.softmax(hm, dim=1)
         return s_mu, s_logvar, pi
 
