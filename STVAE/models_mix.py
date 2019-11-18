@@ -147,7 +147,7 @@ class STVAE_mix(models.STVAE):
 
     def forward(self, data):
 
-        data=self.preprocess(data)
+
         if (self.opt):
             pi = torch.softmax(self.pi, dim=1)
             logvar=self.logvar
@@ -189,6 +189,7 @@ class STVAE_mix(models.STVAE):
         for j in np.arange(0, len(y), self.bsz):
             #print(j)
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
+            data = self.preprocess(data)
             #target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
             if self.opt:
                 self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], pi[j:j + self.bsz], self.mu_lr[0])

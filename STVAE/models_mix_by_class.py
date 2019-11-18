@@ -82,7 +82,7 @@ class STVAE_mix_by_class(STVAE_mix):
 
     def forward(self, data, targ, rng):
 
-        data = self.preprocess(data)
+
         if self.opt:
             pi = torch.softmax(self.pi, dim=1)
             logvar = self.logvar
@@ -126,6 +126,7 @@ class STVAE_mix_by_class(STVAE_mix):
             #print(j)
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
+            data = self.preprocess(data)
             if self.opt:
                 mulr = self.mu_lr[0]
                 if (epoch > 200):
@@ -190,7 +191,7 @@ class STVAE_mix_by_class(STVAE_mix):
                     BB += [B]
                     KD += [self.dens_apply_test(self.mu, self.logvar, lpi, pi)]
             else:
-
+                
                 s_mu, s_var, pi = self.encoder_mix(data.view(-1, self.x_dim))
                 ss_mu = s_mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
                 recon_batch = self.decoder_and_trans(ss_mu)
@@ -241,7 +242,7 @@ class STVAE_mix_by_class(STVAE_mix):
         inp = input.to(self.dv)
         c = cl
         rng = range(c * self.n_mix_perclass, (c + 1) * self.n_mix_perclass)
-        inp=self.preprocess(inp)
+
         #print('Class ' + str(c) + '\n')
         if self.opt:
                 self.update_s(mu[c], logvar[c], ppi[c], self.mu_lr[0])
