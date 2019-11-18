@@ -22,6 +22,13 @@ class STVAE_mix(models.STVAE):
         self.mu_lr = args.mu_lr
         self.n_mix = args.n_mix
         self.sep=args.sep
+        self.n_parts=args.n_parts
+        self.n_part_locs=args.n_part_locs
+        self.part_dim=args.part_dim
+        self.feats=args.feats
+        if self.n_parts:
+            self.u_dim=self.n_parts*2
+            self.s_dim=self.u_dim
         self.num_hlayers=args.num_hlayers
         if (not args.OPT):
             if args.sep:
@@ -30,6 +37,12 @@ class STVAE_mix(models.STVAE):
                 self.encoder_mix = encoder_mix(self)
 
         self.decoder_mix=decoder_mix(self,args)
+
+        if (args.feats>0):
+            self.conv=torch.nn.Conv2d(self.input_channels, args.feats,args.filts, stride=1,
+                                  padding=np.int32(np.floor(args.filts/ 2)))
+            self.pool=nn.MaxPool2d(2)
+            self.x_dim=(x_h/2)*(x_w/2)*args.feats
 
         self.rho = nn.Parameter(torch.zeros(self.n_mix),requires_grad=False)
 
@@ -47,8 +60,16 @@ class STVAE_mix(models.STVAE):
         self.pi = torch.autograd.Variable(pi.to(self.dv), requires_grad=True)
         self.optimizer_s = optim.Adam([self.mu, self.logvar,self.pi], lr=mu_lr,weight_decay=wd)
 
+    def update_s_parts(self,pi_parts,mu_lr,wd=0):
+        self.pi_parts = torch.autograd.Variable(pi_parts.to(self.dv), requires_grad=True)
+        self.optimizer_s = optim.Adam([self.mu, self.logvar, self.pi,self.pi_parts], lr=mu_lr, weight_decay=wd)
 
+    def preprocess(self,data):
 
+        if (self.feats>0):
+            data=F.relu(self.pool(self.conv(data)))
+
+        return data
 
     def decoder_and_trans(self,s, rng=None):
 
@@ -56,10 +77,12 @@ class STVAE_mix(models.STVAE):
         x, u = self.decoder_mix.forward(s,rng)
         # Transform
         if (self.u_dim>0):
-           xt = []
-           for xx,uu in zip(x,u):
-                xt=xt+[self.apply_trans(xx,uu).squeeze()]
-           x=torch.stack(xt,dim=0).view(n_mix,-1,self.x_dim)
+            if self.n_parts==0:
+                xt = []
+                for xx,uu in zip(x,u):
+                    xt=xt+[self.apply_trans(xx,uu).squeeze()]
+
+            x=torch.stack(xt,dim=0).view(n_mix,-1,self.x_dim)
         xx = torch.clamp(x, 1e-6, 1 - 1e-6)
         return xx
 
@@ -120,6 +143,7 @@ class STVAE_mix(models.STVAE):
 
     def forward(self, data):
 
+        data=self.preprocess(data)
         if (self.opt):
             pi = torch.softmax(self.pi, dim=1)
             logvar=self.logvar

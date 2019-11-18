@@ -185,3 +185,4 @@ class decoder_mix(nn.Module):
             xx=torch.stack(x,dim=0)
             xx=torch.sigmoid(xx)
             return(xx,u)
+

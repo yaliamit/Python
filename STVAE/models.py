@@ -41,7 +41,8 @@ class STVAE(nn.Module):
     def __init__(self, x_h, x_w, device, args):
         super(STVAE, self).__init__()
 
-        self.x_dim = x_h * x_w # height * width
+        self.x_dim = x_h * x_w *args.input_channels # height * width
+        self.input_channels=args.input_channels
         self.h = x_h
         self.w = x_w
         self.h_dim = args.hdim # hidden layer

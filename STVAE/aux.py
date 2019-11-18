@@ -7,6 +7,7 @@ import os
 
 def process_args(parser):
     parser.add_argument('--transformation', default='aff', help='type of transformation: aff or tps')
+    parser.add_argument('input_channels',type=int,default=1,help='Number of input channels')
     parser.add_argument('--type', default='vae', help='type of transformation: aff or tps')
     parser.add_argument('--tps_num', type=int, default=3, help='dimension of s')
     parser.add_argument('--sdim', type=int, default=26, help='dimension of s')
@@ -33,6 +34,9 @@ def process_args(parser):
     parser.add_argument('--nvi', type=int, default=20, help='num val iterations (default: 20)')
     parser.add_argument('--n_mix', type=int, default=0, help='num mixtures (default: 0)')
     parser.add_argument('--clust', type=int, default=None, help='which cluster to shoe')
+    parser.add_argument('--n_parts', type=int, default=0, help='number of parts per location')
+    parser.add_argument('--n_part_locs', type=int, default=0, help='number of part locations (a^2)')
+    parser.add_argument('--part_dim', type=int, default=None, help='dimension of part')
     parser.add_argument('--MM', action='store_true', help='Use max max')
     parser.add_argument('--OPT', action='store_true', help='Optimization instead of encoding')
     parser.add_argument('--CONS', action='store_true', help='Output to consol')

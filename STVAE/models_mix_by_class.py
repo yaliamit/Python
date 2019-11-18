@@ -81,6 +81,8 @@ class STVAE_mix_by_class(STVAE_mix):
         return recloss, tot
 
     def forward(self, data, targ, rng):
+
+        data = self.preprocess(data)
         if self.opt:
             pi = torch.softmax(self.pi, dim=1)
             logvar = self.logvar
