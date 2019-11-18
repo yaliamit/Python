@@ -7,7 +7,8 @@ import os
 
 def process_args(parser):
     parser.add_argument('--transformation', default='aff', help='type of transformation: aff or tps')
-    parser.add_argument('--input_channels',type=int,default=1,help='Number of input channels')
+    parser.add_argument('--feats', type=int, default=0, help='Number of features in case data preprocessed')
+    parser.add_argument('--input_channels', type=int, default=1, help='Number of input channels')
     parser.add_argument('--type', default='vae', help='type of transformation: aff or tps')
     parser.add_argument('--tps_num', type=int, default=3, help='dimension of s')
     parser.add_argument('--sdim', type=int, default=26, help='dimension of s')
