@@ -239,6 +239,7 @@ class STVAE_mix_by_class(STVAE_mix):
         inp = input.to(self.dv)
         c = cl
         rng = range(c * self.n_mix_perclass, (c + 1) * self.n_mix_perclass)
+        inp=self.preprocess(inp)
         #print('Class ' + str(c) + '\n')
         if self.opt:
                 self.update_s(mu[c], logvar[c], ppi[c], self.mu_lr[0])

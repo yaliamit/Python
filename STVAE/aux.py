@@ -55,6 +55,8 @@ def process_args(parser):
     return (args)
 
 def make_images(test,model,ex_file,args):
+
+    if (model.feats==0):
         old_bsz=model.bsz
         model.bsz = 100
         model.setup_id(model.bsz)

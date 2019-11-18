@@ -219,6 +219,7 @@ class STVAE_mix(models.STVAE):
         num_inp=input.shape[0]
         self.setup_id(num_inp)
         inp = input.to(self.dv)
+        inp = self.preprocess(inp)
         if self.opt:
             self.update_s(mu, logvar, ppi, self.mu_lr[0])
             for it in range(num_mu_iter):
