@@ -21,6 +21,7 @@ class STVAE_mix(models.STVAE):
         self.opt = args.OPT
         self.mu_lr = args.mu_lr
         self.n_mix = args.n_mix
+        self.flag=True
         self.sep=args.sep
         self.n_parts=args.n_parts
         self.n_part_locs=args.n_part_locs
@@ -32,10 +33,11 @@ class STVAE_mix(models.STVAE):
         self.num_hlayers=args.num_hlayers
 
         if (args.feats>0):
-            self.conv=torch.nn.Conv2d(self.input_channels, args.feats,args.filts, stride=1,
+            self.conv=torch.nn.Conv2d(self.input_channels, args.feats,args.filts, stride=1,bias=False,
                                   padding=np.int32(np.floor(args.filts/ 2)))
             self.pool=nn.MaxPool2d(2)
             self.x_dim=np.int32((x_h/2)*(x_w/2)*args.feats)
+            self.optimizer_c=optim.Adam([self.conv.weight])
 
         if (not args.OPT):
             if args.sep:
@@ -69,7 +71,8 @@ class STVAE_mix(models.STVAE):
 
     def preprocess(self,data):
 
-        with torch.no_grad():
+
+        with torch.no_grad() if self.flag else dummy_context_mgr():
             if (self.feats>0):
                 data=F.relu(self.pool(self.conv(data)))
 
@@ -111,12 +114,21 @@ class STVAE_mix(models.STVAE):
 
     def mixed_loss_pre(self,x,data):
         b = []
-
-        for xx in x:
-            a = F.binary_cross_entropy(xx, data.view(-1, self.x_dim),
-                                       reduction='none')
-            a = torch.sum(a, dim=1)
-            b = b + [a]
+        if (self.flag):
+            for xx in x:
+                a = F.binary_cross_entropy(xx, data.view(-1, self.x_dim),
+                                           reduction='none')
+                a = torch.sum(a, dim=1)
+                b = b + [a]
+        else:
+            x=x.detach()
+            for xx in x:
+                data=data.view(-1,self.x_dim)
+                a=data*torch.log(xx)+(1-data)*torch.log(1-xx)
+                #a = F.binary_cross_entropy(xx,data.view(-1, self.x_dim),
+                #                           reduction='none')
+                a = torch.sum(a, dim=1)
+                b = b + [a]
         b = torch.stack(b).transpose(0, 1)
         return(b)
 
@@ -147,13 +159,13 @@ class STVAE_mix(models.STVAE):
 
     def forward(self, data):
 
-
-        if (self.opt):
-            pi = torch.softmax(self.pi, dim=1)
-            logvar=self.logvar
-            mu=self.mu
-        else:
-            mu, logvar, pi = self.encoder_mix(data.view(-1, self.x_dim))
+        with torch.no_grad() if not self.flag else dummy_context_mgr():
+            if (self.opt):
+                pi = torch.softmax(self.pi, dim=1)
+                logvar=self.logvar
+                mu=self.mu
+            else:
+                mu, logvar, pi = self.encoder_mix(data.view(-1, self.x_dim))
 
         return self.get_loss(data,mu,logvar,pi)
 
@@ -197,6 +209,7 @@ class STVAE_mix(models.STVAE):
                     self.compute_loss_and_grad(data, d_type, self.optimizer_s, opt='mu')
             with torch.no_grad() if (d_type != 'train') else dummy_context_mgr():
                 recon_loss, loss=self.compute_loss_and_grad(data,d_type,self.optimizer)
+
             if self.opt:
                 mu[j:j + self.bsz] = self.mu.data
                 logvar[j:j + self.bsz] = self.logvar.data

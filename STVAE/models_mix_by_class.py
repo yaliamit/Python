@@ -82,13 +82,13 @@ class STVAE_mix_by_class(STVAE_mix):
 
     def forward(self, data, targ, rng):
 
-
-        if self.opt:
-            pi = torch.softmax(self.pi, dim=1)
-            logvar = self.logvar
-            mu = self.mu
-        else:
-            mu, logvar, pi = self.encoder_mix(data.view(-1, self.x_dim))
+        with torch.no_grad() if not self.flag else dummy_context_mgr():
+            if self.opt:
+                pi = torch.softmax(self.pi, dim=1)
+                logvar = self.logvar
+                mu = self.mu
+            else:
+                mu, logvar, pi = self.encoder_mix(data.view(-1, self.x_dim))
         return self.get_loss(data,targ,mu,logvar,pi, rng)
 
 
@@ -124,9 +124,9 @@ class STVAE_mix_by_class(STVAE_mix):
         pi = PI
         for j in np.arange(0, len(y), self.bsz):
             #print(j)
-            data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
+            data_in = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
-            data = self.preprocess(data)
+            data = self.preprocess(data_in)
             if self.opt:
                 mulr = self.mu_lr[0]
                 if (epoch > 200):
@@ -136,6 +136,11 @@ class STVAE_mix_by_class(STVAE_mix):
                     self.compute_loss_and_grad(data, target, d_type, self.optimizer_s, opt='mu')
             with torch.no_grad() if (d_type != 'train') else dummy_context_mgr():
                 recon_loss, loss=self.compute_loss_and_grad(data,target,d_type,self.optimizer)
+            if (self.feats):
+                self.flag=False
+                data = self.preprocess(data_in)
+                self.compute_loss_and_grad(data,target,d_type,self.optimizer_c)
+                self.flag=True
             if self.opt:
                 mu[j:j + self.bsz] = self.mu.data
                 logvar[j:j + self.bsz] = self.logvar.data
@@ -191,7 +196,7 @@ class STVAE_mix_by_class(STVAE_mix):
                     BB += [B]
                     KD += [self.dens_apply_test(self.mu, self.logvar, lpi, pi)]
             else:
-                
+
                 s_mu, s_var, pi = self.encoder_mix(data.view(-1, self.x_dim))
                 ss_mu = s_mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
                 recon_batch = self.decoder_and_trans(ss_mu)
