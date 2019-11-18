@@ -136,11 +136,11 @@ class STVAE_mix_by_class(STVAE_mix):
                     self.compute_loss_and_grad(data, target, d_type, self.optimizer_s, opt='mu')
             with torch.no_grad() if (d_type != 'train') else dummy_context_mgr():
                 recon_loss, loss=self.compute_loss_and_grad(data,target,d_type,self.optimizer)
-            if (self.feats):
-                self.flag=False
-                data = self.preprocess(data_in)
-                self.compute_loss_and_grad(data,target,d_type,self.optimizer_c)
-                self.flag=True
+            # if (self.feats):
+            #     self.flag=False
+            #     data = self.preprocess(data_in)
+            #     self.compute_loss_and_grad(data,target,d_type,self.optimizer_c)
+            #     self.flag=True
             if self.opt:
                 mu[j:j + self.bsz] = self.mu.data
                 logvar[j:j + self.bsz] = self.logvar.data
