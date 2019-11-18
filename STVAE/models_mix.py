@@ -30,6 +30,13 @@ class STVAE_mix(models.STVAE):
             self.u_dim=self.n_parts*2
             self.s_dim=self.u_dim
         self.num_hlayers=args.num_hlayers
+
+        if (args.feats>0):
+            self.conv=torch.nn.Conv2d(self.input_channels, args.feats,args.filts, stride=1,
+                                  padding=np.int32(np.floor(args.filts/ 2)))
+            self.pool=nn.MaxPool2d(2)
+            self.x_dim=np.int32((x_h/2)*(x_w/2)*args.feats)
+
         if (not args.OPT):
             if args.sep:
                 self.encoder_mix = encoder_mix_sep(self)
@@ -38,11 +45,7 @@ class STVAE_mix(models.STVAE):
 
         self.decoder_mix=decoder_mix(self,args)
 
-        if (args.feats>0):
-            self.conv=torch.nn.Conv2d(self.input_channels, args.feats,args.filts, stride=1,
-                                  padding=np.int32(np.floor(args.filts/ 2)))
-            self.pool=nn.MaxPool2d(2)
-            self.x_dim=(x_h/2)*(x_w/2)*args.feats
+
 
         self.rho = nn.Parameter(torch.zeros(self.n_mix),requires_grad=False)
 
@@ -66,8 +69,9 @@ class STVAE_mix(models.STVAE):
 
     def preprocess(self,data):
 
-        if (self.feats>0):
-            data=F.relu(self.pool(self.conv(data)))
+        with torch.no_grad():
+            if (self.feats>0):
+                data=F.relu(self.pool(self.conv(data)))
 
         return data
 
