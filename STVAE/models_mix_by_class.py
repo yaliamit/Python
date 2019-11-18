@@ -171,6 +171,7 @@ class STVAE_mix_by_class(STVAE_mix):
             fout.write('Batch '+str(j)+'\n')
             fout.flush()
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
+            data = self.preprocess(data)
             if (len(data)<self.bsz):
                 self.setup_id(len(data))
             if self.opt:
@@ -189,7 +190,7 @@ class STVAE_mix_by_class(STVAE_mix):
                     BB += [B]
                     KD += [self.dens_apply_test(self.mu, self.logvar, lpi, pi)]
             else:
-                data=self.preprocess(data)
+
                 s_mu, s_var, pi = self.encoder_mix(data.view(-1, self.x_dim))
                 ss_mu = s_mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
                 recon_batch = self.decoder_and_trans(ss_mu)
