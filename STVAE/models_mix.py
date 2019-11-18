@@ -124,7 +124,7 @@ class STVAE_mix(models.STVAE):
             x=x.detach()
             for xx in x:
                 data=data.view(-1,self.x_dim)
-                a=data*torch.log(xx)+(1-data)*torch.log(1-xx)
+                a=-(data*torch.log(xx)+(1-data)*torch.log(1-xx))
                 #a = F.binary_cross_entropy(xx,data.view(-1, self.x_dim),
                 #                           reduction='none')
                 a = torch.sum(a, dim=1)
