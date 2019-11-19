@@ -16,9 +16,11 @@ def dummy_context_mgr():
 class STVAE_mix(models.STVAE):
 
     def orthogo(self):
-        u, s, v = torch.svd(self.conv.weight.view(self.feats, self.filts * self.filts * self.input_channels))
-        self.conv.weight.data = v.transpose(0, 1).reshape(self.feats, self.input_channels, self.filts, self.filts)
-
+        #u, s, v = torch.svd(self.conv.weight.view(self.feats, self.filts * self.filts * self.input_channels))
+        #self.conv.weight.data = v.transpose(0, 1).reshape(self.feats, self.input_channels, self.filts, self.filts)
+        aa=self.conv.weight.view(self.feats, self.filts * self.filts * self.input_channels)
+        q,r=torch.qr(aa.transpose(0,1))
+        self.conv.weight.data=q.transpose(0,1).reshape(self.feats, self.input_channels, self.filts, self.filts)
     def __init__(self, x_h, x_w, device, args):
         super(STVAE_mix, self).__init__(x_h, x_w, device, args)
 
