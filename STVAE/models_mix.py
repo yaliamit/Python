@@ -35,6 +35,8 @@ class STVAE_mix(models.STVAE):
         if (args.feats>0):
             self.conv=torch.nn.Conv2d(self.input_channels, args.feats,args.filts, stride=1,bias=False,
                                   padding=np.int32(np.floor(args.filts/ 2)))
+            u,s,v =torch.svd(self.conv.weight.view(args.feats,args.filts*args.filts*self.input_channels))
+            self.conv.weight.data=v.transpose(0,1).reshape(args.feats,self.input_channels,args.filts,args.filts)
             self.pool=nn.MaxPool2d(2)
             self.x_dim=np.int32((x_h/2)*(x_w/2)*args.feats)
             self.optimizer_c=optim.Adam([self.conv.weight])
