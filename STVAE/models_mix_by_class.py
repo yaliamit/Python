@@ -143,7 +143,7 @@ class STVAE_mix_by_class(STVAE_mix):
                 rc, tot = self.forward(data, target, None)
                 loss_o=rc+tot
                 grd=torch.autograd.grad(loss_o,self.conv.weight)
-                self.conv.weight.data-=.00001*grd[0]
+                self.conv.weight.data-=.000001*grd[0]
                 self.orthogo()
                 self.flag=True
             if self.opt:
