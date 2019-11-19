@@ -15,6 +15,10 @@ def dummy_context_mgr():
 
 class STVAE_mix(models.STVAE):
 
+    def orthogo(self):
+        u, s, v = torch.svd(self.conv.weight.view(self.feats, self.filts * self.filts * self.input_channels))
+        self.conv.weight.data = v.transpose(0, 1).reshape(self.feats, self.input_channels, self.filts, self.filts)
+
     def __init__(self, x_h, x_w, device, args):
         super(STVAE_mix, self).__init__(x_h, x_w, device, args)
 
@@ -27,16 +31,19 @@ class STVAE_mix(models.STVAE):
         self.n_part_locs=args.n_part_locs
         self.part_dim=args.part_dim
         self.feats=args.feats
+        self.filts=args.filts
         if self.n_parts:
             self.u_dim=self.n_parts*2
             self.s_dim=self.u_dim
         self.num_hlayers=args.num_hlayers
 
-        if (args.feats>0):
-            self.conv=torch.nn.Conv2d(self.input_channels, args.feats,args.filts, stride=1,bias=False,
+
+
+        if (self.feats>0):
+            self.conv=torch.nn.Conv2d(self.input_channels, self.feats,self.filts, stride=1,bias=False,
                                   padding=np.int32(np.floor(args.filts/ 2)))
-            u,s,v =torch.svd(self.conv.weight.view(args.feats,args.filts*args.filts*self.input_channels))
-            self.conv.weight.data=v.transpose(0,1).reshape(args.feats,self.input_channels,args.filts,args.filts)
+            self.orthogo()
+
             self.pool=nn.MaxPool2d(2)
             self.x_dim=np.int32((x_h/2)*(x_w/2)*args.feats)
             self.optimizer_c=optim.Adam([self.conv.weight])
@@ -57,6 +64,8 @@ class STVAE_mix(models.STVAE):
             self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
         elif (args.optimizer=='Adadelta'):
             self.optimizer = optim.Adadelta(self.parameters())
+
+
 
     def update_s(self,mu,logvar,pi,mu_lr,wd=0):
         # mu_lr=self.mu_lr[0]
@@ -132,7 +141,7 @@ class STVAE_mix(models.STVAE):
             x=x.detach()
             for xx in x:
                 data=data.view(-1,self.x_dim)
-                a=-(data*torch.log(xx)+(1-data)*torch.log(1-xx))
+                a=(data-xx)*(data-xx)
                 #a = F.binary_cross_entropy(xx,data.view(-1, self.x_dim),
                 #                           reduction='none')
                 a = torch.sum(a, dim=1)
