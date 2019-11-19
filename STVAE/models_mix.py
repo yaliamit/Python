@@ -46,7 +46,7 @@ class STVAE_mix(models.STVAE):
 
             self.pool=nn.MaxPool2d(2)
             self.x_dim=np.int32((x_h/2)*(x_w/2)*args.feats)
-            self.optimizer_c=optim.SGD([self.conv.weight],lr=.00001)
+            self.optimizer_c=optim.SGD([self.conv.weight],lr=args.ortho_lr)
 
         if (not args.OPT):
             if args.sep:
