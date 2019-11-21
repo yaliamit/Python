@@ -156,7 +156,7 @@ class STVAE_mix_by_class(STVAE_mix):
 
         return MU, LOGVAR, PI
 
-    def run_epoch_classify(self, train, d_type, fout=None, num_mu_iter=None):
+    def run_epoch_classify(self, train, d_type, fout=None, num_mu_iter=None, conf_thresh=0):
 
 
         self.eval()
@@ -228,9 +228,9 @@ class STVAE_mix_by_class(STVAE_mix):
             #accb += np.sum(np.equal(by, y[j:j + self.bsz]))
         RY=np.concatenate(RY)
         DF=np.concatenate(DF,axis=0)
-        iip = DF[:,0]>=30
+        iip = DF[:,0]>=conf_thresh
         iid = np.logical_not(iip)
-        cl_rate=np.sum(np.equal(RY[iip],y[iip]))/np.sum(iip)
+        cl_rate=np.sum(np.equal(RY[iip],y[iip]))
         acc/=len(tr)
         fout.write('====> Epoch {}: Accuracy: {:.4f}\n'.format(d_type,acc))
         return(iid,RY,cl_rate,acc)

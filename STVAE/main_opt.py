@@ -18,22 +18,21 @@ from classify import classify
 
 
 def process_strings(args):
-    opt_pre=''; mm_pre=''; opt_post=''; opt_mix=''; opt_class=''
+    strings={'opt_pre':'', 'mm_pre':'', 'opt_post':'', 'opt_mix':'', 'opt_class':'', 'cll':''}
     if (args.OPT):
-        opt_pre='OPT_';opt_post='_OPT';
+        strings['opt_pre']='OPT_'
+        strings['opt_post']='_OPT'
     if (args.n_mix>=1):
-        opt_mix='_mix'
+        strings['opt_mix']='_mix'
     if (args.MM):
-        mm_pre='_MM'
+        strings['mm_pre']='_MM'
     if (args.n_class>0):
-        opt_class='_by_class'
-    cll=''
+        strings['opt_class']='_by_class'
     if (args.cl is not None):
-        cll=str(args.cl)
-    ex_file = opt_pre + opt_class + args.type + '_' + args.transformation + \
-              '_' + str(args.num_hlayers) + '_mx_' + str(args.n_mix) + '_sd_' + str(args.sdim) + '_cl_' + cll
-
-    return opt_pre, opt_post, opt_mix, opt_class, mm_pre, cll, ex_file
+        strings['cll']=str(args.cl)
+    ex_file = strings['opt_pre'] + strings['opt_class'] + args.type + '_' + args.transformation + \
+              '_' + str(args.num_hlayers) + '_mx_' + str(args.n_mix) + '_sd_' + str(args.sdim) + '_cl_' + strings['cll']
+    return strings, ex_file
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
@@ -44,28 +43,38 @@ parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
 args=aux.process_args(parser)
 
 # This autromatically constructs model file name
-opt_pre, opt_post, opt_mix, opt_class, mm_pre, cll, ex_file=process_strings(args)
 
 
+run_existing=args.run_existing
 
-
+ARGS=[]
+STRINGS=[]
+EX_FILES=[]
+SMS=[]
 if (args.run_existing):
     # This overides model file name
-    if (args.model is not None):
-        name=args.model
-    else:
-        name=ex_file
-    sm=torch.load('_output/'+name+'.pt')
-    if ('args' in sm):
-        args=sm['args']
-        args.run_existing=True
-    opt_pre, opt_post, opt_mix, opt_class, mm_pre, cll, ex_file = process_strings(args)
+    names=args.model
+    for i,name in enumerate(names):
+        sm=torch.load('_output/'+name+'.pt')
+        SMS+=[sm]
+        if ('args' in sm):
+            args=sm['args']
+        ARGS+=[args]
+        strings, ex_file = process_strings(args)
+        STRINGS+=[strings]
+        EX_FILES+=[ex_file]
+else:
+    ARGS.append(args)
+    strings, ex_file = process_strings(args)
+    STRINGS+=[strings]
+    EX_FILES+=[ex_file
 
-use_gpu = args.gpu and torch.cuda.is_available()
-if (use_gpu and not args.CONS):
+               ]
+use_gpu = ARGS[0].gpu and torch.cuda.is_available()
+if (use_gpu and not ARGS[0].CONS):
     fout=open('_OUTPUTS/OUT_'+ex_file+'.txt','w')
 else:
-    args.CONS=True
+    ARGS[0].CONS=True
     fout=sys.stdout
 
 fout.write(str(args)+'\n')
@@ -74,12 +83,13 @@ fout.flush()
 torch.manual_seed(args.seed)
 np.random.seed(args.seed)
 
-device = torch.device("cuda:"+str(args.gpu-1) if use_gpu else "cpu")
+device = torch.device("cuda:"+str(ARGS[0].gpu-1) if use_gpu else "cpu")
 fout.write('Device,'+str(device)+'\n')
 fout.write('USE_GPU,'+str(use_gpu)+'\n')
 
 # round the number of training data to be a multiple of nbatch size
 
+args=ARGS[0]
 PARS={}
 PARS['data_set']='mnist'
 PARS['num_train']=args.num_train//args.mb_size *args.mb_size
@@ -89,41 +99,57 @@ if args.cl is not None:
 
 train, val, test, image_dim = get_data(PARS)
 print('num_train',train[0].shape[0])
-if (args.classify):
-    t1 = time.time()
-    classify(train,test,image_dim,opt_pre,opt_post,opt_mix,opt_class,device,args,fout,locals())
-    fout.write('Classified in {1:5.3f} seconds\n'.format(time.time()-t1))
-    exit()
+# if (args.classify):
+#     t1 = time.time()
+#     classify(train,test,image_dim,opt_pre,opt_post,opt_mix,opt_class,device,args,fout,locals())
+#     fout.write('Classified in {1:5.3f} seconds\n'.format(time.time()-t1))
+#     exit()
 
 h=train[0].shape[1]
 w=train[0].shape[2]
 
-model = locals()['STVAE' + opt_mix + opt_class](h, w, device, args).to(device)
+models=[]
+for strings,args in zip(STRINGS,ARGS):
+    model = locals()['STVAE' + strings['opt_mix'] + strings['opt_class']](h, w, device, args).to(device)
+    tot_pars = 0
+    for keys, vals in model.state_dict().items():
+        fout.write(keys + ',' + str(np.array(vals.shape)) + '\n')
+        tot_pars += np.prod(np.array(vals.shape))
+    fout.write('tot_pars,' + str(tot_pars) + '\n')
+    models+=[model]
 
-tot_pars = 0
-
-for keys, vals in model.state_dict().items():
-    fout.write(keys + ',' + str(np.array(vals.shape)) + '\n')
-    tot_pars += np.prod(np.array(vals.shape))
-fout.write('tot_pars,' + str(tot_pars) + '\n')
+#model = locals()['STVAE' + opt_mix + opt_class](h, w, device, args).to(device)
 
 
-if (args.run_existing):
 
-    model.load_state_dict(sm['model.state.dict'])
 
-    testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
+
+
+if (run_existing):
+    iid=None
+    ACC=[]
+    CL_RATE=[]
+    CF=[30]+list(np.zeros(len(SMS)-1))
+    for sm, model,args,cf in zip(SMS,models,ARGS,CF):
+        model.load_state_dict(sm['model.state.dict'])
+        testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
     #if (not args.sample):
     #    model.run_epoch(test,0,args.nti,testMU, testLOGVAR,testPI, type='test',fout=fout)
     #if (args.classify):
     #   train_new(model,args,train,test,device)
     #else:
     #aux.make_images(test,model,ex_file,args)
-    model.run_epoch_classify(test, 'train',fout=fout, num_mu_iter=args.nti)
-    model.run_epoch_classify(test, 'test',fout=fout, num_mu_iter=args.nti)
+        if (iid is not None):
+            test=[test[0][iid],test[1][iid]]
+        iid,RY,cl_rate,acc=model.run_epoch_classify(test, 'test',fout=fout, num_mu_iter=args.nti, conf_thresh=cf)
+        CL_RATE+=[cl_rate]
+        #model.run_epoch_classify(test, 'test',fout=fout, num_mu_iter=args.nti)
+        print("Hello")
+    print(np.float(np.sum(np.array(CL_RATE)))/len(test[0]))
 else:
 
-
+    model=models[0]
+    args=ARGS[0]
     #iic = np.argsort(np.argmax(train[1], axis=1))
     #train = [train[0][iic], train[1][iic]]
 
