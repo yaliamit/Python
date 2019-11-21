@@ -92,7 +92,6 @@ class STVAE(nn.Module):
                 self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
             elif (args.optimizer=='Adadelta'):
                 self.optimizer = optim.Adadelta(self.parameters())
-        args.fout.write('s_dim,'+str(self.s_dim)+', u_dim,'+str(self.u_dim)+', z_dim,' + str(self.z_dim)+','+self.type+'\n')
 
 
     def setup_id(self,size):
