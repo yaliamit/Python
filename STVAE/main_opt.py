@@ -129,7 +129,7 @@ if (run_existing):
     iid=None
     ACC=[]
     CL_RATE=[]
-    CF=[30]+list(np.zeros(len(SMS)-1))
+    CF=[args.conf]+list(np.zeros(len(SMS)-1))
     for sm, model,args,cf in zip(SMS,models,ARGS,CF):
         model.load_state_dict(sm['model.state.dict'])
         testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
