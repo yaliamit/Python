@@ -135,6 +135,7 @@ if (run_existing):
     print(len(SMS))
     ls=len(SMS)
     CF=[conf]+list(np.zeros(ls-1))
+    print(CF)
     for sm, model,args,cf in zip(SMS,models,ARGS,CF):
         model.load_state_dict(sm['model.state.dict'])
         testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
@@ -146,6 +147,7 @@ if (run_existing):
     #aux.make_images(test,model,ex_file,args)
         if (iid is not None):
             test=[test[0][iid],test[1][iid]]
+        print(cf)
         iid,RY,cl_rate,acc=model.run_epoch_classify(test, 'test',fout=fout, num_mu_iter=args.nti, conf_thresh=cf)
         CL_RATE+=[cl_rate]
         len_conf=len(test[0])-len(iid)
