@@ -131,8 +131,6 @@ if (run_existing):
     len_test=len(test[0])
     ACC=[]
     CL_RATE=[]
-    print(type(SMS))
-    print(len(SMS))
     ls=len(SMS)
     CF=[conf]+list(np.zeros(ls-1))
     print(CF)
@@ -150,7 +148,7 @@ if (run_existing):
         print(cf)
         iid,RY,cl_rate,acc=model.run_epoch_classify(test, 'test',fout=fout, num_mu_iter=args.nti, conf_thresh=cf)
         CL_RATE+=[cl_rate]
-        len_conf=len(test[0])-len(iid)
+        len_conf=len(test[0])-np.sum(iid)
         print("current number",len_conf)
         if (len_conf>0):
             print(float(cl_rate)/len_conf)
