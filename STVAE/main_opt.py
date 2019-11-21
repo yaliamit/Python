@@ -128,7 +128,7 @@ for strings,args in zip(STRINGS,ARGS):
 
 if (run_existing):
     iid=None
-    len=len(test[0])
+    len_test=len(test[0])
     ACC=[]
     CL_RATE=[]
     print(type(SMS))
@@ -151,7 +151,7 @@ if (run_existing):
         print("current confident rate",len(test[0])-len(iid), float(cl_rate)/(len(test[0])-len(iid)))
         #model.run_epoch_classify(test, 'test',fout=fout, num_mu_iter=args.nti)
         print("Hello")
-    print(np.float(np.sum(np.array(CL_RATE)))/len)
+    print(np.float(np.sum(np.array(CL_RATE)))/len_test
 else:
 
     model=models[0]
