@@ -144,6 +144,7 @@ if (run_existing):
             test=[test[0][iid],test[1][iid]]
         iid,RY,cl_rate,acc=model.run_epoch_classify(test, 'test',fout=fout, num_mu_iter=args.nti, conf_thresh=cf)
         CL_RATE+=[cl_rate]
+        print("current confident rate",float(cl_rate)/len(test[0]))
         #model.run_epoch_classify(test, 'test',fout=fout, num_mu_iter=args.nti)
         print("Hello")
     print(np.float(np.sum(np.array(CL_RATE)))/len(test[0]))
