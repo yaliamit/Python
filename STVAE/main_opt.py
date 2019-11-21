@@ -55,7 +55,7 @@ if (args.run_existing):
         name=args.model
     else:
         name=ex_file
-    sm=torch.load(name+'.pt')
+    sm=torch.load('_output/'+name+'.pt')
     if ('args' in sm):
         args=sm['args']
     opt_pre, opt_post, opt_mix, opt_class, mm_pre, cll, ex_file = process_strings(args)
@@ -106,7 +106,6 @@ for keys, vals in model.state_dict().items():
     tot_pars += np.prod(np.array(vals.shape))
 fout.write('tot_pars,' + str(tot_pars) + '\n')
 
-#model=locals()['STVAE'+opt_post+opt_mix+opt_class](h, w,  device, args).to(device)
 
 if (args.run_existing):
 
