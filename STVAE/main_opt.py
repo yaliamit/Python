@@ -131,6 +131,7 @@ if (run_existing):
     len=len(test[0])
     ACC=[]
     CL_RATE=[]
+    print(type(SMS))
     print(len(SMS))
     ls=len(SMS)
     CF=[conf]+list(np.zeros(ls-1))
