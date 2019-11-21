@@ -58,6 +58,7 @@ if (args.run_existing):
     sm=torch.load('_output/'+name+'.pt')
     if ('args' in sm):
         args=sm['args']
+        args.run_existing=True
     opt_pre, opt_post, opt_mix, opt_class, mm_pre, cll, ex_file = process_strings(args)
 
 use_gpu = args.gpu and torch.cuda.is_available()
