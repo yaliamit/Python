@@ -222,7 +222,7 @@ class STVAE_mix_by_class(STVAE_mix):
             ii=np.argsort(rr,axis=1)
             DF+=[np.diff(np.take_along_axis(rr, ii[:, 0:2], axis=1), axis=1)]
             acc += np.sum(np.equal(ry, y[j:j + self.bsz]))
-            acc_temp = acc/(len(data))
+            acc_temp = acc/(j+len(data))
             fout.write('====> Epoch {}: Accuracy: {:.4f}\n'.format(d_type, acc_temp))
             fout.flush()
             #accb += np.sum(np.equal(by, y[j:j + self.bsz]))
