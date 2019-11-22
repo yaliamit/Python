@@ -8,7 +8,9 @@ import os
 def process_args(parser):
     parser.add_argument('--transformation', default='aff', help='type of transformation: aff or tps')
     parser.add_argument('--feats', type=int, default=0, help='Number of features in case data preprocessed')
-    parser.add_argument('--filts', type=int, default=3, help='Number of features in case data preprocessed')
+    parser.add_argument('--filts', type=int, default=3, help='Filter size')
+    parser.add_argument('--pool', type=int, default=2, help='Pooling size')
+    parser.add_argument('--pool_stride', type=int, default=2, help='Pooling stride')
     parser.add_argument('--input_channels', type=int, default=1, help='Number of input channels')
     parser.add_argument('--type', default='vae', help='type of transformation: aff or tps')
     parser.add_argument('--tps_num', type=int, default=3, help='dimension of s')

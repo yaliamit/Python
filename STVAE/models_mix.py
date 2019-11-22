@@ -45,8 +45,8 @@ class STVAE_mix(models.STVAE):
             self.conv=torch.nn.Conv2d(self.input_channels, self.feats,self.filts, stride=1,bias=False,
                                   padding=np.int32(np.floor(args.filts/ 2)))
             self.orthogo()
-
-            self.pool=nn.MaxPool2d(2)
+            pad=np.int32(args.pool/2)
+            self.pool=nn.MaxPool2d(args.pool,stride=args.pool_stride, padding=(pad,pad))
             self.x_dim=np.int32((x_h/2)*(x_w/2)*args.feats)
             self.optimizer_c=optim.SGD([self.conv.weight],lr=args.ortho_lr)
 
