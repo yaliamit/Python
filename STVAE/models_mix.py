@@ -130,27 +130,17 @@ class STVAE_mix(models.STVAE):
 
     def mixed_loss_pre(self,x,data):
         b = []
-        if (self.flag):
-            if (not self.feats):
-                for xx in x:
-                    a = F.binary_cross_entropy(xx, data.view(-1, self.x_dim),
-                                               reduction='none')
-                    a = torch.sum(a, dim=1)
-                    b = b + [a]
-            else:
-                for xx in x:
-                    data = data.view(-1, self.x_dim)
-                    a = (data - xx) * (data - xx)
-                    #a=F.mse_loss(xx,data.view(-1,self.x_dim),reduction='none')
-                    a = torch.sum(a, dim=1)
-                    b = b + [a]
-        else:
-            x=x.detach()
+
+        if (not self.feats):
             for xx in x:
-                data=data.view(-1,self.x_dim)
-                a=(data-xx)*(data-xx)
-                #a = F.binary_cross_entropy(xx,data.view(-1, self.x_dim),
-                #                           reduction='none')
+                a = F.binary_cross_entropy(xx, data.view(-1, self.x_dim),
+                                           reduction='none')
+                a = torch.sum(a, dim=1)
+                b = b + [a]
+        else:
+            for xx in x:
+                data = data.view(-1, self.x_dim)
+                a = (data - xx) * (data - xx)
                 a = torch.sum(a, dim=1)
                 b = b + [a]
         b = torch.stack(b).transpose(0, 1)

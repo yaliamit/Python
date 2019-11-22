@@ -150,7 +150,7 @@ class STVAE_mix_by_class(STVAE_mix):
             tr_recon_loss += recon_loss
             tr_full_loss += loss
 
-
+        self.orthogo()
         fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(d_type,
         epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
 
