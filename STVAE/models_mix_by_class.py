@@ -138,8 +138,8 @@ class STVAE_mix_by_class(STVAE_mix):
                 recon_loss, loss=self.compute_loss_and_grad(data,target,d_type,self.optimizer)
             if (self.feats):
                 self.orthogo()
-                if epoch>100:
-                    self.optimizer.param_groups[2]['lr']=0
+                # if epoch>100:
+                #     self.optimizer.param_groups[2]['lr']=0
 
             if self.opt:
                 mu[j:j + self.bsz] = self.mu.data
