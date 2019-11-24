@@ -51,7 +51,6 @@ class STVAE_mix(models.STVAE):
                 pad = np.int32((args.pool-1) / 2)
             self.pool=nn.MaxPool2d(args.pool,stride=args.pool_stride, padding=(pad,pad))
             self.x_dim=np.int32((x_h/2)*(x_w/2)*args.feats)
-            #self.optimizer_c=optim.SGD([self.conv.weight],lr=args.ortho_lr)
 
         if (not args.OPT):
             if args.sep:
@@ -66,16 +65,18 @@ class STVAE_mix(models.STVAE):
         self.rho = nn.Parameter(torch.zeros(self.n_mix),requires_grad=False)
 
         if (args.optimizer=='Adam'):
-            self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
+            PP=[{'params':self.encoder_mix.parameters(),'lr':args.lr},
+                {'params':self.decoder_mix.parameters(),'lr':args.lr}]
+            if (self.feats):
+                PP+=[{'params':self.conv.parameters(),'lr':args.ortho_lr}]
+            self.optimizer=optim.Adam(PP)
         elif (args.optimizer=='Adadelta'):
             self.optimizer = optim.Adadelta(self.parameters())
 
 
 
     def update_s(self,mu,logvar,pi,mu_lr,wd=0):
-        # mu_lr=self.mu_lr[0]
-        # if epoch>200:
-        #     mu_lr=self.mu_lr[1]
+
         self.mu=torch.autograd.Variable(mu.to(self.dv), requires_grad=True)
         self.logvar = torch.autograd.Variable(logvar.to(self.dv), requires_grad=True)
         self.pi = torch.autograd.Variable(pi.to(self.dv), requires_grad=True)
@@ -87,8 +88,6 @@ class STVAE_mix(models.STVAE):
 
     def preprocess(self,data):
 
-
-        #with torch.no_grad() if self.flag else dummy_context_mgr():
         if (self.feats>0):
                 data=F.relu(self.pool(self.conv(data)))
 

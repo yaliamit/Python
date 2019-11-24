@@ -23,10 +23,10 @@ class STVAE_mix_by_class(STVAE_mix):
 
         self.mu_lr = args.mu_lr
         self.eyy = torch.eye(self.n_mix).to(self.dv)
-        if (args.optimizer == 'Adam'):
-            self.optimizer = optim.Adam(self.parameters(), lr=args.lr)
-        elif (args.optimizer == 'Adadelta'):
-            self.optimizer = optim.Adadelta(self.parameters())
+        # if (args.optimizer == 'Adam'):
+        #     self.optimizer = optim.Adam(self.parameters(), lr=args.lr)
+        # elif (args.optimizer == 'Adadelta'):
+        #     self.optimizer = optim.Adadelta(self.parameters())
 
     def dens_apply_test(self, s_mu, s_logvar, lpi, pi):
         n_mix = pi.shape[1]
@@ -136,12 +136,11 @@ class STVAE_mix_by_class(STVAE_mix):
                     self.compute_loss_and_grad(data, target, d_type, self.optimizer_s, opt='mu')
             with torch.no_grad() if (d_type != 'train') else dummy_context_mgr():
                 recon_loss, loss=self.compute_loss_and_grad(data,target,d_type,self.optimizer)
-            # if (self.feats):
-            #     #self.flag=False
-            #     data = self.preprocess(data_in)
-            #     self.compute_loss_and_grad(data, target, d_type, self.optimizer_c)
-            #     self.orthogo()
-            #     #self.flag=True
+            if (self.feats):
+                self.orthogo()
+                if epoch>100:
+                    self.optimizer.param_groups[2]['lr']=0
+
             if self.opt:
                 mu[j:j + self.bsz] = self.mu.data
                 logvar[j:j + self.bsz] = self.logvar.data
@@ -150,10 +149,10 @@ class STVAE_mix_by_class(STVAE_mix):
             tr_recon_loss += recon_loss
             tr_full_loss += loss
 
-        self.orthogo()
         fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(d_type,
         epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
-
+        #if self.feats:
+        #    np.savetxt(fout,self.conv.weight.detach().numpy().reshape(self.feats,self.filts*self.filts),fmt='%-7.3f')
         return MU, LOGVAR, PI
 
     def run_epoch_classify(self, train, d_type, fout=None, num_mu_iter=None, conf_thresh=0):
