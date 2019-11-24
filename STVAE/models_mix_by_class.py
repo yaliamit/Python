@@ -151,6 +151,7 @@ class STVAE_mix_by_class(STVAE_mix):
 
         fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(d_type,
         epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
+
         #if self.feats:
         #    np.savetxt(fout,self.conv.weight.detach().numpy().reshape(self.feats,self.filts*self.filts),fmt='%-7.3f')
         return MU, LOGVAR, PI
