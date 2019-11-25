@@ -44,12 +44,17 @@ class STVAE_mix(models.STVAE):
         if (self.feats>0):
             self.conv=torch.nn.Conv2d(self.input_channels, self.feats,self.filts, stride=1,bias=False,
                                   padding=np.int32(np.floor(args.filts/ 2)))
+            self.deconv2d = torch.nn.ConvTranspose2d(self.feats, 1, self.filts,stride=2,padding=1,output_padding=1,bias=False)
+
             #self.orthogo()
             if (np.mod(args.pool,2)==1):
                 pad=np.int32(args.pool/2)
             else:
                 pad = np.int32((args.pool-1) / 2)
             self.pool=nn.MaxPool2d(args.pool,stride=args.pool_stride, padding=(pad,pad))
+            self.ndim = (2 * self.filts)
+            ndim2 = self.ndim * self.ndim
+            self.ID = torch.eye(ndim2, ndim2).reshape(ndim2, 1, self.ndim, self.ndim).to(device)
             self.x_dim=np.int32((x_h/2)*(x_w/2)*args.feats)
 
         if (not args.OPT):

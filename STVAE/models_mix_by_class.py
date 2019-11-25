@@ -90,18 +90,19 @@ class STVAE_mix_by_class(STVAE_mix):
         return self.get_loss(data,targ,mu,logvar,pi, rng)
 
 
-    def compute_loss_and_grad(self,data,targ, d_type, optim, opt='par',rng=None):
+    def compute_loss_and_grad(self,data,data_in, targ, d_type, optim, opt='par',rng=None):
 
         optim.zero_grad()
 
         rc, tot = self.forward(data, targ,rng)
-        # if (self.feats and not opt=='mu'):
-        #     mm = self.conv.weight.reshape(self.feats, -1)
-        #     mmm = mm.matmul(mm.transpose(0, 1))
-        #     dmmm = torch.diag(mmm)
-        #     odmmm = mmm - torch.diag(dmmm)
-        #     mloss = self.lamda1 * (self.feats - torch.sum(dmmm)) + self.lamda2 * torch.sum(odmmm*odmmm)
-        #     tot += mloss
+        if (self.feats and not opt=='mu'):
+            ww = self.conv.weight.detach()
+            self.deconv2d.weight.data=ww
+            out=self.conv(self.ID)
+            dd=self.deconv2d(out[:,:,0:self.ndim:2,0:self.ndim:2])
+            rec=self.lamda1*torch.sum((dd-self.ID)*(dd-self.ID))
+            tot+=rec
+
 
         loss=rc+tot
         if (d_type == 'train' or opt=='mu'):
@@ -138,9 +139,9 @@ class STVAE_mix_by_class(STVAE_mix):
                 self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], pi[j:j + self.bsz], mulr)
                 for it in range(num_mu_iter):
                     data_d = data.detach() #self.preprocess(data_in)
-                    self.compute_loss_and_grad(data_d, target, d_type, self.optimizer_s, opt='mu')
+                    self.compute_loss_and_grad(data_d, data_in, target, d_type, self.optimizer_s, opt='mu')
             with torch.no_grad() if (d_type != 'train') else dummy_context_mgr():
-                recon_loss, loss=self.compute_loss_and_grad(data,target,d_type,self.optimizer)
+                recon_loss, loss=self.compute_loss_and_grad(data, data_in, target,d_type,self.optimizer)
             # if (self.feats):
             #     self.orthogo()
                 # if epoch>100:
@@ -183,7 +184,7 @@ class STVAE_mix_by_class(STVAE_mix):
             fout.write('Batch '+str(j)+'\n')
             fout.flush()
             data_in = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
-
+            data = self.preprocess(data_in)
             if (len(data_in)<self.bsz):
                 self.setup_id(len(data_in))
             if self.opt:
@@ -192,8 +193,8 @@ class STVAE_mix_by_class(STVAE_mix):
                     rng = range(c * self.n_mix_perclass, (c + 1) * self.n_mix_perclass)
                     self.update_s(mu[c][j:j + self.bsz], logvar[c][j:j + self.bsz], ppi[c][j:j + self.bsz], self.mu_lr[0])
                     for it in range(num_mu_iter):
-                            data = self.preprocess(data_in)
-                            self.compute_loss_and_grad(data, None, 'test', self.optimizer_s, opt='mu',rng=rng)
+                            data_d=data.detach()
+                            self.compute_loss_and_grad(data_d, data_in, None, 'test', self.optimizer_s, opt='mu',rng=rng)
                     ss_mu = self.mu.reshape(-1, self.n_mix_perclass, self.s_dim).transpose(0, 1)
                     pi = torch.softmax(self.pi, dim=1)
                     lpi=torch.log(pi)
@@ -203,7 +204,6 @@ class STVAE_mix_by_class(STVAE_mix):
                     BB += [B]
                     KD += [self.dens_apply_test(self.mu, self.logvar, lpi, pi)]
             else:
-                data = self.preprocess(data_in)
                 s_mu, s_var, pi = self.encoder_mix(data.view(-1, self.x_dim))
                 ss_mu = s_mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
                 recon_batch = self.decoder_and_trans(ss_mu)
