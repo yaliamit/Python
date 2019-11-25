@@ -69,7 +69,7 @@ class STVAE_mix(models.STVAE):
             if (not self.opt):
                 PP+=[{'params':self.encoder_mix.parameters(),'lr':args.lr}]
             if (self.feats):
-                PP+=[{'params':self.conv.parameters(),'lr':args.ortho_lr}]
+               PP+=[{'params':self.conv.parameters(),'lr':args.ortho_lr}]
             self.optimizer=optim.Adam(PP)
         elif (args.optimizer=='Adadelta'):
             self.optimizer = optim.Adadelta(self.parameters())
@@ -139,8 +139,8 @@ class STVAE_mix(models.STVAE):
                 b = b + [a]
         else:
             for xx in x:
-                data = data.view(-1, self.x_dim)
-                a = (data - xx) * (data - xx)
+                dat = data.view(-1, self.x_dim)
+                a = (dat - xx) * (dat - xx)
                 a = torch.sum(a, dim=1)
                 b = b + [a]
         b = torch.stack(b).transpose(0, 1)

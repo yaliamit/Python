@@ -25,10 +25,7 @@ class STVAE_mix_by_class(STVAE_mix):
         self.eyy = torch.eye(self.n_mix).to(self.dv)
         self.lamda1=args.lamda1
         self.lamda2=args.lamda2
-        # if (args.optimizer == 'Adam'):
-        #     self.optimizer = optim.Adam(self.parameters(), lr=args.lr)
-        # elif (args.optimizer == 'Adadelta'):
-        #     self.optimizer = optim.Adadelta(self.parameters())
+
 
     def dens_apply_test(self, s_mu, s_logvar, lpi, pi):
         n_mix = pi.shape[1]
@@ -84,13 +81,12 @@ class STVAE_mix_by_class(STVAE_mix):
 
     def forward(self, data, targ, rng):
 
-        with torch.no_grad() if not self.flag else dummy_context_mgr():
-            if self.opt:
-                pi = torch.softmax(self.pi, dim=1)
-                logvar = self.logvar
-                mu = self.mu
-            else:
-                mu, logvar, pi = self.encoder_mix(data.view(-1, self.x_dim))
+        if self.opt:
+            pi = torch.softmax(self.pi, dim=1)
+            logvar = self.logvar
+            mu = self.mu
+        else:
+            mu, logvar, pi = self.encoder_mix(data.view(-1, self.x_dim))
         return self.get_loss(data,targ,mu,logvar,pi, rng)
 
 
@@ -99,13 +95,13 @@ class STVAE_mix_by_class(STVAE_mix):
         optim.zero_grad()
 
         rc, tot = self.forward(data, targ,rng)
-        if (self.feats):
-            mm = self.conv.weight.reshape(self.feats, -1)
-            mmm = mm.matmul(mm.transpose(0, 1))
-            dmmm = torch.diag(mmm)
-            odmmm = mmm - torch.diag(dmmm)
-            mloss = self.lamda1 * (self.feats - torch.sum(dmmm)) + self.lamda2 * torch.sum(odmmm*odmmm)
-            tot += mloss
+        # if (self.feats and not opt=='mu'):
+        #     mm = self.conv.weight.reshape(self.feats, -1)
+        #     mmm = mm.matmul(mm.transpose(0, 1))
+        #     dmmm = torch.diag(mmm)
+        #     odmmm = mmm - torch.diag(dmmm)
+        #     mloss = self.lamda1 * (self.feats - torch.sum(dmmm)) + self.lamda2 * torch.sum(odmmm*odmmm)
+        #     tot += mloss
 
         loss=rc+tot
         if (d_type == 'train' or opt=='mu'):
@@ -134,15 +130,17 @@ class STVAE_mix_by_class(STVAE_mix):
             #print(j)
             data_in = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
-            data = self.preprocess(data_in)
+
             if self.opt:
                 mulr = self.mu_lr[0]
                 if (epoch > 200):
                     mulr = self.mu_lr[1]
                 self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], pi[j:j + self.bsz], mulr)
                 for it in range(num_mu_iter):
+                    data = self.preprocess(data_in)
                     self.compute_loss_and_grad(data, target, d_type, self.optimizer_s, opt='mu')
             with torch.no_grad() if (d_type != 'train') else dummy_context_mgr():
+                data = self.preprocess(data_in)
                 recon_loss, loss=self.compute_loss_and_grad(data,target,d_type,self.optimizer)
             # if (self.feats):
             #     self.orthogo()
