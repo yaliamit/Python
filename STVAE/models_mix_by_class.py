@@ -96,7 +96,7 @@ class STVAE_mix_by_class(STVAE_mix):
 
         rc, tot = self.forward(data, targ,rng)
         if (self.feats and not opt=='mu'):
-            ww = self.conv.weight.detach()
+            ww = self.conv.weight #.detach()
             self.deconv2d.weight.data=ww
             out=self.conv(self.ID)
             dd=self.deconv2d(out[:,:,0:self.ndim:2,0:self.ndim:2])
