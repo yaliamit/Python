@@ -44,7 +44,7 @@ class STVAE_mix(models.STVAE):
         if (self.feats>0):
             self.conv=torch.nn.Conv2d(self.input_channels, self.feats,self.filts, stride=1,bias=False,
                                   padding=np.int32(np.floor(args.filts/ 2)))
-            self.orthogo()
+            #self.orthogo()
             if (np.mod(args.pool,2)==1):
                 pad=np.int32(args.pool/2)
             else:
@@ -167,6 +167,7 @@ class STVAE_mix(models.STVAE):
 
         tot= self.dens_apply(mu,logvar,lpi,pi)
         recloss =self.mixed_loss(x,data,lpi,pi)
+
         return recloss, tot
 
 

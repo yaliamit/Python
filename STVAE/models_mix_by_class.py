@@ -23,6 +23,8 @@ class STVAE_mix_by_class(STVAE_mix):
 
         self.mu_lr = args.mu_lr
         self.eyy = torch.eye(self.n_mix).to(self.dv)
+        self.lamda1=args.lamda1
+        self.lamda2=args.lamda2
         # if (args.optimizer == 'Adam'):
         #     self.optimizer = optim.Adam(self.parameters(), lr=args.lr)
         # elif (args.optimizer == 'Adadelta'):
@@ -97,7 +99,13 @@ class STVAE_mix_by_class(STVAE_mix):
         optim.zero_grad()
 
         rc, tot = self.forward(data, targ,rng)
-
+        if (self.feats):
+            mm = self.conv.weight.reshape(self.feats, -1)
+            mmm = mm.matmul(mm.transpose(0, 1))
+            dmmm = torch.diag(mmm)
+            odmmm = mmm - torch.diag(dmmm)
+            mloss = self.lamda1 * (self.feats - torch.sum(dmmm)) + self.lamda2 * torch.sum(odmmm*odmmm)
+            tot += mloss
 
         loss=rc+tot
         if (d_type == 'train' or opt=='mu'):
@@ -136,8 +144,8 @@ class STVAE_mix_by_class(STVAE_mix):
                     self.compute_loss_and_grad(data, target, d_type, self.optimizer_s, opt='mu')
             with torch.no_grad() if (d_type != 'train') else dummy_context_mgr():
                 recon_loss, loss=self.compute_loss_and_grad(data,target,d_type,self.optimizer)
-            if (self.feats):
-                self.orthogo()
+            # if (self.feats):
+            #     self.orthogo()
                 # if epoch>100:
                 #     self.optimizer.param_groups[2]['lr']=0
 
