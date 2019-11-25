@@ -65,8 +65,9 @@ class STVAE_mix(models.STVAE):
         self.rho = nn.Parameter(torch.zeros(self.n_mix),requires_grad=False)
 
         if (args.optimizer=='Adam'):
-            PP=[{'params':self.encoder_mix.parameters(),'lr':args.lr},
-                {'params':self.decoder_mix.parameters(),'lr':args.lr}]
+            PP=[{'params':self.encoder_mix.parameters(),'lr':args.lr}]
+            if (not self.OPT):
+                PP+=[{'params':self.decoder_mix.parameters(),'lr':args.lr}]
             if (self.feats):
                 PP+=[{'params':self.conv.parameters(),'lr':args.ortho_lr}]
             self.optimizer=optim.Adam(PP)
