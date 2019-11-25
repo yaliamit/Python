@@ -66,7 +66,7 @@ class STVAE_mix(models.STVAE):
 
         if (args.optimizer=='Adam'):
             PP=[{'params':self.encoder_mix.parameters(),'lr':args.lr}]
-            if (not self.OPT):
+            if (not self.opt):
                 PP+=[{'params':self.decoder_mix.parameters(),'lr':args.lr}]
             if (self.feats):
                 PP+=[{'params':self.conv.parameters(),'lr':args.ortho_lr}]
