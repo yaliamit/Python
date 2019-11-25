@@ -185,8 +185,8 @@ class STVAE_mix_by_class(STVAE_mix):
             fout.flush()
             data_in = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
 
-            if (len(data)<self.bsz):
-                self.setup_id(len(data))
+            if (len(data_in)<self.bsz):
+                self.setup_id(len(data_in))
             if self.opt:
                 for c in range(self.n_class):
                     #t1=time.time()
