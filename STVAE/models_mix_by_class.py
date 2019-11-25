@@ -130,17 +130,16 @@ class STVAE_mix_by_class(STVAE_mix):
             #print(j)
             data_in = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
-
+            data = self.preprocess(data_in)
             if self.opt:
                 mulr = self.mu_lr[0]
                 if (epoch > 200):
                     mulr = self.mu_lr[1]
                 self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], pi[j:j + self.bsz], mulr)
                 for it in range(num_mu_iter):
-                    data = self.preprocess(data_in)
-                    self.compute_loss_and_grad(data, target, d_type, self.optimizer_s, opt='mu')
+                    data_d = data.detach() #self.preprocess(data_in)
+                    self.compute_loss_and_grad(data_d, target, d_type, self.optimizer_s, opt='mu')
             with torch.no_grad() if (d_type != 'train') else dummy_context_mgr():
-                data = self.preprocess(data_in)
                 recon_loss, loss=self.compute_loss_and_grad(data,target,d_type,self.optimizer)
             # if (self.feats):
             #     self.orthogo()
