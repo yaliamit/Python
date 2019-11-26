@@ -205,9 +205,10 @@ class STVAE_mix_by_class(STVAE_mix):
                     KD += [self.dens_apply_test(self.mu, self.logvar, lpi, pi)]
             else:
                 s_mu, s_var, pi = self.encoder_mix(data)
+                
+                ss_mu = s_mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
                 with torch.no_grad():
-                    ss_mu = s_mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
-                recon_batch = self.decoder_and_trans(ss_mu)
+                    recon_batch = self.decoder_and_trans(ss_mu)
                 b = self.mixed_loss_pre(recon_batch, data)
                 b = b.reshape(-1,self.n_class,self.n_mix_perclass)
                 s_mu = s_mu.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim)
