@@ -47,7 +47,7 @@ class STVAE_mix(models.STVAE):
             pp=np.int32(np.floor(args.filts/ 2))
             self.conv=torch.nn.Conv2d(self.input_channels, self.feats,self.filts, stride=1,bias=False,
                                   padding=pp)
-            self.deconv = torch.nn.ConvTranspose2d(self.feats, 1, self.filts,stride=args.pool,padding=pp,output_padding=1,bias=False)
+            self.deconv = torch.nn.ConvTranspose2d(self.feats, self.input_channels, self.filts,stride=args.pool,padding=pp,output_padding=1,bias=False)
             self.deconv.weight.data=self.conv.weight.data
             #self.orthogo()
             if (np.mod(args.pool,2)==1):

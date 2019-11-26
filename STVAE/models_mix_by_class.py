@@ -197,14 +197,16 @@ class STVAE_mix_by_class(STVAE_mix):
                     ss_mu = self.mu.reshape(-1, self.n_mix_perclass, self.s_dim).transpose(0, 1)
                     pi = torch.softmax(self.pi, dim=1)
                     lpi=torch.log(pi)
-                    recon_batch = self.decoder_and_trans(ss_mu, rng)
+                    with torch.no_grad():
+                        recon_batch = self.decoder_and_trans(ss_mu, rng)
                     b=self.mixed_loss_pre(recon_batch, data)
                     B = torch.sum(pi * b, dim=1)
                     BB += [B]
                     KD += [self.dens_apply_test(self.mu, self.logvar, lpi, pi)]
             else:
                 s_mu, s_var, pi = self.encoder_mix(data)
-                ss_mu = s_mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
+                with torch.no_grad():
+                    ss_mu = s_mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
                 recon_batch = self.decoder_and_trans(ss_mu)
                 b = self.mixed_loss_pre(recon_batch, data)
                 b = b.reshape(-1,self.n_class,self.n_mix_perclass)
