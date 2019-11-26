@@ -34,6 +34,7 @@ class STVAE_mix(models.STVAE):
         self.part_dim=args.part_dim
         self.feats=args.feats
         self.filts=args.filts
+        self.x_h=x_h
         if self.n_parts:
             self.u_dim=self.n_parts*2
             self.s_dim=self.u_dim
@@ -44,18 +45,19 @@ class STVAE_mix(models.STVAE):
         if (self.feats>0):
             self.conv=torch.nn.Conv2d(self.input_channels, self.feats,self.filts, stride=1,bias=False,
                                   padding=np.int32(np.floor(args.filts/ 2)))
-            self.deconv2d = torch.nn.ConvTranspose2d(self.feats, 1, self.filts,stride=2,padding=1,output_padding=1,bias=False)
-
+            self.deconv = torch.nn.ConvTranspose2d(self.feats, 1, self.filts,stride=2,padding=1,output_padding=1,bias=False)
+            self.deconv.weight.data=self.conv.weight.data
             #self.orthogo()
             if (np.mod(args.pool,2)==1):
                 pad=np.int32(args.pool/2)
             else:
                 pad = np.int32((args.pool-1) / 2)
             self.pool=nn.MaxPool2d(args.pool,stride=args.pool_stride, padding=(pad,pad))
-            self.ndim = (2 * self.filts)
+            self.ndim = (4 * self.filts)
             ndim2 = self.ndim * self.ndim
             self.ID = torch.eye(ndim2, ndim2).reshape(ndim2, 1, self.ndim, self.ndim).to(device)
             self.x_dim=np.int32((x_h/2)*(x_w/2)*args.feats)
+            self.x_hf=np.int32(x_h/2)
 
         if (not args.OPT):
             if args.sep:
@@ -73,8 +75,8 @@ class STVAE_mix(models.STVAE):
             PP = [{'params': self.decoder_mix.parameters(), 'lr': args.lr}]
             if (not self.opt):
                 PP+=[{'params':self.encoder_mix.parameters(),'lr':args.lr}]
-            if (self.feats):
-               PP+=[{'params':self.conv.parameters(),'lr':args.ortho_lr}]
+            # if (self.feats):
+            #    PP+=[{'params':self.conv.parameters(),'lr':args.ortho_lr}]
             self.optimizer=optim.Adam(PP)
         elif (args.optimizer=='Adadelta'):
             self.optimizer = optim.Adadelta(self.parameters())
@@ -136,15 +138,15 @@ class STVAE_mix(models.STVAE):
     def mixed_loss_pre(self,x,data):
         b = []
 
-        if (not self.feats):
+        if (True): #not self.feats):
             for xx in x:
-                a = F.binary_cross_entropy(xx, data.view(-1, self.x_dim),
+                a = F.binary_cross_entropy(xx, data.view(data.shape[0], -1),
                                            reduction='none')
                 a = torch.sum(a, dim=1)
                 b = b + [a]
         else:
             for xx in x:
-                dat = data.view(-1, self.x_dim)
+                dat = data.view(data.shape[0],-1)
                 a = (dat - xx) * (dat - xx)
                 a = torch.sum(a, dim=1)
                 b = b + [a]
@@ -154,7 +156,7 @@ class STVAE_mix(models.STVAE):
     def weighted_sum_of_likelihoods(self,lpi,b):
         return(-torch.logsumexp(lpi-b,dim=1))
 
-    def mixed_loss(self,x,data,lpi,pi):
+    def mixed_loss(self,x,data,pi):
 
         b=self.mixed_loss_pre(x,data)
         recloss=torch.sum(pi*b)
@@ -172,7 +174,7 @@ class STVAE_mix(models.STVAE):
         lpi=torch.log(pi)
 
         tot= self.dens_apply(mu,logvar,lpi,pi)
-        recloss =self.mixed_loss(x,data,lpi,pi)
+        recloss =self.mixed_loss(x,data,pi)
 
         return recloss, tot
 
@@ -185,7 +187,7 @@ class STVAE_mix(models.STVAE):
                 logvar=self.logvar
                 mu=self.mu
             else:
-                mu, logvar, pi = self.encoder_mix(data.view(-1, self.x_dim))
+                mu, logvar, pi = self.encoder_mix(data)
 
         return self.get_loss(data,mu,logvar,pi)
 
@@ -271,7 +273,7 @@ class STVAE_mix(models.STVAE):
         lpi = torch.log(pi)
         recon_batch = self.decoder_and_trans(ss_mu)
         tot = self.dens_apply(s_mu, s_var, lpi, pi)
-        recloss = self.mixed_loss(recon_batch, inp, lpi,pi)
+        recloss = self.mixed_loss(recon_batch, inp,pi)
         print('LOSS', (tot + recloss)/num_inp)
         recon_batch = recon_batch.transpose(0, 1)
         recon=recon_batch.reshape(self.n_mix*num_inp,-1)

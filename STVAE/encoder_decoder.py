@@ -9,7 +9,9 @@ class encoder_mix(nn.Module):
         super(encoder_mix,self).__init__()
         self.num_layers=model.num_hlayers
         self.n_mix=model.n_mix
+        self.x_dim=model.x_dim
 
+        self.feats=0
         if (self.num_layers==1):
             self.h2he = nn.Linear(model.h_dim, model.h_dim)
         self.x2h = nn.Linear(model.x_dim, model.h_dim)
@@ -17,9 +19,17 @@ class encoder_mix(nn.Module):
         self.h2smu = nn.Linear(model.h_dim, model.s_dim * model.n_mix)
         self.h2svar = nn.Linear(model.h_dim, model.s_dim * model.n_mix, bias=False)
         self.h2pi = nn.Linear(model.h_dim, model.n_mix)
+        if (model.feats):
+            self.feats=model.feats
+            self.conv=model.conv
+            self.pool=model.pool
+
 
 
     def forward(self,inputs):
+        if (self.feats):
+            inputs=self.pool(self.conv(inputs))
+        inputs=inputs.view(-1, self.x_dim)
         h = F.relu(self.x2h(inputs))
         hpi = F.relu(self.x2hpi(inputs))
         if (self.num_layers == 1):
@@ -156,6 +166,13 @@ class decoder_mix(nn.Module):
             else:
                 self.h2x = nn.ModuleList([nn.Linear(self.h_dim, self.x_dim) for i in range(self.n_mix)])
         self.fromNorm_mix = fromNorm_mix(self)
+        self.feats=0
+        if (model.feats):
+            self.feats=model.feats
+            self.deconv=model.deconv
+            self.x_hf = model.x_hf
+            self.x_h=model.x_h
+
 
     def forward(self,s,rng=None):
 
@@ -178,9 +195,16 @@ class decoder_mix(nn.Module):
 
             for h_, r in zip(h, rng):
                 if self.h_dim_dec is None:
-                    x = x + [self.h2x(h_)]
+                    xx=self.h2x(h_)
+                    if (self.feats):
+                        xx=self.deconv(xx.reshape(-1,self.feats,self.x_hf,self.x_hf))
+                        xx=xx.reshape(-1,self.x_h*self.x_h)
+                    x += [xx]
                 else:
-                    x = x + [self.h2x[r](h_)]
+                    xx=self.h2x[r]
+                    if (self.feats):
+                        xx=self.deconv(xx)
+                    x += [xx]
 
             xx=torch.stack(x,dim=0)
             xx=torch.sigmoid(xx)
