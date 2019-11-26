@@ -33,6 +33,7 @@ class STVAE_mix(models.STVAE):
         self.n_part_locs=args.n_part_locs
         self.part_dim=args.part_dim
         self.feats=args.feats
+        self.feats_back=args.feats_back
         self.filts=args.filts
         self.x_h=x_h
         if self.n_parts:
@@ -75,8 +76,8 @@ class STVAE_mix(models.STVAE):
             PP = [{'params': self.decoder_mix.parameters(), 'lr': args.lr}]
             if (not self.opt):
                 PP+=[{'params':self.encoder_mix.parameters(),'lr':args.lr}]
-            # if (self.feats):
-            #    PP+=[{'params':self.conv.parameters(),'lr':args.ortho_lr}]
+            if (self.feats and not self.feats_back):
+                PP+=[{'params':self.conv.parameters(),'lr':args.ortho_lr}]
             self.optimizer=optim.Adam(PP)
         elif (args.optimizer=='Adadelta'):
             self.optimizer = optim.Adadelta(self.parameters())
@@ -96,7 +97,7 @@ class STVAE_mix(models.STVAE):
 
     def preprocess(self,data):
 
-        if (self.feats>0):
+        if (self.feats>0 and not self.feats_back):
                 data=F.relu(self.pool(self.conv(data)))
 
         return data
@@ -138,7 +139,7 @@ class STVAE_mix(models.STVAE):
     def mixed_loss_pre(self,x,data):
         b = []
 
-        if (True): #not self.feats):
+        if (self.feats_back or self.feats==0):
             for xx in x:
                 a = F.binary_cross_entropy(xx, data.view(data.shape[0], -1),
                                            reduction='none')

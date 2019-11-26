@@ -8,6 +8,7 @@ import os
 def process_args(parser):
     parser.add_argument('--transformation', default='aff', help='type of transformation: aff or tps')
     parser.add_argument('--feats', type=int, default=0, help='Number of features in case data preprocessed')
+    parser.add_argument('--feats_back', action='store_true',help='reconstruct image from features')
     parser.add_argument('--filts', type=int, default=3, help='Filter size')
     parser.add_argument('--pool', type=int, default=2, help='Pooling size')
     parser.add_argument('--pool_stride', type=int, default=2, help='Pooling stride')
@@ -62,7 +63,7 @@ def process_args(parser):
 
 def make_images(test,model,ex_file,args):
 
-    if (model.feats==0):
+    if (model.feats==0 or model.feats_back):
         old_bsz=model.bsz
         model.bsz = 100
         model.setup_id(model.bsz)

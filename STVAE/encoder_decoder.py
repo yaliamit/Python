@@ -11,7 +11,8 @@ class encoder_mix(nn.Module):
         self.n_mix=model.n_mix
         self.x_dim=model.x_dim
 
-        self.feats=0
+        self.feats=model.feats
+        self.feats_back=model.feats_back
         if (self.num_layers==1):
             self.h2he = nn.Linear(model.h_dim, model.h_dim)
         self.x2h = nn.Linear(model.x_dim, model.h_dim)
@@ -19,15 +20,14 @@ class encoder_mix(nn.Module):
         self.h2smu = nn.Linear(model.h_dim, model.s_dim * model.n_mix)
         self.h2svar = nn.Linear(model.h_dim, model.s_dim * model.n_mix, bias=False)
         self.h2pi = nn.Linear(model.h_dim, model.n_mix)
-        if (model.feats):
-            self.feats=model.feats
+        if (model.feats and self.feats_back):
             self.conv=model.conv
             self.pool=model.pool
 
 
 
     def forward(self,inputs):
-        if (self.feats):
+        if (self.feats and self.feats_back):
             inputs=self.pool(self.conv(inputs))
         inputs=inputs.view(-1, self.x_dim)
         h = F.relu(self.x2h(inputs))
@@ -146,6 +146,8 @@ class decoder_mix(nn.Module):
         self.h_dim=model.h_dim
         self.h_dim_dec=args.hdim_dec
         self.num_layers=model.num_hlayers
+        self.feats = model.feats
+        self.feats_back=model.feats_back
         self.type=model.type
         self.diag=args.Diag
         if (self.num_layers==1):
@@ -166,9 +168,7 @@ class decoder_mix(nn.Module):
             else:
                 self.h2x = nn.ModuleList([nn.Linear(self.h_dim, self.x_dim) for i in range(self.n_mix)])
         self.fromNorm_mix = fromNorm_mix(self)
-        self.feats=0
-        if (model.feats):
-            self.feats=model.feats
+        if (self.feats and self.feats_back):
             self.deconv=model.deconv
             self.x_hf = model.x_hf
             self.x_h=model.x_h
@@ -196,7 +196,7 @@ class decoder_mix(nn.Module):
             for h_, r in zip(h, rng):
                 if self.h_dim_dec is None:
                     xx=self.h2x(h_)
-                    if (self.feats):
+                    if (self.feats and self.feats_back):
                         xx=self.deconv(xx.reshape(-1,self.feats,self.x_hf,self.x_hf))
                         xx=xx.reshape(-1,self.x_h*self.x_h)
                     x += [xx]

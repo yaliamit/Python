@@ -95,14 +95,13 @@ class STVAE_mix_by_class(STVAE_mix):
         optim.zero_grad()
 
         rc, tot = self.forward(data, targ,rng)
-        # if (self.feats and not opt=='mu'):
-        #     ww = self.conv.weight #.detach()
-        #     self.deconv2d.weight.data=ww
-        #     out=self.conv(self.ID)
-        #     dd=self.deconv2d(out[:,:,0:self.ndim:2,0:self.ndim:2])
-        #     rec=self.lamda1*torch.sum((dd-self.ID)*(dd-self.ID))
-        #     print(rec)
-        #     tot+=rec
+
+        if (self.feats and not opt=='mu' and not self.feats_back):
+            out=self.conv(self.ID)
+            dd=self.deconv(out[:,:,0:self.ndim:2,0:self.ndim:2])
+            rec=self.lamda1*torch.sum((dd-self.ID)*(dd-self.ID))
+            print(rec)
+            tot+=rec
 
 
         loss=rc+tot
@@ -130,9 +129,9 @@ class STVAE_mix_by_class(STVAE_mix):
         pi = PI
         for j in np.arange(0, len(y), self.bsz):
             #print(j)
-            data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
+            data_in = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
-            #data = self.preprocess(data_in)
+            data = self.preprocess(data_in)
             if self.opt:
                 mulr = self.mu_lr[0]
                 if (epoch > 200):
@@ -184,8 +183,8 @@ class STVAE_mix_by_class(STVAE_mix):
             BB = []
             fout.write('Batch '+str(j)+'\n')
             fout.flush()
-            data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
-            #data = self.preprocess(data_in)
+            data_in = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
+            data = self.preprocess(data_in)
             if (len(data)<self.bsz):
                 self.setup_id(len(data))
             if self.opt:
@@ -265,7 +264,7 @@ class STVAE_mix_by_class(STVAE_mix):
                 s_var = self.logvar.reshape(-1,self.n_mix_perclass,self.s_dim).transpose(0,1)
                 pi = torch.softmax(self.pi, dim=1)
         else:
-            s_mu, s_var, pi = self.encoder_mix(inp.view(-1, self.x_dim))
+            s_mu, s_var, pi = self.encoder_mix(inp)
             s_mu = s_mu.view(-1, self.n_class, self.n_mix_perclass*self.s_dim).transpose(0,1)
             s_mu = s_mu[cl].reshape(-1,self.n_mix_perclass,self.s_dim).transpose(0,1)
             s_var = s_var.view(-1, self.n_class, self.n_mix_perclass * self.s_dim).transpose(0, 1)
