@@ -100,7 +100,6 @@ class STVAE_mix_by_class(STVAE_mix):
             out=self.conv(self.ID)
             dd=self.deconv(out[:,:,0:self.ndim:2,0:self.ndim:2])
             rec=self.lamda1*torch.sum((dd-self.ID)*(dd-self.ID))
-            print(rec)
             tot+=rec
 
 
