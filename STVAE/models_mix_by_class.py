@@ -204,22 +204,21 @@ class STVAE_mix_by_class(STVAE_mix):
                     BB += [B]
                     KD += [self.dens_apply_test(self.mu, self.logvar, lpi, pi)]
             else:
-                s_mu, s_var, pi = self.encoder_mix(data)
-                
-                ss_mu = s_mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
                 with torch.no_grad():
+                    s_mu, s_var, pi = self.encoder_mix(data)
+                    ss_mu = s_mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
                     recon_batch = self.decoder_and_trans(ss_mu)
-                b = self.mixed_loss_pre(recon_batch, data)
-                b = b.reshape(-1,self.n_class,self.n_mix_perclass)
-                s_mu = s_mu.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim)
-                s_var = s_var.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim)
-                tpi=pi.reshape(-1,self.n_class,self.n_mix_perclass)
-                lpi=torch.log(tpi)
+                    b = self.mixed_loss_pre(recon_batch, data)
+                    b = b.reshape(-1,self.n_class,self.n_mix_perclass)
+                    s_mu = s_mu.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim)
+                    s_var = s_var.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim)
+                    tpi=pi.reshape(-1,self.n_class,self.n_mix_perclass)
+                    lpi=torch.log(tpi)
 
-                for c in range(self.n_class):
-                    KD += [self.dens_apply_test(s_mu[:,c,:], s_var[:,c,:], lpi[:,c,:], tpi[:,c,:])]
-                    tpic=tpi[:,c,:]/torch.sum(tpi[:,c,:],dim=1).unsqueeze(1)
-                    BB += [torch.sum(tpic*b[:,c,:],dim=1)]
+                    for c in range(self.n_class):
+                        KD += [self.dens_apply_test(s_mu[:,c,:], s_var[:,c,:], lpi[:,c,:], tpi[:,c,:])]
+                        tpic=tpi[:,c,:]/torch.sum(tpi[:,c,:],dim=1).unsqueeze(1)
+                        BB += [torch.sum(tpic*b[:,c,:],dim=1)]
             KD=torch.stack(KD,dim=1)
             BB=torch.stack(BB, dim=1)
             rr = BB + KD
