@@ -92,7 +92,7 @@ fout.write('USE_GPU,'+str(use_gpu)+'\n')
 
 args=ARGS[0]
 PARS={}
-PARS['data_set']='mnist'
+PARS['data_set']=args.dataset
 PARS['num_train']=args.num_train//args.mb_size *args.mb_size
 PARS['nval']=args.nval
 if args.cl is not None:
@@ -120,10 +120,6 @@ for strings,args in zip(STRINGS,ARGS):
     models+=[model]
 
 #model = locals()['STVAE' + opt_mix + opt_class](h, w, device, args).to(device)
-
-
-
-
 
 
 if (run_existing):

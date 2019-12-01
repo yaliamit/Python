@@ -155,11 +155,11 @@ class STVAE(nn.Module):
             # Apply linear only to dedicated transformation part of sampled vector.
             if self.tf == 'aff':
                 self.theta = u.view(-1, 2, 3) + self.id
-                grid = F.affine_grid(self.theta, x.view(-1,self.h,self.w).unsqueeze(1).size())
+                grid = F.affine_grid(self.theta, x.reshape(-1,self.input_channels,self.h,self.w).size())
             elif self.tf=='tps':
                 self.theta = u + self.id
                 grid = self.gridGen(self.theta)
-            x = F.grid_sample(x.view(-1,self.h,self.w).unsqueeze(1), grid, padding_mode='border')
+            x = F.grid_sample(x.reshape(-1,self.input_channels,self.h,self.w), grid, padding_mode='border')
 
         return x
 
@@ -170,7 +170,7 @@ class STVAE(nn.Module):
 
 
     def forward(self, inputs):
-        s_mu, s_logvar = self.forward_encoder(inputs.view(-1, self.x_dim))
+        s_mu, s_logvar = self.forward_encoder(inputs.reshape(-1, self.x_dim))
         if (self.type is not 'ae'):
             s = self.sample(s_mu, s_logvar, self.s_dim)
         else:
@@ -183,7 +183,7 @@ class STVAE(nn.Module):
         return x, s_mu, s_logvar, ss_prior, ss_posterior
 
     def loss_V(self, recon_x, x, mu, logvar):
-        BCE = F.binary_cross_entropy(recon_x.squeeze().view(-1, self.x_dim), x.view(-1, self.x_dim), reduction='sum')
+        BCE = F.binary_cross_entropy(recon_x.squeeze().reshape(-1, self.x_dim), x.view(-1, self.x_dim), reduction='sum')
         KLD1 = -0.5 * torch.sum(1 + logvar - mu ** 2 - torch.exp(logvar))  # z
         return BCE, KLD1
 
@@ -234,7 +234,7 @@ class STVAE(nn.Module):
         num_inp=input[0].shape[0]
         inp = input.to(self.dv)
         self.setup_id(num_inp)
-        s_mu, s_var = self.forward_encoder(inp.view(-1, self.x_dim))
+        s_mu, s_var = self.forward_encoder(inp.reshape(-1, self.x_dim))
         recon_batch = self.decoder_and_trans(s_mu)
 
         return recon_batch

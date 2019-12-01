@@ -19,8 +19,8 @@ def classify(train,test,image_dim,opt_pre,opt_post,opt_mix,opt_class,device,args
 
 def dens_apply(model,s_mu,s_logvar,lpi,pi,rho):
         n_mix=pi.shape[1]
-        s_mu = s_mu.view(-1, n_mix, model.s_dim)
-        s_logvar = s_logvar.view(-1, n_mix, model.s_dim)
+        s_mu = s_mu.reshape(-1, n_mix, model.s_dim)
+        s_logvar = s_logvar.reshape(-1, n_mix, model.s_dim)
         sd=torch.exp(s_logvar/2)
         var=sd*sd
 
@@ -73,11 +73,11 @@ def run_epoch_classify(model, train, num_mu_iter,fout):
                     model.compute_loss_and_grad(data, 'test', model.optimizer_s, opt='mu')
                 s_mu=model.mu
                 s_var=model.logvar
-                ss_mu = model.mu.view(-1, model.n_mix, model.s_dim).transpose(0,1)
+                ss_mu = model.mu.reshape(-1, model.n_mix, model.s_dim).transpose(0,1)
                 tpi=torch.softmax(model.pi,dim=1)
             else:
-                s_mu, s_var, tpi = model.encoder_mix(data.view(-1, model.x_dim))
-                ss_mu = s_mu.view(-1, model.n_mix, model.s_dim).transpose(0,1)
+                s_mu, s_var, tpi = model.encoder_mix(data.reshape(-1, model.x_dim))
+                ss_mu = s_mu.reshape(-1, model.n_mix, model.s_dim).transpose(0,1)
             with torch.no_grad():
                 recon_batch = model.decoder_and_trans(ss_mu)
                 lpi=torch.log(tpi)
