@@ -116,8 +116,9 @@ class STVAE_mix_by_class(STVAE_mix):
 
         num_inp=input.shape[0]
         self.setup_id(num_inp)
-        inp=self.preprocess(input)
+
         inp = inp.to(self.dv)
+        inp = self.preprocess(input)
         c = cl
         rng = range(c * self.n_mix_perclass, (c + 1) * self.n_mix_perclass)
 
