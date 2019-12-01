@@ -281,6 +281,7 @@ class STVAE_mix(models.STVAE):
             self.feats_back=False
             self.encoder_mix.feats_back=False
             self.decoder_mix.feats_back=False
+            self.optimizer.param_groups[2]['lr']=0
         if (d_type=='train'):
             self.train()
         tr_recon_loss = 0;tr_full_loss = 0
