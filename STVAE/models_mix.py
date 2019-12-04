@@ -203,22 +203,45 @@ class STVAE_mix(models.STVAE):
         return recloss
 
 
-    def get_loss(self,data,mu,logvar,pi):
+    def get_loss(self,data,targ,mu,logvar,pi,rng=None):
+
+        if (targ is not None):
+            pi=pi.reshape(-1,self.n_class,self.n_mix_perclass)
+            pis=torch.sum(pi,2)
+            pi = pi/pis.unsqueeze(2)
+        lpi = torch.log(pi)
+        n_mix = self.n_mix
+        if (targ is None and self.n_class > 0):
+            n_mix = self.n_mix_perclass
         if (self.type is not 'ae'):
-            s = self.sample(mu, logvar, self.s_dim*self.n_mix)
+            s = self.sample(mu, logvar, self.s_dim*n_mix)
         else:
             s=mu
-        s=s.view(-1,self.n_mix,self.s_dim).transpose(0,1)
+        s=s.reshape(-1,n_mix,self.s_dim).transpose(0,1)
         # Apply linear map to entire sampled vector.
-        x=self.decoder_and_trans(s)
-        lpi=torch.log(pi)
+        x=self.decoder_and_trans(s,rng)
 
-        tot= self.dens_apply(mu,logvar,lpi,pi)
-        recloss =self.mixed_loss(x,data,lpi,pi)
+        if (targ is not None):
+            x=x.transpose(0,1)
+            x=x.reshape(-1,self.n_class,self.n_mix_perclass,x.shape[-1])
+            mu=mu.reshape(-1,self.n_class,self.n_mix_perclass*self.s_dim)
+            logvar=logvar.reshape(-1,self.n_class,self.n_mix_perclass*self.s_dim)
+            tot=0
+            recloss=0
+            if (type(targ) == torch.Tensor):
+                for c in range(self.n_class):
+                    ind = (targ == c)
+                    tot += self.dens_apply(mu[ind,c,:],logvar[ind,c,:],lpi[ind,c,:],pi[ind,c,:])[0]
+                    recloss+=self.mixed_loss(x[ind,c,:,:].transpose(0,1),data[ind],pi[ind,c,:])
+            else:
+                 tot += self.dens_apply(mu[:, targ, :], logvar[:, targ, :], lpi[:, targ, :], pi[:, targ, :])[0]
+                 recloss += self.mixed_loss(x[:, targ, :, :].transpose(0, 1), data, pi[:, targ, :])
+        else:
+            tot = self.dens_apply(mu, logvar, lpi, pi)[0]
+            recloss = self.mixed_loss(x, data, pi)
         return recloss, tot
 
-
-    def forward(self, data):
+    def encoder_and_loss(self, data,targ, rng):
 
         with torch.no_grad() if not self.flag else dummy_context_mgr():
             if (self.opt):
@@ -226,17 +249,23 @@ class STVAE_mix(models.STVAE):
                 logvar=self.logvar
                 mu=self.mu
             else:
-                mu, logvar, pi = self.encoder_mix(data.view(-1, self.x_dim))
+                mu, logvar, pi = self.encoder_mix(data)
 
-        return self.get_loss(data,mu,logvar,pi)
+        return self.get_loss(data,targ, mu,logvar,pi)
 
-    def compute_loss_and_grad(self,data,type,optim, opt='par'):
+    def compute_loss_and_grad(self,data,data_orig,targ,type,optim, opt='par', rng=None):
 
         optim.zero_grad()
 
-        recloss, tot = self.forward(data)
+        recloss, tot = self.encoder_and_loss(data,targ,rng)
+        # if (self.feats and not opt=='mu' and not self.feats_back):
+        #     #out=self.conv(self.ID)
+        #     #dd=self.deconv(out[:,:,0:self.ndim:2,0:self.ndim:2])
+        #     dd=self.conv.bkwd(data)
+        #     rec=self.lamda1*torch.sum((dd-data_orig)*(dd-data_orig))
+        #    tot+=rec
 
-        loss = recloss + tot #prior + post
+        loss = recloss + tot
 
 
         if (type == 'train' or opt=='mu'):
@@ -255,15 +284,17 @@ class STVAE_mix(models.STVAE):
         # if (d_type=='train'):
         #   np.random.shuffle(ii)
         tr = train[0][ii].transpose(0, 3, 1, 2)
-        y = train[1][ii]
+        y = np.argmax(train[1][ii], axis=1)
         mu = MU[ii]
         logvar = LOGVAR[ii]
         pi = PI[ii]
         for j in np.arange(0, len(y), self.bsz):
-            #print(j)
-            data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
-            data = self.preprocess(data)
-            #target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
+
+            data_in = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
+            data = self.preprocess(data_in)
+            target=None
+            if (self.n_class>0):
+                target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
             if self.opt:
                 self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], pi[j:j + self.bsz], self.mu_lr[0])
                 for it in range(num_mu_iter):
