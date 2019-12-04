@@ -324,26 +324,26 @@ class STVAE_mix(models.STVAE):
 
         num_inp=input.shape[0]
         self.setup_id(num_inp)
-        inp = input.to(self.dv)
-        inp = self.preprocess(inp)
+        input = input.to(self.dv)
+        inp = self.preprocess(input)
         if self.opt:
             self.update_s(mu, logvar, ppi, self.mu_lr[0])
             for it in range(num_mu_iter):
-                self.compute_loss_and_grad(inp, 'test', self.optimizer_s, opt='mu')
+                self.compute_loss_and_grad(inp,input, None, 'test', self.optimizer_s, opt='mu')
             s_mu = self.mu
             s_var = self.logvar
             pi = torch.softmax(self.pi, dim=1)
         else:
-            s_mu, s_var, pi = self.encoder_mix(inp.view(-1, self.x_dim))
+            s_mu, s_var, pi = self.encoder_mix(inp)
 
-        ss_mu = s_mu.view(-1, self.n_mix, self.s_dim).transpose(0,1)
+        ss_mu = s_mu.reshape(-1, self.n_mix, self.s_dim).transpose(0,1)
         ii = torch.argmax(pi, dim=1)
         jj = torch.arange(0,num_inp,dtype=torch.int64).to(self.dv)
         kk = ii+jj*self.n_mix
         lpi = torch.log(pi)
         recon_batch = self.decoder_and_trans(ss_mu)
         tot = self.dens_apply(s_mu, s_var, lpi, pi)
-        recloss = self.mixed_loss(recon_batch, inp, lpi,pi)
+        recloss = self.mixed_loss(recon_batch, inp,pi)
         print('LOSS', (tot + recloss)/num_inp)
         recon_batch = recon_batch.transpose(0, 1)
         recon=recon_batch.reshape(self.n_mix*num_inp,-1)
@@ -363,19 +363,28 @@ class STVAE_mix(models.STVAE):
         else:
             ii=torch.multinomial(rho_dist,self.bsz,replacement=True)
         s = torch.randn(self.bsz, self.s_dim*self.n_mix).to(self.dv)
-        s = s.view(-1, self.n_mix, self.s_dim)
+        s = s.reshape(-1, self.n_mix, self.s_dim)
         if (theta is not None and self.u_dim>0):
             theta = theta.to(self.dv)
             for i in range(self.n_mix):
                 s[:,i,0:self.u_dim]=theta
         s = s.transpose(0,1)
         x=self.decoder_and_trans(s)
+        if (self.feats and not self.feats_back):
+            rec_b = []
+            for rc in x:
+                rec_b += [self.conv.bkwd(rc.reshape(-1, self.feats, self.conv.x_hf, self.conv.x_hf))]
+            x = torch.stack(rec_b, dim=0)
+
         x=x.transpose(0,1)
         jj = torch.arange(0, self.bsz, dtype=torch.int64).to(self.dv)
         kk = ii + jj * self.n_mix
         recon = x.reshape(self.n_mix * self.bsz, -1)
         rr = recon[kk]
-
+        if (self.feats and not self.feats_back):
+            rrm=torch.min(rr,dim=1)[0].unsqueeze(dim=1)
+            rrM=torch.max(rr,dim=1)[0].unsqueeze(dim=1)
+            rr=(rr-rrm)/(rrM-rrm)
         return rr
 
 
