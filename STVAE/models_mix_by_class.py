@@ -23,10 +23,10 @@ class STVAE_mix_by_class(STVAE_mix):
 
         self.mu_lr = args.mu_lr
         self.eyy = torch.eye(self.n_mix).to(self.dv)
-        if (args.optimizer == 'Adam'):
-            self.optimizer = optim.Adam(self.parameters(), lr=args.lr)
-        elif (args.optimizer == 'Adadelta'):
-            self.optimizer = optim.Adadelta(self.parameters())
+        # if (args.optimizer == 'Adam'):
+        #     self.optimizer = optim.Adam(self.parameters(), lr=args.lr)
+        # elif (args.optimizer == 'Adadelta'):
+        #    self.optimizer = optim.Adadelta(self.parameters())
 
     def dens_apply_test(self, s_mu, s_logvar, lpi, pi):
         n_mix = pi.shape[1]
