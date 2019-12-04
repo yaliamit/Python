@@ -47,8 +47,8 @@ class STVAE_mix_by_class(STVAE_mix):
             BB = []
             fout.write('Batch '+str(j)+'\n')
             fout.flush()
-            data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
-            data = self.preprocess(data)
+            data_in = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
+            data = self.preprocess(data_in)
             if (len(data)<self.bsz):
                 self.setup_id(len(data))
             if self.opt:
@@ -57,7 +57,7 @@ class STVAE_mix_by_class(STVAE_mix):
                     rng = range(c * self.n_mix_perclass, (c + 1) * self.n_mix_perclass)
                     self.update_s(mu[c][j:j + self.bsz], logvar[c][j:j + self.bsz], ppi[c][j:j + self.bsz], self.mu_lr[0])
                     for it in range(num_mu_iter):
-                            self.compute_loss_and_grad(data, None, 'test', self.optimizer_s, opt='mu',rng=rng)
+                            self.compute_loss_and_grad(data, data_in, None, 'test', self.optimizer_s, opt='mu',rng=rng)
                     ss_mu = self.mu.reshape(-1, self.n_mix_perclass, self.s_dim).transpose(0, 1)
                     pi = torch.softmax(self.pi, dim=1)
                     lpi=torch.log(pi)
@@ -65,7 +65,8 @@ class STVAE_mix_by_class(STVAE_mix):
                     b=self.mixed_loss_pre(recon_batch, data)
                     B = torch.sum(pi * b, dim=1)
                     BB += [B]
-                    KD += [self.dens_apply_test(self.mu, self.logvar, lpi, pi)]
+                    kd=self.dens_apply(self.mu, self.logvar, lpi, pi)[1]
+                    KD += [kd]
             else:
 
                 s_mu, s_var, pi = self.encoder_mix(data.view(-1, self.x_dim))
