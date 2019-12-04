@@ -63,7 +63,23 @@ class STVAE_mix(models.STVAE):
         self.rho = nn.Parameter(torch.zeros(self.n_mix),requires_grad=False)
 
         if (args.optimizer=='Adam'):
-            self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
+                ppd = []
+                # ppd=self.decoder_mix.state_dict()
+                for keys, vals in self.decoder_mix.named_parameters():  # state_dict().items():
+                    if ('conv' not in keys):
+                        ppd += [vals]
+                PP = [{'params': ppd, 'lr': args.lr}]
+                if (not self.opt):
+                    ppe = []
+                    for keys, vals in self.encoder_mix.named_parameters():
+                        if ('conv' not in keys):
+                            ppe += [vals]
+                    PP += [{'params': ppe, 'lr': args.lr}]
+
+                if (self.feats):  # and not self.feats_back):
+                    PP += [{'params': self.conv.parameters(), 'lr': args.ortho_lr}]
+                self.optimizer = optim.Adam(PP)
+            #self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
         elif (args.optimizer=='Adadelta'):
             self.optimizer = optim.Adadelta(self.parameters())
 
