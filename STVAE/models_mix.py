@@ -11,6 +11,7 @@ import contextlib
 def dummy_context_mgr():
     yield None
 
+
 class conv2(nn.Module):
     def __init__(self,x_h, x_w, args):
 
@@ -50,6 +51,7 @@ class STVAE_mix(models.STVAE):
         aa=self.conv.weight.view(self.feats, self.filts * self.filts * self.input_channels)
         q,r=torch.qr(aa.transpose(0,1))
         self.conv.weight.data=q.transpose(0,1).reshape(self.feats, self.input_channels, self.filts, self.filts)
+
     def __init__(self, x_h, x_w, device, args):
         super(STVAE_mix, self).__init__(x_h, x_w, device, args)
 
@@ -149,7 +151,7 @@ class STVAE_mix(models.STVAE):
                 for xx,uu in zip(x,u):
                     xt=xt+[self.apply_trans(xx,uu).squeeze()]
 
-            x=torch.stack(xt,dim=0).view(n_mix,-1,self.x_dim)
+            x=torch.stack(xt,dim=0).reshape(n_mix,-1,self.x_dim)
         xx = torch.clamp(x, 1e-6, 1 - 1e-6)
         return xx
 
@@ -168,9 +170,10 @@ class STVAE_mix(models.STVAE):
         # Sum along last coordinate to get negative log density of each component.
         KD_dens=-0.5 * torch.sum(1 + s_logvar - s_mu ** 2 - var, dim=2)
         KD_disc=lpi-torch.log(torch.tensor(n_mix,dtype=torch.float))
-        tot=torch.sum(pi*(KD_dens+KD_disc))
+        KD = torch.sum(pi * (KD_dens + KD_disc), dim=1)
+        tot=torch.sum(KD)
 
-        return tot #, pre_tot
+        return tot, KD
 
     def mixed_loss_pre(self,x,data):
         b = []
@@ -196,7 +199,7 @@ class STVAE_mix(models.STVAE):
     def weighted_sum_of_likelihoods(self,lpi,b):
         return(-torch.logsumexp(lpi-b,dim=1))
 
-    def mixed_loss(self,x,data,lpi,pi):
+    def mixed_loss(self,x,data,pi):
 
         b=self.mixed_loss_pre(x,data)
         recloss=torch.sum(pi*b)

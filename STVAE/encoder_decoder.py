@@ -20,6 +20,7 @@ class encoder_mix(nn.Module):
 
 
     def forward(self,inputs):
+        inputs = inputs.reshape(inputs.shape[0], -1)
         h = F.relu(self.x2h(inputs))
         hpi = F.relu(self.x2hpi(inputs))
         if (self.num_layers == 1):
