@@ -53,6 +53,7 @@ class STVAE_mix(models.STVAE):
     def __init__(self, x_h, x_w, device, args):
         super(STVAE_mix, self).__init__(x_h, x_w, device, args)
 
+        self.lim=args.lim
         self.opt = args.OPT
         self.mu_lr = args.mu_lr
         self.n_mix = args.n_mix
@@ -62,7 +63,13 @@ class STVAE_mix(models.STVAE):
         self.n_part_locs=args.n_part_locs
         self.part_dim=args.part_dim
         self.feats=args.feats
+        self.feats_back=args.feats_back
         self.filts=args.filts
+        self.x_h=x_h
+        self.diag=args.Diag
+        self.output_cont=args.output_cont
+        self.h_dim_dec=args.hdim_dec
+        self.n_class=args.n_class
         if self.n_parts:
             self.u_dim=self.n_parts*2
             self.s_dim=self.u_dim
@@ -71,13 +78,8 @@ class STVAE_mix(models.STVAE):
 
 
         if (self.feats>0):
-            self.conv=torch.nn.Conv2d(self.input_channels, self.feats,self.filts, stride=1,bias=False,
-                                  padding=np.int32(np.floor(args.filts/ 2)))
-            #self.orthogo()
-
-            self.pool=nn.MaxPool2d(2)
-            self.x_dim=np.int32((x_h/2)*(x_w/2)*args.feats)
-            self.optimizer_c=optim.SGD([self.conv.weight],lr=args.ortho_lr)
+            self.conv=conv2(x_h, x_w, args)
+            self.x_dim=self.conv.x_dim
 
         if (not args.OPT):
             if args.sep:
@@ -158,8 +160,8 @@ class STVAE_mix(models.STVAE):
 
     def dens_apply(self,s_mu,s_logvar,lpi,pi):
         n_mix=pi.shape[1]
-        s_mu = s_mu.view(-1, n_mix, self.s_dim)
-        s_logvar = s_logvar.view(-1, n_mix, self.s_dim)
+        s_mu = s_mu.reshape(-1, n_mix, self.s_dim)
+        s_logvar = s_logvar.reshape(-1, n_mix, self.s_dim)
         sd=torch.exp(s_logvar/2)
         var=sd*sd
 
@@ -172,18 +174,13 @@ class STVAE_mix(models.STVAE):
 
     def mixed_loss_pre(self,x,data):
         b = []
-        if (self.flag):
-            if (not self.feats):
-                for xx in x:
-                    a = F.binary_cross_entropy(xx, data.view(-1, self.x_dim),
-                                               reduction='none')
-                    a = torch.sum(a, dim=1)
-                    b = b + [a]
-            else:
-                for xx in x:
-                    a=F.mse_loss(xx,data.view(-1,self.x_dim),reduction='none')
-                    a = torch.sum(a, dim=1)
-                    b = b + [a]
+
+        if (not self.output_cont):
+            for xx in x:
+                a = F.binary_cross_entropy(xx, data.reshape(data.shape[0], -1),
+                                           reduction='none')
+                a = torch.sum(a, dim=1)
+                b = b + [a]
         else:
             x=x.detach()
             for xx in x:
