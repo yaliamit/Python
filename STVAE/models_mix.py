@@ -298,9 +298,10 @@ class STVAE_mix(models.STVAE):
             if self.opt:
                 self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], pi[j:j + self.bsz], self.mu_lr[0])
                 for it in range(num_mu_iter):
-                    self.compute_loss_and_grad(data, d_type, self.optimizer_s, opt='mu')
+                    data_d = data.detach()
+                    self.compute_loss_and_grad(data_d,data_in, target, d_type, self.optimizer_s, opt='mu')
             with torch.no_grad() if (d_type != 'train') else dummy_context_mgr():
-                recon_loss, loss=self.compute_loss_and_grad(data,d_type,self.optimizer)
+                recon_loss, loss=self.compute_loss_and_grad(data, data_in, target,d_type,self.optimizer)
 
             if self.opt:
                 mu[j:j + self.bsz] = self.mu.data
