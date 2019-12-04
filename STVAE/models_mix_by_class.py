@@ -116,7 +116,8 @@ class STVAE_mix_by_class(STVAE_mix):
 
         num_inp=input.shape[0]
         self.setup_id(num_inp)
-        inp = input.to(self.dv)
+        input = input.to(self.dv)
+        inp = self.preprocess(input)
         c = cl
         rng = range(c * self.n_mix_perclass, (c + 1) * self.n_mix_perclass)
 
@@ -124,7 +125,7 @@ class STVAE_mix_by_class(STVAE_mix):
         if self.opt:
                 self.update_s(mu[c], logvar[c], ppi[c], self.mu_lr[0])
                 for it in range(num_mu_iter):
-                    self.compute_loss_and_grad(inp, None, 'test', self.optimizer_s, opt='mu',rng=rng)
+                    self.compute_loss_and_grad(inp, input, None, 'test', self.optimizer_s, opt='mu',rng=rng)
                 s_mu = self.mu.reshape(-1,self.n_mix_perclass,self.s_dim).transpose(0,1)
                 s_var = self.logvar.reshape(-1,self.n_mix_perclass,self.s_dim).transpose(0,1)
                 pi = torch.softmax(self.pi, dim=1)
