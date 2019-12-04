@@ -8,9 +8,13 @@ import os
 def process_args(parser):
     parser.add_argument('--transformation', default='aff', help='type of transformation: aff or tps')
     parser.add_argument('--feats', type=int, default=0, help='Number of features in case data preprocessed')
-    parser.add_argument('--filts', type=int, default=3, help='Number of features in case data preprocessed')
+    parser.add_argument('--feats_back', action='store_true',help='reconstruct image from features')
+    parser.add_argument('--filts', type=int, default=3, help='Filter size')
+    parser.add_argument('--pool', type=int, default=2, help='Pooling size')
+    parser.add_argument('--pool_stride', type=int, default=2, help='Pooling stride')
     parser.add_argument('--input_channels', type=int, default=1, help='Number of input channels')
     parser.add_argument('--type', default='vae', help='type of transformation: aff or tps')
+    parser.add_argument('--dataset', default='mnist', help='which data set')
     parser.add_argument('--tps_num', type=int, default=3, help='dimension of s')
     parser.add_argument('--sdim', type=int, default=26, help='dimension of s')
     parser.add_argument('--hdim', type=int, default=256, help='dimension of h')
@@ -29,7 +33,9 @@ def process_args(parser):
     parser.add_argument('--conf', type=float, default=0, help='confidence level')
     parser.add_argument('--ortho_lr', type=float, default=.000001, help='Learning rate (default: .000001)')
     parser.add_argument('--mu_lr', type=float, default=[.05,.01], nargs=2,help='Learning rate (default: .05)')
-    parser.add_argument('--lamda', type=float, default=0.0, help='Weight decay (default: 0)')
+    parser.add_argument('--lamda', type=float, default=0.0, help='weight decay')
+    parser.add_argument('--lamda1', type=float, default=1.0, help='penalty on conv matrix')
+    parser.add_argument('--lim', type=int, default=0, help='penalty on conv matrix')
     parser.add_argument('--num_mu_iter', type=int, default=10, help='Learning rate (default: .05)')
     parser.add_argument('--wd', action='store_true', help='Use weight decay')
     parser.add_argument('--cl', type=int, default=None, help='class (default: None)')
@@ -47,6 +53,7 @@ def process_args(parser):
     parser.add_argument('--sample', action='store_true', help='sample from distribution')
     parser.add_argument('--classify', action='store_true', help='Output to consol')
     parser.add_argument('--Diag', action='store_true', help='Output to consol')
+    parser.add_argument('--output_cont', action='store_true', help='cont data')
     parser.add_argument('--sep', action='store_true', help='Output to consol')
 
     parser.add_argument('--output_prefix', default='', help='path to model')
@@ -58,7 +65,7 @@ def process_args(parser):
 
 def make_images(test,model,ex_file,args):
 
-    if (model.feats==0):
+    if (True):
         old_bsz=model.bsz
         model.bsz = 100
         model.setup_id(model.bsz)
@@ -81,21 +88,23 @@ def make_images(test,model,ex_file,args):
         model.bsz=old_bsz
         model.setup_id(old_bsz)
 
-def create_image(XX, ex_file):
+def create_image(XX, model, ex_file):
     mat = []
     t = 0
     for i in range(10):
         line = []
         for j in range(10):
             if (t<len(XX)):
-                line += [XX[t].reshape((28,28))]
+                line += [XX[t].reshape((model.input_channels,model.h,model.w)).transpose(1,2,0)]
             else:
-                line += [np.zeros((28,28))]
+                line += [np.zeros((model.input_channels,model.h,model.w)).transpose(1,2,0)]
             t+=1
         mat+=[np.concatenate(line,axis=0)]
     manifold = np.concatenate(mat, axis=1)
-    manifold = manifold[np.newaxis, :]
-    img = np.concatenate([manifold, manifold, manifold], axis=0).transpose(1,2,0)
+    if (model.input_channels==1):
+        img = np.concatenate([manifold, manifold, manifold], axis=2)
+    else:
+        img=manifold
 
     if not os.path.isdir('_Images'):
         os.system('mkdir _Images')
@@ -109,7 +118,7 @@ def show_sampled_images(model,ex_file,clust=None):
     XX=X.cpu().detach().numpy()
     if clust is not None:
         ex_file=ex_file+'_'+str(clust)
-    create_image(XX, ex_file)
+    create_image(XX, model, ex_file)
 
 
 def show_reconstructed_images(test,model,ex_file,num_iter=None, cl=None):
@@ -122,9 +131,9 @@ def show_reconstructed_images(test,model,ex_file,num_iter=None, cl=None):
     X = X.cpu().detach().numpy().reshape(inp.shape)
     XX=np.concatenate([inp[0:50],X[0:50]])
     if (cl is not None):
-        create_image(XX,ex_file+'_recon'+'_'+str(cl))
+        create_image(XX,model, ex_file+'_recon'+'_'+str(cl))
     else:
-        create_image(XX, ex_file + '_recon')
+        create_image(XX, model, ex_file + '_recon')
 
 def add_occlusion(recon_data):
     recon_data[0][0:20,0:13,:,:]=0

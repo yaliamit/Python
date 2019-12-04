@@ -11,7 +11,36 @@ import contextlib
 def dummy_context_mgr():
     yield None
 
+class conv2(nn.Module):
+    def __init__(self,x_h, x_w, args):
 
+        super(conv2,self).__init__()
+        pp = np.int32(np.floor(args.filts / 2))
+        self.feats=args.feats
+        self.x_dim = np.int32((x_h / args.pool) * (x_w / args.pool) * args.feats)
+        self.x_h=x_h
+        self.x_hf = np.int32(x_h / args.pool)
+
+        self.conv = torch.nn.Conv2d(args.input_channels, args.feats, args.filts, stride=1, bias=False,
+                                    padding=pp)
+        self.deconv = torch.nn.ConvTranspose2d(args.feats, args.input_channels, args.filts, stride=args.pool,
+                                               padding=pp, output_padding=1, bias=False)
+        self.deconv.weight.data = self.conv.weight.data
+        # self.orthogo()
+        if (np.mod(args.pool, 2) == 1):
+            pad = np.int32(args.pool / 2)
+        else:
+            pad = np.int32((args.pool - 1) / 2)
+        self.pool = nn.MaxPool2d(args.pool, stride=args.pool_stride, padding=(pad, pad))
+
+    def fwd(self,xx):
+            xx=self.pool(self.conv(xx))
+            return xx
+
+
+    def bkwd(self,xx):
+            xx = self.deconv(xx.reshape(-1, self.feats, self.x_hf, self.x_hf))
+            return xx
 
 class STVAE_mix(models.STVAE):
 
@@ -44,7 +73,7 @@ class STVAE_mix(models.STVAE):
         if (self.feats>0):
             self.conv=torch.nn.Conv2d(self.input_channels, self.feats,self.filts, stride=1,bias=False,
                                   padding=np.int32(np.floor(args.filts/ 2)))
-            self.orthogo()
+            #self.orthogo()
 
             self.pool=nn.MaxPool2d(2)
             self.x_dim=np.int32((x_h/2)*(x_w/2)*args.feats)
@@ -103,7 +132,7 @@ class STVAE_mix(models.STVAE):
 
         with torch.no_grad() if self.flag else dummy_context_mgr():
             if (self.feats>0):
-                data=F.relu(self.pool(self.conv(data)))
+                data = F.relu(self.conv.fwd(data))
 
         return data
 
