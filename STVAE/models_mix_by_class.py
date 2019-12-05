@@ -71,7 +71,10 @@ class STVAE_mix_by_class(STVAE_mix):
             else:
                 with torch.no_grad():
                     s_mu, s_var, pi = self.encoder_mix(data)
-                    ss_mu = s_mu.reshape(-1, self.n_mix, self.s_dim).transpose(0,1)
+                    if (self.s_dim==1):
+                        ss_mu=torch.ones(s_mu.shape[0],self.n_mix,self.s_dim).transpose(0,1)
+                    else:
+                        ss_mu = s_mu.reshape(-1, self.n_mix, self.s_dim).transpose(0,1)
                     recon_batch = self.decoder_and_trans(ss_mu)
                     b = self.mixed_loss_pre(recon_batch, data)
                     b = b.reshape(-1,self.n_class,self.n_mix_perclass)

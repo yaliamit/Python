@@ -373,7 +373,7 @@ class STVAE_mix(models.STVAE):
             s = torch.randn(self.bsz, self.s_dim*self.n_mix).to(self.dv)
         else:
             s = torch.ones(self.bsz, self.s_dim*self.n_mix).to(self.dv)
-        
+
         s = s.reshape(-1, self.n_mix, self.s_dim)
         if (theta is not None and self.u_dim>0):
             theta = theta.to(self.dv)
