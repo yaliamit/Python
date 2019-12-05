@@ -254,9 +254,9 @@ class STVAE_mix(models.STVAE):
             else:
                 mu, logvar, pi = self.encoder_mix(data)
 
-        return self.get_loss(data,targ, mu,logvar,pi)
+        return self.get_loss(data,targ, mu,logvar,pi,rng)
 
-    def compute_loss_and_grad(self,data,data_orig,targ,type,optim, opt='par', rng=None):
+    def compute_loss_and_grad(self,data,data_orig,targ,d_type,optim, opt='par', rng=None):
 
         optim.zero_grad()
 
@@ -271,7 +271,7 @@ class STVAE_mix(models.STVAE):
         loss = recloss + tot
 
 
-        if (type == 'train' or opt=='mu'):
+        if (d_type == 'train' or opt=='mu'):
             loss.backward()
             optim.step()
 
