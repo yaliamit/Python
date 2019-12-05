@@ -5,7 +5,7 @@ import numpy as np
 
 
 
-class bias(nn.Module):
+class biass(nn.Module):
     def __init__(self,dim, scale=None):
         super(bias,self).__init__()
 
@@ -55,10 +55,11 @@ class Linear(nn.Module):
         else:
             if (dim2>0):
                 if (dim1>0):
-                    self.lin=nn.Linear(dim1,dim2)
+                    bis = True if dim1>1 else False
+                    self.lin=nn.Linear(dim1,dim2,bias=bis)
                 # Only a bias term that does not depend on input.
                 else:
-                    self.lin=bias(dim2, scale)
+                    self.lin=biass(dim2, scale)
 
     def forward(self,z):
         return self.lin(z)
