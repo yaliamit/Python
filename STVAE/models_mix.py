@@ -158,7 +158,11 @@ class STVAE_mix(models.STVAE):
 
     def sample(self, mu, logvar, dim):
         eps = torch.randn(mu.shape[0],dim).to(self.dv)
-        return mu + torch.exp(logvar/2) * eps
+        if (self.s_dim>1):
+            z = mu + torch.exp(logvar/2) * eps
+        else:
+            z = torch.ones(mu.shape[0],dim).to(self.dv)
+        return z
 
     def dens_apply(self,s_mu,s_logvar,lpi,pi):
         n_mix=pi.shape[1]
@@ -365,7 +369,11 @@ class STVAE_mix(models.STVAE):
             ii=clust*torch.ones(self.bsz, dtype=torch.int64).to(self.dv)
         else:
             ii=torch.multinomial(rho_dist,self.bsz,replacement=True)
-        s = torch.randn(self.bsz, self.s_dim*self.n_mix).to(self.dv)
+        if (self.s_dim>1):
+            s = torch.randn(self.bsz, self.s_dim*self.n_mix).to(self.dv)
+        else:
+            s = torch.ones(self.bsz, self.s_dim*self.n_mix).to(self.dv)
+        
         s = s.reshape(-1, self.n_mix, self.s_dim)
         if (theta is not None and self.u_dim>0):
             theta = theta.to(self.dv)
