@@ -111,6 +111,7 @@ class fromNorm_mix(nn.Module):
         # No free latent variables - so we just make a fixed bias term 'template'
         else:
                 self.z2h=nn.ModuleList([bias(h_dim) for i in range(self.n_mix)])
+        print("Hello")
 
     def forward(self,z,u,rng=None):
 
@@ -139,6 +140,9 @@ class decoder_mix(nn.Module):
         self.num_layers=model.num_hlayers
         self.type=model.type
         self.diag=args.Diag
+
+        self.fromNorm_mix = fromNorm_mix(self)
+
         if (self.num_layers==1):
             if self.h_dim_dec is None:
                 self.h2hd = nn.Linear(self.h_dim, self.h_dim)
@@ -156,7 +160,6 @@ class decoder_mix(nn.Module):
                 self.h2x=nn.ModuleList(nn.Identity() for i in range(self.n_mix))
             else:
                 self.h2x = nn.ModuleList([nn.Linear(self.h_dim, self.x_dim) for i in range(self.n_mix)])
-        self.fromNorm_mix = fromNorm_mix(self)
 
     def forward(self,s,rng=None):
 

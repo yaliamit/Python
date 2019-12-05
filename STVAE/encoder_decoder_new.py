@@ -12,6 +12,7 @@ class bias(nn.Module):
         self.dim=dim
         self.bias=nn.Parameter(6*(torch.rand(self.dim) - .5)/ np.sqrt(self.dim))
 
+
     def forward(self,z):
         return(self.bias.repeat(z.shape[0],1))
 
@@ -131,12 +132,14 @@ class decoder_mix(nn.Module):
         # Full or diagonal normal dist of next level after sample.
 
         self.z2z = nn.ModuleList([Linear(self.z_dim, self.z_dim, args.Diag) for i in range(self.n_mix)])
-        self.z2h = nn.ModuleList([Linear(self.z_dim, h_dim_a) for i in range(self.n_mix)])
+
 
         if (self.type == 'tvae'):
             self.u2u = nn.ModuleList([nn.Linear(self.u_dim, self.u_dim, bias=False) for i in range(self.n_mix)])
             for ll in self.u2u:
                 ll.weight.data.fill_(0.)
+
+        self.z2h = nn.ModuleList([Linear(self.z_dim, h_dim_a) for i in range(self.n_mix)])
 
 
         num_hs=1 if args.hdim_dec is None else self.n_mix
@@ -187,7 +190,7 @@ class decoder_mix(nn.Module):
         if not self.output_cont:
             xx = torch.sigmoid(xx)
 
-        return xx, u
+        return xx, v
 
 
 
