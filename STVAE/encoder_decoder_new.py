@@ -1,0 +1,203 @@
+import torch
+import torch.nn.functional as F
+from torch import nn, optim
+import numpy as np
+
+
+
+class bias(nn.Module):
+    def __init__(self,dim):
+        super(bias,self).__init__()
+
+        self.dim=dim
+        self.bias=nn.Parameter(6*(torch.rand(self.dim) - .5)/ np.sqrt(self.dim))
+
+    def forward(self,z):
+        return(self.bias.repeat(z.shape[0],1))
+
+class ident(nn.Module):
+    def __init__(self):
+        super(ident,self).__init__()
+
+    def forward(self,z):
+        return(torch.ones(z.shape[0]))
+
+
+class diag(nn.Module):
+    def __init__(self,dim):
+        super(diag,self).__init__()
+        self.dim = dim
+        if (dim>0):
+            rim=(torch.rand(self.dim) - .5) / np.sqrt(self.dim)
+            self.mu=nn.Parameter(rim)
+            ris=(torch.rand(self.dim) - .5) / np.sqrt(self.dim)
+            self.sigma=nn.Parameter(ris)
+
+    def forward(self,z):
+        u=z*self.sigma+self.mu
+
+        return(u)
+
+class Linear(nn.Module):
+    def __init__(self, dim1,dim2,diag_flag=False):
+        super(Linear, self).__init__()
+
+        # If dimensions are zero just return a dummy variable of the same dimension as input
+        self.lin=ident()
+        # If diagonal normal with diagonal cov.
+        if (diag_flag and dim1>0):
+            self.lin=diag(dim1)
+        else:
+            if (dim2>0):
+                if (dim1>0):
+                    self.lin=nn.Linear(dim1,dim2)
+                # Only a bias term that does not depend on input.
+                else:
+                    self.lin=bias(dim2)
+
+    def forward(self,z):
+        return self.lin(z)
+
+
+class iden_copy(nn.Module):
+    def __init__(self):
+        super(iden_copy,self).__init__()
+
+    def forward(self,z):
+        return(z)
+
+
+
+class encoder_mix(nn.Module):
+    def __init__(self,model):
+        super(encoder_mix,self).__init__()
+        self.num_layers=model.num_hlayers
+        self.n_mix=model.n_mix
+        self.x_dim=model.x_dim
+
+        self.feats=model.feats
+        self.feats_back=model.feats_back
+
+        if (self.num_layers==1):
+            self.h2he = nn.Linear(model.h_dim, model.h_dim)
+        self.x2h = nn.Linear(model.x_dim, model.h_dim)
+        self.x2hpi = nn.Linear(model.x_dim, model.h_dim)
+        self.h2smu = nn.Linear(model.h_dim, model.s_dim * model.n_mix)
+        self.h2svar = nn.Linear(model.h_dim, model.s_dim * model.n_mix, bias=False)
+        self.h2pi = nn.Linear(model.h_dim, model.n_mix)
+        if (model.feats and self.feats_back):
+            self.conv=model.conv
+
+
+
+
+    def forward(self,inputs):
+        if (self.feats and self.feats_back):
+            inputs=self.conv.fwd(inputs)
+        inputs=inputs.reshape(-1, self.x_dim)
+        h = F.relu(self.x2h(inputs))
+        hpi = F.relu(self.x2hpi(inputs))
+        if (self.num_layers == 1):
+            h = F.relu(self.h2he(h))
+        s_mu = self.h2smu(h)
+        s_logvar = F.threshold(self.h2svar(h), -6, -6)
+        hm = self.h2pi(hpi).clamp(-10., 10.)
+        pi = torch.softmax(hm, dim=1)
+        return s_mu, s_logvar, pi
+
+
+
+
+
+# Each set of s_dim normals gets multiplied by its own matrix to correlate
+class decoder_mix(nn.Module):
+    def __init__(self,model,args):
+        super(decoder_mix,self).__init__()
+
+        self.z2h=[]
+        self.n_mix=model.n_mix
+        self.z_dim=model.z_dim
+        self.h_dim=model.h_dim
+        self.u_dim=model.u_dim
+        self.x_dim=model.x_dim
+        self.feats=model.feats
+        self.feats_back=model.feats_back
+        self.type=model.type
+        self.hdim_dec=args.hdim_dec
+        self.output_cont = model.output_cont
+        self.num_hlayers=args.num_hlayers
+        h_dim_a = self.h_dim if args.hdim_dec is None else self.hdim_dec
+
+        # Full or diagonal normal dist of next level after sample.
+
+        self.z2z = nn.ModuleList([Linear(self.z_dim, self.z_dim, args.Diag) for i in range(self.n_mix)])
+        self.z2h = nn.ModuleList([Linear(self.z_dim, h_dim_a) for i in range(self.n_mix)])
+
+        if (self.type == 'tvae'):
+            self.u2u = nn.ModuleList([nn.Linear(self.u_dim, self.u_dim, bias=False) for i in range(self.n_mix)])
+            for ll in self.u2u:
+                ll.weight.data.fill_(0.)
+
+
+        num_hs=1 if args.hdim_dec is None else self.n_mix
+        if (self.num_hlayers == 1):
+                self.h2hd = nn.ModuleList([nn.Linear(h_dim_a,h_dim_a) for i in range(num_hs)])
+        self.h2x = nn.ModuleList([nn.Linear(h_dim_a, self.x_dim) for i in range(num_hs)])
+
+        if (self.feats and self.feats_back):
+            self.conv=model.conv
+            # self.x_hf = model.x_hf
+            # self.x_h=model.x_h
+
+    def forward(self, s, rng=None):
+
+        if (rng is None):
+            rng = range(s.shape[0])
+        u = s.narrow(len(s.shape) - 1, 0, self.u_dim)
+        z = s.narrow(len(s.shape) - 1, self.u_dim, self.z_dim)
+        h=[]; v=[]
+        for i,zz,vv in zip(rng,z,u):
+            h = h + [self.z2h[i](self.z2z[i](zz))]
+            if (self.type=='tvae'):
+                v=v+[self.u2u[i](vv)]
+
+        h=torch.stack(h,dim=0)
+        h=F.relu(h)
+
+        if (self.num_hlayers == 1):
+            hh = []
+            for h_, r in zip(h, rng):
+                r_ind = 0 if self.hdim_dec is None else r
+                hh = hh + [self.h2hd[r_ind](h_)]
+            h = torch.stack(hh, dim=0)
+            h = F.relu(h)
+
+        x = []
+        for h_, r in zip(h, rng):
+            r_ind = 0 if self.hdim_dec is None else r
+            xx = self.h2x[r_ind](h_)
+            if (self.feats and self.feats_back):
+                    xx=self.conv.bkwd(xx)
+                    xx = xx.reshape(-1, self.conv.x_h * self.conv.x_h)
+                    # xx= self.deconv(xx.reshape(-1, self.feats, self.x_hf, self.x_hf))
+                    #
+            x += [xx]
+
+        xx = torch.stack(x, dim=0)
+        if not self.output_cont:
+            xx = torch.sigmoid(xx)
+
+        return xx, u
+
+
+
+
+
+
+
+
+
+
+
+
+

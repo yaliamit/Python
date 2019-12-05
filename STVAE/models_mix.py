@@ -4,7 +4,7 @@ from torch import nn, optim
 import numpy as np
 import models
 from Sep import encoder_mix_sep
-from encoder_decoder import encoder_mix, decoder_mix
+from encoder_decoder_new import encoder_mix, decoder_mix
 
 import contextlib
 @contextlib.contextmanager
