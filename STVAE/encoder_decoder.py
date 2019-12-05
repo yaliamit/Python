@@ -6,11 +6,15 @@ import numpy as np
 
 
 class bias(nn.Module):
-    def __init__(self,dim):
+    def __init__(self,dim, scale=None):
         super(bias,self).__init__()
 
         self.dim=dim
-        self.bias=nn.Parameter(6*(torch.rand(self.dim) - .5)/ np.sqrt(self.dim))
+        if (scale is None):
+            self.bias=nn.Parameter(6*(torch.rand(self.dim) - .5)/ np.sqrt(self.dim))
+        else:
+            self.bias=nn.Parameter(scale*(torch.rand(self.dim)-.5))
+
 
 
     def forward(self,z):
@@ -40,7 +44,7 @@ class diag(nn.Module):
         return(u)
 
 class Linear(nn.Module):
-    def __init__(self, dim1,dim2,diag_flag=False):
+    def __init__(self, dim1,dim2,diag_flag=False, scale=None):
         super(Linear, self).__init__()
 
         # If dimensions are zero just return a dummy variable of the same dimension as input
@@ -54,7 +58,7 @@ class Linear(nn.Module):
                     self.lin=nn.Linear(dim1,dim2)
                 # Only a bias term that does not depend on input.
                 else:
-                    self.lin=bias(dim2)
+                    self.lin=bias(dim2, scale)
 
     def forward(self,z):
         return self.lin(z)
@@ -139,7 +143,7 @@ class decoder_mix(nn.Module):
             for ll in self.u2u:
                 ll.weight.data.fill_(0.)
 
-        self.z2h = nn.ModuleList([Linear(self.z_dim, h_dim_a) for i in range(self.n_mix)])
+        self.z2h = nn.ModuleList([Linear(self.z_dim, h_dim_a,scale=1.) for i in range(self.n_mix)])
 
 
         num_hs=1 if args.hdim_dec is None else self.n_mix
