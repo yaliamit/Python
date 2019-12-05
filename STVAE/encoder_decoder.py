@@ -7,7 +7,7 @@ import numpy as np
 
 class biass(nn.Module):
     def __init__(self,dim, scale=None):
-        super(bias,self).__init__()
+        super(biass,self).__init__()
 
         self.dim=dim
         if (scale is None):
