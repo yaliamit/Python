@@ -143,7 +143,7 @@ class decoder_mix(nn.Module):
             for ll in self.u2u:
                 ll.weight.data.fill_(0.)
 
-        self.z2h = nn.ModuleList([Linear(self.z_dim, h_dim_a,scale=1.) for i in range(self.n_mix)])
+        self.z2h = nn.ModuleList([Linear(self.z_dim, h_dim_a,scale=args.bias) for i in range(self.n_mix)])
 
 
         num_hs=1 if args.hdim_dec is None else self.n_mix
