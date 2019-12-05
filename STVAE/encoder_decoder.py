@@ -57,6 +57,8 @@ class Linear(nn.Module):
                 if (dim1>0):
                     bis = True if dim1>1 else False
                     self.lin=nn.Linear(dim1,dim2,bias=bis)
+                    if scale is not None:
+                        self.lin.weight.data*=scale
                 # Only a bias term that does not depend on input.
                 else:
                     self.lin=biass(dim2, scale)
@@ -144,7 +146,7 @@ class decoder_mix(nn.Module):
             for ll in self.u2u:
                 ll.weight.data.fill_(0.)
 
-        self.z2h = nn.ModuleList([Linear(self.z_dim, h_dim_a,scale=args.bias) for i in range(self.n_mix)])
+        self.z2h = nn.ModuleList([Linear(self.z_dim, h_dim_a,scale=args.scale) for i in range(self.n_mix)])
 
 
         num_hs=1 if args.hdim_dec is None else self.n_mix

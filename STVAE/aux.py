@@ -35,7 +35,7 @@ def process_args(parser):
     parser.add_argument('--mu_lr', type=float, default=[.05,.01], nargs=2,help='Learning rate (default: .05)')
     parser.add_argument('--lamda', type=float, default=0.0, help='weight decay')
     parser.add_argument('--lamda1', type=float, default=1.0, help='penalty on conv matrix')
-    parser.add_argument('--bias', type=float, default=None, help='range of bias term for decoder templates')
+    parser.add_argument('--scale', type=float, default=None, help='range of bias term for decoder templates')
     parser.add_argument('--lim', type=int, default=0, help='penalty on conv matrix')
     parser.add_argument('--num_mu_iter', type=int, default=10, help='Learning rate (default: .05)')
     parser.add_argument('--wd', action='store_true', help='Use weight decay')
