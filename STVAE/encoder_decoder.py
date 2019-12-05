@@ -140,7 +140,7 @@ class decoder_mix(nn.Module):
         self.num_layers=model.num_hlayers
         self.type=model.type
         self.diag=args.Diag
-
+        self.output_cont=model.output_cont
         self.fromNorm_mix = fromNorm_mix(self)
 
         if (self.num_layers==1):
@@ -187,6 +187,7 @@ class decoder_mix(nn.Module):
                     x = x + [self.h2x[r](h_)]
 
             xx=torch.stack(x,dim=0)
-            xx=torch.sigmoid(xx)
+            if not self.output_cont:
+                xx=torch.sigmoid(xx)
             return(xx,u)
 
