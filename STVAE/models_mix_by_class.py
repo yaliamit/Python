@@ -29,7 +29,7 @@ class STVAE_mix_by_class(STVAE_mix):
     def run_epoch_classify(self, train, d_type, fout=None, num_mu_iter=None, conf_thresh=0):
 
 
-        self.eval()
+        #self.eval()
         if self.opt:
             mu, logvar, ppi = self.initialize_mus(train[0], True)
             mu = mu.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim).transpose(0, 1)
