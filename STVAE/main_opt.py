@@ -58,12 +58,12 @@ def setups(ARGS, EX_FILES ,locs):
     fout.write('USE_GPU,' + str(use_gpu) + '\n')
 
     args = ARGS[0]
-    args.lim=0
-    args.feats_back=False
-    args.output_cont=False
-    args.nti=10
+    # args.lim=0
+    # args.feats_back=False
+    # args.output_cont=False
+    # args.nti=10
     PARS = {}
-    PARS['data_set'] = 'mnist' #ARGS[0].dataset
+    PARS['data_set'] = ARGS[0].dataset
     PARS['num_train'] = ARGS[0].num_train // ARGS[0].mb_size * ARGS[0].mb_size
     PARS['nval'] = ARGS[0].nval
     if args.cl is not None:
