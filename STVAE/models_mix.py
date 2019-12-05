@@ -4,7 +4,7 @@ from torch import nn, optim
 import numpy as np
 import models
 from Sep import encoder_mix_sep
-from encoder_decoder_new import encoder_mix, decoder_mix
+from encoder_decoder import encoder_mix, decoder_mix
 
 import contextlib
 @contextlib.contextmanager
@@ -135,7 +135,7 @@ class STVAE_mix(models.STVAE):
 
 
         with torch.no_grad() if self.flag else dummy_context_mgr():
-            if (self.feats>0):
+            if (self.feats>0 and not self.feats_back):
                 data = F.relu(self.conv.fwd(data))
 
         return data
