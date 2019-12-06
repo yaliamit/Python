@@ -18,7 +18,7 @@ class conv2(nn.Module):
         super(conv2,self).__init__()
         pp = np.int32(np.floor(args.filts / 2))
         self.feats=args.feats
-        self.x_dim = np.int32((x_h / args.pool) * (x_w / args.pool) * args.feats)
+        self.x_dim = np.int32((x_h / args.pool_stride) * (x_w / args.pool_stride) * args.feats)
         self.x_h=x_h
         self.x_hf = np.int32(x_h / args.pool)
 
