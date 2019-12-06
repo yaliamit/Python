@@ -70,6 +70,8 @@ class STVAE_mix(models.STVAE):
         self.x_h=x_h
         self.diag=args.Diag
         self.output_cont=args.output_cont
+        if (self.feats>0 and not args.feats_back):
+            self.output_cont=True
         self.h_dim_dec=args.hdim_dec
         self.n_class=args.n_class
         if self.n_parts:
