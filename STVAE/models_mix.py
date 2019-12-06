@@ -20,11 +20,11 @@ class conv2(nn.Module):
         self.feats=args.feats
         self.x_dim = np.int32((x_h / args.pool_stride) * (x_w / args.pool_stride) * args.feats)
         self.x_h=x_h
-        self.x_hf = np.int32(x_h / args.pool)
+        self.x_hf = np.int32(x_h / args.pool_stride)
 
         self.conv = torch.nn.Conv2d(args.input_channels, args.feats, args.filts, stride=1, bias=False,
                                     padding=pp)
-        self.deconv = torch.nn.ConvTranspose2d(args.feats, args.input_channels, args.filts, stride=args.pool,
+        self.deconv = torch.nn.ConvTranspose2d(args.feats, args.input_channels, args.filts, stride=args.pool_stride,
                                                padding=pp, output_padding=1, bias=False)
         self.deconv.weight.data = self.conv.weight.data
         # self.orthogo()
