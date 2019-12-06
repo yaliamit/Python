@@ -73,6 +73,13 @@ def make_images(test,model,ex_file,args):
         num_mu_iter=None
         torch.manual_seed(args.seed)
         np.random.seed(args.seed)
+
+        if args.n_mix>0:
+            for clust in range(args.n_mix):
+                show_sampled_images(model,ex_file,clust)
+        else:
+            show_sampled_images(model, ex_file)
+
         if (args.n_class):
             for c in range(model.n_class):
                 ind=(np.argmax(test[1],axis=1)==c)
@@ -80,11 +87,7 @@ def make_images(test,model,ex_file,args):
         else:
             show_reconstructed_images(test,model,ex_file,args.nti)
 
-        if args.n_mix>0:
-            for clust in range(args.n_mix):
-                show_sampled_images(model,ex_file,clust)
-        else:
-            show_sampled_images(model, ex_file)
+
 
         model.bsz=old_bsz
         model.setup_id(old_bsz)

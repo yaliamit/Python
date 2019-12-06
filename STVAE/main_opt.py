@@ -167,6 +167,8 @@ parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
 
 args=aux.process_args(parser)
 
+sample=args.sample
+classify=args.classify
 run_existing=args.run_existing
 conf=args.conf
 
@@ -185,10 +187,10 @@ fout, device, DATA, image_dim, models = setups(ARGS, EX_FILES, locals())
 #model = locals()['STVAE' + opt_mix + opt_class](h, w, device, args).to(device)
 
 if (run_existing):
-    if (args.classify):
+    if (classify):
         train_new(models[0],args,DATA,device)
-    elif args.sample:
-        aux.make_images(DATA[2],models[0],EX_FILES[0],args)
+    elif sample:
+        aux.make_images(DATA[2],models[0],EX_FILES[0],ARGS[0])
     else:
         test_models(ARGS,SMS,DATA[2],fout)
 

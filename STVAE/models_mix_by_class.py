@@ -143,7 +143,7 @@ class STVAE_mix_by_class(STVAE_mix):
         else:
             s_mu, s_var, pi = self.encoder_mix(inp)
             if (self.s_dim == 1):
-                s_mu = torch.ones(self.mu.shape[0], self.n_class, self.n_mix_perclass*self.s_dim).transpose(0, 1).to(self.dv)
+                s_mu = torch.ones(s_mu.shape[0], self.n_class, self.n_mix_perclass*self.s_dim).transpose(0, 1).to(self.dv)
             else:
                 s_mu = s_mu.reshape(-1, self.n_class, self.n_mix_perclass*self.s_dim).transpose(0,1)
             s_mu = s_mu[cl].reshape(-1,self.n_mix_perclass,self.s_dim).transpose(0,1)
