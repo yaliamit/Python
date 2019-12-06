@@ -135,11 +135,17 @@ class STVAE_mix_by_class(STVAE_mix):
                 self.update_s(mu[c], logvar[c], ppi[c], self.mu_lr[0])
                 for it in range(num_mu_iter):
                     self.compute_loss_and_grad(inp,input, None, 'test', self.optimizer_s, opt='mu',rng=rng)
-                s_mu = self.mu.reshape(-1,self.n_mix_perclass,self.s_dim).transpose(0,1)
+                if (self.s_dim == 1):
+                    s_mu = torch.ones(self.mu.shape[0], self.n_mix_perclass, self.s_dim).transpose(0, 1).to(self.dv)
+                else:
+                    s_mu = self.mu.reshape(-1, self.n_mix_perclass, self.s_dim).transpose(0, 1)
                 pi = torch.softmax(self.pi, dim=1)
         else:
             s_mu, s_var, pi = self.encoder_mix(inp)
-            s_mu = s_mu.reshape(-1, self.n_class, self.n_mix_perclass*self.s_dim).transpose(0,1)
+            if (self.s_dim == 1):
+                s_mu = torch.ones(self.mu.shape[0], self.n_class, self.n_mix_perclass*self.s_dim).transpose(0, 1).to(self.dv)
+            else:
+                s_mu = s_mu.reshape(-1, self.n_class, self.n_mix_perclass*self.s_dim).transpose(0,1)
             s_mu = s_mu[cl].reshape(-1,self.n_mix_perclass,self.s_dim).transpose(0,1)
             pi = pi.reshape(-1,self.n_class,self.n_mix_perclass).transpose(0,1)
             pi  = pi[cl]
