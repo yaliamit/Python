@@ -136,8 +136,8 @@ class STVAE_mix(models.STVAE):
     def preprocess(self,data):
 
 
-        with torch.no_grad() if self.flag else dummy_context_mgr():
-            if (self.feats>0 and not self.feats_back):
+        #with torch.no_grad() if self.flag else dummy_context_mgr():
+        if (self.feats>0 and not self.feats_back):
                 data = F.relu(self.conv.fwd(data))
 
         return data

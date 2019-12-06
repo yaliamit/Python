@@ -31,7 +31,7 @@ def process_args(parser):
     parser.add_argument('--optimizer', default='Adam', help='Type of optimiser')
     parser.add_argument('--lr', type=float, default=.001, help='Learning rate (default: .001)')
     parser.add_argument('--conf', type=float, default=0, help='confidence level')
-    parser.add_argument('--ortho_lr', type=float, default=.000001, help='Learning rate (default: .000001)')
+    parser.add_argument('--ortho_lr', type=float, default=.0, help='Learning rate (default: .000001)')
     parser.add_argument('--mu_lr', type=float, default=[.05,.01], nargs=2,help='Learning rate (default: .05)')
     parser.add_argument('--lamda', type=float, default=0.0, help='weight decay')
     parser.add_argument('--lamda1', type=float, default=1.0, help='penalty on conv matrix')
