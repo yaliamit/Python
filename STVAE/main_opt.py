@@ -40,7 +40,16 @@ def get_models(args):
 
     return ARGS, STRINGS, EX_FILES, SMS
 
-def setups(ARGS, EX_FILES ,locs):
+def  make_model(strings,args,locs, h, w, device, fout):
+        model = locs['STVAE' + strings['opt_mix'] + strings['opt_class']](h, w, device, args).to(device)
+        tot_pars = 0
+        for keys, vals in model.state_dict().items():
+            fout.write(keys + ',' + str(np.array(vals.shape)) + '\n')
+            tot_pars += np.prod(np.array(vals.shape))
+        fout.write('tot_pars,' + str(tot_pars) + '\n')
+        return model
+
+def setups(ARGS, EX_FILES , STRINGS, locs):
     torch.manual_seed(ARGS[0].seed)
     np.random.seed(ARGS[0].seed)
     use_gpu = ARGS[0].gpu and torch.cuda.is_available()
@@ -73,12 +82,7 @@ def setups(ARGS, EX_FILES ,locs):
 
     models = []
     for strings, args in zip(STRINGS, ARGS):
-        model = locs['STVAE' + strings['opt_mix'] + strings['opt_class']](h, w, device, args).to(device)
-        tot_pars = 0
-        for keys, vals in model.state_dict().items():
-            fout.write(keys + ',' + str(np.array(vals.shape)) + '\n')
-            tot_pars += np.prod(np.array(vals.shape))
-        fout.write('tot_pars,' + str(tot_pars) + '\n')
+        model=make_model(strings,args,locs, h, w, device, fout)
         models += [model]
 
     return fout, device, [train, val, test], image_dim, models
@@ -169,24 +173,29 @@ args=aux.process_args(parser)
 
 sample=args.sample
 classify=args.classify
+reinit=args.reinit
 run_existing=args.run_existing
 conf=args.conf
 
 ARGS, STRINGS, EX_FILES, SMS = get_models(args)
 
-fout, device, DATA, image_dim, models = setups(ARGS, EX_FILES, locals())
+fout, device, DATA, image_dim, models = setups(ARGS, EX_FILES, STRINGS, locals())
 
+if reinit:
+    models[0].load_state_dict(SMS[0]['model.state.dict'])
+    model_new=make_model(STRINGS[0],args,locals(), DATA[0][0].shape[1],DATA[0][0].shape[2], device, fout)
+    model_new.conv.conv.weight.data=models[0].conv.conv.weight.data
+    models=[model_new]
+    ARGS=[args]
+    strings, ex_file = process_strings(args)
+    EX_FILE=[ex_file]
 # if (args.classify):
 #     t1 = time.time()
 #     classify(train,test,image_dim,opt_pre,opt_post,opt_mix,opt_class,device,args,fout,locals())
 #     fout.write('Classified in {1:5.3f} seconds\n'.format(time.time()-t1))
 #     exit()
 
-
-
-#model = locals()['STVAE' + opt_mix + opt_class](h, w, device, args).to(device)
-
-if (run_existing):
+if (run_existing and not reinit):
     if (classify):
         train_new(models[0],args,DATA,device)
     elif sample:
@@ -195,7 +204,6 @@ if (run_existing):
         aux.make_images(DATA[2],model,EX_FILES[0],ARGS[0])
     else:
         test_models(ARGS,SMS,DATA[2],fout)
-
 else:
     train_model(models[0], ARGS[0], EX_FILES[0], DATA, fout)
 
