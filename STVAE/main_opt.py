@@ -190,7 +190,9 @@ if (run_existing):
     if (classify):
         train_new(models[0],args,DATA,device)
     elif sample:
-        aux.make_images(DATA[2],models[0],EX_FILES[0],ARGS[0])
+        model=models[0]
+        model.load_state_dict(SMS[0]['model.state.dict'])
+        aux.make_images(DATA[2],model,EX_FILES[0],ARGS[0])
     else:
         test_models(ARGS,SMS,DATA[2],fout)
 

@@ -153,7 +153,7 @@ class STVAE_mix(models.STVAE):
                 for xx,uu in zip(x,u):
                     xt=xt+[self.apply_trans(xx,uu).squeeze()]
 
-            x=torch.stack(xt,dim=0).reshape(n_mix,-1,self.x_dim)
+            x=torch.stack(xt,dim=0).reshape(n_mix,x.shape[1],-1)
         xx = torch.clamp(x, 1e-6, 1 - 1e-6)
         return xx
 
