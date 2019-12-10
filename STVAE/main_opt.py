@@ -59,8 +59,6 @@ def setups(ARGS, EX_FILES , STRINGS, locs):
         ARGS[0].CONS = True
         fout = sys.stdout
 
-    fout.write(str(ARGS[0]) + '\n')
-    fout.flush()
 
     device = torch.device("cuda:" + str(ARGS[0].gpu - 1) if use_gpu else "cpu")
     fout.write('Device,' + str(device) + '\n')
@@ -189,6 +187,9 @@ if reinit:
     ARGS=[args]
     strings, ex_file = process_strings(args)
     EX_FILE=[ex_file]
+
+fout.write(str(ARGS[0]) + '\n')
+fout.flush()
 # if (args.classify):
 #     t1 = time.time()
 #     classify(train,test,image_dim,opt_pre,opt_post,opt_mix,opt_class,device,args,fout,locals())
