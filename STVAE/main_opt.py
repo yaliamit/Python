@@ -186,7 +186,7 @@ if reinit:
     models=[model_new]
     ARGS=[args]
     strings, ex_file = process_strings(args)
-    EX_FILE=[ex_file]
+    EX_FILES=[ex_file]
 
 fout.write(str(ARGS[0]) + '\n')
 fout.flush()
