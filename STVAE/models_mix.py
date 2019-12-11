@@ -69,7 +69,7 @@ class STVAE_mix(models.STVAE):
         self.filts=args.filts
         self.x_h=x_h
         self.lamda=args.lamda
-        self.loglamda=np.log(self.lamda)
+        self.loglamda=.5*np.log(self.lamda)
         self.diag=args.Diag
         self.output_cont=args.output_cont
         if (self.feats>0 and not args.feats_back):
