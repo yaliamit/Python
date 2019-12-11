@@ -68,6 +68,8 @@ class STVAE_mix(models.STVAE):
         self.feats_back=args.feats_back
         self.filts=args.filts
         self.x_h=x_h
+        self.lamda=args.lamda
+        self.loglamda=np.log(self.lamda)
         self.diag=args.Diag
         self.output_cont=args.output_cont
         if (self.feats>0 and not args.feats_back):
@@ -194,8 +196,6 @@ class STVAE_mix(models.STVAE):
             for xx in x:
                 data=data.view(-1,self.x_dim)
                 a=(data-xx)*(data-xx)
-                #a = F.binary_cross_entropy(xx,data.view(-1, self.x_dim),
-                #                           reduction='none')
                 a = torch.sum(a, dim=1)
                 b = b + [a]
         b = torch.stack(b).transpose(0, 1)
@@ -207,7 +207,7 @@ class STVAE_mix(models.STVAE):
     def mixed_loss(self,x,data,pi):
 
         b=self.mixed_loss_pre(x,data)
-        recloss=torch.sum(pi*b)
+        recloss=self.lamda*torch.sum(pi*b)+self.x_dim*.5*self.loglamda
         return recloss
 
 

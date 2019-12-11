@@ -23,7 +23,6 @@ class STVAE_mix_by_class(STVAE_mix):
 
         self.mu_lr = args.mu_lr
         self.eyy = torch.eye(self.n_mix).to(self.dv)
-        #self.lamda1=args.lamda1
 
 
     def run_epoch_classify(self, train, d_type, fout=None, num_mu_iter=None, conf_thresh=0):
