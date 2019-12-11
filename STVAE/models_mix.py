@@ -352,8 +352,14 @@ class STVAE_mix(models.STVAE):
         kk = ii+jj*self.n_mix
         lpi = torch.log(pi)
         recon_batch = self.decoder_and_trans(ss_mu)
-        tot = self.dens_apply(s_mu, s_var, lpi, pi)
-        recloss = self.mixed_loss(recon_batch, inp,pi)
+        recloss = self.mixed_loss(recon_batch, inp, pi)
+        if (self.feats and not self.feats_back):
+            rec_b=[]
+            for rc in recon_batch:
+                rec_b+=[self.conv.bkwd(rc.reshape(-1, self.feats, self.conv.x_hf, self.conv.x_hf))]
+            recon_batch=torch.stack(rec_b,dim=0)
+        tot = self.dens_apply(s_mu, s_var, lpi, pi)[0]
+
         print('LOSS', (tot + recloss)/num_inp)
         recon_batch = recon_batch.transpose(0, 1)
         recon=recon_batch.reshape(self.n_mix*num_inp,-1)
