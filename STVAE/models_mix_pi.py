@@ -214,7 +214,7 @@ class STVAE_mix(models.STVAE):
 
     def get_loss(self,data,targ,mu,logvar,pi,rng=None):
 
-        if (targ is not None and type(targ)==torch.Tensor):
+        if (targ is not None):
             pi=pi.reshape(-1,self.n_class,self.n_mix_perclass)
             pis=torch.sum(pi,2)
             pi = pi/pis.unsqueeze(2)
@@ -268,6 +268,27 @@ class STVAE_mix(models.STVAE):
         optim.zero_grad()
 
         recloss, tot = self.encoder_and_loss(data,targ,rng)
+        # if (self.feats and not opt=='mu' and not self.feats_back):
+        #     #out=self.conv(self.ID)
+        #     #dd=self.deconv(out[:,:,0:self.ndim:2,0:self.ndim:2])
+        #     dd=self.conv.bkwd(data)
+        #     rec=self.lamda1*torch.sum((dd-data_orig)*(dd-data_orig))
+        #    tot+=rec
+
+        loss = recloss + tot
+
+
+        if (d_type == 'train' or opt=='mu'):
+            loss.backward()
+            optim.step()
+
+        return recloss.item(), loss.item()
+
+    def compute_loss_and_grad_mu(self,data, mu, logvar, targ,d_type,optim, opt='par', rng=None):
+
+        optim.zero_grad()
+        pi = torch.softmax(self.pi, dim=1)
+        recloss, tot = self.get_loss(data,targ, mu,logvar,pi,rng)
         # if (self.feats and not opt=='mu' and not self.feats_back):
         #     #out=self.conv(self.ID)
         #     #dd=self.deconv(out[:,:,0:self.ndim:2,0:self.ndim:2])
