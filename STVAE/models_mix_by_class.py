@@ -55,8 +55,8 @@ class STVAE_mix_by_class(STVAE_mix):
                     #t1=time.time()
                     rng = range(c * self.n_mix_perclass, (c + 1) * self.n_mix_perclass)
                     self.update_s(mu[c][j:j + self.bsz], logvar[c][j:j + self.bsz], ppi[c][j:j + self.bsz], self.mu_lr[0])
+                    data_d = data.detach()
                     for it in range(num_mu_iter):
-                            data_d=data.detach()
                             self.compute_loss_and_grad(data_d, data_in, None, 'test', self.optimizer_s, opt='mu',rng=rng)
                     if (self.s_dim==1):
                         ss_mu=torch.ones(self.mu.shape[0],self.n_mix_perclass,self.s_dim).transpose(0,1).to(self.dv)
