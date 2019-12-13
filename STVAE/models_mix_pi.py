@@ -325,13 +325,17 @@ class STVAE_mix(models.STVAE):
             data_in = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             data = self.preprocess(data_in)
             data_d = data.detach()
+            with torch.no_grad():
+                s_mu, s_var = self.encoder_mix(data)
+            #s_mu = s_mu.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim)
+            #s_var = s_var.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim)
             target=None
             if (self.n_class>0):
                 target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
             if True:
                 self.update_s(pi[j:j + self.bsz], self.mu_lr[0])
                 for it in range(num_mu_iter):
-                    self.compute_loss_and_grad(data_d,data_in, target, d_type, self.optimizer_s, opt='mu')
+                    self.compute_loss_and_grad_mu(data_d,s_mu, s_var, target, d_type, self.optimizer_s, opt='mu')
             with torch.no_grad() if (d_type != 'train') else dummy_context_mgr():
                 recon_loss, loss=self.compute_loss_and_grad(data, data_in, target,d_type,self.optimizer)
 
