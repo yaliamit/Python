@@ -4,7 +4,7 @@ from torch import nn, optim
 import numpy as np
 import models
 from Sep import encoder_mix_sep
-from encoder_decoder_pi import encoder_mix, decoder_mix
+from encoder_decoder import encoder_mix, decoder_mix
 
 import contextlib
 @contextlib.contextmanager
@@ -72,6 +72,7 @@ class STVAE_mix(models.STVAE):
         self.loglamda=.5*np.log(self.lamda)
         self.diag=args.Diag
         self.output_cont=args.output_cont
+        self.only_pi=args.only_pi
         if (self.feats>0 and not args.feats_back):
             self.output_cont=True
         self.h_dim_dec=args.hdim_dec
@@ -243,8 +244,8 @@ class STVAE_mix(models.STVAE):
                     tot += self.dens_apply(mu[ind,c,:],logvar[ind,c,:],lpi[ind,c,:],pi[ind,c,:])[0]
                     recloss+=self.mixed_loss(x[ind,c,:,:].transpose(0,1),data[ind],pi[ind,c,:])
             else:
-                 tot += self.dens_apply(mu[:, targ, :], logvar[:, targ, :], lpi, pi)[0]
-                 recloss += self.mixed_loss(x[:, targ, :, :].transpose(0, 1), data, pi)
+                 tot += self.dens_apply(mu[:, targ, :], logvar[:, targ, :], lpi[:, targ, :], pi[:, targ, :])[0]
+                 recloss += self.mixed_loss(x[:, targ, :, :].transpose(0, 1), data, pi[:, targ, :])
         else:
             tot = self.dens_apply(mu, logvar, lpi, pi)[0]
             recloss = self.mixed_loss(x, data, pi)
@@ -259,7 +260,7 @@ class STVAE_mix(models.STVAE):
                 mu=self.mu
             else:
                 pi = torch.softmax(self.pi, dim=1)
-                mu, logvar = self.encoder_mix(data)
+                mu, logvar, _ = self.encoder_mix(data)
 
         return self.get_loss(data,targ, mu,logvar,pi,rng)
 
@@ -326,7 +327,7 @@ class STVAE_mix(models.STVAE):
             data = self.preprocess(data_in)
             data_d = data.detach()
             with torch.no_grad():
-                s_mu, s_var = self.encoder_mix(data)
+                s_mu, s_var, _ = self.encoder_mix(data)
             #s_mu = s_mu.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim)
             #s_var = s_var.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim)
             target=None

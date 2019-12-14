@@ -85,14 +85,17 @@ class encoder_mix(nn.Module):
 
         self.feats=model.feats
         self.feats_back=model.feats_back
+        self.only_pi=model.only_pi
 
         if (self.num_layers==1):
             self.h2he = nn.Linear(model.h_dim, model.h_dim)
         self.x2h = nn.Linear(model.x_dim, model.h_dim)
-        self.x2hpi = nn.Linear(model.x_dim, model.h_dim)
+        if not self.only_pi:
+            self.x2hpi = nn.Linear(model.x_dim, model.h_dim)
         self.h2smu = nn.Linear(model.h_dim, model.s_dim * model.n_mix)
         self.h2svar = nn.Linear(model.h_dim, model.s_dim * model.n_mix, bias=False)
-        self.h2pi = nn.Linear(model.h_dim, model.n_mix)
+        if not self.only_pi:
+            self.h2pi = nn.Linear(model.h_dim, model.n_mix)
         if (model.feats and self.feats_back):
             self.conv=model.conv
 
@@ -100,17 +103,20 @@ class encoder_mix(nn.Module):
 
 
     def forward(self,inputs):
+        pi=None
         if (self.feats and self.feats_back):
             inputs=self.conv.fwd(inputs)
         inputs=inputs.reshape(-1, self.x_dim)
         h = F.relu(self.x2h(inputs))
-        hpi = F.relu(self.x2hpi(inputs))
+        if not self.only_pi:
+            hpi = F.relu(self.x2hpi(inputs))
         if (self.num_layers == 1):
             h = F.relu(self.h2he(h))
         s_mu = self.h2smu(h)
         s_logvar = F.threshold(self.h2svar(h), -6, -6)
-        hm = self.h2pi(hpi).clamp(-10., 10.)
-        pi = torch.softmax(hm, dim=1)
+        if not self.only_pi:
+            hm = self.h2pi(hpi).clamp(-10., 10.)
+            pi = torch.softmax(hm, dim=1)
         return s_mu, s_logvar, pi
 
 

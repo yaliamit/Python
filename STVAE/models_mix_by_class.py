@@ -29,10 +29,11 @@ class STVAE_mix_by_class(STVAE_mix):
 
 
         self.eval()
-        if self.opt:
+        if self.opt or self.only_pi:
             mu, logvar, ppi = self.initialize_mus(train[0], True)
-            mu = mu.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim).transpose(0, 1)
-            logvar = logvar.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim).transpose(0, 1)
+            if (not self.only_pi):
+                mu = mu.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim).transpose(0, 1)
+                logvar = logvar.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim).transpose(0, 1)
             ppi = ppi.reshape(-1, self.n_class, self.n_mix_perclass).transpose(0, 1)
 
         ii = np.arange(0, train[0].shape[0], 1)
@@ -48,14 +49,17 @@ class STVAE_mix_by_class(STVAE_mix):
             fout.flush()
             data_in = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             data = self.preprocess(data_in)
+            data_d = data.detach()
             if (len(data)<self.bsz):
                 self.setup_id(len(data))
+
+
             if self.opt:
                 for c in range(self.n_class):
                     #t1=time.time()
                     rng = range(c * self.n_mix_perclass, (c + 1) * self.n_mix_perclass)
                     self.update_s(mu[c][j:j + self.bsz], logvar[c][j:j + self.bsz], ppi[c][j:j + self.bsz], self.mu_lr[0])
-                    data_d = data.detach()
+
                     for it in range(num_mu_iter):
                             self.compute_loss_and_grad(data_d, data_in, None, 'test', self.optimizer_s, opt='mu',rng=rng)
                     if (self.s_dim==1):
@@ -73,6 +77,7 @@ class STVAE_mix_by_class(STVAE_mix):
             else:
                 with torch.no_grad():
                     s_mu, s_var, pi = self.encoder_mix(data)
+
                     if (self.s_dim==1):
                         ss_mu=torch.ones(s_mu.shape[0],self.n_mix,self.s_dim).transpose(0,1).to(self.dv)
                     else:
@@ -80,15 +85,27 @@ class STVAE_mix_by_class(STVAE_mix):
                     recon_batch = self.decoder_and_trans(ss_mu)
                     b = self.mixed_loss_pre(recon_batch, data)
                     b = b.reshape(-1,self.n_class,self.n_mix_perclass)
-                    s_mu = s_mu.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim)
-                    s_var = s_var.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim)
-                    tpi=pi.reshape(-1,self.n_class,self.n_mix_perclass)
-                    lpi=torch.log(tpi)
+                    s_mu = s_mu.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim).transpose(0,1)
+                    s_var = s_var.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim).transpose(0,1)
+                    if not self.only_pi:
+                        tpi=pi.reshape(-1,self.n_class,self.n_mix_perclass).transpose(0,1)
 
-                    for c in range(self.n_class):
-                        KD += [self.dens_apply(s_mu[:,c,:], s_var[:,c,:], lpi[:,c,:], tpi[:,c,:])[1]]
-                        tpic=tpi[:,c,:]/torch.sum(tpi[:,c,:],dim=1).unsqueeze(1)
-                        BB += [torch.sum(tpic*b[:,c,:],dim=1)]
+                for c in range(self.n_class):
+                        if self.only_pi:
+                            self.update_s(mu[c][j:j + self.bsz], logvar[c][j:j + self.bsz], ppi[c][j:j + self.bsz],
+                                          self.mu_lr[0])
+                            rng = range(c * self.n_mix_perclass, (c + 1) * self.n_mix_perclass)
+                            for it in range(num_mu_iter):
+                                self.compute_loss_and_grad_mu(data_d, s_mu[c], s_var[c], None, 'test',
+                                                              self.optimizer_s, opt='mu', rng=rng)
+                            pic = torch.softmax(self.pi, dim=1)
+                            lpic = torch.log(pic)
+                        else:
+                            pic=tpi[c]/torch.sum(tpi[c],dim=1).unsqueeze(1)
+                            lpic=torch.log(pic)
+                        KD += [self.dens_apply(s_mu[c], s_var[c], lpic, pic)[1]]
+                        BB += [torch.sum(pic*b[:,c,:],dim=1)]
+
             KD=torch.stack(KD,dim=1)
             BB=torch.stack(BB, dim=1)
             rr = BB + KD
@@ -114,7 +131,7 @@ class STVAE_mix_by_class(STVAE_mix):
 
     def recon(self,input,num_mu_iter,cl):
 
-        if self.opt:
+        if self.opt or self.only_pi:
             mu, logvar, ppi = self.initialize_mus(input, True)
             mu=mu.reshape(-1,self.n_class,self.n_mix_perclass*self.s_dim).transpose(0,1)
             logvar=logvar.reshape(-1,self.n_class,self.n_mix_perclass*self.s_dim).transpose(0,1)
@@ -140,14 +157,27 @@ class STVAE_mix_by_class(STVAE_mix):
                     s_mu = self.mu.reshape(-1, self.n_mix_perclass, self.s_dim).transpose(0, 1)
                 pi = torch.softmax(self.pi, dim=1)
         else:
-            s_mu, s_var, pi = self.encoder_mix(inp)
+            with torch.no_grad():
+                s_mu, s_var, pi = self.encoder_mix(inp)
             if (self.s_dim == 1):
                 s_mu = torch.ones(s_mu.shape[0], self.n_class, self.n_mix_perclass*self.s_dim).transpose(0, 1).to(self.dv)
+                s_var = torch.ones(s_var.shape[0], self.n_class, self.n_mix_perclass*self.s_dim).transpose(0, 1).to(self.dv)
             else:
                 s_mu = s_mu.reshape(-1, self.n_class, self.n_mix_perclass*self.s_dim).transpose(0,1)
-            s_mu = s_mu[cl].reshape(-1,self.n_mix_perclass,self.s_dim).transpose(0,1)
-            pi = pi.reshape(-1,self.n_class,self.n_mix_perclass).transpose(0,1)
-            pi  = pi[cl]
+                s_var = s_var.reshape(-1, self.n_class, self.n_mix_perclass*self.s_dim).transpose(0,1)
+
+            if self.only_pi:
+                self.update_s(mu[c], logvar[c], ppi[c], self.mu_lr[0])
+                inp_d = inp.detach()
+                for it in range(num_mu_iter):
+                    self.compute_loss_and_grad_mu(inp_d, s_mu[c], s_var[c], None, 'test', self.optimizer_s,
+                                              opt='mu', rng=rng)
+                pi = torch.softmax(self.pi, dim=1)
+            else:
+                pi = pi.reshape(-1, self.n_class, self.n_mix_perclass).transpose(0, 1)
+                pi = pi[cl]
+
+            s_mu = s_mu[cl].reshape(-1, self.n_mix_perclass, self.s_dim).transpose(0, 1)
 
         recon_batch = self.decoder_and_trans(s_mu,rng)
         if (self.feats and not self.feats_back):
