@@ -146,6 +146,9 @@ def process_strings(args):
     if (args.OPT):
         strings['opt_pre']='OPT_'
         strings['opt_post']='_OPT'
+    if (args.only_pi):
+        strings['opt_pre'] = 'PI_'
+        strings['opt_post'] = '_PI'
     if (args.n_mix>=1):
         strings['opt_mix']='_mix'
     if (args.MM):
