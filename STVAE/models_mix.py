@@ -180,7 +180,7 @@ class STVAE_mix(models.STVAE):
 
         # Sum along last coordinate to get negative log density of each component.
         KD_dens=-0.5 * torch.sum(1 + s_logvar - s_mu ** 2 - var, dim=2)
-        KD_disc=lpi-torch.log(torch.tensor(n_mix,dtype=torch.float))
+        KD_disc=lpi+torch.log(torch.tensor(n_mix,dtype=torch.float))
         KD = torch.sum(pi * (KD_dens + KD_disc), dim=1)
         tot=torch.sum(KD)
 
