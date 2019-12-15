@@ -176,9 +176,7 @@ if (l>1):
 if (l>2):
     ntk=np.int32(sys.argv[2])
 numt=ntk*1000
-mx='1+120+3+40+6+20'
-#mx='6+20'
-#mx='1+120+3+40'
+mx='1+60+3+20+6+10'
 
 if (l>3):
     mx=sys.argv[3]
@@ -191,7 +189,7 @@ OPT='_OPT'
 dir_name_base='EXP'+'_NT'+str(ntk)+'_'+mx+'_'+mtype
 print(dir_name_base)
 
-nh=1
+nh=0
 if new:
     for i in range(0,2):
         dir_name=dir_name_base+'_'+str(i)
