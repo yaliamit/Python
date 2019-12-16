@@ -96,7 +96,7 @@ class STVAE_mix_by_class(STVAE_mix):
                             #self.update_s(mu[c][j:j + self.bsz], logvar[c][j:j + self.bsz], ppi[c][j:j + self.bsz],
                             #              self.mu_lr[0])
                             rng = range(c * self.n_mix_perclass, (c + 1) * self.n_mix_perclass)
-                            self.pi=self.get_pi_from_max(s_mu[c], data,None,rng)
+                            self.pi=self.get_pi_from_max(s_mu[c], s_var[c], data,None,rng)
                             # for it in range(num_mu_iter):
                             #     self.compute_loss_and_grad_mu(data_d, s_mu[c], s_var[c], None, 'test',
                             #                                   self.optimizer_s, opt='mu', rng=rng)
@@ -171,7 +171,7 @@ class STVAE_mix_by_class(STVAE_mix):
             if self.only_pi:
                 #self.update_s(mu[c], logvar[c], ppi[c], self.mu_lr[0])
                 inp_d = inp.detach()
-                self.pi=self.get_pi_from_max(s_mu[c], inp_d, None, rng=rng)
+                self.pi=self.get_pi_from_max(s_mu[c], s_var[c], inp_d, None, rng=rng)
                 #for it in range(num_mu_iter):
                 #    self.compute_loss_and_grad_mu(inp_d, s_mu[c], s_var[c], None, 'test', self.optimizer_s,
                 #                              opt='mu', rng=rng)

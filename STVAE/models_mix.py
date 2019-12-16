@@ -184,7 +184,7 @@ class STVAE_mix(models.STVAE):
         KD = torch.sum(pi * (KD_dens + KD_disc), dim=1)
         tot=torch.sum(KD)
 
-        return tot, KD
+        return tot, KD, KD_dens
 
     def mixed_loss_pre(self,x,data):
         b = []
@@ -302,12 +302,12 @@ class STVAE_mix(models.STVAE):
 
         return recloss.item(), loss.item()
 
-    def get_pi_from_max(self, s_mu, data, targ=None, rng=None):
+    def get_pi_from_max(self, s_mu, s_var, data, targ=None, rng=None):
 
         n_mix=self.n_mix
         if (targ is None and self.n_class > 0):
             n_mix=self.n_mix_perclass
-        pi=torch.zeros(data.shape[0],self.n_mix)
+        pi=torch.zeros(data.shape[0],n_mix).to(self.dv)
         en=n_mix
         if (targ is not None):
             pi=pi.reshape(-1,self.n_class,self.n_mix_perclass)
@@ -315,22 +315,29 @@ class STVAE_mix(models.STVAE):
 
         EE = (torch.eye(en) * 10. + torch.ones(en)).to(self.dv)
         s_mu = s_mu.reshape(-1, n_mix, self.s_dim).transpose(0, 1)
+        s_var = s_var.reshape(-1, n_mix, self.s_dim).transpose(0, 1)
 
         x = self.decoder_and_trans(s_mu, rng)
 
         if targ is not None:
             x = x.transpose(0, 1)
             x = x.reshape(-1, self.n_class, self.n_mix_perclass, x.shape[-1])
+            s_mu = s_mu.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim)
+            s_var = s_var.reshape(-1, self.n_class, self.n_mix_perclass * self.s_dim)
             if (type(targ) == torch.Tensor):
                 for c in range(self.n_class):
                     ind = (targ == c)
                     b=self.mixed_loss_pre(x[ind,c,:,:].transpose(0,1),data[ind])
+                    KD = self.dens_apply(s_mu[ind,c,:],s_var[ind,c,:],pi[ind,c,:],pi[ind,c,:])[2]
+                    b=b+KD
                     bb,ii = torch.min(b,dim=1)
                     pi[ind,c,:]=EE[ii]
             pi=pi.reshape(-1,self.n_mix)
         else:
             x = self.decoder_and_trans(s_mu, rng)
             b = self.mixed_loss_pre(x, data)
+            KD = self.dens_apply(s_mu, s_var, pi, pi)[2]
+            b=b+KD
             bb, ii = torch.min(b, dim=1)
             pi = EE[ii]
         return pi
@@ -365,8 +372,7 @@ class STVAE_mix(models.STVAE):
             elif self.only_pi:
                 with torch.no_grad():
                     s_mu, s_var, _ = self.encoder_mix(data)
-                self.pi=self.get_pi_from_max(s_mu, data,target)
-
+                self.pi=self.get_pi_from_max(s_mu, s_var, data,target)
                 #self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], pi[j:j + self.bsz], self.mu_lr[0])
                 #for it in range(num_mu_iter):
                 #        self.compute_loss_and_grad_mu(data_d, s_mu, s_var, target, d_type, self.optimizer_s, opt='mu')
@@ -414,8 +420,8 @@ class STVAE_mix(models.STVAE):
         if self.only_pi:
             #self.update_s(mu, logvar, ppi, self.mu_lr[0])
             #inp_d = inp.detach()
-            self.pi=self.get_pi_from_max(s_mu, inp, None)
-            #self.get_pi_from_max(s_mu, inp)
+            self.pi=self.get_pi_from_max(s_mu, s_var, inp, None)
+
 
             # for it in range(num_mu_iter):
             #     self.compute_loss_and_grad_mu(inp_d, s_mu, s_var, None, 'test', self.optimizer_s,
