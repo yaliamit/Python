@@ -325,13 +325,13 @@ class STVAE_mix(models.STVAE):
                 for c in range(self.n_class):
                     ind = (targ == c)
                     b=self.mixed_loss_pre(x[ind,c,:,:].transpose(0,1),data[ind])
-                    bb,ii = torch.max(b,dim=1)
+                    bb,ii = torch.min(b,dim=1)
                     pi[ind,c,:]=EE[ii]
             pi=pi.reshape(-1,self.n_mix)
         else:
             x = self.decoder_and_trans(s_mu, rng)
             b = self.mixed_loss_pre(x, data)
-            bb, ii = torch.max(b, dim=1)
+            bb, ii = torch.min(b, dim=1)
             pi = EE[ii]
         return pi
     def run_epoch(self, train, epoch,num_mu_iter, MU, LOGVAR,PI, d_type='test',fout=None):
