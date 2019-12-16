@@ -19,7 +19,7 @@ class STVAE_mix_by_class(STVAE_mix):
         super(STVAE_mix_by_class, self).__init__(x_h, x_w, device, args)
 
         self.n_class=args.n_class
-        self.n_mix_perclass=np.int32(self.n_mix/self.n_class)
+        self.n_mix_perclass=int(self.n_mix/self.n_class)
 
         self.mu_lr = args.mu_lr
         self.eyy = torch.eye(self.n_mix).to(self.dv)
@@ -92,12 +92,14 @@ class STVAE_mix_by_class(STVAE_mix):
 
                 for c in range(self.n_class):
                         if self.only_pi:
-                            self.update_s(mu[c][j:j + self.bsz], logvar[c][j:j + self.bsz], ppi[c][j:j + self.bsz],
-                                          self.mu_lr[0])
+
+                            #self.update_s(mu[c][j:j + self.bsz], logvar[c][j:j + self.bsz], ppi[c][j:j + self.bsz],
+                            #              self.mu_lr[0])
                             rng = range(c * self.n_mix_perclass, (c + 1) * self.n_mix_perclass)
-                            for it in range(num_mu_iter):
-                                self.compute_loss_and_grad_mu(data_d, s_mu[c], s_var[c], None, 'test',
-                                                              self.optimizer_s, opt='mu', rng=rng)
+                            self.pi=self.get_pi_from_max(s_mu[c], data,None,rng)
+                            # for it in range(num_mu_iter):
+                            #     self.compute_loss_and_grad_mu(data_d, s_mu[c], s_var[c], None, 'test',
+                            #                                   self.optimizer_s, opt='mu', rng=rng)
                             pic = torch.softmax(self.pi, dim=1)
                             lpic = torch.log(pic)
                         else:
@@ -167,11 +169,12 @@ class STVAE_mix_by_class(STVAE_mix):
                 s_var = s_var.reshape(-1, self.n_class, self.n_mix_perclass*self.s_dim).transpose(0,1)
 
             if self.only_pi:
-                self.update_s(mu[c], logvar[c], ppi[c], self.mu_lr[0])
+                #self.update_s(mu[c], logvar[c], ppi[c], self.mu_lr[0])
                 inp_d = inp.detach()
-                for it in range(num_mu_iter):
-                    self.compute_loss_and_grad_mu(inp_d, s_mu[c], s_var[c], None, 'test', self.optimizer_s,
-                                              opt='mu', rng=rng)
+                self.pi=self.get_pi_from_max(s_mu[c], inp_d, None, rng=rng)
+                #for it in range(num_mu_iter):
+                #    self.compute_loss_and_grad_mu(inp_d, s_mu[c], s_var[c], None, 'test', self.optimizer_s,
+                #                              opt='mu', rng=rng)
                 pi = torch.softmax(self.pi, dim=1)
             else:
                 pi = pi.reshape(-1, self.n_class, self.n_mix_perclass).transpose(0, 1)
