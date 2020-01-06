@@ -73,6 +73,11 @@ def setups(ARGS, EX_FILES , STRINGS, locs):
         PARS['one_class'] = ARGS[0].cl
 
     train, val, test, image_dim = get_data(PARS)
+    if (args.num_test>0):
+        ntest=test[0].shape[0]
+        ii=np.arange(0, ntest, 1)
+        np.random.shuffle(ii)
+        test=[test[0][ii[0:args.num_test]], test[1][ii[0:args.num_test]]]
     print('num_train', train[0].shape[0])
 
     h = train[0].shape[1]

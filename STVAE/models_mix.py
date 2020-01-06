@@ -217,6 +217,8 @@ class STVAE_mix(models.STVAE):
 
     def get_loss(self,data,targ,mu,logvar,pi,rng=None):
 
+        #m = torch.rand(data.shape[0])<torch.tensor([1./self.n_class])
+
         if (targ is not None):
             pi=pi.reshape(-1,self.n_class,self.n_mix_perclass)
             pis=torch.sum(pi,2)
@@ -243,8 +245,12 @@ class STVAE_mix(models.STVAE):
             if (type(targ) == torch.Tensor):
                 for c in range(self.n_class):
                     ind = (targ == c)
+                    #not_ind=~ind & m
                     tot += self.dens_apply(mu[ind,c,:],logvar[ind,c,:],lpi[ind,c,:],pi[ind,c,:])[0]
                     recloss+=self.mixed_loss(x[ind,c,:,:].transpose(0,1),data[ind],pi[ind,c,:])
+                    #tot -= self.dens_apply(mu[not_ind,c,:],logvar[not_ind,c,:],lpi[not_ind,c,:],pi[not_ind,c,:])[0]
+                    #recloss -=self.mixed_loss(x[not_ind,c,:,:].transpose(0,1),data[not_ind],pi[not_ind,c,:])
+
             else:
                  tot += self.dens_apply(mu[:, targ, :], logvar[:, targ, :], lpi[:,targ,:], pi[:,targ,:])[0]
                  recloss += self.mixed_loss(x[:, targ, :, :].transpose(0, 1), data, pi[:, targ, :])
@@ -313,7 +319,7 @@ class STVAE_mix(models.STVAE):
             pi=pi.reshape(-1,self.n_class,self.n_mix_perclass)
             en=self.n_mix_perclass
 
-        EE = (torch.eye(en) * 10. + torch.ones(en)).to(self.dv)
+        EE = (torch.eye(en) * 5. + torch.ones(en)).to(self.dv)
         s_mu = s_mu.reshape(-1, n_mix, self.s_dim).transpose(0, 1)
         s_var = s_var.reshape(-1, n_mix, self.s_dim).transpose(0, 1)
 
