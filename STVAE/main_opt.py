@@ -188,9 +188,10 @@ classify=args.classify
 reinit=args.reinit
 run_existing=args.run_existing
 conf=args.conf
-
+num_test=args.num_test
 ARGS, STRINGS, EX_FILES, SMS = get_models(args)
 ARGS[0].nti=args.nti
+ARGS[0].num_test=num_test
 fout, device, DATA, image_dim, models = setups(ARGS, EX_FILES, STRINGS, locals())
 
 if reinit:
