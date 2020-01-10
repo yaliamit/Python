@@ -291,7 +291,8 @@ else:
     #if ('vae' in args.type):
     train_model(models[0], ARGS[0], EX_FILES[0], DATA, fout)
     if ('vae' in args.type and args.network):
-            dat=prepare_recons(models[0],DATA,args)
+            dat,HVARS=prepare_recons(models[0],DATA,args)
+            train_new(models[0], args, HVARS[0], HVARS[2], device)
             args.type = 'net'
             train_model(net_models[0],args,EX_FILES[0],dat,fout)
 
