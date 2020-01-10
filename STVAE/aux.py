@@ -11,7 +11,7 @@ def process_args(parser):
     parser.add_argument('--Feats', type=int, default=(1, 32, 32),nargs="*",
                         help='number of filters')  # Number of features at each layer
     parser.add_argument('--pools', type=int, default=(2, 2), nargs="*",help='pooling')  # Pooling for each layer
-    parser.add_argument('--drops', type=float, default=(1., 1., .2), nargs="*")  # Dropout for each layer
+    parser.add_argument('--drops', type=float, default=(0., 0., 0.), nargs="*")  # Dropout for each layer
     parser.add_argument('--full_dim', type=int, default=256, help='fully connected layer size')
     parser.add_argument('--transformation', default='aff', help='type of transformation: aff or tps')
     parser.add_argument('--feats', type=int, default=0, help='Number of features in case data preprocessed')

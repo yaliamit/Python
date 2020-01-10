@@ -52,13 +52,10 @@ class network(nn.Module):
                 if (self.first):
                     self.pool_layers+=[None]
             out = F.relu(out)
-            if (self.drops[dr_i]<1.):
-                if (self.first):
+            if (self.first):
                     self.drop_layers+=[torch.nn.Dropout(p=self.drops[dr_i], inplace=False)]
-                out=self.drop_layers[dr_i](out)
-            else:
-                if (self.first):
-                    self.drop_layers+=[torch.nn.Identity()]
+            out=self.drop_layers[dr_i](out)
+
             dr_i+=1
             # Relu non-linearity at each level.
 
@@ -71,12 +68,10 @@ class network(nn.Module):
         out = out.reshape(out.shape[0],-1)
         out=self.pre_l_out(out)
         out=F.relu(out)
-        if (self.drops[dr_i] < 1.):
-            if self.first:
+        if self.first:
                 self.drop_layers += [torch.nn.Dropout(p=self.drops[dr_i], inplace=False)]
-            out = self.drop_layers[dr_i](out)
-        if (self.first):
-            self.drop_layers += [torch.nn.Identity()]
+        out = self.drop_layers[dr_i](out)
+
         dr_i += 1
         if self.first:
             self.l_out=nn.Linear(out_dim,self.n_class).to(self.dv)
