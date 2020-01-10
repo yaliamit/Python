@@ -1,6 +1,8 @@
 import torch
 import sys
 from torch import nn, optim
+import torch.nn.functional as F
+
 import numpy as np
 import time
 
@@ -14,7 +16,14 @@ class NET(nn.Module):
         self.bsz=args.mb_size
         self.dv=device
         self.lamda=args.lamda
-        self.final = nn.Linear(hdim, ncl)
+        ihdim=hdim
+        if (args.hid_hid>0):
+            self.intermediate=nn.Linear(hdim,args.hid_hid)
+            ihdim=args.hid_hid
+        else:
+            self.intermediate=nn.Identity()
+        self.dropp = nn.Dropout(p=args.hid_prob)
+        self.final = nn.Linear(ihdim, ncl)
         self.optimizer = optim.Adam(self.parameters(),args.lr)
         self.loss = nn.CrossEntropyLoss(reduction='sum')
 
@@ -32,7 +41,8 @@ class NET(nn.Module):
 
     def forward(self,input):
 
-        logits=self.final(input)
+        out=self.dropp(F.relu(self.intermediate(input)))
+        logits=self.final(out)
 
         return logits
 

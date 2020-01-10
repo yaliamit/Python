@@ -260,7 +260,7 @@ if reinit:
     strings, ex_file = process_strings(args)
     EX_FILES=[ex_file]
 
-fout.write(str(ARGS[0]) + '\n')
+fout.write(str(args) + '\n')
 fout.flush()
 # if (args.classify):
 #     t1 = time.time()
