@@ -285,6 +285,7 @@ else:
     train_model(models[0], ARGS[0], EX_FILES[0], DATA, fout)
     if ('vae' in args.type and args.network):
             dat=prepare_recons(models[0],DATA,args)
+            args.type = 'net'
             train_model(net_models[0],args,EX_FILES[0],dat,fout)
 
 # trainMU=None;trainLOGVAR=None;trainPI=None
