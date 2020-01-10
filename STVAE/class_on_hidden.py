@@ -76,7 +76,7 @@ class NET(nn.Module):
         fout.write('====> Epoch {}: {} loss: {:.4f}, accuracy:{:.4f} \n'.format(type,
         epoch, tr_like+self.lamda*tr_l2,tr_acc))
 
-def prepare_new(model,args,train,fout,type='trest'):
+def prepare_new(model,args,train,fout,d_type='trest'):
 
 
     trainMU, trainLOGVAR, trPI = model.initialize_mus(train[0], args.OPT)
@@ -84,7 +84,7 @@ def prepare_new(model,args,train,fout,type='trest'):
     print(train[0].shape,args.nti)
 
     trainMU, trainLOGVAR, trPI = model.run_epoch(train, 0, args.nti, trainMU, trainLOGVAR, trPI,
-                                                  type=type,fout=fout)
+                                                  d_type=d_type,fout=fout)
     fout.write('Finished computing features\n')
     fout.flush()
     trmu=trainMU.detach().cpu().numpy()
@@ -99,7 +99,7 @@ def prepare_new(model,args,train,fout,type='trest'):
 def train_new(model,args,train,test,device):
 
     fout=sys.stdout
-    trX, trY=prepare_new(model,args,train,fout,type='trest')
+    trX, trY=prepare_new(model,args,train,fout,d_type='trest')
     print('In train new:')
     print(str(args))
     val = None
@@ -117,7 +117,7 @@ def train_new(model,args,train,test,device):
         fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
         fout.flush()
 
-    teX,teY=prepare_new(model,args,test,fout,type='test')
+    teX,teY=prepare_new(model,args,test,fout,d_type='test')
     net.run_epoch(teX, teY, 0, type='test', fout=fout)
     fout.flush()
 

@@ -274,6 +274,7 @@ if (run_existing and not reinit):
         model.load_state_dict(SMS[0]['model.state.dict'])
         if ('vae' in args.type):
             dat = prepare_recons(model, DATA, args)
+            train_new(model, args, DATA[0],DATA[2], device)
         else:
             dat=DATA
         args.type='net'
