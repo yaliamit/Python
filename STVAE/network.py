@@ -38,7 +38,7 @@ class network(nn.Module):
         out=input
         if (self.first):
             self.pool_layers=[]
-
+        dr_i=0
         for i, cc in enumerate(self.convs):
             if (self.first):
                 print(out.shape)
@@ -51,10 +51,12 @@ class network(nn.Module):
             else:
                 if (self.first):
                     self.pool_layers+=[None]
-            if (self.drops[i]<1.):
-                out=nn.functional.dropout(out,self.drops[i])
+            out = F.relu(out)
+            if (self.drops[dr_i]<1.):
+                out=nn.functional.dropout(out,self.drops[dr_i])
+            dr_i+=1
             # Relu non-linearity at each level.
-            out=F.relu(out)
+
 
         if self.first:
             in_dim=out.shape[1]*out.shape[2]*out.shape[3]
@@ -64,7 +66,9 @@ class network(nn.Module):
         out = out.reshape(out.shape[0],-1)
         out=self.pre_l_out(out)
         out=F.relu(out)
-
+        if (self.drops[dr_i] < 1.):
+            out = nn.functional.dropout(out, self.drops[dr_i])
+        dr_i += 1
         if self.first:
             self.l_out=nn.Linear(out_dim,self.n_class).to(self.dv)
             self.first=False
