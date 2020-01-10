@@ -36,25 +36,27 @@ class NET(nn.Module):
 
         return logits
 
-    def compute_loss_and_grad(self,data,target,type):
+    def compute_loss_and_grad(self,data,target,d_type):
 
-        if (type == 'train'):
+        if (d_type == 'train'):
             self.optimizer.zero_grad()
         logits = self(data)
         l2l=self.l2_loss()
         like = self.loss(logits, target)
         cost=like+self.lamda*l2l
         acc=torch.sum(torch.eq(torch.argmax(logits,dim=1),target))
-        if (type == 'train'):
+        if (d_type == 'train'):
             cost.backward()
             self.optimizer.step()
 
         return like, acc, l2l
 
-    def run_epoch(self, trainX, trainY,epoch, type='test',fout=None):
+    def run_epoch(self, trainX, trainY,epoch, d_type='test',fout=None):
 
-        if (type=='train'):
+        if (d_type=='train'):
             self.train()
+        else:
+            self.eval()
         tr_like = 0; tr_acc=0; tr_l2=0
         ii = np.arange(0, trainX.shape[0], 1)
         # if (type=='train'):
@@ -63,7 +65,7 @@ class NET(nn.Module):
         y = trainY[ii]
 
         for j in np.arange(0, len(y), self.bsz):
-            data = (tr[j:j + self.bsz]).float().to(self.dv)
+            data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(y[j:j + self.bsz]).long().to(self.dv)
             like, acc, l2l=self.compute_loss_and_grad(data,target,type)
             tr_like += like
@@ -99,7 +101,9 @@ def prepare_new(model,args,train,fout,d_type='trest'):
 def train_new(model,args,train,test,device):
 
     fout=sys.stdout
-    trX, trY=prepare_new(model,args,train,fout,d_type='trest')
+    #trX, trY=prepare_new(model,args,train,fout,d_type='trest')
+    trX=train[0]
+    trY=np.argmax(train[1], axis=1)
     print('In train new:')
     print(str(args))
     val = None
@@ -110,15 +114,17 @@ def train_new(model,args,train,test,device):
         if (scheduler is not None):
             scheduler.step()
         t1=time.time()
-        net.run_epoch(trX,trY,epoch, type='train',fout=fout)
+        net.run_epoch(trX,trY,epoch, d_type='train',fout=fout)
         if (val is not None):
                 net.run_epoch(val,epoch, type='val',fout=fout)
 
         fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
         fout.flush()
 
-    teX,teY=prepare_new(model,args,test,fout,d_type='test')
-    net.run_epoch(teX, teY, 0, type='test', fout=fout)
+    #teX,teY=prepare_new(model,args,test,fout,d_type='test')
+    teX=test[0]
+    teY=np.argmax(test[1],axis=1)
+    net.run_epoch(teX, teY, 0, d_type='test', fout=fout)
     fout.flush()
 
 

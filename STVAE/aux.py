@@ -141,9 +141,9 @@ def show_reconstructed_images(test,model,ex_file,num_iter=None, cl=None):
 
     inp = torch.from_numpy(test[0][0:100].transpose(0, 3, 1, 2))
     if (cl is not None):
-        X=model.recon(inp,num_iter,cl)
+        X,_=model.recon(inp,num_iter,cl)
     else:
-        X = model.recon(inp, num_iter)
+        X,_ = model.recon(inp, num_iter)
     X = X.cpu().detach().numpy().reshape(inp.shape)
     XX=np.concatenate([inp[0:50],X[0:50]])
     if (cl is not None):

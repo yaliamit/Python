@@ -197,23 +197,29 @@ def process_strings(args):
 
 def prepare_recons(model, DATA, args):
     dat = []
+    HV=[]
     for k in range(3):
         if (DATA[k][0] is not None):
             INP = torch.from_numpy(DATA[k][0].transpose(0, 3, 1, 2))
             INP = INP[0:args.network_num_train]
             RR = []
+            HVARS=[]
             for j in np.arange(0, INP.shape[0], 500):
                 inp = INP[j:j + 500]
-                rr = model.recon(inp, 0)
+                rr, h_vars = model.recon(inp, 0)
                 RR += [rr.detach().cpu().numpy()]
+                HVARS += [h_vars.detach().cpu().numpy()]
             RR = np.concatenate(RR)
+            HVARS = np.concatenate(HVARS)
             tr = RR.reshape(-1, 1, 28, 28).transpose(0, 2, 3, 1)
             dat += [[tr, DATA[k][1][0:args.network_num_train]]]
+            HV+=[[HVARS,DATA[k][1][0:args.network_num_train]]]
         else:
             dat += [DATA[k]]
+            HV += [DATA[k]]
     print("Hello")
 
-    return dat
+    return dat, HV
 
 ########################################
 # Main Starts
@@ -273,8 +279,8 @@ if (run_existing and not reinit):
         model = models[0]
         model.load_state_dict(SMS[0]['model.state.dict'])
         if ('vae' in args.type):
-            dat = prepare_recons(model, DATA, args)
-            train_new(model, args, DATA[0],DATA[2], device)
+            dat, HVARS = prepare_recons(model, DATA, args)
+            train_new(model, args, HVARS[0], HVARS[2], device)
         else:
             dat=DATA
         args.type='net'
