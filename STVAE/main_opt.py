@@ -212,6 +212,8 @@ if 'vae' in args.type:
     models=get_models(DATA[0][0].shape,STRINGS,ARGS,locals())
 if args.network:
     net_models=get_network(DATA[0][0].shape,ARGS)
+    if 'vae' not in args.type:
+        models=net_models
 sample=args.sample
 classify=args.classify
 reinit=args.reinit
@@ -249,27 +251,28 @@ if (run_existing and not reinit):
     else:
         test_models(ARGS,SMS,DATA[2],fout)
 else:
-    if ('vae' in args.type):
-        train_model(models[0], ARGS[0], EX_FILES[0], DATA, fout)
-    if (args.network):
-        dat=[]
-        for k in range(3):
-            if (DATA[k][0] is not None):
-                INP = torch.from_numpy(DATA[k][0].transpose(0, 3, 1, 2))
-                INP = INP[0:args.network_num_train]
-                RR=[]
-                for j in np.arange(0, INP.shape[0], 500):
-                    inp=INP[j:j+500]
-                    rr=models[0].recon(inp,0)
-                    RR+=[rr.detach().cpu().numpy()]
-                RR=np.concatenate(RR)
-                tr=RR.reshape(-1,1,28,28).transpose(0,2,3,1)
-                dat+=[[tr,DATA[k][1][0:args.network_num_train]]]
-            else:
-                dat+=[DATA[k]]
-        print("Hello")
-        args.type='net'
-        train_model(net_models[0],ARGS[0],EX_FILES[0],dat,fout)
+    #if ('vae' in args.type):
+    train_model(models[0], ARGS[0], EX_FILES[0], DATA, fout)
+    if ('vae' in args.type and args.network):
+            dat=[]
+            for k in range(3):
+                if (DATA[k][0] is not None):
+                    INP = torch.from_numpy(DATA[k][0].transpose(0, 3, 1, 2))
+                    INP = INP[0:args.network_num_train]
+                    RR=[]
+                    for j in np.arange(0, INP.shape[0], 500):
+                        inp=INP[j:j+500]
+                        rr=models[0].recon(inp,0)
+                        RR+=[rr.detach().cpu().numpy()]
+                    RR=np.concatenate(RR)
+                    tr=RR.reshape(-1,1,28,28).transpose(0,2,3,1)
+                    dat+=[[tr,DATA[k][1][0:args.network_num_train]]]
+                else:
+                    dat+=[DATA[k]]
+            print("Hello")
+            args.type='net'
+
+            train_model(net_models[0],ARGS[0],EX_FILES[0],dat,fout)
 
 # trainMU=None;trainLOGVAR=None;trainPI=None
 # if args.classify:
