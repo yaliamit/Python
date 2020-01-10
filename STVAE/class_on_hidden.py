@@ -67,7 +67,7 @@ class NET(nn.Module):
         for j in np.arange(0, len(y), self.bsz):
             data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             target = torch.from_numpy(y[j:j + self.bsz]).long().to(self.dv)
-            like, acc, l2l=self.compute_loss_and_grad(data,target,type)
+            like, acc, l2l=self.compute_loss_and_grad(data,target,d_type)
             tr_like += like
             tr_acc+= acc
             tr_l2 = l2l
@@ -107,7 +107,7 @@ def train_new(model,args,train,test,device):
     print('In train new:')
     print(str(args))
     val = None
-    ncl=np.max(trY)+1
+    ncl=np.int32(np.max(trY)+1)
     net=NET(trX.shape[1],ncl,args,device).to(device)
     scheduler=None
     for epoch in range(args.nepoch):
