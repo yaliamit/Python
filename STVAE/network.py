@@ -25,8 +25,7 @@ class network(nn.Module):
         self.convs = nn.ModuleList([torch.nn.Conv2d(args.Feats[i], args.Feats[i+1],
                                                     args.Filts[i],stride=1,padding=np.int32(np.floor(args.Filts[i]/2)))
                                     for i in range(ff)])
-
-
+        self.drop_layers=nn.ModuleList()
         # The loss function
         self.criterion=nn.CrossEntropyLoss()
         self.criterion_shift=nn.CrossEntropyLoss(reduce=False)
@@ -38,6 +37,7 @@ class network(nn.Module):
         out=input
         if (self.first):
             self.pool_layers=[]
+            #self.drop_layers=[]
         dr_i=0
         for i, cc in enumerate(self.convs):
             if (self.first):
@@ -53,7 +53,12 @@ class network(nn.Module):
                     self.pool_layers+=[None]
             out = F.relu(out)
             if (self.drops[dr_i]<1.):
-                out=nn.functional.dropout(out,self.drops[dr_i])
+                if (self.first):
+                    self.drop_layers+=[torch.nn.Dropout(p=self.drops[dr_i], inplace=False)]
+                out=self.drop_layers[dr_i](out)
+            else:
+                if (self.first):
+                    self.drop_layers+=[torch.nn.Identity()]
             dr_i+=1
             # Relu non-linearity at each level.
 
@@ -67,7 +72,11 @@ class network(nn.Module):
         out=self.pre_l_out(out)
         out=F.relu(out)
         if (self.drops[dr_i] < 1.):
-            out = nn.functional.dropout(out, self.drops[dr_i])
+            if self.first:
+                self.drop_layers += [torch.nn.Dropout(p=self.drops[dr_i], inplace=False)]
+            out = self.drop_layers[dr_i](out)
+        if (self.first):
+            self.drop_layers += [torch.nn.Identity()]
         dr_i += 1
         if self.first:
             self.l_out=nn.Linear(out_dim,self.n_class).to(self.dv)

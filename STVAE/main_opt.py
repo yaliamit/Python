@@ -44,7 +44,7 @@ def get_names(args):
 def get_network(sh,ARGS):
 
     models=[]
-    model=network.network(device,sh[1],sh[2],ARGS[0]).to(device)
+    model=network.network(device,sh[1],sh[2],ARGS).to(device)
     models+=[model]
 
     return models
@@ -238,7 +238,7 @@ fout, device, DATA= setups(args, EX_FILES)
 if 'vae' in args.type:
     models=get_models(DATA[0][0].shape,STRINGS,ARGS,locals())
 if args.network:
-    net_models=get_network(DATA[0][0].shape,ARGS)
+    net_models=get_network(DATA[0][0].shape,args)
     if 'vae' not in args.type:
         models=net_models
 sample=args.sample
