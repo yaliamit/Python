@@ -46,7 +46,7 @@ class network(nn.Module):
             if (self.pools[i]>1):
                 if (self.first):
                     pp = torch.fmod(torch.tensor(out.shape), self.pools[i])
-                    self.pool_layers+=[nn.MaxPool2d(self.pools[i],padding=tuple(pp[2:4]))]
+                    self.pool_layers+=[nn.MaxPool2d(self.pools[i],padding=tuple(pp[2:4])).to(self.dv)]
                 out=self.pool_layers[i](out)
             else:
                 if (self.first):
@@ -59,14 +59,14 @@ class network(nn.Module):
         if self.first:
             in_dim=out.shape[1]*out.shape[2]*out.shape[3]
             out_dim=self.full_dim
-            self.pre_l_out=nn.Linear(in_dim,out_dim)
+            self.pre_l_out=nn.Linear(in_dim,out_dim).to(self.dv)
 
         out = out.reshape(out.shape[0],-1)
         out=self.pre_l_out(out)
         out=F.relu(out)
 
         if self.first:
-            self.l_out=nn.Linear(out_dim,self.n_class)
+            self.l_out=nn.Linear(out_dim,self.n_class).to(self.dv)
             self.first=False
             if (self.optimizer_type == 'Adam'):
                 self.optimizer = optim.Adam(self.parameters(), lr=self.lr)
