@@ -160,9 +160,10 @@ def train_model(model, args, ex_file, DATA, fout):
 
     fout.write('writing to ' + ex_file + '\n')
 
-    torch.save({'args': args,
-                'model.state.dict': model.state_dict()}, '_output/' + ex_file + '.pt')
+
     if 'vae' in args.type:
+        torch.save({'args': args,
+                    'model.state.dict': model.state_dict()}, '_output/' + ex_file + '.pt')
         aux.make_images(train, model, ex_file, args)
         if (args.n_class):
             model.run_epoch_classify(train, 'train', fout=fout, num_mu_iter=args.nti)
@@ -194,7 +195,7 @@ def process_strings(args):
     return strings, ex_file
 
 
-def prepare_recons(models, DATA, args):
+def prepare_recons(model, DATA, args):
     dat = []
     for k in range(3):
         if (DATA[k][0] is not None):
@@ -203,7 +204,7 @@ def prepare_recons(models, DATA, args):
             RR = []
             for j in np.arange(0, INP.shape[0], 500):
                 inp = INP[j:j + 500]
-                rr = models[0].recon(inp, 0)
+                rr = model.recon(inp, 0)
                 RR += [rr.detach().cpu().numpy()]
             RR = np.concatenate(RR)
             tr = RR.reshape(-1, 1, 28, 28).transpose(0, 2, 3, 1)
@@ -269,8 +270,10 @@ if (run_existing and not reinit):
         model.load_state_dict(SMS[0]['model.state.dict'])
         aux.make_images(DATA[2],model,EX_FILES[0],ARGS[0])
     elif network:
+        model = models[0]
+        model.load_state_dict(SMS[0]['model.state.dict'])
         if ('vae' in args.type):
-            dat = prepare_recons(models, DATA, args)
+            dat = prepare_recons(model, DATA, args)
         else:
             dat=DATA
         args.type='net'
@@ -281,7 +284,7 @@ else:
     #if ('vae' in args.type):
     train_model(models[0], ARGS[0], EX_FILES[0], DATA, fout)
     if ('vae' in args.type and args.network):
-            dat=prepare_recons(models,DATA,args)
+            dat=prepare_recons(models[0],DATA,args)
             train_model(net_models[0],args,EX_FILES[0],dat,fout)
 
 # trainMU=None;trainLOGVAR=None;trainPI=None
