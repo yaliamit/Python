@@ -435,6 +435,7 @@ class STVAE_mix(models.STVAE):
             pi = torch.softmax(self.pi, dim=1)
 
         ss_mu = s_mu.reshape(-1, self.n_mix, self.s_dim).transpose(0,1)
+        ss_mu = ss_mu+torch.randn(num_inp, self.n_mix, self.s_dim).to(self.dv)
         ii = torch.argmax(pi, dim=1)
         jj = torch.arange(0,num_inp,dtype=torch.int64).to(self.dv)
         kk = ii+jj*self.n_mix
