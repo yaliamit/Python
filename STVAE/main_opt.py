@@ -44,7 +44,7 @@ def get_names(args):
 def get_network(sh,ARGS):
 
     models=[]
-    model=network.network(device,sh[1],sh[2],ARGS[0])
+    model=network.network(device,sh[1],sh[2],ARGS[0]).to(device)
     models+=[model]
 
     return models
