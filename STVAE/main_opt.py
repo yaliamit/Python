@@ -12,10 +12,11 @@ from Conv_data import get_data
 from models import  get_scheduler
 import aux
 from class_on_hidden import train_new
+import network
 from classify import classify
 
 
-def get_models(args):
+def get_names(args):
     ARGS = []
     STRINGS = []
     EX_FILES = []
@@ -40,6 +41,27 @@ def get_models(args):
 
     return ARGS, STRINGS, EX_FILES, SMS
 
+def get_network(sh,ARGS):
+
+    models=[]
+    model=network.network(device,sh[1],sh[2],ARGS[0])
+    models+=[model]
+
+    return models
+
+def get_models(sh,STRINGS,ARGS, locs):
+
+    h = sh[1]
+    w = sh[2]
+
+    models = []
+    for strings, args in zip(STRINGS, ARGS):
+        model=make_model(strings,args,locs, h, w, device, fout)
+        models += [model]
+
+    return models
+
+
 def  make_model(strings,args,locs, h, w, device, fout):
         model = locs['STVAE' + strings['opt_mix'] + strings['opt_class']](h, w, device, args).to(device)
         tot_pars = 0
@@ -49,28 +71,28 @@ def  make_model(strings,args,locs, h, w, device, fout):
         fout.write('tot_pars,' + str(tot_pars) + '\n')
         return model
 
-def setups(ARGS, EX_FILES , STRINGS, locs):
-    torch.manual_seed(ARGS[0].seed)
-    np.random.seed(ARGS[0].seed)
-    use_gpu = ARGS[0].gpu and torch.cuda.is_available()
-    if (use_gpu and not ARGS[0].CONS):
+def setups(args, EX_FILES):
+    torch.manual_seed(args.seed)
+    np.random.seed(args.seed)
+    use_gpu = args.gpu and torch.cuda.is_available()
+    if (use_gpu and not args.CONS):
         fout = open('_OUTPUTS/OUT_' + EX_FILES[0] + '.txt', 'w')
     else:
-        ARGS[0].CONS = True
+        args.CONS = True
         fout = sys.stdout
 
 
-    device = torch.device("cuda:" + str(ARGS[0].gpu - 1) if use_gpu else "cpu")
+    device = torch.device("cuda:" + str(args.gpu - 1) if use_gpu else "cpu")
     fout.write('Device,' + str(device) + '\n')
     fout.write('USE_GPU,' + str(use_gpu) + '\n')
 
-    args = ARGS[0]
+    args = args
     PARS = {}
-    PARS['data_set'] = ARGS[0].dataset
-    PARS['num_train'] = ARGS[0].num_train // ARGS[0].mb_size * ARGS[0].mb_size
-    PARS['nval'] = ARGS[0].nval
+    PARS['data_set'] = args.dataset
+    PARS['num_train'] = args.num_train // args.mb_size * args.mb_size
+    PARS['nval'] = args.nval
     if args.cl is not None:
-        PARS['one_class'] = ARGS[0].cl
+        PARS['one_class'] = args.cl
 
     train, val, test, image_dim = get_data(PARS)
     if (args.num_test>0):
@@ -80,15 +102,8 @@ def setups(ARGS, EX_FILES , STRINGS, locs):
         test=[test[0][ii[0:args.num_test]], test[1][ii[0:args.num_test]]]
     print('num_train', train[0].shape[0])
 
-    h = train[0].shape[1]
-    w = train[0].shape[2]
 
-    models = []
-    for strings, args in zip(STRINGS, ARGS):
-        model=make_model(strings,args,locs, h, w, device, fout)
-        models += [model]
-
-    return fout, device, [train, val, test], image_dim, models
+    return fout, device, [train, val, test]
 
 def test_models(ARGS, SMS, test, fout):
     iid = None;
@@ -121,10 +136,13 @@ def test_models(ARGS, SMS, test, fout):
 
 def train_model(model, args, ex_file, DATA, fout):
 
+    fout.write("Num train:{0}\n".format(DATA[0][0].shape[0]))
     train=DATA[0]; val=DATA[1]; test=DATA[2]
-    trainMU, trainLOGVAR, trPI = model.initialize_mus(train[0], args.OPT)
-    valMU, valLOGVAR, valPI = model.initialize_mus(val[0], args.OPT)
-    testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
+    trainMU=None; trainLOGVAR=None; trPI=None
+    if 'vae' in args.type:
+        trainMU, trainLOGVAR, trPI = model.initialize_mus(train[0], args.OPT)
+        valMU, valLOGVAR, valPI = model.initialize_mus(val[0], args.OPT)
+        testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
 
     scheduler = get_scheduler(args, model)
 
@@ -144,12 +162,15 @@ def train_model(model, args, ex_file, DATA, fout):
 
     torch.save({'args': args,
                 'model.state.dict': model.state_dict()}, '_output/' + ex_file + '.pt')
-    aux.make_images(train, model, ex_file, args)
-    if (args.n_class):
-        model.run_epoch_classify(train, 'train', fout=fout, num_mu_iter=args.nti)
-        model.run_epoch_classify(test, 'test', fout=fout, num_mu_iter=args.nti)
-    elif args.cl is None:
-        model.run_epoch(test, 0, args.nti, testMU, testLOGVAR, testPI, d_type='test', fout=fout)
+    if 'vae' in args.type:
+        aux.make_images(train, model, ex_file, args)
+        if (args.n_class):
+            model.run_epoch_classify(train, 'train', fout=fout, num_mu_iter=args.nti)
+            model.run_epoch_classify(test, 'test', fout=fout, num_mu_iter=args.nti)
+        elif args.cl is None:
+            model.run_epoch(test, 0, args.nti, testMU, testLOGVAR, testPI, d_type='test', fout=fout)
+    else:
+        model.run_epoch(test, 0, args.nti, None, None, None, d_type='test', fout=fout)
 
 
 def process_strings(args):
@@ -182,17 +203,24 @@ parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
     description='Variational Autoencoder with Spatial Transformation')
 
 args=aux.process_args(parser)
+ARGS, STRINGS, EX_FILES, SMS = get_names(args)
 
+# Get data device and output file
+fout, device, DATA= setups(args, EX_FILES)
+
+if 'vae' in args.type:
+    models=get_models(DATA[0][0].shape,STRINGS,ARGS,locals())
+if args.network:
+    net_models=get_network(DATA[0][0].shape,ARGS)
 sample=args.sample
 classify=args.classify
 reinit=args.reinit
 run_existing=args.run_existing
 conf=args.conf
 num_test=args.num_test
-ARGS, STRINGS, EX_FILES, SMS = get_models(args)
+
 ARGS[0].nti=args.nti
 ARGS[0].num_test=num_test
-fout, device, DATA, image_dim, models = setups(ARGS, EX_FILES, STRINGS, locals())
 
 if reinit:
     models[0].load_state_dict(SMS[0]['model.state.dict'])
@@ -221,8 +249,27 @@ if (run_existing and not reinit):
     else:
         test_models(ARGS,SMS,DATA[2],fout)
 else:
-    train_model(models[0], ARGS[0], EX_FILES[0], DATA, fout)
-
+    if ('vae' in args.type):
+        train_model(models[0], ARGS[0], EX_FILES[0], DATA, fout)
+    if (args.network):
+        dat=[]
+        for k in range(3):
+            if (DATA[k][0] is not None):
+                INP = torch.from_numpy(DATA[k][0].transpose(0, 3, 1, 2))
+                INP = INP[0:args.network_num_train]
+                RR=[]
+                for j in np.arange(0, INP.shape[0], 500):
+                    inp=INP[j:j+500]
+                    rr=models[0].recon(inp,0)
+                    RR+=[rr.detach().numpy()]
+                RR=np.concatenate(RR)
+                tr=RR.reshape(-1,1,28,28).transpose(0,2,3,1)
+                dat+=[[tr,DATA[k][1][0:args.network_num_train]]]
+            else:
+                dat+=[DATA[k]]
+        print("Hello")
+        args.type='net'
+        train_model(net_models[0],ARGS[0],EX_FILES[0],dat,fout)
 
 # trainMU=None;trainLOGVAR=None;trainPI=None
 # if args.classify:

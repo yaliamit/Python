@@ -366,23 +366,23 @@ def generate_image_from_estimate(PARS,hy,orig_image,orig_data,optim=True):
 
     py.ion()
     mux,muy,sigmas,As=extract_mus(hy,ii,jj,coarse_disp,PARS)
-    show_circs(mux,muxt,muy,muyt,sigmas,sigmast,As,Ast,orig_image)
+    show_circs(mux,muxt,muy,muyt,sigmas,sigmast,As,Ast,orig_image, "Thresh="+str(PARS['thresh']))
     if (optim):
         mux,muy,sigmas,As=blob_optim.optimize_blobs_tf(mux, muy, sigmas, As, image_dim, orig_image,PARS)
-        show_circs(mux,muxt,muy,muyt,sigmas,sigmast,As,Ast,orig_image)
+        show_circs(mux,muxt,muy,muyt,sigmas,sigmast,As,Ast,orig_image, "After optim 1")
         mux, muy, ij = clean_b(mux, muy, coarse_disp)
         As=As[ij]; sigmas=sigmas[ij]
-        show_circs(mux,muxt,muy,muyt,sigmas,sigmast,As,Ast,orig_image)
+        show_circs(mux,muxt,muy,muyt,sigmas,sigmast,As,Ast,orig_image, "After clustering 1")
         mux,muy,sigmas,As=blob_optim.optimize_blobs_tf(mux, muy, sigmas, As, image_dim, orig_image,PARS)
-        show_circs(mux,muxt,muy,muyt,sigmas,sigmast,As,Ast,orig_image)
+        show_circs(mux,muxt,muy,muyt,sigmas,sigmast,As,Ast,orig_image, "After optim 2")
         mux, muy, ij = clean_b(mux, muy, coarse_disp)
         As = As[ij]; sigmas = sigmas[ij]
-        show_circs(mux, muxt, muy, muyt, sigmas, sigmast, As, Ast, orig_image)
+        show_circs(mux, muxt, muy, muyt, sigmas, sigmast, As, Ast, orig_image, "After Clustering 2")
         mux, muy, sigmas, As = blob_optim.optimize_blobs_tf(mux, muy, sigmas, As, image_dim, orig_image, PARS)
-        show_circs(mux, muxt, muy, muyt, sigmas, sigmast, As, Ast, orig_image)
+        show_circs(mux, muxt, muy, muyt, sigmas, sigmast, As, Ast, orig_image, "After optim 3")
         g=make_blobs(list(mux),list(muy),list(sigmas),list(As),image_dim, PARS['nchannels'])
         ii=np.logical_and(As>PARS['Amps'][0]/3, sigmas<PARS['sigma'][1]*1.1)
-        show_circs(mux[ii],muxt,muy[ii],muyt,sigmas[ii],sigmast,As[ii],Ast,orig_image)
+        show_circs(mux[ii],muxt,muy[ii],muyt,sigmas[ii],sigmast,As[ii],Ast,orig_image,"After filtering for amp and size")
 
 
     print("Hello")
@@ -390,20 +390,22 @@ def generate_image_from_estimate(PARS,hy,orig_image,orig_data,optim=True):
 
 
 
-def show_circs(mux,muxt,muy,muyt,sigmas,sigmast,As,Ast,orig_image):
-    np.set_printoptions(precision=3)
-    print(np.transpose(np.array([mux/128., muy/128., sigmas, As])))
+def show_circs(mux,muxt,muy,muyt,sigmas,sigmast,As,Ast,orig_image, text=None):
+    #np.set_printoptions(precision=3)
+    #print(np.transpose(np.array([mux/128., muy/128., sigmas, As])))
     # print('muy')
     # print(np.array([muy, muyt]))
     # print('sigmas')
     # print(np.array([sigmas, sigmast]))
     # print('As')
     # print(np.array([As, Ast]))
-    print(py.get_backend())
+    #print(py.get_backend())
     fig = py.figure(1)
     ax = fig.add_subplot(1, 1, 1)
 
     py.imshow(orig_image[0,:,:,0])
+    if (text is not None):
+        py.text(0,-3,text)
     py.axis('off')
     for mx,my,s in zip(mux,muy,sigmas):
         circle=py.Circle((mx,my),radius=s,color="r",fill=False)

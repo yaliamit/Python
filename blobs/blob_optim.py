@@ -63,10 +63,10 @@ def optimize_blobs_tf(mux,muy,sigmas, Amps, image_dim, orig_image,PARS):
         train_step = tf.train.AdamOptimizer(learning_rate=step_size).minimize(loss,var_list=tvars)
         sess.run(tf.global_variables_initializer())
         loss2, gloss2, dloss2, pis2, gg2, dgg2, ent2 = sess.run([loss, gloss, dloss, pis, g, dg, ent])
-        print(gloss2, dloss2,ent2,loss2)
+        #print(gloss2, dloss2,ent2,loss2)
         for i in range(num_epochs):
             loss2,gloss2,dloss2,pis2,gg2,dgg2, ent2,_=sess.run([loss, gloss, dloss, pis,g, dg, ent, train_step])
-            print(gloss2, dloss2, ent2, loss2)
+            #print(gloss2, dloss2, ent2, loss2)
 
         new_blobp=sess.run(tvars[0])
 

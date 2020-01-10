@@ -1,7 +1,7 @@
 --type=tvae
 --n_mix=20
 --sdim=18
---num_train=1000
+--num_train=5000
 --num_hlayers=1
 --nepoch=200
 --transformation=tps
@@ -10,4 +10,4 @@
 --nval=0
 --nti=500
 --CONS
---n_class=10
+--n_class=0

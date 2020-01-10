@@ -6,6 +6,13 @@ import os
 
 
 def process_args(parser):
+    parser.add_argument('--Filts', type=int, default=(3,3), nargs="*",
+                        help='size of filters')  # filter sizes for each layer of network
+    parser.add_argument('--Feats', type=int, default=(1, 32, 32),nargs="*",
+                        help='number of filters')  # Number of features at each layer
+    parser.add_argument('--pools', type=int, default=(2, 2), help='pooling')  # Pooling for each layer
+    parser.add_argument('--drops', type=float, default=(1., 1., 1., 1.))  # Dropout for each layer
+    parser.add_argument('--full_dim', type=int, default=256, help='fully connected layer size')
     parser.add_argument('--transformation', default='aff', help='type of transformation: aff or tps')
     parser.add_argument('--feats', type=int, default=0, help='Number of features in case data preprocessed')
     parser.add_argument('--feats_back', action='store_true',help='reconstruct image from features')
@@ -24,6 +31,7 @@ def process_args(parser):
     parser.add_argument('--gpu', type=int, default=2, help='whether to run in the GPU')
     parser.add_argument('--seed', type=int, default=1111, help='random seed (default: 1111)')
     parser.add_argument('--num_train', type=int, default=60000, help='num train (default: 60000)')
+    parser.add_argument('--network_num_train', type=int, default=60000, help='num train (default: 60000)')
     parser.add_argument('--num_test', type=int, default=0, help='num test (default: 10000)')
     parser.add_argument('--nval', type=int, default=1000, help='num train (default: 1000)')
     parser.add_argument('--mb_size', type=int, default=100, help='mb_size (default: 500)')
@@ -51,6 +59,7 @@ def process_args(parser):
     parser.add_argument('--part_dim', type=int, default=None, help='dimension of part')
     parser.add_argument('--MM', action='store_true', help='Use max max')
     parser.add_argument('--OPT', action='store_true', help='Optimization instead of encoding')
+    parser.add_argument('--network', action='store_true', help='classification network')
     parser.add_argument('--CONS', action='store_true', help='Output to consol')
     parser.add_argument('--sample', action='store_true', help='sample from distribution')
     parser.add_argument('--classify', action='store_true', help='Output to consol')
