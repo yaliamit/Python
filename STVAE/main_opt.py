@@ -194,6 +194,26 @@ def process_strings(args):
     return strings, ex_file
 
 
+def prepare_recons(models, DATA, args):
+    dat = []
+    for k in range(3):
+        if (DATA[k][0] is not None):
+            INP = torch.from_numpy(DATA[k][0].transpose(0, 3, 1, 2))
+            INP = INP[0:args.network_num_train]
+            RR = []
+            for j in np.arange(0, INP.shape[0], 500):
+                inp = INP[j:j + 500]
+                rr = models[0].recon(inp, 0)
+                RR += [rr.detach().cpu().numpy()]
+            RR = np.concatenate(RR)
+            tr = RR.reshape(-1, 1, 28, 28).transpose(0, 2, 3, 1)
+            dat += [[tr, DATA[k][1][0:args.network_num_train]]]
+        else:
+            dat += [DATA[k]]
+    print("Hello")
+
+    return dat
+
 ########################################
 # Main Starts
 #########################################
@@ -220,7 +240,7 @@ reinit=args.reinit
 run_existing=args.run_existing
 conf=args.conf
 num_test=args.num_test
-
+network=args.network
 ARGS[0].nti=args.nti
 ARGS[0].num_test=num_test
 
@@ -248,31 +268,21 @@ if (run_existing and not reinit):
         model=models[0]
         model.load_state_dict(SMS[0]['model.state.dict'])
         aux.make_images(DATA[2],model,EX_FILES[0],ARGS[0])
+    elif network:
+        if ('vae' in args.type):
+            dat = prepare_recons(models, DATA, args)
+        else:
+            dat=DATA
+        args.type='net'
+        train_model(net_models[0], args, EX_FILES[0], dat, fout)
     else:
         test_models(ARGS,SMS,DATA[2],fout)
 else:
     #if ('vae' in args.type):
     train_model(models[0], ARGS[0], EX_FILES[0], DATA, fout)
     if ('vae' in args.type and args.network):
-            dat=[]
-            for k in range(3):
-                if (DATA[k][0] is not None):
-                    INP = torch.from_numpy(DATA[k][0].transpose(0, 3, 1, 2))
-                    INP = INP[0:args.network_num_train]
-                    RR=[]
-                    for j in np.arange(0, INP.shape[0], 500):
-                        inp=INP[j:j+500]
-                        rr=models[0].recon(inp,0)
-                        RR+=[rr.detach().cpu().numpy()]
-                    RR=np.concatenate(RR)
-                    tr=RR.reshape(-1,1,28,28).transpose(0,2,3,1)
-                    dat+=[[tr,DATA[k][1][0:args.network_num_train]]]
-                else:
-                    dat+=[DATA[k]]
-            print("Hello")
-            args.type='net'
-
-            train_model(net_models[0],ARGS[0],EX_FILES[0],dat,fout)
+            dat=prepare_recons(models,DATA,args)
+            train_model(net_models[0],args,EX_FILES[0],dat,fout)
 
 # trainMU=None;trainLOGVAR=None;trainPI=None
 # if args.classify:
