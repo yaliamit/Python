@@ -261,7 +261,7 @@ else:
                 for j in np.arange(0, INP.shape[0], 500):
                     inp=INP[j:j+500]
                     rr=models[0].recon(inp,0)
-                    RR+=[rr.detach().numpy()]
+                    RR+=[rr.detach().cpu().numpy()]
                 RR=np.concatenate(RR)
                 tr=RR.reshape(-1,1,28,28).transpose(0,2,3,1)
                 dat+=[[tr,DATA[k][1][0:args.network_num_train]]]
