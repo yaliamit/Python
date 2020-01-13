@@ -142,6 +142,8 @@ def show_sampled_images(model,ex_file,clust=None):
 def show_reconstructed_images(test,model,ex_file,num_iter=None, cl=None):
 
     inp = torch.from_numpy(test[0][0:100].transpose(0, 3, 1, 2))
+    if True:
+        inp=add_clutter(inp)
     if (cl is not None):
         X,_=model.recon(inp,num_iter,cl)
     else:
@@ -161,13 +163,16 @@ def add_clutter(recon_data):
 
     block_size=3
     num_clutter=2
-    dimx=recon_data[0].shape[1]
-    dimy=recon_data[0].shape[2]
-    for im in recon_data[0]:
+    dim=np.zeros((1,2))
+    dim[0,0]=recon_data[0].shape[1]-block_size
+    dim[0,1]=recon_data[0].shape[2]-block_size
+    qq=np.random.rand(recon_data.shape[0],num_clutter,2)
+    rr=np.int32(qq*dim)
+    for  rrr,im in zip(rr,recon_data):
         for k in range(num_clutter):
-            x=np.int(np.random.rand()*(dimx-block_size))
-            y=np.int(np.random.rand()*(dimy-block_size))
-            im[x:x+block_size,y:y+block_size,0]=np.ones((block_size,block_size))
+            x=rrr[k,0]
+            y=rrr[k,1]
+            im[0,x:x+block_size,y:y+block_size]=np.ones((block_size,block_size))
 
     return recon_data
 
