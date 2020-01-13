@@ -143,7 +143,7 @@ def show_reconstructed_images(test,model,ex_file,num_iter=None, cl=None):
 
     inp = torch.from_numpy(test[0][0:100].transpose(0, 3, 1, 2))
     if True:
-        inp=add_clutter(inp)
+        inp=torch.tensor(add_clutter(inp.cpu().detach().numpy())).to(model.dv)
     if (cl is not None):
         X,_=model.recon(inp,num_iter,cl)
     else:

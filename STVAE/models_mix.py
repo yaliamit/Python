@@ -397,9 +397,9 @@ class STVAE_mix(models.STVAE):
             tr_recon_loss += recon_loss
             tr_full_loss += loss
 
-
-        fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(d_type,
-        epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
+        if (np.mod(epoch,10)==9 or epoch==0):
+            fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(d_type,
+            epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
 
         return mu, logvar, pi
 
