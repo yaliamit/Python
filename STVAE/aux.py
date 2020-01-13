@@ -141,9 +141,11 @@ def show_sampled_images(model,ex_file,clust=None):
 
 def show_reconstructed_images(test,model,ex_file,num_iter=None, cl=None):
 
-    inp = torch.from_numpy(test[0][0:100].transpose(0, 3, 1, 2))
     if True:
-        inp=torch.tensor(add_clutter(inp.cpu().detach().numpy())).to(model.dv)
+      inp=add_clutter(test[0][0:100].transpose(0, 3, 1, 2))
+    else:
+      inp=test[0][0:100].transpose(0, 3, 1, 2)
+
     if (cl is not None):
         X,_=model.recon(inp,num_iter,cl)
     else:
