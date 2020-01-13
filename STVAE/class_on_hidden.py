@@ -85,33 +85,14 @@ class NET(nn.Module):
         tr_l2=tr_l2*self.lamda/self.bsz
         tr_acc=np.float(tr_acc)/len(tr)
         tr_like/=len(tr)
-        fout.write('====> Epoch {}: {} loss: {:.4f}, accuracy:{:.4f} \n'.format(type,
+        fout.write('====> Epoch {}: {} loss: {:.4f}, accuracy:{:.4f} \n'.format(d_type,
         epoch, tr_like+self.lamda*tr_l2,tr_acc))
-
-def prepare_new(model,args,train,fout,d_type='trest'):
-
-
-    trainMU, trainLOGVAR, trPI = model.initialize_mus(train[0], args.OPT)
-    fout.write('Initialized\n')
-    print(train[0].shape,args.nti)
-
-    trainMU, trainLOGVAR, trPI = model.run_epoch(train, 0, args.nti, trainMU, trainLOGVAR, trPI,
-                                                  d_type=d_type,fout=fout)
-    fout.write('Finished computing features\n')
-    fout.flush()
-    trmu=trainMU.detach().cpu().numpy()
-    trlogvar=trainLOGVAR.detach().cpu().numpy()
-    trpi=trPI.detach().cpu().numpy()
-    trX=torch.cat([torch.tensor(trmu),torch.tensor(trlogvar),torch.tensor(trpi)],dim=1)
-    trY=np.argmax(train[1],axis=1)
-
-    return trX, trY
 
 
 def train_new(model,args,train,test,device):
 
     fout=sys.stdout
-    #trX, trY=prepare_new(model,args,train,fout,d_type='trest')
+
     trX=train[0]
     trY=np.argmax(train[1], axis=1)
     print('In train new:')
@@ -131,7 +112,6 @@ def train_new(model,args,train,test,device):
         fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
         fout.flush()
 
-    #teX,teY=prepare_new(model,args,test,fout,d_type='test')
     teX=test[0]
     teY=np.argmax(test[1],axis=1)
     net.run_epoch(teX, teY, 0, d_type='test', fout=fout)
