@@ -109,9 +109,9 @@ def train_new(model,args,train,test,device):
         net.run_epoch(trX,trY,epoch, d_type='train',fout=fout)
         if (val is not None):
                 net.run_epoch(val,epoch, type='val',fout=fout)
-
-        fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
-        fout.flush()
+        if (np.mod(epoch,10)==9):
+            fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
+            fout.flush()
 
     teX=test[0]
     teY=np.argmax(test[1],axis=1)

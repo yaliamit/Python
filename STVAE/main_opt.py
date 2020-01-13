@@ -154,7 +154,7 @@ def train_model(model, args, ex_file, DATA, fout):
                                                      d_type='train', fout=fout)
         if (val[0] is not None):
             model.run_epoch(val, epoch, args.nvi, valMU, valLOGVAR, valPI, d_type='val', fout=fout)
-
+        
         fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch, time.time() - t1))
         fout.flush()
 
