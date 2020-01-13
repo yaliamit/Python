@@ -85,8 +85,9 @@ class NET(nn.Module):
         tr_l2=tr_l2*self.lamda/self.bsz
         tr_acc=np.float(tr_acc)/len(tr)
         tr_like/=len(tr)
-        fout.write('====> Epoch {}: {} loss: {:.4f}, accuracy:{:.4f} \n'.format(d_type,
-        epoch, tr_like+self.lamda*tr_l2,tr_acc))
+        if (np.mod(epoch, 10) == 9):
+            fout.write('====> Epoch {}: {} loss: {:.4f}, accuracy:{:.4f} \n'.format(d_type,
+            epoch, tr_like+self.lamda*tr_l2,tr_acc))
 
 
 def train_new(model,args,train,test,device):
