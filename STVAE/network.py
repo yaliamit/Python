@@ -145,7 +145,7 @@ class network(nn.Module):
             full_loss += loss.item()
             full_acc += acc.item()
         if (np.mod(epoch,10)==9 or epoch==0):
-            fout.write('====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F} \n'.format(d_type,epoch,
+            fout.write('\n ====> Epoch {}: {} Full loss: {:.4F}, Full acc: {:.4F} \n'.format(d_type,epoch,
                     full_loss /(num_tr/jump), full_acc/(num_tr)))
 
         return trainMU, trainLOGVAR, trPI
