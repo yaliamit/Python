@@ -368,8 +368,8 @@ class STVAE_mix(models.STVAE):
         for j in np.arange(0, len(y), self.bsz):
 
             data_in = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
-            data = self.preprocess(data_in)
-            data_d = data.detach()
+            data_d = data_in #self.preprocess(data_in)
+            #data_d = data.detach()
             target=None
             if (self.n_class>0):
                 target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
