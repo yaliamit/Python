@@ -67,6 +67,8 @@ def process_args(parser):
     parser.add_argument('--sample', action='store_true', help='sample from distribution')
     parser.add_argument('--classify', action='store_true', help='Output to consol')
     parser.add_argument('--Diag', action='store_true', help='Output to consol')
+    parser.add_argument('--erode', action='store_true', help='Output to consol')
+
     parser.add_argument('--output_cont', action='store_true', help='cont data')
     parser.add_argument('--sep', action='store_true', help='Output to consol')
     parser.add_argument('--reinit', action='store_true', help='reinitialize part of trained model')
@@ -179,18 +181,21 @@ def add_clutter(recon_data):
 
     return recon_data
 
-def erode(data):
+def erode(do_er,data):
 
-    el=np.zeros((3,3))
-    el[0,1]=el[1,0]=el[1,2]=el[2,1]=el[1,1]=1
-    rr=np.random.rand(len(data))<.5
-    ndata=np.zeros_like(data)
-    for r,ndd,dd in zip(rr,ndata,data):
-        if (r):
-            dda=ndimage.binary_erosion(dd[0,:,:]>0,el).astype(dd.dtype)
-        else:
-            dda=ndimage.binary_dilation(dd[0,:,:]>.9,el).astype(dd.dtype)
-        ndd[0,:,:]=dda
+    if (do_er):
+        el=np.zeros((3,3))
+        el[0,1]=el[1,0]=el[1,2]=el[2,1]=el[1,1]=1
+        rr=np.random.rand(len(data))<.5
+        ndata=np.zeros_like(data)
+        for r,ndd,dd in zip(rr,ndata,data):
+            if (r):
+                dda=ndimage.binary_erosion(dd[0,:,:]>0,el).astype(dd.dtype)
+            else:
+                dda=ndimage.binary_dilation(dd[0,:,:]>.9,el).astype(dd.dtype)
+            ndd[0,:,:]=dda
+    else:
+        ndata=data
 
     return ndata
 
