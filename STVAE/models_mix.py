@@ -336,7 +336,7 @@ class STVAE_mix(models.STVAE):
         #   np.random.shuffle(ii)
         tr = train[0][ii].transpose(0, 3, 1, 2)
         y = np.argmax(train[1][ii], axis=1)
-        if True:
+        if False:
             etr=erode(tr)
         mu = MU[ii]
         logvar = LOGVAR[ii]
@@ -347,14 +347,14 @@ class STVAE_mix(models.STVAE):
 
             data_in = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
             data = self.preprocess(data_in)
-            #data_d = data.detach()
+            data_d = data.detach()
             target=None
             if (self.n_class>0):
                 target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
             if self.opt:
                 self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], pi[j:j + self.bsz], self.mu_lr[0])
                 for it in range(num_mu_iter):
-                    self.compute_loss_and_grad(data,data_in, target, d_type, self.optimizer_s, opt='mu')
+                    self.compute_loss_and_grad(data_d,data_in, target, d_type, self.optimizer_s, opt='mu')
             elif self.only_pi:
                 with torch.no_grad():
                     s_mu, s_var, _ = self.encoder_mix(data)
