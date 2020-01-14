@@ -39,10 +39,12 @@ class network(nn.Module):
             self.pool_layers=[]
             #self.drop_layers=[]
         dr_i=0
+        if (self.first):
+            print(out.shape)
         for i, cc in enumerate(self.convs):
-            if (self.first):
-                print(out.shape)
+
             out=cc(out)
+
             if (self.pools[i]>1):
                 if (self.first):
                     pp = torch.fmod(torch.tensor(out.shape), self.pools[i])
@@ -52,6 +54,8 @@ class network(nn.Module):
                 if (self.first):
                     self.pool_layers+=[None]
             out = F.relu(out)
+            if (self.first):
+                print(out.shape)
             if (self.first):
                     self.drop_layers+=[torch.nn.Dropout(p=self.drops[dr_i], inplace=False)]
             out=self.drop_layers[dr_i](out)
