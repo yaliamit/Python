@@ -45,6 +45,11 @@ def get_network(sh,ARGS):
 
     models=[]
     model=network.network(device,sh[1],sh[2],ARGS).to(device)
+    tot_pars = 0
+    for keys, vals in model.state_dict().items():
+        fout.write(keys + ',' + str(np.array(vals.shape)) + '\n')
+        tot_pars += np.prod(np.array(vals.shape))
+    fout.write('tot_pars for conv network,' + str(tot_pars) + '\n')
     models+=[model]
 
     return models

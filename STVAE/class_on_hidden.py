@@ -101,6 +101,11 @@ def train_new(model,args,train,test,device):
     val = None
     ncl=np.int32(np.max(trY)+1)
     net=NET(trX.shape[1],ncl,args,device).to(device)
+    tot_pars = 0
+    for keys, vals in net.state_dict().items():
+        fout.write(keys + ',' + str(np.array(vals.shape)) + '\n')
+        tot_pars += np.prod(np.array(vals.shape))
+    fout.write('tot_pars for fc,' + str(tot_pars) + '\n')
     scheduler=None
     for epoch in range(args.nepoch):
         if (scheduler is not None):
