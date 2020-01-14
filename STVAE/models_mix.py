@@ -54,7 +54,7 @@ class STVAE_mix(models.STVAE):
 
     def __init__(self, x_h, x_w, device, args):
         super(STVAE_mix, self).__init__(x_h, x_w, device, args)
-        self.erode=args.erode
+
         self.lim=args.lim
         self.opt = args.OPT
         self.mu_lr = args.mu_lr
@@ -336,7 +336,7 @@ class STVAE_mix(models.STVAE):
         #   np.random.shuffle(ii)
         tr = train[0][ii].transpose(0, 3, 1, 2)
         y = np.argmax(train[1][ii], axis=1)
-        etr=erode(self.erode,tr)
+        etr=erode(True,tr)
 
         mu = MU[ii]
         logvar = LOGVAR[ii]
