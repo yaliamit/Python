@@ -3,6 +3,7 @@ import pylab as py
 import torch
 from imageio import imsave
 import os
+from scipy import ndimage
 
 
 def process_args(parser):
@@ -178,6 +179,20 @@ def add_clutter(recon_data):
 
     return recon_data
 
+def erode(data):
+
+    el=np.zeros((3,3))
+    el[0,1]=el[1,0]=el[1,2]=el[2,1]=el[1,1]=1
+    rr=np.random.rand(len(data))<.5
+    ndata=np.zeros_like(data)
+    for r,ndd,dd in zip(rr,ndata,data):
+        if (r):
+            dda=ndimage.binary_erosion(dd[0,:,:]>0,el).astype(dd.dtype)
+        else:
+            dda=ndimage.binary_dilation(dd[0,:,:]>.9,el).astype(dd.dtype)
+        ndd[0,:,:]=dda
+
+    return ndata
 
 
 

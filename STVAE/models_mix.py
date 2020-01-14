@@ -5,7 +5,7 @@ import numpy as np
 import models
 from Sep import encoder_mix_sep
 from encoder_decoder import encoder_mix, decoder_mix
-from aux import add_clutter
+from aux import erode
 import contextlib
 @contextlib.contextmanager
 def dummy_context_mgr():
@@ -259,7 +259,7 @@ class STVAE_mix(models.STVAE):
             recloss = self.mixed_loss(x, data, pi)
         return recloss, tot
 
-    def encoder_and_loss(self, data,targ, rng):
+    def encoder_and_loss(self, data, data_orig, targ, rng):
 
         with torch.no_grad() if not self.flag else dummy_context_mgr():
             if (self.opt):
@@ -271,7 +271,7 @@ class STVAE_mix(models.STVAE):
                 if (self.only_pi):
                     pi = torch.softmax(self.pi, dim=1)
 
-        return self.get_loss(data,targ, mu,logvar,pi,rng)
+        return self.get_loss(data_orig,targ, mu,logvar,pi,rng)
 
     def compute_loss_and_grad_mu(self,data, mu, logvar, targ,d_type,optim, opt='par', rng=None):
 
@@ -299,7 +299,7 @@ class STVAE_mix(models.STVAE):
 
         optim.zero_grad()
 
-        recloss, tot = self.encoder_and_loss(data,targ,rng)
+        recloss, tot = self.encoder_and_loss(data,data_orig,targ,rng)
         loss = recloss + tot
 
         if (d_type == 'train' or opt=='mu'):
@@ -359,7 +359,7 @@ class STVAE_mix(models.STVAE):
         tr = train[0][ii].transpose(0, 3, 1, 2)
         y = np.argmax(train[1][ii], axis=1)
         if True:
-            tr=add_clutter(tr)
+            etr=erode(tr)
         mu = MU[ii]
         logvar = LOGVAR[ii]
         pi = PI[ii]
@@ -398,7 +398,7 @@ class STVAE_mix(models.STVAE):
             tr_full_loss += loss
 
         if (np.mod(epoch,10)==9 or epoch==0):
-            fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(d_type,
+            fout.write('\n ====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(d_type,
             epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
 
         return mu, logvar, pi

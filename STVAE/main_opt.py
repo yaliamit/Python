@@ -289,6 +289,7 @@ if (run_existing and not reinit):
         test_models(ARGS,SMS,DATA[2],fout)
 else:
     #if ('vae' in args.type):
+
     train_model(models[0], ARGS[0], EX_FILES[0], DATA, fout)
     if ('vae' in args.type and args.network):
             dat,HVARS=prepare_recons(models[0],DATA,args)
