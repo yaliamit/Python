@@ -54,7 +54,7 @@ class STVAE_mix(models.STVAE):
 
     def __init__(self, x_h, x_w, device, args):
         super(STVAE_mix, self).__init__(x_h, x_w, device, args)
-
+        self.erode=args.erode
         self.lim=args.lim
         self.opt = args.OPT
         self.mu_lr = args.mu_lr
