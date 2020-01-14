@@ -156,13 +156,14 @@ def train_model(model, args, ex_file, DATA, fout):
 
     scheduler = get_scheduler(args, model)
     test=[test[0],test[0],test[1]]
+
     for epoch in range(args.nepoch):
         if (scheduler is not None):
             scheduler.step()
         t1 = time.time()
         tre=erode(args.erode,train[0])
-        train=[train[0],tre,train[1]]
-        trainMU, trainLOGVAR, trPI = model.run_epoch(train, epoch, args.num_mu_iter, trainMU, trainLOGVAR, trPI,
+        tran=[train[0],tre,train[1]]
+        trainMU, trainLOGVAR, trPI = model.run_epoch(tran, epoch, args.num_mu_iter, trainMU, trainLOGVAR, trPI,
                                                      d_type='train', fout=fout)
         if (val[0] is not None):
             model.run_epoch(val, epoch, args.nvi, valMU, valLOGVAR, valPI, d_type='val', fout=fout)
@@ -212,7 +213,7 @@ def prepare_recons(model, DATA, args):
     HV=[]
     for k in range(3):
         if (DATA[k][0] is not None):
-            INP = torch.from_numpy(DATA[k][0].transpose(0, 3, 1, 2))
+            INP = torch.from_numpy(DATA[k][0])
             INP = INP[0:args.network_num_train]
             RR = []
             HVARS=[]
@@ -223,7 +224,7 @@ def prepare_recons(model, DATA, args):
                 HVARS += [h_vars.detach().cpu().numpy()]
             RR = np.concatenate(RR)
             HVARS = np.concatenate(HVARS)
-            tr = RR.reshape(-1, 1, 28, 28).transpose(0, 2, 3, 1)
+            tr = RR.reshape(-1, 1, 28, 28)
             dat += [[tr, DATA[k][1][0:args.network_num_train]]]
             HV+=[[HVARS,DATA[k][1][0:args.network_num_train]]]
         else:
@@ -307,6 +308,7 @@ else:
             dat,HVARS=prepare_recons(models[0],DATA,args)
             train_new(models[0], args, HVARS[0], HVARS[2], device)
             args.type = 'net'
+            args.erode=False
             train_model(net_models[0],args,EX_FILES[0],dat,fout)
 
 # trainMU=None;trainLOGVAR=None;trainPI=None

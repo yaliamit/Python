@@ -131,8 +131,8 @@ class network(nn.Module):
         ii = np.arange(0, num_tr, 1)
         #if (type=='train'):
         #   np.random.shuffle(ii)
-        trin = train[0][ii].transpose(0, 3, 1, 2)
-        targ = np.argmax(train[1][ii], axis=1)
+        trin = train[0][ii]
+        targ = train[2][ii]
         self.n_class=np.max(targ)+1
         full_loss=0; full_acc=0; full_acca=0; full_numa=0; full_accc=0
         rmx=[]

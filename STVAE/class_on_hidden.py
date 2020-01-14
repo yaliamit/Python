@@ -95,7 +95,7 @@ def train_new(model,args,train,test,device):
     fout=sys.stdout
 
     trX=train[0]
-    trY=np.argmax(train[1], axis=1)
+    trY=train[1]
     print('In train new:')
     print(str(args))
     val = None
@@ -119,7 +119,7 @@ def train_new(model,args,train,test,device):
             fout.flush()
 
     teX=test[0]
-    teY=np.argmax(test[1],axis=1)
+    teY=test[1]
     net.run_epoch(teX, teY, 0, d_type='test', fout=fout)
     fout.flush()
 
