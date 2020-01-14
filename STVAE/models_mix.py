@@ -426,7 +426,7 @@ class STVAE_mix(models.STVAE):
             recon_batch=torch.stack(rec_b,dim=0)
         tot = self.dens_apply(s_mu, s_var, lpi, pi)[0]
 
-        print('LOSS', (tot + recloss)/num_inp)
+        #print('LOSS', (tot + recloss)/num_inp)
         recon_batch = recon_batch.transpose(0, 1)
         recon=recon_batch.reshape(self.n_mix*num_inp,-1)
         rr=recon[kk]
