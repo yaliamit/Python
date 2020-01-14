@@ -334,9 +334,9 @@ class STVAE_mix(models.STVAE):
         ii = np.arange(0, train[0].shape[0], 1)
         # if (d_type=='train'):
         #   np.random.shuffle(ii)
-        tr = train[0][ii].transpose(0, 3, 1, 2)
-        y = np.argmax(train[1][ii], axis=1)
-        etr=erode(True,tr)
+        tr = train[0][ii]
+        etr=train[1][ii]
+        y = train[2][ii]
 
         mu = MU[ii]
         logvar = LOGVAR[ii]

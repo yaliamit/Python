@@ -68,6 +68,8 @@ def process_args(parser):
     parser.add_argument('--classify', action='store_true', help='Output to consol')
     parser.add_argument('--Diag', action='store_true', help='Output to consol')
     parser.add_argument('--output_cont', action='store_true', help='cont data')
+    parser.add_argument('--erode', action='store_true', help='cont data')
+
     parser.add_argument('--sep', action='store_true', help='Output to consol')
     parser.add_argument('--reinit', action='store_true', help='reinitialize part of trained model')
     parser.add_argument('--only_pi', action='store_true', help='only optimize over pi')
@@ -142,9 +144,8 @@ def show_sampled_images(model,ex_file,clust=None):
 
 def show_reconstructed_images(test,model,ex_file,num_iter=None, cl=None):
 
-    inp=torch.from_numpy(erode(False,test[0][0:100].transpose(0, 3, 1, 2)))
-    #else:
-    #  inp=torch.from_numpy(test[0][0:100].transpose(0, 3, 1, 2))
+    inp=torch.from_numpy(erode(False,test[0][0:100]))
+
 
     if (cl is not None):
         X,_=model.recon(inp,num_iter,cl)

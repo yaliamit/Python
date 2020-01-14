@@ -37,8 +37,10 @@ class STVAE_mix_by_class(STVAE_mix):
             ppi = ppi.reshape(-1, self.n_class, self.n_mix_perclass).transpose(0, 1)
 
         ii = np.arange(0, train[0].shape[0], 1)
-        tr = train[0][ii].transpose(0, 3, 1, 2)
-        y = np.argmax(train[1][ii],axis=1)
+        tr = train[0][ii]
+        etr = train[1][ii]
+        y = train[2][ii]
+
         acc=0
         accb=0
         DF=[]; RY=[]
@@ -52,8 +54,6 @@ class STVAE_mix_by_class(STVAE_mix):
             data_d = data.detach()
             if (len(data)<self.bsz):
                 self.setup_id(len(data))
-
-
             if self.opt:
                 for c in range(self.n_class):
                     #t1=time.time()

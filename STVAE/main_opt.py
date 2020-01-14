@@ -14,6 +14,7 @@ import aux
 from class_on_hidden import train_new
 import network
 from classify import classify
+from aux import erode
 
 
 def get_names(args):
@@ -56,8 +57,8 @@ def get_network(sh,ARGS):
 
 def get_models(sh,STRINGS,ARGS, locs):
 
-    h = sh[1]
-    w = sh[2]
+    h = sh[2]
+    w = sh[3]
 
     models = []
     for strings, args in zip(STRINGS, ARGS):
@@ -100,6 +101,10 @@ def setups(args, EX_FILES):
         PARS['one_class'] = args.cl
 
     train, val, test, image_dim = get_data(PARS)
+    train=[train[0].transpose(0,3,1,2),np.argmax(train[1],axis=1)]
+    test=[test[0].transpose(0,3,1,2),np.argmax(test[1],axis=1)]
+    if val[0] is not None:
+        val=[val[0].transpose(0,3,1,2),np.argmax(val[1],axis=1)]
     if (args.num_test>0):
         ntest=test[0].shape[0]
         ii=np.arange(0, ntest, 1)
@@ -111,7 +116,7 @@ def setups(args, EX_FILES):
     return fout, device, [train, val, test]
 
 def test_models(ARGS, SMS, test, fout):
-    iid = None;
+    iid = np.arange(0,len(test),1)
     len_test = len(test[0]);
     ACC = [];
     CL_RATE = [];
@@ -123,8 +128,8 @@ def test_models(ARGS, SMS, test, fout):
             model.load_state_dict(sm['model.state.dict'])
             testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
 
-            if (iid is not None):
-                test = [test[0][iid], test[1][iid]]
+
+            test = [test[0][iid], test[0][iid],test[1][iid]]
             print(cf)
             iid, RY, cl_rate, acc = model.run_epoch_classify(test, 'test', fout=fout, num_mu_iter=args.nti, conf_thresh=cf)
             CL_RATE += [cl_rate]
@@ -150,11 +155,13 @@ def train_model(model, args, ex_file, DATA, fout):
         testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
 
     scheduler = get_scheduler(args, model)
-
+    test=[test[0],test[0],test[1]]
     for epoch in range(args.nepoch):
         if (scheduler is not None):
             scheduler.step()
         t1 = time.time()
+        tre=erode(args.erode,train[0])
+        train=[train[0],tre,train[1]]
         trainMU, trainLOGVAR, trPI = model.run_epoch(train, epoch, args.num_mu_iter, trainMU, trainLOGVAR, trPI,
                                                      d_type='train', fout=fout)
         if (val[0] is not None):
