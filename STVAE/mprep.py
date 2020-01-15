@@ -63,7 +63,7 @@ def get_names(args):
 
     return ARGS, STRINGS, EX_FILES, SMS
 
-def get_network(sh,ARGS):
+def get_network(device, sh,ARGS):
 
     models=[]
     model=network.network(device,sh[1],sh[2],ARGS).to(device)
