@@ -155,15 +155,17 @@ def train_model(model, args, ex_file, DATA, fout):
         testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
 
     scheduler = get_scheduler(args, model)
-    test=[test[0],test[0],test[1]]
+    #test=[test[0],test[0],test[1]]
 
     for epoch in range(args.nepoch):
         if (scheduler is not None):
             scheduler.step()
         t1 = time.time()
-        tre=erode(args.erode,train[0])
-        tran=[train[0],tre,train[1]]
-        trainMU, trainLOGVAR, trPI = model.run_epoch(tran, epoch, args.num_mu_iter, trainMU, trainLOGVAR, trPI,
+        #tre=erode(args.erode,train[0])
+        #tran=[train[0],tre,train[1]]
+        #trainMU, trainLOGVAR, trPI = model.run_epoch(tran, epoch, args.num_mu_iter, trainMU, trainLOGVAR, trPI,
+        #                                             d_type='train', fout=fout)
+        trainMU, trainLOGVAR, trPI = model.run_epoch(train, epoch, args.num_mu_iter, trainMU, trainLOGVAR, trPI,
                                                      d_type='train', fout=fout)
         if (val[0] is not None):
             model.run_epoch(val, epoch, args.nvi, valMU, valLOGVAR, valPI, d_type='val', fout=fout)
