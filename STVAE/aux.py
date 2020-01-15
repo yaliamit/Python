@@ -181,6 +181,7 @@ def add_clutter(recon_data):
 
 def erode(do_er,data):
 
+    dd=rotate_dataset_rand(data,angle=10,scale=1.2)
     if (do_er):
         el=np.zeros((3,3))
         el[0,1]=el[1,0]=el[1,2]=el[2,1]=el[1,1]=1
@@ -196,6 +197,83 @@ def erode(do_er,data):
         ndata=data
 
     return ndata
+
+def rotate_dataset_rand(X,angle=0,scale=0,shift=0,gr=0,flip=False,blur=False,saturation=False, spl=None):
+    # angle=NETPARS['trans']['angle']
+    # scale=NETPARS['trans']['scale']
+    # #shear=NETPARS['trans']['shear']
+    # shift=NETPARS['trans']['shift']
+    s=np.shape(X)
+    Xr=np.zeros(s)
+    cent=np.array(s[2:4])/2
+    #angles=np.random.rand(Xr.shape[0])*angle-angle/2.
+    aa=np.random.rand(Xr.shape[0])*.25
+    aa[np.int32(len(aa)/2):]=aa[np.int32(len(aa)/2):]+.75
+    angles=aa*angle-angle/2
+    SX=np.exp(np.random.rand(Xr.shape[0],2)*scale-scale/2.)
+    SH=np.int32(np.round(np.random.rand(Xr.shape[0],2)*shift)-shift/2)
+    FL=np.zeros(Xr.shape[0])
+    BL=np.zeros(Xr.shape[0])
+    HS=np.zeros(Xr.shape[0])
+    if (flip):
+        FL=(np.random.rand(Xr.shape[0])>.5)
+    if (blur):
+        BL=(np.random.rand(Xr.shape[0])>.5)
+    if (saturation):
+        HS=(np.power(2,np.random.rand(Xr.shape[0])*4-2))
+        HU=((np.random.rand(Xr.shape[0]))-.5)*.2
+    #SHR=np.random.rand(Xr.shape[0])*shear-shear/2.
+    for i in range(Xr.shape[0]):
+        if (np.mod(i,1000)==0):
+            print(i," ")
+        mat=np.eye(2)
+        #mat[1,0]=SHR[i]
+        mat[0,0]=SX[i,0]
+        mat[1,1]=SX[i,0]
+        rmat=np.eye(2)
+        a=angles[i]*np.pi/180.
+        rmat[0,0]=np.cos(a)
+        rmat[0,1]=-np.sin(a)
+        rmat[1,0]=np.sin(a)
+        rmat[1,1]=np.cos(a)
+        mat=mat.dot(rmat)
+        offset=cent-mat.dot(cent)+SH[i]
+        for d in range(X.shape[1]):
+            Xt=scipy.ndimage.interpolation.affine_transform(X[i,d],mat, offset=offset, mode='reflect')
+            Xt=np.minimum(Xt,.99)
+            if (FL[i]):
+                Xt=np.fliplr(Xt)
+            if (BL[i]):
+                Xt=scipy.ndimage.gaussian_filter(Xt,sigma=.5)
+            Xr[i,d,]=Xt
+        if (HS[i]):
+            y=col.rgb_to_hsv(Xr[i].transpose(1,2,0))
+            y[:,:,1]=np.minimum(y[:,:,1]*HS[i],1)
+            y[:,:,0]=np.mod(y[:,:,0]+HU[i],1.)
+            z=col.hsv_to_rgb(y)
+            Xr[i]=z.transpose(2,0,1)
+
+    if (gr):
+        fig1=py.figure(1)
+        fig2=py.figure(2)
+        ii=range(X.shape[0])
+        np.random.shuffle(ii)
+        nr=12
+        nr2=nr*nr
+        for j in range(nr2):
+            print(angles[ii[j]]) #,SX[i],SH[i],FL[i],BL[i])
+            py.figure(fig1.number)
+            py.subplot(nr,nr,j+1)
+            py.imshow(X[ii[j]].transpose(1,2,0))
+            py.axis('off')
+            py.figure(fig2.number)
+            py.subplot(nr,nr,j+1)
+            py.imshow(Xr[ii[j]].transpose(1,2,0))
+            py.axis('off')
+        py.show()
+
+
+    return(np.floatX(Xr))
 
 
 

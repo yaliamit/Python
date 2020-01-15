@@ -5,7 +5,7 @@ import numpy as np
 import models
 from Sep import encoder_mix_sep
 from encoder_decoder import encoder_mix, decoder_mix
-from aux import erode
+
 import contextlib
 @contextlib.contextmanager
 def dummy_context_mgr():
@@ -259,7 +259,7 @@ class STVAE_mix(models.STVAE):
             recloss = self.mixed_loss(x, data, pi)
         return recloss, tot
 
-    def encoder_and_loss(self, data, data_orig, targ, rng):
+    def encoder_and_loss(self, data,targ, rng):
 
         with torch.no_grad() if not self.flag else dummy_context_mgr():
             if (self.opt):
@@ -271,13 +271,35 @@ class STVAE_mix(models.STVAE):
                 if (self.only_pi):
                     pi = torch.softmax(self.pi, dim=1)
 
-        return self.get_loss(data_orig,targ, mu,logvar,pi,rng)
+        return self.get_loss(data,targ, mu,logvar,pi,rng)
+
+    def compute_loss_and_grad_mu(self,data, mu, logvar, targ,d_type,optim, opt='par', rng=None):
+
+        optim.zero_grad()
+        pi = torch.softmax(self.pi, dim=1)
+        recloss, tot = self.get_loss(data,targ, mu,logvar,pi,rng)
+
+        # if (self.feats and not opt=='mu' and not self.feats_back):
+        #     #out=self.conv(self.ID)
+        #     #dd=self.deconv(out[:,:,0:self.ndim:2,0:self.ndim:2])
+        #     dd=self.conv.bkwd(data)
+        #     rec=self.lamda1*torch.sum((dd-data_orig)*(dd-data_orig))
+        #    tot+=rec
+
+        loss = recloss + tot
+
+
+        if (d_type == 'train' or opt=='mu'):
+            loss.backward()
+            optim.step()
+
+        return recloss.item(), loss.item()
 
     def compute_loss_and_grad(self,data,data_orig,targ,d_type,optim, opt='par', rng=None):
 
         optim.zero_grad()
 
-        recloss, tot = self.encoder_and_loss(data,data_orig,targ,rng)
+        recloss, tot = self.encoder_and_loss(data,targ,rng)
         loss = recloss + tot
 
         if (d_type == 'train' or opt=='mu'):
@@ -334,10 +356,8 @@ class STVAE_mix(models.STVAE):
         ii = np.arange(0, train[0].shape[0], 1)
         # if (d_type=='train'):
         #   np.random.shuffle(ii)
-        tr = train[0][ii]
-        etr=train[1][ii]
-        y = train[2][ii]
-
+        tr = train[0][ii].transpose(0, 3, 1, 2)
+        y = np.argmax(train[1][ii], axis=1)
         mu = MU[ii]
         logvar = LOGVAR[ii]
         pi = PI[ii]
@@ -346,7 +366,7 @@ class STVAE_mix(models.STVAE):
         for j in np.arange(0, len(y), self.bsz):
 
             data_in = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
-            data = torch.from_numpy(etr[j:j + self.bsz]).float().to(self.dv) #self.preprocess(data_in)
+            data = self.preprocess(data_in)
             data_d = data.detach()
             target=None
             if (self.n_class>0):
@@ -359,6 +379,9 @@ class STVAE_mix(models.STVAE):
                 with torch.no_grad():
                     s_mu, s_var, _ = self.encoder_mix(data)
                 self.pi=self.get_pi_from_max(s_mu, s_var, data,target)
+                #self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], pi[j:j + self.bsz], self.mu_lr[0])
+                #for it in range(num_mu_iter):
+                #        self.compute_loss_and_grad_mu(data_d, s_mu, s_var, target, d_type, self.optimizer_s, opt='mu')
             with torch.no_grad() if (d_type != 'train') else dummy_context_mgr():
                 recon_loss, loss=self.compute_loss_and_grad(data, data_in, target,d_type,self.optimizer)
 
@@ -372,9 +395,9 @@ class STVAE_mix(models.STVAE):
             tr_recon_loss += recon_loss
             tr_full_loss += loss
 
-        if (np.mod(epoch,10)==9 or epoch==0):
-            fout.write('\n ====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(d_type,
-            epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
+
+        fout.write('====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(d_type,
+        epoch, tr_recon_loss / len(tr), tr_full_loss/len(tr)))
 
         return mu, logvar, pi
 
@@ -412,7 +435,7 @@ class STVAE_mix(models.STVAE):
             pi = torch.softmax(self.pi, dim=1)
 
         ss_mu = s_mu.reshape(-1, self.n_mix, self.s_dim).transpose(0,1)
-        #ss_mu = ss_mu+.5*torch.randn(ss_mu.shape).to(self.dv)
+        ss_mu = ss_mu+.5*torch.randn(ss_mu.shape).to(self.dv)
         ii = torch.argmax(pi, dim=1)
         jj = torch.arange(0,num_inp,dtype=torch.int64).to(self.dv)
         kk = ii+jj*self.n_mix
@@ -426,7 +449,7 @@ class STVAE_mix(models.STVAE):
             recon_batch=torch.stack(rec_b,dim=0)
         tot = self.dens_apply(s_mu, s_var, lpi, pi)[0]
 
-        #print('LOSS', (tot + recloss)/num_inp)
+        print('LOSS', (tot + recloss)/num_inp)
         recon_batch = recon_batch.transpose(0, 1)
         recon=recon_batch.reshape(self.n_mix*num_inp,-1)
         rr=recon[kk]
