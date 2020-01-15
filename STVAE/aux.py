@@ -180,6 +180,33 @@ def add_clutter(recon_data):
 
     return recon_data
 
+def prepare_recons(model, DATA, args):
+    dat = []
+    HV=[]
+    for k in range(3):
+        if (DATA[k][0] is not None):
+            INP = torch.from_numpy(DATA[k][0])
+            INP = INP[0:args.network_num_train]
+            RR = []
+            HVARS=[]
+            for j in np.arange(0, INP.shape[0], 500):
+                inp = INP[j:j + 500]
+                rr, h_vars = model.recon(inp, 0)
+                RR += [rr.detach().cpu().numpy()]
+                HVARS += [h_vars.detach().cpu().numpy()]
+            RR = np.concatenate(RR)
+            HVARS = np.concatenate(HVARS)
+            tr = RR.reshape(-1, 1, 28, 28)
+            dat += [[tr, DATA[k][1][0:args.network_num_train]]]
+            HV+=[[HVARS,DATA[k][1][0:args.network_num_train]]]
+        else:
+            dat += [DATA[k]]
+            HV += [DATA[k]]
+    print("Hello")
+
+    return dat, HV
+
+
 def erode(do_er,data):
 
     #dd=rotate_dataset_rand(data,angle=10,scale=1.2)
