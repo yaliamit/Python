@@ -4,6 +4,7 @@ import torch
 from imageio import imsave
 import os
 from scipy import ndimage
+import scipy
 
 
 def process_args(parser):
