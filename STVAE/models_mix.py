@@ -271,7 +271,7 @@ class STVAE_mix(models.STVAE):
                 if (self.only_pi):
                     pi = torch.softmax(self.pi, dim=1)
 
-        return self.get_loss(data,targ, mu,logvar,pi,rng)
+        return self.get_loss(data_orig,targ, mu,logvar,pi,rng)
 
     def compute_loss_and_grad_mu(self,data, mu, logvar, targ,d_type,optim, opt='par', rng=None):
 
@@ -299,7 +299,7 @@ class STVAE_mix(models.STVAE):
 
         optim.zero_grad()
 
-        recloss, tot = self.encoder_and_loss(data,targ,rng)
+        recloss, tot = self.encoder_and_loss(data,data_orig,targ,rng)
         loss = recloss + tot
 
         if (d_type == 'train' or opt=='mu'):
@@ -366,7 +366,7 @@ class STVAE_mix(models.STVAE):
         for j in np.arange(0, len(y), self.bsz):
 
             data_in = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
-            data = self.preprocess(data_in)
+            data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv) #self.preprocess(data_in)
             data_d = data.detach()
             target=None
             if (self.n_class>0):
