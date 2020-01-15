@@ -347,11 +347,14 @@ class STVAE_mix(models.STVAE):
             bb, ii = torch.min(b, dim=1)
             pi = EE[ii]
         return pi
+
     def run_epoch(self, train, epoch,num_mu_iter, MU, LOGVAR,PI, d_type='test',fout=None):
 
 
         if (d_type=='train'):
             self.train()
+        else:
+            self.eval()
         tr_recon_loss = 0;tr_full_loss = 0
         ii = np.arange(0, train[0].shape[0], 1)
         # if (d_type=='train'):

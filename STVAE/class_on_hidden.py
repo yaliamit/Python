@@ -93,7 +93,7 @@ class NET(nn.Module):
 def train_new(model,args,train,test,device):
 
     fout=sys.stdout
-
+    print("In from hidden number of training",train[0].shape[0])
     trX=train[0]
     trY=train[1]
     print('In train new:')
