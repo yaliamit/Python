@@ -14,7 +14,6 @@ import aux
 from class_on_hidden import train_new
 import network
 from classify import classify
-from aux import erode
 
 
 def get_names(args):
@@ -46,19 +45,14 @@ def get_network(sh,ARGS):
 
     models=[]
     model=network.network(device,sh[1],sh[2],ARGS).to(device)
-    tot_pars = 0
-    for keys, vals in model.state_dict().items():
-        fout.write(keys + ',' + str(np.array(vals.shape)) + '\n')
-        tot_pars += np.prod(np.array(vals.shape))
-    fout.write('tot_pars for conv network,' + str(tot_pars) + '\n')
     models+=[model]
 
     return models
 
 def get_models(sh,STRINGS,ARGS, locs):
 
-    h = sh[2]
-    w = sh[3]
+    h = sh[1]
+    w = sh[2]
 
     models = []
     for strings, args in zip(STRINGS, ARGS):
@@ -101,10 +95,6 @@ def setups(args, EX_FILES):
         PARS['one_class'] = args.cl
 
     train, val, test, image_dim = get_data(PARS)
-    train=[train[0].transpose(0,3,1,2),np.argmax(train[1],axis=1)]
-    test=[test[0].transpose(0,3,1,2),np.argmax(test[1],axis=1)]
-    if val[0] is not None:
-        val=[val[0].transpose(0,3,1,2),np.argmax(val[1],axis=1)]
     if (args.num_test>0):
         ntest=test[0].shape[0]
         ii=np.arange(0, ntest, 1)
@@ -116,7 +106,7 @@ def setups(args, EX_FILES):
     return fout, device, [train, val, test]
 
 def test_models(ARGS, SMS, test, fout):
-    iid = np.arange(0,len(test),1)
+    iid = None;
     len_test = len(test[0]);
     ACC = [];
     CL_RATE = [];
@@ -128,8 +118,8 @@ def test_models(ARGS, SMS, test, fout):
             model.load_state_dict(sm['model.state.dict'])
             testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
 
-
-            test = [test[0][iid], test[0][iid],test[1][iid]]
+            if (iid is not None):
+                test = [test[0][iid], test[1][iid]]
             print(cf)
             iid, RY, cl_rate, acc = model.run_epoch_classify(test, 'test', fout=fout, num_mu_iter=args.nti, conf_thresh=cf)
             CL_RATE += [cl_rate]
@@ -155,22 +145,17 @@ def train_model(model, args, ex_file, DATA, fout):
         testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
 
     scheduler = get_scheduler(args, model)
-    #test=[test[0],test[0],test[1]]
 
     for epoch in range(args.nepoch):
         if (scheduler is not None):
             scheduler.step()
         t1 = time.time()
-        #tre=erode(args.erode,train[0])
-        #tran=[train[0],tre,train[1]]
-        #trainMU, trainLOGVAR, trPI = model.run_epoch(tran, epoch, args.num_mu_iter, trainMU, trainLOGVAR, trPI,
-        #                                             d_type='train', fout=fout)
         trainMU, trainLOGVAR, trPI = model.run_epoch(train, epoch, args.num_mu_iter, trainMU, trainLOGVAR, trPI,
                                                      d_type='train', fout=fout)
         if (val[0] is not None):
             model.run_epoch(val, epoch, args.nvi, valMU, valLOGVAR, valPI, d_type='val', fout=fout)
 
-        fout.write('{0:5.3f}s '.format(time.time() - t1))
+        fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch, time.time() - t1))
         fout.flush()
 
     fout.write('writing to ' + ex_file + '\n')
@@ -215,7 +200,7 @@ def prepare_recons(model, DATA, args):
     HV=[]
     for k in range(3):
         if (DATA[k][0] is not None):
-            INP = torch.from_numpy(DATA[k][0])
+            INP = torch.from_numpy(DATA[k][0].transpose(0, 3, 1, 2))
             INP = INP[0:args.network_num_train]
             RR = []
             HVARS=[]
@@ -226,7 +211,7 @@ def prepare_recons(model, DATA, args):
                 HVARS += [h_vars.detach().cpu().numpy()]
             RR = np.concatenate(RR)
             HVARS = np.concatenate(HVARS)
-            tr = RR.reshape(-1, 1, 28, 28)
+            tr = RR.reshape(-1, 1, 28, 28).transpose(0, 2, 3, 1)
             dat += [[tr, DATA[k][1][0:args.network_num_train]]]
             HV+=[[HVARS,DATA[k][1][0:args.network_num_train]]]
         else:
@@ -275,7 +260,7 @@ if reinit:
     strings, ex_file = process_strings(args)
     EX_FILES=[ex_file]
 
-fout.write(str(args) + '\n')
+fout.write(str(ARGS[0]) + '\n')
 fout.flush()
 # if (args.classify):
 #     t1 = time.time()
@@ -304,13 +289,11 @@ if (run_existing and not reinit):
         test_models(ARGS,SMS,DATA[2],fout)
 else:
     #if ('vae' in args.type):
-
     train_model(models[0], ARGS[0], EX_FILES[0], DATA, fout)
     if ('vae' in args.type and args.network):
             dat,HVARS=prepare_recons(models[0],DATA,args)
             train_new(models[0], args, HVARS[0], HVARS[2], device)
             args.type = 'net'
-            args.erode=False
             train_model(net_models[0],args,EX_FILES[0],dat,fout)
 
 # trainMU=None;trainLOGVAR=None;trainPI=None
