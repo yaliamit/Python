@@ -95,6 +95,10 @@ def setups(args, EX_FILES):
         PARS['one_class'] = args.cl
 
     train, val, test, image_dim = get_data(PARS)
+    train = [train[0].transpose(0, 3, 1, 2), np.argmax(train[1], axis=1)]
+    test = [test[0].transpose(0, 3, 1, 2), np.argmax(test[1], axis=1)]
+    if val[0] is not None:
+        val = [val[0].transpose(0, 3, 1, 2), np.argmax(val[1], axis=1)]
     if (args.num_test>0):
         ntest=test[0].shape[0]
         ii=np.arange(0, ntest, 1)

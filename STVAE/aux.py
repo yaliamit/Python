@@ -182,7 +182,7 @@ def add_clutter(recon_data):
 
 def erode(do_er,data):
 
-    dd=rotate_dataset_rand(data,angle=10,scale=1.2)
+    #dd=rotate_dataset_rand(data,angle=10,scale=1.2)
     if (do_er):
         el=np.zeros((3,3))
         el[0,1]=el[1,0]=el[1,2]=el[2,1]=el[1,1]=1
