@@ -101,9 +101,9 @@ def make_images(test,model,ex_file,args):
         if (args.n_class):
             for c in range(model.n_class):
                 ind=(np.argmax(test[1],axis=1)==c)
-                show_reconstructed_images([test[0][ind],test[1][ind]],model,ex_file,args.nti,c)
+                show_reconstructed_images([test[0][ind],test[1][ind]],model,ex_file,args.nti,c, args.erode)
         else:
-            show_reconstructed_images(test,model,ex_file,args.nti)
+            show_reconstructed_images(test,model,ex_file,args.nti, args.erode)
 
 
 
@@ -143,9 +143,9 @@ def show_sampled_images(model,ex_file,clust=None):
     create_image(XX, model, ex_file)
 
 
-def show_reconstructed_images(test,model,ex_file,num_iter=None, cl=None):
+def show_reconstructed_images(test,model,ex_file,num_iter=None, cl=None, erd=False):
 
-    inp=torch.from_numpy(erode(False,test[0][0:100]))
+    inp=torch.from_numpy(erode(erd,test[0][0:100]))
 
 
     if (cl is not None):
