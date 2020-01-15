@@ -59,10 +59,11 @@ def train_model(model, args, ex_file, DATA, fout):
         testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
 
     scheduler = get_scheduler(args, model)
-    tre = aux.erode(args.erode, train[0])
-    tran = [train[0], tre, train[1]]
+
     test = [test[0], test[0], test[1]]
     for epoch in range(args.nepoch):
+        tre = aux.erode(args.erode, train[0])
+        tran = [train[0], tre, train[1]]
         if (scheduler is not None):
             scheduler.step()
         t1 = time.time()
