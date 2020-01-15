@@ -357,7 +357,8 @@ class STVAE_mix(models.STVAE):
         # if (d_type=='train'):
         #   np.random.shuffle(ii)
         tr = train[0][ii] #.transpose(0, 3, 1, 2)
-        y = train[1][ii] #, axis=1)
+        etr = train[1][ii]
+        y = train[2][ii] #, axis=1)
         mu = MU[ii]
         logvar = LOGVAR[ii]
         pi = PI[ii]
@@ -366,7 +367,7 @@ class STVAE_mix(models.STVAE):
         for j in np.arange(0, len(y), self.bsz):
 
             data_in = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv)
-            data = torch.from_numpy(tr[j:j + self.bsz]).float().to(self.dv) #self.preprocess(data_in)
+            data = torch.from_numpy(etr[j:j + self.bsz]).float().to(self.dv) #self.preprocess(data_in)
             data_d = data.detach()
             target=None
             if (self.n_class>0):
