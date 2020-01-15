@@ -5,7 +5,7 @@ from imageio import imsave
 import os
 from scipy import ndimage
 import scipy
-
+import matplotlib.colors as col
 
 def process_args(parser):
     parser.add_argument('--Filts', type=int, default=(3,3), nargs="*",
@@ -209,20 +209,20 @@ def prepare_recons(model, DATA, args):
 
 def erode(do_er,data):
 
-    #dd=rotate_dataset_rand(data,angle=10,scale=1.2)
+    rdata=rotate_dataset_rand(data,angle=40,scale=.2)
     if (do_er):
         el=np.zeros((3,3))
         el[0,1]=el[1,0]=el[1,2]=el[2,1]=el[1,1]=1
         rr=np.random.rand(len(data))<.5
         ndata=np.zeros_like(data)
-        for r,ndd,dd in zip(rr,ndata,data):
+        for r,ndd,dd in zip(rr,ndata,rdata):
             if (r):
                 dda=ndimage.binary_erosion(dd[0,:,:]>0,el).astype(dd.dtype)
             else:
                 dda=ndimage.binary_dilation(dd[0,:,:]>.9,el).astype(dd.dtype)
             ndd[0,:,:]=dda
     else:
-        ndata=data
+        ndata=rdata
 
     return ndata
 
@@ -231,13 +231,15 @@ def rotate_dataset_rand(X,angle=0,scale=0,shift=0,gr=0,flip=False,blur=False,sat
     # scale=NETPARS['trans']['scale']
     # #shear=NETPARS['trans']['shear']
     # shift=NETPARS['trans']['shift']
+    if angle==0 and scale==0 and shift==0 and not flip and not blur and not saturation:
+        return X
     s=np.shape(X)
     Xr=np.zeros(s)
     cent=np.array(s[2:4])/2
-    #angles=np.random.rand(Xr.shape[0])*angle-angle/2.
-    aa=np.random.rand(Xr.shape[0])*.25
-    aa[np.int32(len(aa)/2):]=aa[np.int32(len(aa)/2):]+.75
-    angles=aa*angle-angle/2
+    angles=np.random.rand(Xr.shape[0])*angle-angle/2.
+    #aa=np.random.rand(Xr.shape[0])*.25
+    #aa[np.int32(len(aa)/2):]=aa[np.int32(len(aa)/2):]+.75
+    #angles=aa*angle-angle/2
     SX=np.exp(np.random.rand(Xr.shape[0],2)*scale-scale/2.)
     SH=np.int32(np.round(np.random.rand(Xr.shape[0],2)*shift)-shift/2)
     FL=np.zeros(Xr.shape[0])
@@ -284,7 +286,7 @@ def rotate_dataset_rand(X,angle=0,scale=0,shift=0,gr=0,flip=False,blur=False,sat
     if (gr):
         fig1=py.figure(1)
         fig2=py.figure(2)
-        ii=range(X.shape[0])
+        ii=np.arange(0,X.shape[0],1)
         np.random.shuffle(ii)
         nr=12
         nr2=nr*nr
@@ -301,7 +303,7 @@ def rotate_dataset_rand(X,angle=0,scale=0,shift=0,gr=0,flip=False,blur=False,sat
         py.show()
 
 
-    return(np.floatX(Xr))
+    return(np.float32(Xr))
 
 
 
