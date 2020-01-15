@@ -71,7 +71,7 @@ def get_network(sh,ARGS):
 
     return models
 
-def get_models(sh,STRINGS,ARGS, locs):
+def get_models(device, fout, sh,STRINGS,ARGS, locs):
 
     h = sh[2]
     w = sh[3]

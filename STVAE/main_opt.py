@@ -107,9 +107,9 @@ ARGS, STRINGS, EX_FILES, SMS = mprep.get_names(args)
 fout, device, DATA= mprep.setups(args, EX_FILES)
 
 if 'vae' in args.type:
-    models=mprep.get_models(DATA[0][0].shape,STRINGS,ARGS,locals())
+    models=mprep.get_models(device, fout, DATA[0][0].shape,STRINGS,ARGS,locals())
 if args.network:
-    net_models=mprep.get_network(DATA[0][0].shape,args)
+    net_models=mprep.get_network(device, DATA[0][0].shape,args)
     if 'vae' not in args.type:
         models=net_models
 sample=args.sample
@@ -124,7 +124,7 @@ ARGS[0].num_test=num_test
 
 if reinit:
     models[0].load_state_dict(SMS[0]['model.state.dict'])
-    model_new=mprep.make_model(STRINGS[0],args,locals(), DATA[0][0].shape[1],DATA[0][0].shape[2], device, fout)
+    model_new=mprep.make_model(device, fout, STRINGS[0],args,locals(), DATA[0][0].shape[1],DATA[0][0].shape[2], device, fout)
     model_new.conv.conv.weight.data=models[0].conv.conv.weight.data
     models=[model_new]
     ARGS=[args]
