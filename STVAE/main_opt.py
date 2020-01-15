@@ -51,8 +51,8 @@ def get_network(sh,ARGS):
 
 def get_models(sh,STRINGS,ARGS, locs):
 
-    h = sh[1]
-    w = sh[2]
+    h = sh[2]
+    w = sh[3]
 
     models = []
     for strings, args in zip(STRINGS, ARGS):
