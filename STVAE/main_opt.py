@@ -206,7 +206,7 @@ def prepare_recons(model, DATA, args):
     HV=[]
     for k in range(3):
         if (DATA[k][0] is not None):
-            INP = torch.from_numpy(DATA[k][0].transpose(0, 3, 1, 2))
+            INP = torch.from_numpy(DATA[k][0])
             INP = INP[0:args.network_num_train]
             RR = []
             HVARS=[]
@@ -217,7 +217,7 @@ def prepare_recons(model, DATA, args):
                 HVARS += [h_vars.detach().cpu().numpy()]
             RR = np.concatenate(RR)
             HVARS = np.concatenate(HVARS)
-            tr = RR.reshape(-1, 1, 28, 28).transpose(0, 2, 3, 1)
+            tr = RR.reshape(-1, 1, 28, 28)
             dat += [[tr, DATA[k][1][0:args.network_num_train]]]
             HV+=[[HVARS,DATA[k][1][0:args.network_num_train]]]
         else:
