@@ -259,7 +259,7 @@ class STVAE_mix(models.STVAE):
             recloss = self.mixed_loss(x, data, pi)
         return recloss, tot
 
-    def encoder_and_loss(self, data,targ, rng):
+    def encoder_and_loss(self, data,data_orig, targ, rng):
 
         with torch.no_grad() if not self.flag else dummy_context_mgr():
             if (self.opt):
