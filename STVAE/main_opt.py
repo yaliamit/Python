@@ -60,7 +60,7 @@ def train_model(model, args, ex_file, DATA, fout):
 
     scheduler = get_scheduler(args, model)
 
-    test = [test[0], test[0], test[1]]
+    tes = [test[0], test[0], test[1]]
     for epoch in range(args.nepoch):
 
         if (scheduler is not None):
@@ -84,12 +84,12 @@ def train_model(model, args, ex_file, DATA, fout):
                     'model.state.dict': model.state_dict()}, '_output/' + ex_file + '.pt')
         aux.make_images(train, model, ex_file, args)
         if (args.n_class):
-            model.run_epoch_classify(train, 'train', fout=fout, num_mu_iter=args.nti)
-            model.run_epoch_classify(test, 'test', fout=fout, num_mu_iter=args.nti)
+            model.run_epoch_classify(tran, 'train', fout=fout, num_mu_iter=args.nti)
+            model.run_epoch_classify(tes, 'test', fout=fout, num_mu_iter=args.nti)
         elif args.cl is None:
-            model.run_epoch(test, 0, args.nti, testMU, testLOGVAR, testPI, d_type='test', fout=fout)
+            model.run_epoch(tes, 0, args.nti, testMU, testLOGVAR, testPI, d_type='test', fout=fout)
     else:
-        model.run_epoch(test, 0, args.nti, None, None, None, d_type='test', fout=fout)
+        model.run_epoch(tes, 0, args.nti, None, None, None, d_type='test', fout=fout)
 
 
 
