@@ -191,7 +191,7 @@ def prepare_recons(model, DATA, args):
             HVARS=[]
             for j in np.arange(0, INP.shape[0], 500):
                 inp = INP[j:j + 500]
-                rr, h_vars = model.recon(inp, 0)
+                rr, h_vars = model.recon(inp, args.nti)
                 RR += [rr.detach().cpu().numpy()]
                 HVARS += [h_vars.detach().cpu().numpy()]
             RR = np.concatenate(RR)
