@@ -100,8 +100,8 @@ def make_images(test,model,ex_file,args):
 
         if (args.n_class):
             for c in range(model.n_class):
-                ind=(np.argmax(test[1],axis=1)==c)
-                show_reconstructed_images([test[0][ind],test[1][ind]],model,ex_file,args.nti,c, args.erode)
+                ind=(test[2]==c)
+                show_reconstructed_images([test[0][ind]],model,ex_file,args.nti,c, args.erode)
         else:
             show_reconstructed_images(test,model,ex_file,args.nti,None, args.erode)
 
