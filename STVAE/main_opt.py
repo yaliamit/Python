@@ -62,11 +62,12 @@ def train_model(model, args, ex_file, DATA, fout):
 
     test = [test[0], test[0], test[1]]
     for epoch in range(args.nepoch):
-        tre = aux.erode(args.erode, train[0])
-        tran = [train[0], tre, train[1]]
+
         if (scheduler is not None):
             scheduler.step()
         t1 = time.time()
+        tre = aux.erode(args.erode, train[0])
+        tran = [train[0], tre, train[1]]
         trainMU, trainLOGVAR, trPI = model.run_epoch(tran, epoch, args.num_mu_iter, trainMU, trainLOGVAR, trPI,
                                                      d_type='train', fout=fout)
         if (val[0] is not None):
@@ -146,7 +147,7 @@ if (run_existing and not reinit):
     elif sample:
         model=models[0]
         model.load_state_dict(SMS[0]['model.state.dict'])
-        aux.make_images(DATA[2],model,EX_FILES[0],ARGS[0])
+        aux.make_images(DATA[2],model,EX_FILES[0],args)
     elif network:
         model = models[0]
         model.load_state_dict(SMS[0]['model.state.dict'])
