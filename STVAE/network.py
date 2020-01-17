@@ -13,26 +13,85 @@ class network(nn.Module):
         self.bsz=args.mb_size # Batch size - gets multiplied by number of shifts so needs to be quite small.
         self.x_dim=x_dim # Dimensions of all images.
         self.y_dim=y_dim
-        self.full_dim=args.full_dim
+        #self.full_dim=args.full_dim
         self.dv=device
         self.n_class=args.n_class
-        self.pools = args.pools # List of pooling at each level of network
-        self.drops=args.drops # Drop fraction at each level of network
+        #self.pools = args.pools # List of pooling at each level of network
+        #self.drops=args.drops # Drop fraction at each level of network
         self.optimizer_type=args.optimizer
         self.lr=args.lr
+        self.layer_text=args.layers
         ff=len(args.Filts) # Number of filters = number of conv layers.
         # Create list of convolution layers with the appropriate filter size, number of features etc.
-        self.convs = nn.ModuleList([torch.nn.Conv2d(args.Feats[i], args.Feats[i+1],
-                                                    args.Filts[i],stride=1,padding=np.int32(np.floor(args.Filts[i]/2)))
-                                    for i in range(ff)])
-        self.drop_layers=nn.ModuleList()
+        #self.convs = nn.ModuleList([torch.nn.Conv2d(args.Feats[i], args.Feats[i+1],
+        #                                            args.Filts[i],stride=1,padding=np.int32(np.floor(args.Filts[i]/2)))
+        #                            for i in range(ff)])
+        #self.drop_layers=nn.ModuleList()
+
         # The loss function
         self.criterion=nn.CrossEntropyLoss()
         self.criterion_shift=nn.CrossEntropyLoss(reduce=False)
 
+    def do_nonlinearity(self,ll,out):
+
+        if ('non_linearity' not in ll):
+            return(out)
+        elif ('tanh' in ll['non_linearity']):
+            return(F.tanh(out))
+        elif ('relu' in ll['non_linearity']):
+            return(F.relu(out))
+
+    def forward(self,input):
+        out = input
+        if (self.first):
+            self.layers = nn.ModuleList()
+
+        inp_feats=input.shape[1]
+        for i,ll in enumerate(self.layer_text):
+                if ('conv' in ll['name']):
+                    if self.first:
+                        pd=tuple(np.int32(np.floor(np.array(ll['filter_size'])/2)))
+                        self.layers+=[torch.nn.Conv2d(inp_feats,ll['num_filters'],ll['filter_size'],stride=1,padding=pd).to(self.dv)]
+                        inp_feats=ll['num_filters']
+                    out = self.layers[i](out)
+                    out = self.do_nonlinearity(ll,out)
+                if ('pool' in ll['name']):
+                    if self.first:
+                        pp = np.mod(out.shape, ll['pool_size'])
+                        self.layers += [nn.MaxPool2d(ll['pool_size'], padding=tuple(pp[2:4])).to(self.dv)]
+                    out = self.layers[i](out)
+                if ('drop' in ll['name']):
+                    if self.first:
+                        self.layers += [torch.nn.Dropout(p=ll['drop'], inplace=False).to(self.dv)]
+                    out = self.layers[i](out)
+                if ('dense' in ll['name']):
+                    if self.first:
+                        in_dim=np.prod(out.shape[1:])
+                        out_dim=ll['num_units']
+                        self.layers+=[nn.Linear(in_dim,out_dim).to(self.dv)]
+                    out = out.reshape(out.shape[0], -1)
+                    out = self.layers[i](out)
+                    out = self.do_nonlinearity(ll, out)
+                if ('res' in ll['name']):
+                    if self.first:
+                        pd = np.int32np.floor(ll['filtersize'] / 2)
+                        self.layers += [torch.nn.Conv2d(inp_feats, ll['num_filters'], ll['filter_size'], stride=1, padding=pd).to(self.dv)]
+                    out_temp=self.layers[i](out)
+                    out+=out_temp
+                    out = self.do_nonlinearity(ll, out)
+                    inp_feats = ll['num_filters']
+
+        if self.first:
+            self.first = False
+            if (self.optimizer_type == 'Adam'):
+                self.optimizer = optim.Adam(self.parameters(), lr=self.lr)
+            else:
+                self.optimizer = optim.SGD(self.parameters(), lr=self.lr)
+
+        return(out)
 
     # Apply sequence of conv layers up to the final one that will be determined later.
-    def forward(self,input):
+    def forward_old(self,input):
 
         out=input
         if (self.first):

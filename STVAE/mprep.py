@@ -4,16 +4,10 @@ from models_mix import STVAE_mix
 from models import STVAE
 from models_mix_by_class import STVAE_mix_by_class
 import numpy as np
-import os
 import sys
-import argparse
-import time
 from Conv_data import get_data
-from models import  get_scheduler
-import aux
-from class_on_hidden import train_new
 import network
-from classify import classify
+import model_parse
 
 def process_strings(args):
     strings={'opt_pre':'', 'mm_pre':'', 'opt_post':'', 'opt_mix':'', 'opt_class':'', 'cll':''}
@@ -65,6 +59,8 @@ def get_names(args):
 
 def get_network(device, sh,ARGS):
 
+    netpars=model_parse.process_parameters(ARGS.net_file)
+    ARGS.layers=netpars['layers']
     models=[]
     model=network.network(device,sh[1],sh[2],ARGS).to(device)
     models+=[model]

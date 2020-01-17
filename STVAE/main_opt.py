@@ -14,6 +14,7 @@ import aux
 from class_on_hidden import train_new
 import network
 import mprep
+import model_parse
 from classify import classify
 
 
@@ -99,6 +100,7 @@ os.environ['KMP_DUPLICATE_LIB_OK']='True'
 parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
     description='Variational Autoencoder with Spatial Transformation')
 
+
 args=aux.process_args(parser)
 ARGS, STRINGS, EX_FILES, SMS = mprep.get_names(args)
 
@@ -146,9 +148,10 @@ if (run_existing and not reinit):
         model.load_state_dict(SMS[0]['model.state.dict'])
         aux.make_images(DATA[2],model,EX_FILES[0],args)
     elif network:
-        model = models[0]
-        model.load_state_dict(SMS[0]['model.state.dict'])
+
         if ('vae' in args.type):
+            model = models[0]
+            model.load_state_dict(SMS[0]['model.state.dict'])
             dat, HVARS = aux.prepare_recons(model, DATA, args)
             train_new(model, args, HVARS[0], HVARS[2], device)
         else:
