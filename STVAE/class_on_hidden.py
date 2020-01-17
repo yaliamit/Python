@@ -5,7 +5,7 @@ import time
 import network
 
 
-def train_new(model,args,train,test,device):
+def train_new(args,train,test,device):
 
     fout=sys.stdout
     print("In from hidden number of training",train[0].shape[0])

@@ -140,23 +140,22 @@ fout.flush()
 #     exit()
 
 if (run_existing and not reinit):
-    if (classify):
-        train_new(models[0],args,DATA,device)
-    elif sample:
+
+    if sample:
         model=models[0]
         model.load_state_dict(SMS[0]['model.state.dict'])
         aux.make_images(DATA[2],model,EX_FILES[0],args)
     elif network:
-
         if ('vae' in args.type):
             model = models[0]
             model.load_state_dict(SMS[0]['model.state.dict'])
             dat, HVARS = aux.prepare_recons(model, DATA, args)
-            train_new(model, args, HVARS[0], HVARS[2], device)
+            train_new(args, HVARS[0], HVARS[2], device)
         else:
             dat=DATA
-        args.type='net'
-        train_model(net_models[0], args, EX_FILES[0], dat, fout)
+        if hasattr(args,'layers'):
+            args.type='net'
+            train_model(net_models[0], args, EX_FILES[0], dat, fout)
     else:
         test_models(ARGS,SMS,DATA[2],fout)
 else:
@@ -164,7 +163,7 @@ else:
     train_model(models[0], ARGS[0], EX_FILES[0], DATA, fout)
     if ('vae' in args.type and args.network):
             dat,HVARS=aux.prepare_recons(models[0],DATA,args)
-            train_new(models[0], args, HVARS[0], HVARS[2], device)
+            train_new(args, HVARS[0], HVARS[2], device)
             args.type = 'net'
             train_model(net_models[0],args,EX_FILES[0],dat,fout)
 

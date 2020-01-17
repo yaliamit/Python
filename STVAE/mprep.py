@@ -59,6 +59,8 @@ def get_names(args):
 
 def process_network_line(line, global_drop):
     # break line on the ; each segment is a parameter for the layer of that line
+    if line[0]=='#':
+        return None
     sss = str.split(line, ';')
     lp = {}
     for ss in sss:
@@ -116,7 +118,9 @@ def get_network(device, sh,ARGS):
     if hasattr(ARGS,'layers'):
         LP=[]
         for line in ARGS.layers:
-            LP += [process_network_line(line, None)]
+            lp = process_network_line(line, None)
+            if lp is not None:
+                LP += [lp]
         ARGS.layers=LP
     models=[]
     model=network.network(device,sh[1],sh[2],ARGS,ARGS.layers).to(device)
@@ -124,7 +128,9 @@ def get_network(device, sh,ARGS):
     if  hasattr(ARGS,'hid_layers'):
         LP = []
         for line in ARGS.hid_layers:
-            LP += [process_network_line(line, None)]
+            lp=process_network_line(line, None)
+            if lp is not None:
+                LP += [lp]
         ARGS.hid_layers=LP
     return models
 
