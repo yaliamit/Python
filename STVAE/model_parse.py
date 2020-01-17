@@ -1,12 +1,4 @@
 #import parse_net_pars as pp
-import subprocess as commands
-import Conv_net_gpu
-import Conv_net_aux
-import tensorflow as tf
-from Conv_data import get_data, rotate_dataset_rand
-import numpy as np
-import time
-import matplotlib
 
 def process_param_line(line):
     # Split parameter line on :
