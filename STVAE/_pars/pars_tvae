@@ -11,3 +11,17 @@
 --nti=500
 --CONS
 --n_class=0
+--network
+--layers
+name:conv1;num_filters:32;filter_size:(3,3);non_linearity:relu
+name:pool1;pool_size:2
+name:conv2;num_filters:32;filter_size:(3,3);non_linearity:relu
+name:pool2;pool_size:2
+name:drop1;drop:0.5
+name:dense1;num_units:256;non_linearity:relu
+name:drop2;drop:0.7
+name:dense2;num_units:10
+--hid_layers
+name:dense1;num_units:256;non_linearity:relu
+name:dense2;num_units:256;non_linearity:relu
+name:dense3;num_units:10

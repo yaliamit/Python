@@ -6,7 +6,7 @@ from torch import nn, optim
 
 # Network module
 class network(nn.Module):
-    def __init__(self, device, x_dim, y_dim, args):
+    def __init__(self, device, x_dim, y_dim, args, layers):
         super(network, self).__init__()
 
         self.first=True
@@ -20,13 +20,8 @@ class network(nn.Module):
         #self.drops=args.drops # Drop fraction at each level of network
         self.optimizer_type=args.optimizer
         self.lr=args.lr
-        self.layer_text=args.layers
-        ff=len(args.Filts) # Number of filters = number of conv layers.
-        # Create list of convolution layers with the appropriate filter size, number of features etc.
-        #self.convs = nn.ModuleList([torch.nn.Conv2d(args.Feats[i], args.Feats[i+1],
-        #                                            args.Filts[i],stride=1,padding=np.int32(np.floor(args.Filts[i]/2)))
-        #                            for i in range(ff)])
-        #self.drop_layers=nn.ModuleList()
+        self.layer_text=layers
+
 
         # The loss function
         self.criterion=nn.CrossEntropyLoss()
@@ -45,8 +40,8 @@ class network(nn.Module):
         out = input
         if (self.first):
             self.layers = nn.ModuleList()
-
-        inp_feats=input.shape[1]
+        if (len(out.shape)==4):
+            inp_feats=input.shape[1]
         for i,ll in enumerate(self.layer_text):
                 if ('conv' in ll['name']):
                     if self.first:

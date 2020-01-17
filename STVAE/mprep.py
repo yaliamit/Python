@@ -7,7 +7,7 @@ import numpy as np
 import sys
 from Conv_data import get_data
 import network
-import model_parse
+
 
 def process_strings(args):
     strings={'opt_pre':'', 'mm_pre':'', 'opt_post':'', 'opt_mix':'', 'opt_class':'', 'cll':''}
@@ -57,14 +57,75 @@ def get_names(args):
 
     return ARGS, STRINGS, EX_FILES, SMS
 
+def process_network_line(line, global_drop):
+    # break line on the ; each segment is a parameter for the layer of that line
+    sss = str.split(line, ';')
+    lp = {}
+    for ss in sss:
+        # Split between parameter name and value
+        s = str.split(ss, ':')
+        #s1 = str.strip(s[1], ' \n')
+        # Process the parameter value
+        # A nonlinearity function
+        a = ''
+        # A number
+        s1 = str.strip(s[1], ' \n')
+        try:
+            a = float(s1)
+            if '.' not in s1:
+                a = int(s[1])
+        # A tuple, a list or the original string
+        except ValueError:
+            if '(' in s[1]:
+                aa = str.split(str.strip(s1, ' ()\n'), ',')
+                a = []
+                try:
+                    int(aa[0])
+                    for aaa in aa:
+                        a.append(int(aaa))
+                    a = tuple(a)
+                except ValueError:
+                    for aaa in aa:
+                        a.append(float(aaa))
+                    a = tuple(a)
+            elif '[' in s[1]:
+                aa = str.split(str.strip(s1, ' []\n'), ',')
+                a = []
+                for aaa in aa:
+                    a.append(aaa)
+            elif (s1 == 'None'):
+                a = None
+            elif (s1 == 'True'):
+                a = True
+            elif (s1 == 'False'):
+                a = False
+            else:
+                a = s1
+        # Add a global drop value to drop layers
+        s0 = str.strip(s[0], ' ')
+        if (s0 == 'drop' and global_drop is not None):
+            lp[s0] = global_drop
+        else:
+            lp[s0] = a
+    return (lp)
+
+
+
 def get_network(device, sh,ARGS):
 
-    netpars=model_parse.process_parameters(ARGS.net_file)
-    ARGS.layers=netpars['layers']
+    if hasattr(ARGS,'layers'):
+        LP=[]
+        for line in ARGS.layers:
+            LP += [process_network_line(line, None)]
+        ARGS.layers=LP
     models=[]
-    model=network.network(device,sh[1],sh[2],ARGS).to(device)
+    model=network.network(device,sh[1],sh[2],ARGS,ARGS.layers).to(device)
     models+=[model]
-
+    if  hasattr(ARGS,'hid_layers'):
+        LP = []
+        for line in ARGS.hid_layers:
+            LP += [process_network_line(line, None)]
+        ARGS.hid_layers=LP
     return models
 
 def get_models(device, fout, sh,STRINGS,ARGS, locs):

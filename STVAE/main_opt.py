@@ -14,7 +14,6 @@ import aux
 from class_on_hidden import train_new
 import network
 import mprep
-import model_parse
 from classify import classify
 
 

@@ -8,12 +8,6 @@ import scipy
 import matplotlib.colors as col
 
 def process_args(parser):
-    parser.add_argument('--Filts', type=int, default=(3,3), nargs="*",
-                        help='size of filters')  # filter sizes for each layer of network
-    parser.add_argument('--Feats', type=int, default=(1, 32, 32),nargs="*",
-                        help='number of filters')  # Number of features at each layer
-    parser.add_argument('--pools', type=int, default=(2, 2), nargs="*",help='pooling')  # Pooling for each layer
-    parser.add_argument('--drops', type=float, default=(0., 0., .5), nargs="*")  # Dropout for each layer
     parser.add_argument('--full_dim', type=int, default=256, help='fully connected layer size')
     parser.add_argument('--hid_hid', type=int, default=256, help='fully connected layer size')
     parser.add_argument('--hid_prob', type=float, default=0., help='dropout')
@@ -26,7 +20,8 @@ def process_args(parser):
     parser.add_argument('--input_channels', type=int, default=1, help='Number of input channels')
     parser.add_argument('--type', default='vae', help='type of transformation: aff or tps')
     parser.add_argument('--dataset', default='mnist', help='which data set')
-    parser.add_argument('--net_file', default='net', help='which network file')
+    parser.add_argument('--layers',  nargs="*", default=None, help='layer')
+    parser.add_argument('--hid_layers',  nargs="*", default=None, help='layer')
     parser.add_argument('--tps_num', type=int, default=3, help='dimension of s')
     parser.add_argument('--sdim', type=int, default=26, help='dimension of s')
     parser.add_argument('--hdim', type=int, default=256, help='dimension of h')
