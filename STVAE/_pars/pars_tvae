@@ -4,7 +4,7 @@
 --num_train=5000
 --num_hlayers=1
 --nepoch=200
---transformation=affine
+--transformation=aff
 --mb_size=500
 --lr=.005
 --nval=0
