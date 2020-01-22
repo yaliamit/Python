@@ -11,7 +11,6 @@
 --nti=500
 --CONS
 --n_class=0
---network
 --layers
 name:conv1;num_filters:32;filter_size:(3,3);non_linearity:relu
 name:pool1;pool_size:2
