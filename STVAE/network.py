@@ -6,13 +6,11 @@ from torch import nn, optim
 
 # Network module
 class network(nn.Module):
-    def __init__(self, device, x_dim, y_dim, args, layers):
+    def __init__(self, device,  args, layers):
         super(network, self).__init__()
 
         self.first=True
         self.bsz=args.mb_size # Batch size - gets multiplied by number of shifts so needs to be quite small.
-        self.x_dim=x_dim # Dimensions of all images.
-        self.y_dim=y_dim
         #self.full_dim=args.full_dim
         self.dv=device
         self.n_class=args.n_class
@@ -77,6 +75,11 @@ class network(nn.Module):
                     inp_feats = ll['num_filters']
 
         if self.first:
+            tot_pars = 0
+            for keys, vals in self.state_dict().items():
+                print(keys + ',' + str(np.array(vals.shape)) + '\n')
+                tot_pars += np.prod(np.array(vals.shape))
+            print('tot_pars,' + str(tot_pars) + '\n')
             self.first = False
             if (self.optimizer_type == 'Adam'):
                 self.optimizer = optim.Adam(self.parameters(), lr=self.lr)
@@ -133,6 +136,7 @@ class network(nn.Module):
         dr_i += 1
         if self.first:
             self.l_out=nn.Linear(out_dim,self.n_class).to(self.dv)
+
             self.first=False
             if (self.optimizer_type == 'Adam'):
                 self.optimizer = optim.Adam(self.parameters(), lr=self.lr)
@@ -193,12 +197,23 @@ class network(nn.Module):
         # Loop over batches.
         jump=self.bsz
         targ_in=targ
-
+        pars=self.optimizer.param_groups[0]['params']
         for j in np.arange(0, num_tr, jump,dtype=np.int32):
             data = (torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
             target = torch.from_numpy(targ_in[j:j + jump]).to(self.dv)
             target=target.type(torch.int64)
-
+            # if (d_type=="train"):
+            #   for i in range(0,len(pars),2):
+            #     pars[i].requires_grad=True
+            #     pars[i+1].requires_grad=True
+            #     for k in range(i):
+            #         pars[k].requires_grad=False
+            #     for k in range(i+2,len(pars)):
+            #         pars[k].requires_grad=False
+            #     for t in range(10):
+            #         loss, acc = self.loss_and_grad(data, target, d_type)
+            #         print(j,t,loss,acc)
+            # else:
             loss, acc= self.loss_and_grad(data, target, d_type)
             full_loss += loss.item()
             full_acc += acc.item()

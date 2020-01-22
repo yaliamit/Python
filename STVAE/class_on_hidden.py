@@ -3,6 +3,7 @@ import sys
 import numpy as np
 import time
 import network
+import torch
 
 
 def train_new(args,train,test,device):
@@ -13,7 +14,9 @@ def train_new(args,train,test,device):
     print(str(args))
     val = None
 
-    net=network.network(device,train[0].shape[1],0,args,args.hid_layers).to(device)
+    net=network.network(device,args,args.hid_layers).to(device)
+    temp=torch.zeros(1,train[0].shape[1])
+    bb=net.forward(temp)
     # tot_pars = 0
     # for keys, vals in net.state_dict().items():
     #     fout.write(keys + ',' + str(np.array(vals.shape)) + '\n')
