@@ -32,7 +32,7 @@ def train_new(args,train,test,device):
         if (val is not None):
                 net.run_epoch(val,epoch, type='val',fout=fout)
         if (np.mod(epoch,10)==9 or epoch==0):
-            fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
+            fout.write('epoch: {0} in {1:5.3f} seconds'.format(epoch,time.time()-t1))
             fout.flush()
 
 

@@ -88,64 +88,6 @@ class network(nn.Module):
 
         return(out)
 
-    # Apply sequence of conv layers up to the final one that will be determined later.
-    def forward_old(self,input):
-
-        out=input
-        if (self.first):
-            self.pool_layers=[]
-            #self.drop_layers=[]
-        dr_i=0
-        if (self.first):
-            print(out.shape)
-        for i, cc in enumerate(self.convs):
-
-            out=cc(out)
-
-            if (self.pools[i]>1):
-                if (self.first):
-                    pp = torch.fmod(torch.tensor(out.shape), self.pools[i])
-                    self.pool_layers+=[nn.MaxPool2d(self.pools[i],padding=tuple(pp[2:4])).to(self.dv)]
-                out=self.pool_layers[i](out)
-            else:
-                if (self.first):
-                    self.pool_layers+=[None]
-            out = F.relu(out)
-            if (self.first):
-                print(out.shape)
-            if (self.first):
-                    self.drop_layers+=[torch.nn.Dropout(p=self.drops[dr_i], inplace=False)]
-            out=self.drop_layers[dr_i](out)
-
-            dr_i+=1
-            # Relu non-linearity at each level.
-
-
-        if self.first:
-            in_dim=out.shape[1]*out.shape[2]*out.shape[3]
-            out_dim=self.full_dim
-            self.pre_l_out=nn.Linear(in_dim,out_dim).to(self.dv)
-
-        out = out.reshape(out.shape[0],-1)
-        out=self.pre_l_out(out)
-        out=F.relu(out)
-        if self.first:
-                self.drop_layers += [torch.nn.Dropout(p=self.drops[dr_i], inplace=False)]
-        out = self.drop_layers[dr_i](out)
-
-        dr_i += 1
-        if self.first:
-            self.l_out=nn.Linear(out_dim,self.n_class).to(self.dv)
-
-            self.first=False
-            if (self.optimizer_type == 'Adam'):
-                self.optimizer = optim.Adam(self.parameters(), lr=self.lr)
-            else:
-                self.optimizer = optim.SGD(self.parameters(), lr=self.lr)
-        out=self.l_out(out)
-        # Concatenate the padding
-        return(out)
-
 
 
         # Get loss and accuracy (all characters and non-space characters).
