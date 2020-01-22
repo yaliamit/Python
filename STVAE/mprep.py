@@ -124,7 +124,7 @@ def get_network(device, sh,ARGS):
         ARGS.layers=LP
     models=[]
     model=network.network(device,ARGS,ARGS.layers).to(device)
-    temp=torch.zeros(1,1,sh[2],sh[3])
+    temp=torch.zeros(1,1,sh[2],sh[3]).to(device)
     bb=model.forward(temp)
     models+=[model]
     if  hasattr(ARGS,'hid_layers'):
