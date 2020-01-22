@@ -77,9 +77,9 @@ class network(nn.Module):
         if self.first:
             tot_pars = 0
             for keys, vals in self.state_dict().items():
-                print(keys + ',' + str(np.array(vals.shape)) + '\n')
+                print(keys + ',' + str(np.array(vals.shape)))
                 tot_pars += np.prod(np.array(vals.shape))
-            print('tot_pars,' + str(tot_pars) + '\n')
+            print('tot_pars,' + str(tot_pars))
             self.first = False
             if (self.optimizer_type == 'Adam'):
                 self.optimizer = optim.Adam(self.parameters(), lr=self.lr)
