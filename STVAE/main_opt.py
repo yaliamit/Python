@@ -164,8 +164,8 @@ else:
     if ('vae' in args.type and args.network):
             dat,HVARS=aux.prepare_recons(models[0],DATA,args)
             train_new(args, HVARS[0], HVARS[2], device)
-            args.type = 'net'
-            train_model(net_models[0],args,EX_FILES[0],dat,fout)
+            #args.type = 'net'
+            #train_model(net_models[0],args,EX_FILES[0],dat,fout)
 
 # trainMU=None;trainLOGVAR=None;trainPI=None
 # if args.classify:
