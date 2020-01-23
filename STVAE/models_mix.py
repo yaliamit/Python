@@ -427,7 +427,7 @@ class STVAE_mix(models.STVAE):
 
             with torch.no_grad():
                 s_mu, s_var, _ = self.encoder_mix(inp)
-            self.pi=self.get_pi_from_max(s_mu, s_var, inp, None)
+                self.pi=self.get_pi_from_max(s_mu, s_var, inp_d, None)
         else:
             s_mu, s_var, pi = self.encoder_mix(inp)
 
