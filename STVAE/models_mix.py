@@ -412,6 +412,7 @@ class STVAE_mix(models.STVAE):
             mu, logvar, ppi = self.initialize_mus(input, True)
 
         num_inp=input.shape[0]
+        print(num_inp)
         self.setup_id(num_inp)
         input = input.to(self.dv)
         inp = self.preprocess(input)
