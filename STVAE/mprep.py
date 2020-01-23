@@ -122,8 +122,13 @@ def get_network(device, sh,ARGS):
             if lp is not None:
                 LP += [lp]
         ARGS.layers=LP
+
+    layer_names_to_indices={}
+    for i,ll in enumerate(LP):
+        layer_names_to_indices[ll['name']]=i
+    ARGS.lnti=layer_names_to_indices
     models=[]
-    model=network.network(device,ARGS,ARGS.layers).to(device)
+    model=network.network(device,ARGS,ARGS.layers,ARGS.lnti).to(device)
     temp=torch.zeros(1,1,sh[2],sh[3]).to(device)
     bb=model.forward(temp)
     models+=[model]
@@ -134,6 +139,10 @@ def get_network(device, sh,ARGS):
             if lp is not None:
                 LP += [lp]
         ARGS.hid_layers=LP
+    layer_names_to_indices = {}
+    for i, ll in enumerate(LP):
+        layer_names_to_indices[ll['name']] = i
+    ARGS.hid_lnti=layer_names_to_indices
     return models
 
 def get_models(device, fout, sh,STRINGS,ARGS, locs):

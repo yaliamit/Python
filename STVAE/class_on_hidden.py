@@ -14,7 +14,7 @@ def train_new(args,train,test,device):
     print(str(args))
     val = None
 
-    net=network.network(device,args,args.hid_layers).to(device)
+    net=network.network(device,args,args.hid_layers, args.hid_lnti).to(device)
     temp=torch.zeros(1,train[0].shape[1]).to(device)
     bb=net.forward(temp)
     # tot_pars = 0

@@ -423,7 +423,7 @@ class STVAE_mix(models.STVAE):
                 self.compute_loss_and_grad(inp_d,input, None, 'test', self.optimizer_s, opt='mu')
             s_mu = self.mu
             s_var = self.logvar
-            #pi = torch.softmax(self.pi, dim=1)
+            pi = torch.softmax(self.pi, dim=1)
         elif self.only_pi:
 
             with torch.no_grad():
