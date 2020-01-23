@@ -141,7 +141,7 @@ def show_sampled_images(model,ex_file,clust=None):
 
 def show_reconstructed_images(test,model,ex_file,num_iter=None, cl=None, erd=False):
 
-    inp=torch.from_numpy(erode(erd,test[0][0:]))
+    inp=torch.from_numpy(erode(erd,test[0][0:100]))
 
 
     if (cl is not None):
