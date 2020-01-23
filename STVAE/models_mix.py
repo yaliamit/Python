@@ -415,28 +415,26 @@ class STVAE_mix(models.STVAE):
         self.setup_id(num_inp)
         input = input.to(self.dv)
         inp = self.preprocess(input)
+        inp_d=inp.detach()
         if self.opt:
             self.update_s(mu, logvar, ppi, self.mu_lr[0])
             for it in range(num_mu_iter):
-                self.compute_loss_and_grad(inp,input, None, 'test', self.optimizer_s, opt='mu')
+                self.compute_loss_and_grad(inp_d,input, None, 'test', self.optimizer_s, opt='mu')
             s_mu = self.mu
             s_var = self.logvar
-            pi = torch.softmax(self.pi, dim=1)
-        else:
+            #pi = torch.softmax(self.pi, dim=1)
+        elif self.only_pi:
 
             with torch.no_grad():
-                s_mu, s_var, pi = self.encoder_mix(inp)
-
-        if self.only_pi:
-            #self.update_s(mu, logvar, ppi, self.mu_lr[0])
-            #inp_d = inp.detach()
+                s_mu, s_var, _ = self.encoder_mix(inp)
             self.pi=self.get_pi_from_max(s_mu, s_var, inp, None)
-
+        else:
+            s_mu, s_var, pi = self.encoder_mix(inp)
 
             # for it in range(num_mu_iter):
             #     self.compute_loss_and_grad_mu(inp_d, s_mu, s_var, None, 'test', self.optimizer_s,
             #                                   opt='mu')
-            pi = torch.softmax(self.pi, dim=1)
+        pi = torch.softmax(self.pi, dim=1)
 
         ss_mu = s_mu.reshape(-1, self.n_mix, self.s_dim).transpose(0,1)
         #ss_mu = ss_mu+.5*torch.randn(ss_mu.shape).to(self.dv)
