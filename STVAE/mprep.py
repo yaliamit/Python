@@ -49,6 +49,16 @@ def get_names(args):
             strings, ex_file = process_strings(args)
             STRINGS += [strings]
             EX_FILES += [ex_file]
+    elif (args.rerun):
+        strings, ex_file = process_strings(args)
+        sm = torch.load('_output/' + ex_file + '.pt', map_location='cpu')
+        SMS += [sm]
+        if ('args' in sm):
+            args = sm['args']
+        ARGS+=[args]
+        STRINGS += [strings]
+        EX_FILES += [ex_file]
+
     else:
         ARGS.append(args)
         strings, ex_file = process_strings(args)

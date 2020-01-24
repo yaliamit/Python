@@ -66,6 +66,7 @@ def process_args(parser):
     parser.add_argument('--Diag', action='store_true', help='Output to consol')
     parser.add_argument('--output_cont', action='store_true', help='cont data')
     parser.add_argument('--erode', action='store_true', help='cont data')
+    parser.add_argument('--rerun', action='store_true', help='cont data')
 
     parser.add_argument('--sep', action='store_true', help='Output to consol')
     parser.add_argument('--reinit', action='store_true', help='reinitialize part of trained model')

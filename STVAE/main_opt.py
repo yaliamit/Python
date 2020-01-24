@@ -102,7 +102,8 @@ parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
 
 args=aux.process_args(parser)
 ARGS, STRINGS, EX_FILES, SMS = mprep.get_names(args)
-
+if args.rerun:
+    args.run_existing=True
 # Get data device and output file
 fout, device, DATA= mprep.setups(args, EX_FILES)
 
@@ -153,9 +154,9 @@ if (run_existing and not reinit):
             train_new(args, HVARS[0], HVARS[2], device)
         else:
             dat=DATA
-        if hasattr(args,'layers'):
-            args.type='net'
-            train_model(net_models[0], args, EX_FILES[0], dat, fout)
+        # if hasattr(args,'layers'):
+        #     args.type='net'
+        #     train_model(net_models[0], args, EX_FILES[0], dat, fout)
     else:
         test_models(ARGS,SMS,DATA[2],fout)
 else:
