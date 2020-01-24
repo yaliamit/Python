@@ -23,7 +23,7 @@ class network(nn.Module):
 
         # The loss function
         self.criterion=nn.CrossEntropyLoss()
-        self.criterion_shift=nn.CrossEntropyLoss(reduce=False)
+        self.criterion_shift=nn.CrossEntropyLoss()
 
     def do_nonlinearity(self,ll,out):
 
