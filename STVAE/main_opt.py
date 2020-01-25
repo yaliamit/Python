@@ -14,6 +14,7 @@ import aux
 from class_on_hidden import train_new
 import network
 import mprep
+from model_cluster_labels import assign_cluster_labels
 from classify import classify
 
 
@@ -147,16 +148,18 @@ if (run_existing and not reinit):
         model.load_state_dict(SMS[0]['model.state.dict'])
         aux.make_images(DATA[2],model,EX_FILES[0],args)
     elif network:
-        if ('vae' in args.type):
+        if 'vae' in args.type:
             model = models[0]
             model.load_state_dict(SMS[0]['model.state.dict'])
             dat, HVARS = aux.prepare_recons(model, DATA, args)
+
+            assign_cluster_labels(args,HVARS[0],HVARS[2])
             train_new(args, HVARS[0], HVARS[2], device)
         else:
             dat=DATA
-        # if hasattr(args,'layers'):
-        #     args.type='net'
-        #     train_model(net_models[0], args, EX_FILES[0], dat, fout)
+        if hasattr(args,'layers'):
+            args.type='net'
+            train_model(net_models[0], args, EX_FILES[0], dat, fout)
     else:
         test_models(ARGS,SMS,DATA[2],fout)
 else:

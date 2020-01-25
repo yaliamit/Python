@@ -459,7 +459,7 @@ class STVAE_mix(models.STVAE):
         recon=recon_batch.reshape(self.n_mix*num_inp,-1)
         rr=recon[kk]
 
-        return rr, torch.cat([s_mu, s_var],dim=1)
+        return rr, torch.cat([s_mu, s_var, pi],dim=1)
 
 
 
