@@ -152,8 +152,8 @@ if (run_existing and not reinit):
             model = models[0]
             model.load_state_dict(SMS[0]['model.state.dict'])
             dat, HVARS = aux.prepare_recons(model, DATA, args)
-            #assign_cluster_labels(args,HVARS[0],HVARS[2])
-            train_new(args, HVARS[0], HVARS[2], device)
+            assign_cluster_labels(args,HVARS[0],HVARS[2],fout)
+            #train_new(args, HVARS[0], HVARS[2], device)
         else:
             dat=DATA
         if hasattr(args,'layers') and not args.rerun:
