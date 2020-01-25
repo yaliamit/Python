@@ -156,7 +156,7 @@ if (run_existing and not reinit):
             train_new(args, HVARS[0], HVARS[2], device)
         else:
             dat=DATA
-        if hasattr(args,'layers'):
+        if hasattr(args,'layers' and not args.rerun):
             args.type='net'
             train_model(net_models[0], args, EX_FILES[0], dat, fout)
     else:
