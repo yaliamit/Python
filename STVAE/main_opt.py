@@ -153,7 +153,7 @@ if (run_existing and not reinit):
             model.load_state_dict(SMS[0]['model.state.dict'])
             dat, HVARS = aux.prepare_recons(model, DATA, args)
             assign_cluster_labels(args,HVARS[0],HVARS[2],fout)
-            #train_new(args, HVARS[0], HVARS[2], device)
+            train_new(args, HVARS[0], HVARS[2], device)
         else:
             dat=DATA
         if hasattr(args,'layers') and not args.rerun:
@@ -166,6 +166,7 @@ else:
     train_model(models[0], ARGS[0], EX_FILES[0], DATA, fout)
     if ('vae' in args.type and args.network):
             dat,HVARS=aux.prepare_recons(models[0],DATA,args)
+            assign_cluster_labels(args,HVARS[0],HVARS[2],fout)
             train_new(args, HVARS[0], HVARS[2], device)
             #args.type = 'net'
             #train_model(net_models[0],args,EX_FILES[0],dat,fout)
