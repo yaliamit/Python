@@ -17,7 +17,8 @@ def assign_cluster_labels(args,train,test,fout):
         # If more than one training data assigned to that cluster find the majority class label
         # in that cluster.
         if np.sum(maxpitr==c)>0:
-            cls[c]=np.argmax(np.unique(train[1][maxpitr==c],return_counts=True)[1])
+            uu=np.unique(train[1][maxpitr==c],return_counts=True)
+            cls[c]=uu[0][np.argmax(uu[1])]
             # Find how many test examples in this cluster have the label cls[c]
             correctte+=np.sum(test[1][maxpite==c]==cls[c])
             # Find how many train examples in this cluster have the label cls[c]
