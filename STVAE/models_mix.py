@@ -132,7 +132,7 @@ class STVAE_mix(models.STVAE):
             self.logvar = torch.autograd.Variable(logvar.to(self.dv), requires_grad=True)
         self.pi = torch.autograd.Variable(pi.to(self.dv), requires_grad=True)
         if (not self.only_pi):
-            self.optimizer_s = optim.Adam([self.mu, self.logvar,self.pi], lr=mu_lr,weight_decay=wd)
+            self.optimizer_s = optim.SGD([self.mu, self.logvar,self.pi], lr=mu_lr,weight_decay=wd)
         else:
             self.optimizer_s = optim.Adam([self.pi], lr=mu_lr,weight_decay=wd)
 
