@@ -381,8 +381,8 @@ class STVAE_mix(models.STVAE):
                     self.compute_loss_and_grad(data_d,data_in, target, d_type, self.optimizer_s, opt='mu')
             elif self.only_pi:
                 with torch.no_grad():
-                    s_mu, s_var, _ = self.encoder_mix(data)
-                self.pi=self.get_pi_from_max(s_mu, s_var, data,target)
+                    s_mu, s_var, _ = self.encoder_mix(data_d)
+                    self.pi=self.get_pi_from_max(s_mu, s_var, data,target)
                 #self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], pi[j:j + self.bsz], self.mu_lr[0])
                 #for it in range(num_mu_iter):
                 #        self.compute_loss_and_grad_mu(data_d, s_mu, s_var, target, d_type, self.optimizer_s, opt='mu')
@@ -425,7 +425,6 @@ class STVAE_mix(models.STVAE):
             s_var = self.logvar
             pi = torch.softmax(self.pi, dim=1)
         elif self.only_pi:
-
             with torch.no_grad():
                 s_mu, s_var, _ = self.encoder_mix(inp)
                 self.pi=self.get_pi_from_max(s_mu, s_var, inp_d, None)

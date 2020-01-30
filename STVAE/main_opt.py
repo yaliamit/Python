@@ -151,6 +151,7 @@ if (run_existing and not reinit):
         if 'vae' in args.type:
             model = models[0]
             model.load_state_dict(SMS[0]['model.state.dict'])
+            args=ARGS[0]
             dat, HVARS = aux.prepare_recons(model, DATA, args)
             assign_cluster_labels(args,HVARS[0],HVARS[2],fout)
             train_new(args, HVARS[0], HVARS[2], device)
