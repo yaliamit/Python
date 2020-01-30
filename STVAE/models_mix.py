@@ -426,7 +426,7 @@ class STVAE_mix(models.STVAE):
             pi = torch.softmax(self.pi, dim=1)
         elif self.only_pi:
             with torch.no_grad():
-                s_mu, s_var, _ = self.encoder_mix(inp)
+                s_mu, s_var, _ = self.encoder_mix(inp_d)
                 self.pi=self.get_pi_from_max(s_mu, s_var, inp_d, None)
                 pi = torch.softmax(self.pi, dim=1)
         else:
