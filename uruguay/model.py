@@ -30,14 +30,11 @@ class CLEAN(nn.Module):
         self.convs = nn.ModuleList([torch.nn.Conv2d(args.feats[i], args.feats[i+1],
                                                     args.filts[i],stride=1,padding=np.int32(np.floor(args.filts[i]/2)))
                                     for i in range(ff)])
-
+        self.final_layers=nn.ModuleList()
         # The loss function
         self.criterion=nn.CrossEntropyLoss(weight=self.weights,reduction='sum')
         self.criterion_shift=nn.CrossEntropyLoss(reduce=False)
-        if (args.optimizer == 'Adam'):
-            self.optimizer = optim.Adam(self.parameters(), lr=args.lr)
-        else:
-            self.optimizer = optim.SGD(self.parameters(), lr=args.lr)
+
 
     # Apply sequence of conv layers up to the final one that will be determined later.
     def forward_pre(self,input):
@@ -87,10 +84,14 @@ class CLEAN(nn.Module):
         if (self.first):
             # Define last conv layer that has as many output features as labels - this is the vector of
             # of outputs that go to the softmax to define label probs.
-            self.l_out=torch.nn.Conv2d(out.shape[1],args.ll,[self.sh[2],self.sh2a+1],stride=[1,self.sh2a]).to(self.dv)
+            self.final_layers+=[torch.nn.Conv2d(out.shape[1],args.ll,[self.sh[2],self.sh2a+1],stride=[1,self.sh2a]).to(self.dv)]
         # Apply last layer
-        out=self.l_out(out)
+        out=self.final_layers[-1](out)
         if (self.first):
+            if (args.optimizer == 'Adam'):
+                self.optimizer = optim.Adam(self.parameters(), lr=args.lr)
+            else:
+                self.optimizer = optim.SGD(self.parameters(), lr=args.lr)
             print('final shape',out.shape)
             self.first=False
 

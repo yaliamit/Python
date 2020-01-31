@@ -66,8 +66,7 @@ def train_model(model, args, ex_file, DATA, fout):
         t1 = time.time()
         tre = aux.erode(args.erode, train[0])
         tran = [train[0], tre, train[1]]
-        trainMU, trainLOGVAR, trPI = model.run_epoch(tran, epoch, args.num_mu_iter, trainMU, trainLOGVAR, trPI,
-                                                     d_type='train', fout=fout)
+        trainMU, trainLOGVAR, trPI = model.run_epoch(tran, epoch, args.num_mu_iter, trainMU, trainLOGVAR, trPI,d_type='train', fout=fout)
         if (val[0] is not None):
             model.run_epoch(val, epoch, args.nvi, valMU, valLOGVAR, valPI, d_type='val', fout=fout)
 
