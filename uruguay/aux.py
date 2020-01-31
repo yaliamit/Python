@@ -11,37 +11,23 @@ def process_args(parser):
     parser.add_argument('--T', type=int, default=[0,4], nargs="+", help='T') # Vertical shifts for data augmentation
     parser.add_argument('--S', type=int, default=[0, 2, 4, 6], nargs="+", help='S') # Horizontal shifts for data augmentation
     parser.add_argument('--Z', type=float, default=[.8,1.2], nargs="+", help='Z') # Scales for data augmentation
-    parser.add_argument('--drops', type=float, default=(1.,1.,1.,1.,1.)) # Dropout for each layer
+    parser.add_argument('--drops', type=float, default=(1.,1.,1.,1.,.5)) # Dropout for each layer
     parser.add_argument('--bsz', type=int, default=50, help='mb_size (default: 500)') # Batch size
     parser.add_argument('--nepoch', type=int, default=30, help='number of training epochs') # Number of epochs
-    parser.add_argument('--pre_nepoch', type=int, default=2, help='number of prior training epochs if OPT') # Number of epochs
-    parser.add_argument('--within_nepoch', type=int, default=3, help='number of internal training epochs if OPT') # Number of epochs
-    parser.add_argument('--get_shift_epochs', type=int, default=1000, help='number of epochs where you compute optimal shift if OPT') # Number of epochs
     parser.add_argument('--gpu', type=int, default=2, help='whether to run in the GPU') # Use gpu
-    parser.add_argument('--seed', type=int, default=15647, help='random seed (default: 1111)') # seed
+    parser.add_argument('--seed', type=int, default=1345, help='random seed (default: 1111)') # seed
     parser.add_argument('--num_train', type=int, default=60000, help='num train (default: 60000)') # number of training data
-    parser.add_argument('--select', type=int, default=0, help='select perturbations)') # number of training data
     parser.add_argument('--model', default='base', help='model (default: base)') # Name of output file for trained model
     parser.add_argument('--optimizer', default='Adam', help='Type of optimiser') # Type of optimization
     parser.add_argument('--lr', type=float, default=.001, help='Learning rate (default: .001)') # Learning rate
     parser.add_argument('--run_existing', action='store_true', help='Use existing model') # To run existing model (not implemented yet)
     parser.add_argument('--OPT', action='store_true', help='Optimization instead of encoding') # Find optimal alignment - currently not to be used
-    parser.add_argument('--merge', action='store_true', help='merge transformed versions into one input') # Find optimal alignment - currently not to be used
     parser.add_argument('--CONS', action='store_true', help='Output to consol') # Output to console
     parser.add_argument('--wd', action='store_true', help='Output to consol') # weight decay
     parser.add_argument('--output_prefix', default='', help='path to model') # Path to model.
 
     args = parser.parse_args()
     return (args)
-
-def image_from_text(x_dim,y_dim,text):
-    img = Image.new('L', (x_dim,y_dim), 0)
-    # imga = Image.fromarray(np.int8(trin[t,0,0:x_dim]*200))
-    draw = ImageDraw.Draw(img)
-    font = ImageFont.truetype("Arial.ttf", 16)
-    draw.text((0,0), text, 255, font=font)
-    out=np.array(img.getdata(), np.uint8).reshape(img.size[1], img.size[0])
-    return out
 
 # Save test images together with labels.
 def create_image(trin, TT, x_dim, ex_file):
@@ -74,7 +60,7 @@ def create_image(trin, TT, x_dim, ex_file):
                 page+=[COL]
             manifold = np.concatenate(page, axis=1)
             imlist.append(Image.fromarray(manifold))
-        imlist[0].save("_Images/"+ex_file+".tif", compression="tiff_deflate", save_all=True,
+        imlist[0].save("_Images/test.tif", compression="tiff_deflate", save_all=True,
                        append_images=imlist[1:])
 
         #if not os.path.isfile('_Images'):
@@ -83,50 +69,9 @@ def create_image(trin, TT, x_dim, ex_file):
 
         print("Saved the sampled images")
 
-def nums_to_text(msmx,aa, lenc):
-    msmx=np.array(msmx)
-    msmx=np.int32(msmx).ravel()
-    ttmx = np.array([aa[i] for i in msmx]).reshape(-1,lenc)
-    return ttmx
-
-def show_shifts(tin_s, tin, msmx, rx, x_dim, ex_file, aa, lenc):
-
-    msmx=nums_to_text(msmx,aa, lenc)
-    rx=nums_to_text(rx,aa, lenc)
-    ll = len(tin_s) // 63 * 63
-    t = 0
-    imlist = []
-    while (t < ll):
-        page = []
-        for j in range(7):
-            col = []
-            for i in range(9):
-                if (t < ll):
-                    aa=np.zeros((3*tin.shape[2]+3,tin.shape[3]+2))
-                    aa[1:1+tin.shape[2],1:tin.shape[3]+1]=tin[t,0]
-                    aa[2+tin.shape[2]:2+2*tin.shape[2],1:(tin.shape[3]+1)]=tin_s[t,0]
-                    text1=''.join(msmx[t])
-                    text2=''.join(rx[t])
-                    text=text1+'\n'+text2
-                    bb=image_from_text(tin.shape[3],tin.shape[2],text)
-                    aa[2+2*tin.shape[2]:2+3*tin.shape[2],1:(tin.shape[3]+1)]=255-bb
-                    col += [255 - np.uint8(aa)]
-                    t += 1
-                else:
-                    col += [np.ones((x_dim + 20, 85)) * 255]
-
-            COL = np.concatenate(col, axis=0)
-            page += [COL]
-        manifold = np.concatenate(page, axis=1)
-        imlist.append(Image.fromarray(manifold))
-    imlist[0].save("_Images/" + ex_file + ".tif", compression="tiff_deflate", save_all=True,
-                   append_images=imlist[1:])
-
-    print("Saved the sampled images")
-
 
 # Read in data
-def get_data(args, fout):
+def get_data(args,lst):
     with h5py.File('pairs.hdf5', 'r') as f:
         #key = list(f.keys())[0]
         # Get the data
@@ -172,22 +117,11 @@ def get_data(args, fout):
         print("hello")
         args.aa=aa
 
-    fout.write('num train ' + str(train_data.shape[0]) + '\n')
-    fout.write('num test ' + str(test_data.shape[0]) + '\n')
-
-    x_dim = np.int32(train_data[0].shape[1])
-    y_dim = train_data[0].shape[2]
-
-    # Add axis for pytorch modules
-    train_data = train_data[:, :, 0:x_dim, :]
-    test_data = test_data[:, :, 0:x_dim, :]
-
-    return train_data, train_text, test_data, test_text, aa, x_dim, y_dim
+    return train_data, train_text, test_data, test_text
 
 # Create shifts and scales of data.
-def add_shifts_new(input,input_text, args):
-    S=args.S; T=args.T; Z=args.Z
-    lst = len(args.S) * len(args.T) * (len(args.Z) + 1)
+def add_shifts_new(input,S,T,Z=[]):
+
     if (len(S)==1 and len(T)==1):
         input_s=input
     else:
@@ -220,14 +154,5 @@ def add_shifts_new(input,input_text, args):
                 input_s[llst,:]=np.concatenate((input_s[llst,:,:,s:],255*np.ones((len(llst),ss[1],ss[2],s),dtype=np.uint8)),axis=3)
                 input_s[llst,:]=np.concatenate((input_s[llst,:,t:,:],255*np.ones((len(llst),ss[1],t,ss[3]),dtype=np.uint8)),axis=2)
 
-        input_text_shift = np.repeat(input_text, lst, axis=0)
-        if (args.merge):
-            input_s=input_s.reshape(-1,lst,input_s.shape[2],input_s.shape[3])
-            input_text_shift=input_text
-            feats=np.array(args.feats)
-            feats[0]=lst
-            args.feats=list(feats)
-        else:
-            input_text_shift = np.repeat(input_text, lst, axis=0)
 
-    return input_s, input_text_shift
+    return input_s
