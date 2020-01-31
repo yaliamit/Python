@@ -100,6 +100,7 @@ class STVAE_mix(models.STVAE):
 
         self.rho = nn.Parameter(torch.zeros(self.n_mix),requires_grad=False)
 
+
         if (args.optimizer=='Adam'):
                 ppd = []
                 # ppd=self.decoder_mix.state_dict()
