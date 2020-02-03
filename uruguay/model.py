@@ -265,19 +265,22 @@ scheduler=model.get_scheduler(args)
 if (scheduler is not None):
             scheduler.step()
 
+if (args.run_existing):
+    model.load_state_dict(torch.load(args.output_prefix + '_output/' + args.model + '.pt', map_location=device))
+else:
 # Loop over epochs
-for epoch in range(args.nepoch):
+    for epoch in range(args.nepoch):
 
-    t1=time.time()
-    # If optimizing over shifts and scales for each image
+        t1=time.time()
+        # If optimizing over shifts and scales for each image
 
-    model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
-    # Then test on original test set.
-    model.run_epoch(test_data, test_text, epoch, fout, 'test')
+        model.run_epoch(train_data_shift, train_text_shift, epoch, fout, 'train')
+        # Then test on original test set.
+        model.run_epoch(test_data, test_text, epoch, fout, 'test')
 
-    #fout.write('test: in {:5.3f} seconds\n'.format(time.time()-t3))
-    fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
-    fout.flush()
+        #fout.write('test: in {:5.3f} seconds\n'.format(time.time()-t3))
+        fout.write('epoch: {0} in {1:5.3f} seconds\n'.format(epoch,time.time()-t1))
+        fout.flush()
 
 # Run one more time on test
 

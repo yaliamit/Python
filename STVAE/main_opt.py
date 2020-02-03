@@ -67,8 +67,8 @@ def train_model(model, args, ex_file, DATA, fout):
         tre = aux.erode(args.erode, train[0])
         tran = [train[0], tre, train[1]]
         trainMU, trainLOGVAR, trPI = model.run_epoch(tran, epoch, args.num_mu_iter, trainMU, trainLOGVAR, trPI,d_type='train', fout=fout)
-        if (val[0] is not None):
-            model.run_epoch(val, epoch, args.nvi, valMU, valLOGVAR, valPI, d_type='val', fout=fout)
+        # if (val[0] is not None):
+        #     model.run_epoch(val, epoch, args.nvi, valMU, valLOGVAR, valPI, d_type='val', fout=fout)
 
         fout.write('{0:5.3f}s'.format(time.time() - t1))
         fout.flush()
@@ -156,20 +156,22 @@ if (run_existing and not reinit):
             train_new(args, HVARS[0], HVARS[2], device)
         else:
             dat=DATA
-        if hasattr(args,'layers') and not args.rerun:
+        if args.layers is not None and not args.rerun:
             args.type='net'
             train_model(net_models[0], args, EX_FILES[0], dat, fout)
     else:
         test_models(ARGS,SMS,DATA[2],fout)
 else:
     #if ('vae' in args.type):
-    train_model(models[0], ARGS[0], EX_FILES[0], DATA, fout)
-    if ('vae' in args.type and args.network):
-            dat,HVARS=aux.prepare_recons(models[0],DATA,args)
-            assign_cluster_labels(args,HVARS[0],HVARS[2],fout)
-            train_new(args, HVARS[0], HVARS[2], device)
+    if 'vae' in args.type:
+        train_model(models[0], ARGS[0], EX_FILES[0], DATA, fout)
+        dat,HVARS=aux.prepare_recons(models[0],DATA,args)
+        assign_cluster_labels(args,HVARS[0],HVARS[2],fout)
+        if args.hid_layers is not None:
+                train_new(args, HVARS[0], HVARS[2], device)
             #args.type = 'net'
-            #train_model(net_models[0],args,EX_FILES[0],dat,fout)
+    else:
+        train_model(net_models[0],args,EX_FILES[0],DATA,fout)
 
 # trainMU=None;trainLOGVAR=None;trainPI=None
 # if args.classify:

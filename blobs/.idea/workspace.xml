@@ -34,7 +34,7 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/blobs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="372">
+            <state relative-caret-position="386">
               <caret line="191" selection-start-line="191" selection-end-line="191" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
@@ -46,7 +46,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/_pars/blob_train.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="79">
+            <state relative-caret-position="285">
               <caret line="19" column="14" selection-start-line="19" selection-start-column="14" selection-end-line="25" selection-end-column="8" />
             </state>
           </provider>
@@ -76,7 +76,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/blob_optim.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="327">
+            <state relative-caret-position="1005">
               <caret line="68" column="13" selection-start-line="68" selection-start-column="13" selection-end-line="68" selection-end-column="13" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
@@ -178,7 +178,6 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="230" />
     <option name="y" value="46" />
     <option name="width" value="1280" />
     <option name="height" value="701" />
@@ -295,6 +294,9 @@
       <module name="blobs" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -503,16 +505,18 @@
       <workItem from="1578420264361" duration="2952000" />
       <workItem from="1578882419961" duration="9000" />
       <workItem from="1580495442402" duration="398000" />
+      <workItem from="1580524236429" duration="8000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="172790000" />
+    <option name="totallyTimeSpent" value="172798000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="230" y="46" width="1280" height="701" extended-state="0" />
+    <frame x="0" y="46" width="1280" height="701" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" order="0" visible="true" weight="0.3368336" />
+      <window_info id="Project" order="0" visible="true" weight="0.34248787" />
       <window_info id="Structure" order="1" weight="0.25288832" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -813,30 +817,10 @@ py.show()</expression-string>
     <entry file="file://$PROJECT_DIR$/_pars/deep_train.txt">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/generate_images.py">
+    <entry file="file://$PROJECT_DIR$/blobs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5925">
-          <caret line="401" column="5" selection-start-line="401" selection-start-column="5" selection-end-line="401" selection-end-column="5" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/network.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4320">
-          <caret line="291" column="61" selection-start-line="291" selection-start-column="47" selection-end-line="291" selection-end-column="61" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/blob_optim.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="327">
-          <caret line="68" column="13" selection-start-line="68" selection-start-column="13" selection-end-line="68" selection-end-column="13" />
+        <state relative-caret-position="386">
+          <caret line="191" selection-start-line="191" selection-end-line="191" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
@@ -845,7 +829,7 @@ py.show()</expression-string>
     </entry>
     <entry file="file://$PROJECT_DIR$/_pars/blob_train.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="79">
+        <state relative-caret-position="285">
           <caret line="19" column="14" selection-start-line="19" selection-start-column="14" selection-end-line="25" selection-end-column="8" />
         </state>
       </provider>
@@ -857,10 +841,30 @@ py.show()</expression-string>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/blobs.py">
+    <entry file="file://$PROJECT_DIR$/generate_images.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="372">
-          <caret line="191" selection-start-line="191" selection-end-line="191" />
+        <state relative-caret-position="5925">
+          <caret line="401" column="5" selection-start-line="401" selection-start-column="5" selection-end-line="401" selection-end-column="5" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/blob_optim.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1005">
+          <caret line="68" column="13" selection-start-line="68" selection-start-column="13" selection-end-line="68" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/network.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4320">
+          <caret line="291" column="61" selection-start-line="291" selection-start-column="47" selection-end-line="291" selection-end-column="61" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>

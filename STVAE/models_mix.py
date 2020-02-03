@@ -180,8 +180,8 @@ class STVAE_mix(models.STVAE):
         var=sd*sd
 
         # Sum along last coordinate to get negative log density of each component.
-        KD_dens=-0.5 * torch.sum(1 + s_logvar - s_mu ** 2 - var, dim=2)
-        KD_disc=lpi+torch.log(torch.tensor(n_mix,dtype=torch.float))
+        KD_dens=-0.5 * torch.sum(1 + s_logvar - s_mu ** 2 - var, dim=2) # +KL(N(\mu,\si)| N(0,1))
+        KD_disc=lpi+torch.log(torch.tensor(n_mix,dtype=torch.float)) # +KL(\pi,unif(1/n_mix))
         KD = torch.sum(pi * (KD_dens + KD_disc), dim=1)
         tot=torch.sum(KD)
 
@@ -279,13 +279,6 @@ class STVAE_mix(models.STVAE):
         optim.zero_grad()
         pi = torch.softmax(self.pi, dim=1)
         recloss, tot = self.get_loss(data,targ, mu,logvar,pi,rng)
-
-        # if (self.feats and not opt=='mu' and not self.feats_back):
-        #     #out=self.conv(self.ID)
-        #     #dd=self.deconv(out[:,:,0:self.ndim:2,0:self.ndim:2])
-        #     dd=self.conv.bkwd(data)
-        #     rec=self.lamda1*torch.sum((dd-data_orig)*(dd-data_orig))
-        #    tot+=rec
 
         loss = recloss + tot
 

@@ -40,6 +40,7 @@ class network(nn.Module):
         if (self.first):
             self.layers = nn.ModuleList()
         OUTS=[]
+
         for i,ll in enumerate(self.layer_text):
                 inp_ind = i - 1
                 if ('parent' in ll):
@@ -50,7 +51,6 @@ class network(nn.Module):
                         inp_feats=self.layer_text[inp_ind]['num_filters']
                         in_dim=in_dims[inp_ind]
                     else:
-
                         inp_feats=[]
                         loc_in_dims=[]
                         inp_ind=[]
@@ -66,15 +66,18 @@ class network(nn.Module):
                         self.layers+=[torch.nn.Conv2d(inp_feats,ll['num_filters'],ll['filter_size'],stride=1,padding=pd).to(self.dv)]
                     out = self.layers[i-1](OUTS[inp_ind])
                     OUTS += [self.do_nonlinearity(ll,out)]
+
                 if ('pool' in ll['name']):
                     if self.first:
                         pp = np.mod(out.shape, ll['pool_size'])
                         self.layers += [nn.MaxPool2d(ll['pool_size'], padding=tuple(pp[2:4])).to(self.dv)]
                     OUTS += [self.layers[i-1](OUTS[inp_ind])]
+
                 if ('drop' in ll['name']):
                     if self.first:
                         self.layers += [torch.nn.Dropout(p=ll['drop'], inplace=False).to(self.dv)]
                     OUTS += [self.layers[i-1](OUTS[inp_ind])]
+
                 if ('dense' in ll['name']):
                     if self.first:
                         out_dim=ll['num_units']
@@ -83,12 +86,18 @@ class network(nn.Module):
                     out = out.reshape(out.shape[0], -1)
                     out = self.layers[i-1](out)
                     OUTS += [self.do_nonlinearity(ll, out)]
+
                 if ('res' in ll['name']):
                     if self.first:
-                        pd = np.int32np.floor(ll['filtersize'] / 2)
-                        self.layers += [torch.nn.Conv2d(inp_feats, ll['num_filters'], ll['filter_size'], stride=1, padding=pd).to(self.dv)]
-                    out_temp=self.layers[i-1](OUTS[inp_ind])
-                    out+=out_temp
+                        pd=tuple(np.int32(np.floor(np.array(ll['filter_size'])/2)))
+                        reslay=nn.Sequential(
+                                torch.nn.Conv2d(inp_feats, ll['num_filters'], ll['filter_size'], stride=1, padding=pd).to(self.dv),
+                                torch.nn.Conv2d(ll['num_filters'], ll['num_filters'], 1, stride=1, padding=0).to(self.dv)
+                        )
+                        self.layers+=[reslay]
+                    out_temp=self.layers[i-1][0](OUTS[inp_ind])
+                    out_temp1=self.layers[i-1][1](out_temp)
+                    out=out_temp+out_temp1
                     OUTS += [self.do_nonlinearity(ll, out)]
                 if ('opr' in ll['name']):
                     if 'add' in ll['name']:
@@ -97,7 +106,6 @@ class network(nn.Module):
                         out = self.layers[i-1](out)
                         OUTS+=[out]
                         inp_feats=out.shape[1]
-
                 if ('num_filters' in ll):
                     inp_feats = ll['num_filters']
                 in_dim = np.prod(OUTS[-1].shape[1:])
@@ -111,8 +119,13 @@ class network(nn.Module):
                 tot_pars += np.prod(np.array(vals.shape))
             print('tot_pars,' + str(tot_pars))
             self.first = False
+            # TEMPORARY
+            pp=[]
+            for p in self.parameters():
+                pp+=[p]
+            del pp[-2:]
             if (self.optimizer_type == 'Adam'):
-                self.optimizer = optim.Adam(self.parameters(), lr=self.lr)
+                self.optimizer = optim.Adam(pp, lr=self.lr)
             else:
                 self.optimizer = optim.SGD(self.parameters(), lr=self.lr)
 

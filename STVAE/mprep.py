@@ -139,20 +139,20 @@ def get_network(device, sh,ARGS):
     ARGS.lnti=layer_names_to_indices
     models=[]
     model=network.network(device,ARGS,ARGS.layers,ARGS.lnti).to(device)
-    temp=torch.zeros(1,1,sh[2],sh[3]).to(device)
+    temp=torch.zeros(1,sh[1],sh[2],sh[3]).to(device)
     bb=model.forward(temp)
     models+=[model]
-    if  hasattr(ARGS,'hid_layers'):
+    if  ARGS.hid_layers is not None:
         LP = []
         for line in ARGS.hid_layers:
             lp=process_network_line(line, None)
             if lp is not None:
                 LP += [lp]
         ARGS.hid_layers=LP
-    layer_names_to_indices = {}
-    for i, ll in enumerate(LP):
-        layer_names_to_indices[ll['name']] = i
-    ARGS.hid_lnti=layer_names_to_indices
+        layer_names_to_indices = {}
+        for i, ll in enumerate(LP):
+            layer_names_to_indices[ll['name']] = i
+        ARGS.hid_lnti=layer_names_to_indices
     return models
 
 def get_models(device, fout, sh,STRINGS,ARGS, locs):
