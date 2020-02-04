@@ -92,9 +92,9 @@ class network(nn.Module):
                 if ('norm') in ll['name']:
                     if self.first:
                         if len(OUTS[-1].shape)==4:
-                            self.layers+=[torch.nn.BatchNorm2d(OUTS[-1].shape[1])]
+                            self.layers+=[torch.nn.BatchNorm2d(OUTS[-1].shape[1]).to(self.dv)]
                         else:
-                            self.layers += [torch.nn.BatchNorm1d(OUTS[-1].shape[1])]
+                            self.layers += [torch.nn.BatchNorm1d(OUTS[-1].shape[1]).to(self.dv)]
                     OUTS+=[self.layers[i-1](OUTS[inp_ind])]
                 if ('res' in ll['name']):
                     if self.first:
