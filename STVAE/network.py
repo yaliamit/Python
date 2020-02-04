@@ -61,11 +61,13 @@ class network(nn.Module):
                             loc_in_dims+=[in_dims[inp_ind[-1]]]
                 if ('input' in ll['name']):
                     OUTS+=[input]
+
                 if ('conv' in ll['name']):
                     if self.first:
                         pd=tuple(np.int32(np.floor(np.array(ll['filter_size'])/2)))
                         self.layers+=[torch.nn.Conv2d(inp_feats,ll['num_filters'],ll['filter_size'],stride=1,padding=pd).to(self.dv)]
                     out = self.layers[i-1](OUTS[inp_ind])
+
                     OUTS += [self.do_nonlinearity(ll,out)]
 
                 if ('pool' in ll['name']):
@@ -87,7 +89,13 @@ class network(nn.Module):
                     out = out.reshape(out.shape[0], -1)
                     out = self.layers[i-1](out)
                     OUTS += [self.do_nonlinearity(ll, out)]
-
+                if ('norm') in ll['name']:
+                    if self.first:
+                        if len(OUTS[-1].shape)==4:
+                            self.layers+=[torch.nn.BatchNorm2d(OUTS[-1].shape[1])]
+                        else:
+                            self.layers += [torch.nn.BatchNorm1d(OUTS[-1].shape[1])]
+                    OUTS+=[self.layers[i-1](OUTS[inp_ind])]
                 if ('res' in ll['name']):
                     if self.first:
                         pd=tuple(np.int32(np.floor(np.array(ll['filter_size'])/2)))
@@ -109,6 +117,8 @@ class network(nn.Module):
                         inp_feats=out.shape[1]
                 if ('num_filters' in ll):
                     inp_feats = ll['num_filters']
+                if self.first:
+                    print(ll['name'],OUTS[-1].shape)
                 in_dim = np.prod(OUTS[-1].shape[1:])
                 in_dims+=[in_dim]
 
