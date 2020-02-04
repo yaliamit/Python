@@ -9,6 +9,7 @@ class network(nn.Module):
     def __init__(self, device,  args, layers, lnti):
         super(network, self).__init__()
 
+        self.del_last=args.del_last
         self.first=True
         self.bsz=args.mb_size # Batch size - gets multiplied by number of shifts so needs to be quite small.
         #self.full_dim=args.full_dim
@@ -123,7 +124,8 @@ class network(nn.Module):
             pp=[]
             for p in self.parameters():
                 pp+=[p]
-            del pp[-2:]
+            if self.del_last:
+                del pp[-2:]
             if (self.optimizer_type == 'Adam'):
                 self.optimizer = optim.Adam(pp, lr=self.lr)
             else:
