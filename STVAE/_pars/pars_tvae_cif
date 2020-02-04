@@ -1,5 +1,6 @@
 --type=tvae
 --n_mix=20
+--dataset=cifar10
 --sdim=18
 --num_train=5000
 --network_num_train=1000
