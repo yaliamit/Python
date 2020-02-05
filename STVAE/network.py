@@ -40,6 +40,26 @@ class residual_block(nn.Module):
 
         return out
 
+class residual_block_small(nn.Module):
+    def __init__(self, in_channels, out_channels, dv, stride=1,pd=0):
+        super(residual_block, self).__init__()
+
+        self.in_channels=in_channels
+        self.out_channels=out_channels
+        self.conv1=torch.nn.Conv2d(in_channels, out_channels, 3, stride=stride, padding=pd).to(dv)
+        self.conv2=torch.nn.Conv2d(out_channels, out_channels, 1, stride=1, padding=0).to(dv)
+
+
+    def forward(self,inp):
+
+        out1=self.conv1(inp)
+        out=self.conv2(out1)
+        out+=out1
+
+        return out
+
+
+
 
 # Network module
 class network(nn.Module):
@@ -140,7 +160,7 @@ class network(nn.Module):
                         #         torch.nn.Conv2d(inp_feats, ll['num_filters'], ll['filter_size'], stride=1, padding=pd).to(self.dv),
                         #         torch.nn.Conv2d(ll['num_filters'], ll['num_filters'], 1, stride=1, padding=0).to(self.dv)
                         # )
-                        self.layers+=[residual_block(inp_feats,ll['num_filters'],self.dv,stride=1,pd=pd)]
+                        self.layers+=[residual_block_small(inp_feats,ll['num_filters'],self.dv,stride=1,pd=pd)]
                     out=self.layers[i-1](out)
                     #out_temp=self.layers[i-1][0](OUTS[inp_ind])
                     #out_temp1=self.layers[i-1][1](out_temp)
