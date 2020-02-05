@@ -42,7 +42,7 @@ class residual_block(nn.Module):
 
 class residual_block_small(nn.Module):
     def __init__(self, in_channels, out_channels, dv, stride=1,pd=0):
-        super(residual_block, self).__init__()
+        super(residual_block_small, self).__init__()
 
         self.in_channels=in_channels
         self.out_channels=out_channels
