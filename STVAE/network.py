@@ -4,6 +4,39 @@ import torch.nn.functional as F
 from torch import nn, optim
 
 
+class residual_block(nn.Module):
+    def __init__(self, in_channels, out_channels, dv, stride=1,pd=0):
+        super(residual_block, self).__init__()
+
+        self.in_channels=in_channels
+        self.out_channels=out_channels
+        self.a=False
+        self.conv1=torch.nn.Conv2d(in_channels, out_channels, 3, stride=stride, padding=pd).to(dv)
+        self.bn1=torch.nn.BatchNorm2d(out_channels).to(dv)
+        self.conv2=torch.nn.Conv2d(out_channels, out_channels, 1, stride=1, padding=0).to(dv)
+        self.bn2=torch.nn.BatchNorm2d(out_channels).to(dv)
+
+        if in_channels!=out_channels:
+            self.conv1a=torch.nn.Conv2d(in_channels, out_channels, 3, stride=stride, padding=pd).to(dv)
+            self.a=True
+
+    def forward(self,inp):
+
+        out=self.conv1(inp)
+        out=self.bn1(out)
+        out=F.relu(out)
+        out=self.conv2(out)
+        out=self.bn2(out)
+        out=F.relu(out)
+
+        if self.a:
+            inp=self.conv1a(inp)
+
+        out+=inp
+
+        return out
+
+
 # Network module
 class network(nn.Module):
     def __init__(self, device,  args, layers, lnti):
@@ -99,14 +132,15 @@ class network(nn.Module):
                 if ('res' in ll['name']):
                     if self.first:
                         pd=tuple(np.int32(np.floor(np.array(ll['filter_size'])/2)))
-                        reslay=nn.Sequential(
-                                torch.nn.Conv2d(inp_feats, ll['num_filters'], ll['filter_size'], stride=1, padding=pd).to(self.dv),
-                                torch.nn.Conv2d(ll['num_filters'], ll['num_filters'], 1, stride=1, padding=0).to(self.dv)
-                        )
-                        self.layers+=[reslay]
-                    out_temp=self.layers[i-1][0](OUTS[inp_ind])
-                    out_temp1=self.layers[i-1][1](out_temp)
-                    out=out_temp+out_temp1
+                        # reslay=nn.Sequential(
+                        #         torch.nn.Conv2d(inp_feats, ll['num_filters'], ll['filter_size'], stride=1, padding=pd).to(self.dv),
+                        #         torch.nn.Conv2d(ll['num_filters'], ll['num_filters'], 1, stride=1, padding=0).to(self.dv)
+                        # )
+                        self.layers+=[residual_block(inp_feats,ll['num_filters'],self.dv,stride=1,pd=pd)]
+                    out=self.layers[i-1](out)
+                    #out_temp=self.layers[i-1][0](OUTS[inp_ind])
+                    #out_temp1=self.layers[i-1][1](out_temp)
+                    #out=out_temp+out_temp1
                     OUTS += [self.do_nonlinearity(ll, out)]
                 if ('opr' in ll['name']):
                     if 'add' in ll['name']:
