@@ -197,8 +197,8 @@ class network(nn.Module):
         # Get output of network
         out=self.forward(input)
 
-        if (d_type == 'train'):
-            self.optimizer.zero_grad()
+        #if (d_type == 'train'):
+        self.optimizer.zero_grad()
         # Compute loss and accuracy
         loss, acc=self.get_acc_and_loss(out,target)
 
@@ -223,12 +223,11 @@ class network(nn.Module):
         trin = train[0][ii]
         targ = train[2][ii]
         self.n_class=np.max(targ)+1
-        full_loss=0; full_acc=0; full_acca=0; full_numa=0; full_accc=0
-        rmx=[]
+        full_loss=0; full_acc=0;
         # Loop over batches.
         jump=self.bsz
         targ_in=targ
-        pars=self.optimizer.param_groups[0]['params']
+
         for j in np.arange(0, num_tr, jump,dtype=np.int32):
             data = (torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
             target = torch.from_numpy(targ_in[j:j + jump]).to(self.dv)
