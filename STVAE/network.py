@@ -233,18 +233,6 @@ class network(nn.Module):
             data = (torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
             target = torch.from_numpy(targ_in[j:j + jump]).to(self.dv)
             target=target.type(torch.int64)
-            # if (d_type=="train"):
-            #   for i in range(0,len(pars),2):
-            #     pars[i].requires_grad=True
-            #     pars[i+1].requires_grad=True
-            #     for k in range(i):
-            #         pars[k].requires_grad=False
-            #     for k in range(i+2,len(pars)):
-            #         pars[k].requires_grad=False
-            #     for t in range(10):
-            #         loss, acc = self.loss_and_grad(data, target, d_type)
-            #         print(j,t,loss,acc)
-            # else:
             loss, acc= self.loss_and_grad(data, target, d_type)
             full_loss += loss.item()
             full_acc += acc.item()

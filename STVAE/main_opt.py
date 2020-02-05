@@ -51,6 +51,9 @@ def train_model(model, args, ex_file, DATA, fout):
     fout.write("Num train:{0}\n".format(DATA[0][0].shape[0]))
     train=DATA[0]; val=DATA[1]; test=DATA[2]
     trainMU=None; trainLOGVAR=None; trPI=None
+    testMU=None; testLOGVAR=None; testPI=None
+    valMU=None; valLOGVAR=None; valPI=None
+
     if 'vae' in args.type:
         trainMU, trainLOGVAR, trPI = model.initialize_mus(train[0], args.OPT)
         valMU, valLOGVAR, valPI = model.initialize_mus(val[0], args.OPT)
@@ -59,6 +62,8 @@ def train_model(model, args, ex_file, DATA, fout):
     scheduler = get_scheduler(args, model)
 
     tes = [test[0], test[0], test[1]]
+    if (val[0] is not None):
+        vall=[val[0],val[0],val[1]]
     for epoch in range(args.nepoch):
 
         if (scheduler is not None):
@@ -67,15 +72,17 @@ def train_model(model, args, ex_file, DATA, fout):
         tre = aux.erode(args.erode, train[0])
         tran = [train[0], tre, train[1]]
         trainMU, trainLOGVAR, trPI = model.run_epoch(tran, epoch, args.num_mu_iter, trainMU, trainLOGVAR, trPI,d_type='train', fout=fout)
-        # if (val[0] is not None):
-        #     model.run_epoch(val, epoch, args.nvi, valMU, valLOGVAR, valPI, d_type='val', fout=fout)
+        if (val[0] is not None):
+             model.run_epoch(vall, epoch, args.nvi, valMU, valLOGVAR, valPI, d_type='val', fout=fout)
 
         fout.write('{0:5.3f}s'.format(time.time() - t1))
         fout.flush()
 
     fout.write('writing to ' + ex_file + '\n')
 
-
+    if 'net' in args.type:
+        torch.save({'args': args,
+                    'model.state.dict': model.state_dict()}, '_output/network.pt')
     if 'vae' in args.type:
         torch.save({'args': args,
                     'model.state.dict': model.state_dict()}, '_output/' + ex_file + '.pt')
