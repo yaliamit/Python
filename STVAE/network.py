@@ -161,7 +161,7 @@ class network(nn.Module):
                         #         torch.nn.Conv2d(ll['num_filters'], ll['num_filters'], 1, stride=1, padding=0).to(self.dv)
                         # )
                         self.layers+=[residual_block_small(inp_feats,ll['num_filters'],self.dv,stride=1,pd=pd)]
-                    out=self.layers[i-1](out)
+                    out=self.layers[i-1](OUTS[inp_ind])
                     #out_temp=self.layers[i-1][0](OUTS[inp_ind])
                     #out_temp1=self.layers[i-1][1](out_temp)
                     #out=out_temp+out_temp1
