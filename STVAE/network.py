@@ -3,6 +3,10 @@ import torch
 import torch.nn.functional as F
 from torch import nn, optim
 
+import contextlib
+@contextlib.contextmanager
+def dummy_context_mgr():
+    yield None
 
 class residual_block(nn.Module):
     def __init__(self, in_channels, out_channels, dv, stride=1,pd=0):
@@ -197,8 +201,8 @@ class network(nn.Module):
         # Get output of network
         out=self.forward(input)
 
-        #if (d_type == 'train'):
-        self.optimizer.zero_grad()
+        if (d_type == 'train'):
+            self.optimizer.zero_grad()
         # Compute loss and accuracy
         loss, acc=self.get_acc_and_loss(out,target)
 
@@ -232,7 +236,8 @@ class network(nn.Module):
             data = (torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
             target = torch.from_numpy(targ_in[j:j + jump]).to(self.dv)
             target=target.type(torch.int64)
-            loss, acc= self.loss_and_grad(data, target, d_type)
+            with torch.no_grad() if (d_type!='train') else dummy_context_mgr():
+                loss, acc= self.loss_and_grad(data, target, d_type)
             full_loss += loss.item()
             full_acc += acc.item()
         if (np.mod(epoch,10)==9 or epoch==0):
