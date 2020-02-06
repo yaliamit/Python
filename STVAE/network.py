@@ -122,21 +122,24 @@ class network(nn.Module):
                 if ('conv' in ll['name']):
                     if self.first:
                         pd=tuple(np.int32(np.floor(np.array(ll['filter_size'])/2)))
-                        self.layers+=[torch.nn.Conv2d(inp_feats,ll['num_filters'],ll['filter_size'],stride=1,padding=pd).to(self.dv)]
-                    out = self.layers[i-1](OUTS[inp_ind])
-
+                        self.layers.add_module(ll['name'],torch.nn.Conv2d(inp_feats,ll['num_filters'],ll['filter_size'],stride=1,padding=pd).to(self.dv))
+                        #self.layers+=[torch.nn.Conv2d(inp_feats,ll['num_filters'],ll['filter_size'],stride=1,padding=pd).to(self.dv)]
+                    out=getattr(self.layers, ll['name'])(OUTS[inp_ind])
                     OUTS += [self.do_nonlinearity(ll,out)]
 
                 if ('pool' in ll['name']):
                     if self.first:
                         pp = np.mod(out.shape, ll['pool_size'])
-                        self.layers += [nn.MaxPool2d(ll['pool_size'], padding=tuple(pp[2:4])).to(self.dv)]
-                    OUTS += [self.layers[i-1](OUTS[inp_ind])]
+                        self.layers.add_module(ll['name'],nn.MaxPool2d(ll['pool_size'], padding=tuple(pp[2:4])).to(self.dv))
+                    out = getattr(self.layers, ll['name'])(OUTS[inp_ind])
+                    OUTS += [out]
 
                 if ('drop' in ll['name']):
                     if self.first:
-                        self.layers += [torch.nn.Dropout(p=ll['drop'], inplace=False).to(self.dv)]
-                    OUTS += [self.layers[i-1](OUTS[inp_ind])]
+                        self.layers.add_module(ll['name'],torch.nn.Dropout(p=ll['drop'], inplace=False).to(self.dv))
+                    out = getattr(self.layers, ll['name'])(OUTS[inp_ind])
+                    OUTS += [out]
+                    #OUTS += [self.layers[i-1](OUTS[inp_ind])]
 
                 if ('dense' in ll['name']):
                     if self.first:
@@ -156,15 +159,8 @@ class network(nn.Module):
                 if ('res' in ll['name']):
                     if self.first:
                         pd=tuple(np.int32(np.floor(np.array(ll['filter_size'])/2)))
-                        # reslay=nn.Sequential(
-                        #         torch.nn.Conv2d(inp_feats, ll['num_filters'], ll['filter_size'], stride=1, padding=pd).to(self.dv),
-                        #         torch.nn.Conv2d(ll['num_filters'], ll['num_filters'], 1, stride=1, padding=0).to(self.dv)
-                        # )
                         self.layers+=[residual_block(inp_feats,ll['num_filters'],self.dv,stride=1,pd=pd)]
                     out=self.layers[i-1](OUTS[inp_ind])
-                    #out_temp=self.layers[i-1][0](OUTS[inp_ind])
-                    #out_temp1=self.layers[i-1][1](out_temp)
-                    #out=out_temp+out_temp1
                     OUTS += [self.do_nonlinearity(ll, out)]
                 if ('opr' in ll['name']):
                     if 'add' in ll['name']:
@@ -183,8 +179,11 @@ class network(nn.Module):
         out = OUTS[-1]
         if self.first:
             tot_pars = 0
+            KEYS=[]
             for keys, vals in self.state_dict().items():
                 print(keys + ',' + str(np.array(vals.shape)))
+                if 'running' not in keys and 'tracked' not in keys:
+                    KEYS+=[keys]
                 tot_pars += np.prod(np.array(vals.shape))
             print('tot_pars,' + str(tot_pars))
             self.first = False
