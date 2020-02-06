@@ -122,7 +122,7 @@ class network(nn.Module):
                 if ('conv' in ll['name']):
                     if self.first:
                         pd=tuple(np.int32(np.floor(np.array(ll['filter_size'])/2)))
-                        self.layers.add_module(ll['name'],torch.nn.Conv2d(inp_feats,ll['num_filters'],ll['filter_size'],stride=1,padding=pd).to(self.dv))
+                        self.add_module(ll['name'],torch.nn.Conv2d(inp_feats,ll['num_filters'],ll['filter_size'],stride=1,padding=pd).to(self.dv))
                         #self.layers+=[torch.nn.Conv2d(inp_feats,ll['num_filters'],ll['filter_size'],stride=1,padding=pd).to(self.dv)]
                     out=getattr(self.layers, ll['name'])(OUTS[inp_ind])
                     OUTS += [self.do_nonlinearity(ll,out)]
