@@ -144,29 +144,30 @@ class network(nn.Module):
                 if ('dense' in ll['name']):
                     if self.first:
                         out_dim=ll['num_units']
-                        self.layers+=[nn.Linear(in_dim,out_dim).to(self.dv)]
+                        self.layers.add_module(ll['name'],nn.Linear(in_dim,out_dim).to(self.dv))
                     out=OUTS[inp_ind]
                     out = out.reshape(out.shape[0], -1)
-                    out = self.layers[i-1](out)
+                    out = getattr(self.layers, ll['name'])(out)
                     OUTS += [self.do_nonlinearity(ll, out)]
                 if ('norm') in ll['name']:
                     if self.first:
                         if len(OUTS[-1].shape)==4:
-                            self.layers+=[torch.nn.BatchNorm2d(OUTS[-1].shape[1]).to(self.dv)]
+                            self.layers.add_module(ll['name'],torch.nn.BatchNorm2d(OUTS[-1].shape[1]).to(self.dv))
                         else:
-                            self.layers += [torch.nn.BatchNorm1d(OUTS[-1].shape[1]).to(self.dv)]
-                    OUTS+=[self.layers[i-1](OUTS[inp_ind])]
+                            self.layers.add_module(ll['name'],torch.nn.BatchNorm1d(OUTS[-1].shape[1]).to(self.dv))
+                    out = getattr(self.layers, ll['name'])(OUTS[inp_ind])
+                    OUTS += [out]
                 if ('res' in ll['name']):
                     if self.first:
                         pd=tuple(np.int32(np.floor(np.array(ll['filter_size'])/2)))
-                        self.layers+=[residual_block(inp_feats,ll['num_filters'],self.dv,stride=1,pd=pd)]
-                    out=self.layers[i-1](OUTS[inp_ind])
+                        self.layers.add_module(ll['name'],residual_block(inp_feats,ll['num_filters'],self.dv,stride=1,pd=pd))
+                    out = getattr(self.layers, ll['name'])(OUTS[inp_ind])
                     OUTS += [self.do_nonlinearity(ll, out)]
                 if ('opr' in ll['name']):
                     if 'add' in ll['name']:
-                        self.layers += [torch.nn.Identity()]
+                        #self.layers.add_module += [torch.nn.Identity()]
                         out = OUTS[inp_ind[0]]+OUTS[inp_ind[1]]
-                        out = self.layers[i-1](out)
+                        #out = self.layers[i-1](out)
                         OUTS+=[out]
                         inp_feats=out.shape[1]
                 if ('num_filters' in ll):
