@@ -194,6 +194,8 @@ class network(nn.Module):
                 if ('final' in k):
                     print('TO optimizer',k,p.shape)
                     pp+=[p]
+                else:
+                    p.requires_grad=False
 
             if (self.optimizer_type == 'Adam'):
                 self.optimizer = optim.Adam(pp, lr=self.lr)
