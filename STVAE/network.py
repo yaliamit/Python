@@ -192,6 +192,7 @@ class network(nn.Module):
             pp=[]
             for k,p in zip(KEYS,self.parameters()):
                 if ('final' in k):
+                    print('TO optimizer',k,p.shape)
                     pp+=[p]
 
             if (self.optimizer_type == 'Adam'):
