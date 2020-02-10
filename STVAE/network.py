@@ -195,8 +195,8 @@ class network(nn.Module):
                  if ('conv2' in k or 'dense1' in k):
                      print('TO optimizer',k,p.shape)
                      pp+=[p]
-                 #else:
-                 #    p.requires_grad=False
+                 else:
+                     p.requires_grad=False
 
             if (self.optimizer_type == 'Adam'):
                 self.optimizer = optim.Adam(pp, lr=self.lr)
