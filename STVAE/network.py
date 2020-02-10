@@ -190,12 +190,12 @@ class network(nn.Module):
             self.first = False
             # TEMPORARY
             pp=[]
-            for k,p in zip(KEYS,self.parameters()):
-                if ('final' in k):
-                    print('TO optimizer',k,p.shape)
-                    pp+=[p]
-                else:
-                    p.requires_grad=False
+            # for k,p in zip(KEYS,self.parameters()):
+            #     if ('final' in k or 'res1' in k):
+            #         print('TO optimizer',k,p.shape)
+            #         pp+=[p]
+            #     else:
+            #         p.requires_grad=False
 
             if (self.optimizer_type == 'Adam'):
                 self.optimizer = optim.Adam(pp, lr=self.lr)
