@@ -190,10 +190,10 @@ class network(nn.Module):
             self.first = False
             # TEMPORARY
             pp=[]
-            for p in self.parameters():
-                pp+=[p]
-            if self.del_last:
-                del pp[-2:]
+            for k,p in zip(KEYS,self.parameters()):
+                if ('final' in k):
+                    pp+=[p]
+
             if (self.optimizer_type == 'Adam'):
                 self.optimizer = optim.Adam(pp, lr=self.lr)
             else:
