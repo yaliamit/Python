@@ -192,6 +192,7 @@ class network(nn.Module):
             pp=[]
             for k,p in zip(KEYS,self.parameters()):
                  #if ('final' in k or 'res1' in k):
+                 if ('conv2' in k or 'dense1' in k):
                      print('TO optimizer',k,p.shape)
                      pp+=[p]
                  #else:
