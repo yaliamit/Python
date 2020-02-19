@@ -1,4 +1,6 @@
---type=tvae
+--type=net
+--network
+--nval=0
 --n_mix=20
 --dataset=cifar10
 --sdim=18
@@ -14,6 +16,7 @@
 --CONS
 --n_class=0
 --embedd
+--optimizer=SGD
 --layers
 name:input;num_filters:3
 name:res1;num_filters:32;filter_size:(3,3);non_linearity:relu
