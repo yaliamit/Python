@@ -205,10 +205,10 @@ class network(nn.Module):
                      p.requires_grad=False
 
             if (self.optimizer_type == 'Adam'):
-                print('Optimizer Adam')
+                print('Optimizer Adam',self.lr)
                 self.optimizer = optim.Adam(pp, lr=self.lr,weight_decay=self.wd)
             else:
-                print('Optimizer SGD')
+                print('Optimizer SGD',self.lr)
                 self.optimizer = optim.SGD(self.parameters(), lr=self.lr,weight_decay=self.wd)
 
         return(out,OUTS[-2])
@@ -227,16 +227,35 @@ class network(nn.Module):
 
     def get_embedd_loss(self,out0,out1,targ):
 
-        out0 #-=torch.mean(out0,dim=1).reshape(-1,1)
-        out1 #-=torch.mean(out1,dim=1).reshape(-1,1)
+        out0#-=torch.mean(out0,dim=1).reshape(-1,1)
+        out1#-=torch.mean(out1,dim=1).reshape(-1,1)
+        COV=torch.mm(out0,out1.transpose(0,1))
+
+        sd0 = torch.sqrt(torch.sum(out0 * out0, dim=1)).reshape(-1, 1)
+        sd1 = torch.sqrt(torch.sum(out1 * out1, dim=1)).reshape(1, -1)
+        SDS=torch.mm(sd0,sd1)
+        COV=COV/SDS
+        lecov=torch.logsumexp(COV,dim=1)-torch.diag(COV).reshape(1,-1)
+        loss=torch.sum(lecov)
+        ID=2.*torch.eye(out0.shape[0])-1.
+        icov=ID*COV
+        # ll=torch.log(1.+torch.exp(icov))
+        # loss=torch.sum(-icov+ll)
+        acc=torch.sum(icov>0)
+        return loss,acc
+
+
+    def get_embedd_loss_a(self,out0,out1,targ):
+
+        out0-=torch.mean(out0,dim=1).reshape(-1,1)
+        out1-=torch.mean(out1,dim=1).reshape(-1,1)
         sd0=torch.sqrt(torch.sum(out0*out0,dim=1)).reshape(-1,1)
         sd1=torch.sqrt(torch.sum(out1*out1,dim=1)).reshape(-1,1)
-        cors=.01*torch.sum(out0*out1/(sd0*sd1),dim=1)
-        ll=torch.log(1.+torch.exp(cors))
-        tcors=targ.type(torch.float32)*cors
+        cors=targ.type(torch.float32)*torch.sum(out0 * out1 / (sd0 * sd1), dim=1)
+        tcors = targ.type(torch.float32) * cors
+        ll=torch.log(1.+torch.exp(tcors))
         loss=torch.sum(-tcors+ll)
-        #cors=targ.type(torch.float32)*torch.sum(out0*out1,dim=1)
-        #loss=torch.sum(F.relu(1-cors))
+        #loss=torch.sum(F.relu(1-tcors))
         #loss=torch.sum(torch.log(1+torch.exp(-2*cors)))
         acc=torch.sum((cors>0) & (targ>0))+torch.sum((cors<0) & (targ<=0))
         return loss, acc
@@ -249,8 +268,8 @@ class network(nn.Module):
 
         # Get output of network
         if type(input) is list:
-            out0,_=self.forward(input[0])
-            out1,_=self.forward(input[1])
+            out0,ot0=self.forward(input[0])
+            out1,ot1=self.forward(input[1])
 
             loss, acc = self.get_embedd_loss(out0,out1,target)
             # WW=0
@@ -287,24 +306,26 @@ class network(nn.Module):
         if (self.embedd):
             np.random.shuffle(ii)
             jumpd=np.int32(num_tr/2)
-            trin_def=rotate_dataset_rand(trin.transpose(0,2,3,1),0,0).transpose(0,3,1,2)
-            train_new_a=np.zeros_like(trin)
-            train_new_b=np.zeros_like(trin)
-            train_new_a[0:jumpd]=trin[ii[0:jumpd]]
-            train_new_b[0:jumpd]=trin_def[ii[0:jumpd]]
-            jj=ii[jumpd:].copy()
-            np.random.shuffle(jj)
-            train_new_a[jumpd:]=trin[ii[jumpd:]]
-            train_new_b[jumpd:]=trin_def[jj]
-            #imga = create_img(train_new_a, 1, 28, 28, 10, 10)
-            #imgb = create_img(train_new_b, 1, 28, 28, 10, 10)
+            trin_def=rotate_dataset_rand(trin.transpose(0,2,3,1),20,0.5).transpose(0,3,1,2)
+            train_new_a=trin
+            train_new_b=trin_def
+            # train_new_a=np.zeros_like(trin)
+            # train_new_b=np.zeros_like(trin)
+            # train_new_a[0:jumpd]=trin[ii[0:jumpd]]
+            # train_new_b[0:jumpd]=trin_def[ii[0:jumpd]]
+            # jj=ii[jumpd:].copy()
+            # np.random.shuffle(jj)
+            # train_new_a[jumpd:]=trin[ii[jumpd:]]
+            # train_new_b[jumpd:]=trin_def[jj]
+            # #imga = create_img(train_new_a, 1, 28, 28, 10, 10)
+            # #imgb = create_img(train_new_b, 1, 28, 28, 10, 10)
             targ=np.zeros(num_tr)
-            targ[0:jumpd]=np.ones(jumpd)
-            kk = np.arange(0, num_tr, 1)
-            np.random.shuffle(kk)
-            train_new_a=train_new_a[kk]
-            train_new_b=train_new_b[kk]
-            targ=targ[kk]
+            # targ[0:jumpd]=np.ones(jumpd)
+            # kk = np.arange(0, num_tr, 1)
+            # np.random.shuffle(kk)
+            # train_new_a=train_new_a[kk]
+            # train_new_b=train_new_b[kk]
+            # targ=targ[kk]
             #imga=create_img(train_new_a,1,28,28,10,10)
             #imgb=create_img(train_new_b,1,28,28,10,10)
 
