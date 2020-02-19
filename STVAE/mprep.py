@@ -124,7 +124,7 @@ def process_network_line(line, global_drop):
 
 
 def get_network(device, sh,ARGS):
-
+    models=[]
     if hasattr(ARGS,'layers'):
         LP=[]
         for line in ARGS.layers:
@@ -132,17 +132,17 @@ def get_network(device, sh,ARGS):
             if lp is not None:
                 LP += [lp]
         ARGS.layers=LP
+        LP[0]['num_filters']=sh[1]
+        layer_names_to_indices={}
+        for i,ll in enumerate(LP):
+            layer_names_to_indices[ll['name']]=i
+        ARGS.lnti=layer_names_to_indices
 
-    layer_names_to_indices={}
-    for i,ll in enumerate(LP):
-        layer_names_to_indices[ll['name']]=i
-    ARGS.lnti=layer_names_to_indices
-    models=[]
-    model=network.network(device,ARGS,ARGS.layers,ARGS.lnti).to(device)
-    temp=torch.zeros(1,sh[1],sh[2],sh[3]).to(device)
-    bb=model.forward(temp)
-    models+=[model]
-    if  ARGS.hid_layers is not None:
+        model=network.network(device,ARGS,ARGS.layers,ARGS.lnti).to(device)
+        temp=torch.zeros(1,sh[1],sh[2],sh[3]).to(device)
+        bb=model.forward(temp)
+        models+=[model]
+    if  hasattr(ARGS,'hid_layers'):
         LP = []
         for line in ARGS.hid_layers:
             lp=process_network_line(line, None)
