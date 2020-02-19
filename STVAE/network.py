@@ -4,6 +4,7 @@ import torch.nn.functional as F
 from torch import nn, optim
 from Conv_data import rotate_dataset_rand
 import contextlib
+from aux import create_img
 @contextlib.contextmanager
 def dummy_context_mgr():
     yield None
@@ -146,7 +147,10 @@ class network(nn.Module):
                 if ('dense' in ll['name']):
                     if self.first:
                         out_dim=ll['num_units']
-                        self.layers.add_module(ll['name'],nn.Linear(in_dim,out_dim).to(self.dv))
+                        bis=True
+                        if ('nb' in ll):
+                            bis=False
+                        self.layers.add_module(ll['name'],nn.Linear(in_dim,out_dim,bias=bis).to(self.dv))
                     out=OUTS[inp_ind]
                     out = out.reshape(out.shape[0], -1)
                     out = getattr(self.layers, ll['name'])(out)
@@ -223,17 +227,18 @@ class network(nn.Module):
 
     def get_embedd_loss(self,out0,out1,targ):
 
-        out0#-=torch.mean(out0,dim=1).reshape(-1,1)
-        out1#-=torch.mean(out1,dim=1).reshape(-1,1)
+        out0 #-=torch.mean(out0,dim=1).reshape(-1,1)
+        out1 #-=torch.mean(out1,dim=1).reshape(-1,1)
         sd0=torch.sqrt(torch.sum(out0*out0,dim=1)).reshape(-1,1)
         sd1=torch.sqrt(torch.sum(out1*out1,dim=1)).reshape(-1,1)
-        cors=targ.type(torch.float32)*torch.sum(out0*out1/(sd0*sd1),dim=1)
+        cors=.01*torch.sum(out0*out1/(sd0*sd1),dim=1)
+        ll=torch.log(1.+torch.exp(cors))
+        tcors=targ.type(torch.float32)*cors
+        loss=torch.sum(-tcors+ll)
         #cors=targ.type(torch.float32)*torch.sum(out0*out1,dim=1)
-        loss=torch.sum(F.relu(1-cors))
+        #loss=torch.sum(F.relu(1-cors))
         #loss=torch.sum(torch.log(1+torch.exp(-2*cors)))
-        #loss=-torch.mean(out0*out1/(sd0*sd1))
-        #loss=torch.mean(diff*diff)
-        acc=torch.sum(cors>0)
+        acc=torch.sum((cors>0) & (targ>0))+torch.sum((cors<0) & (targ<=0))
         return loss, acc
 
     # GRADIENT STEP
@@ -281,8 +286,8 @@ class network(nn.Module):
         self.n_class = np.max(targ) + 1
         if (self.embedd):
             np.random.shuffle(ii)
-            jumpd=np.int32(num_tr/5)
-            trin_def=rotate_dataset_rand(trin.transpose(0,2,3,1),20,.5).transpose(0,3,1,2)
+            jumpd=np.int32(num_tr/2)
+            trin_def=rotate_dataset_rand(trin.transpose(0,2,3,1),0,0).transpose(0,3,1,2)
             train_new_a=np.zeros_like(trin)
             train_new_b=np.zeros_like(trin)
             train_new_a[0:jumpd]=trin[ii[0:jumpd]]
@@ -291,13 +296,17 @@ class network(nn.Module):
             np.random.shuffle(jj)
             train_new_a[jumpd:]=trin[ii[jumpd:]]
             train_new_b[jumpd:]=trin_def[jj]
-            targ=-np.ones(num_tr)
+            #imga = create_img(train_new_a, 1, 28, 28, 10, 10)
+            #imgb = create_img(train_new_b, 1, 28, 28, 10, 10)
+            targ=np.zeros(num_tr)
             targ[0:jumpd]=np.ones(jumpd)
             kk = np.arange(0, num_tr, 1)
             np.random.shuffle(kk)
             train_new_a=train_new_a[kk]
             train_new_b=train_new_b[kk]
             targ=targ[kk]
+            #imga=create_img(train_new_a,1,28,28,10,10)
+            #imgb=create_img(train_new_b,1,28,28,10,10)
 
         full_loss=0; full_acc=0;
         # Loop over batches.
