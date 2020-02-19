@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from torch import nn, optim
-
+from Conv_data import rotate_dataset_rand
 import contextlib
 @contextlib.contextmanager
 def dummy_context_mgr():
@@ -66,6 +66,8 @@ class network(nn.Module):
     def __init__(self, device,  args, layers, lnti):
         super(network, self).__init__()
 
+        self.wd=args.wd
+        self.embedd=args.embedd
         self.del_last=args.del_last
         self.first=True
         self.bsz=args.mb_size # Batch size - gets multiplied by number of shifts so needs to be quite small.
@@ -191,7 +193,7 @@ class network(nn.Module):
             # TEMPORARY
             pp=[]
             for k,p in zip(KEYS,self.parameters()):
-                 if ('final' not in k):
+                 if ('final' not in k or not self.del_last):
                  #if ('conv2' in k or 'dense1' in k):
                      print('TO optimizer',k,p.shape)
                      pp+=[p]
@@ -199,11 +201,13 @@ class network(nn.Module):
                      p.requires_grad=False
 
             if (self.optimizer_type == 'Adam'):
-                self.optimizer = optim.Adam(pp, lr=self.lr)
+                print('Optimizer Adam')
+                self.optimizer = optim.Adam(pp, lr=self.lr,weight_decay=self.wd)
             else:
-                self.optimizer = optim.SGD(self.parameters(), lr=self.lr)
+                print('Optimizer SGD')
+                self.optimizer = optim.SGD(self.parameters(), lr=self.lr,weight_decay=self.wd)
 
-        return(out)
+        return(out,OUTS[-2])
 
 
 
@@ -215,20 +219,43 @@ class network(nn.Module):
             loss = self.criterion(out, targ)
             # total accuracy
             acc = torch.sum(mx.eq(targ))
-
-
             return loss, acc
+
+    def get_embedd_loss(self,out0,out1,targ):
+
+        out0#-=torch.mean(out0,dim=1).reshape(-1,1)
+        out1#-=torch.mean(out1,dim=1).reshape(-1,1)
+        sd0=torch.sqrt(torch.sum(out0*out0,dim=1)).reshape(-1,1)
+        sd1=torch.sqrt(torch.sum(out1*out1,dim=1)).reshape(-1,1)
+        cors=targ.type(torch.float32)*torch.sum(out0*out1/(sd0*sd1),dim=1)
+        #cors=targ.type(torch.float32)*torch.sum(out0*out1,dim=1)
+        loss=torch.sum(F.relu(1-cors))
+        #loss=torch.sum(torch.log(1+torch.exp(-2*cors)))
+        #loss=-torch.mean(out0*out1/(sd0*sd1))
+        #loss=torch.mean(diff*diff)
+        acc=torch.sum(cors>0)
+        return loss, acc
 
     # GRADIENT STEP
     def loss_and_grad(self, input, target, d_type='train'):
 
-        # Get output of network
-        out=self.forward(input)
-
         if (d_type == 'train'):
             self.optimizer.zero_grad()
-        # Compute loss and accuracy
-        loss, acc=self.get_acc_and_loss(out,target)
+
+        # Get output of network
+        if type(input) is list:
+            out0,_=self.forward(input[0])
+            out1,_=self.forward(input[1])
+
+            loss, acc = self.get_embedd_loss(out0,out1,target)
+            # WW=0
+            # for p in self.optimizer.param_groups[0]['params']:
+            #     WW+=torch.sum(p*p)
+            # print(loss,WW)
+        else:
+            out,_=self.forward(input)
+            # Compute loss and accuracy
+            loss, acc=self.get_acc_and_loss(out,target)
 
         # Perform optimizer step using loss as criterion
         if (d_type == 'train'):
@@ -248,27 +275,69 @@ class network(nn.Module):
         ii = np.arange(0, num_tr, 1)
         #if (type=='train'):
         #   np.random.shuffle(ii)
+        jump = self.bsz
         trin = train[0][ii]
         targ = train[2][ii]
-        self.n_class=np.max(targ)+1
+        self.n_class = np.max(targ) + 1
+        if (self.embedd):
+            np.random.shuffle(ii)
+            jumpd=np.int32(num_tr/5)
+            trin_def=rotate_dataset_rand(trin.transpose(0,2,3,1),20,.5).transpose(0,3,1,2)
+            train_new_a=np.zeros_like(trin)
+            train_new_b=np.zeros_like(trin)
+            train_new_a[0:jumpd]=trin[ii[0:jumpd]]
+            train_new_b[0:jumpd]=trin_def[ii[0:jumpd]]
+            jj=ii[jumpd:].copy()
+            np.random.shuffle(jj)
+            train_new_a[jumpd:]=trin[ii[jumpd:]]
+            train_new_b[jumpd:]=trin_def[jj]
+            targ=-np.ones(num_tr)
+            targ[0:jumpd]=np.ones(jumpd)
+            kk = np.arange(0, num_tr, 1)
+            np.random.shuffle(kk)
+            train_new_a=train_new_a[kk]
+            train_new_b=train_new_b[kk]
+            targ=targ[kk]
+
         full_loss=0; full_acc=0;
         # Loop over batches.
-        jump=self.bsz
+
         targ_in=targ
 
         for j in np.arange(0, num_tr, jump,dtype=np.int32):
-            data = (torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
+            if self.embedd:
+                data=[(torch.from_numpy(train_new_a[j:j+jump]).float()).to(self.dv),(torch.from_numpy(train_new_b[j:j+jump]).float()).to(self.dv)]
+            else:
+                data = (torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
+
             target = torch.from_numpy(targ_in[j:j + jump]).to(self.dv)
             target=target.type(torch.int64)
             with torch.no_grad() if (d_type!='train') else dummy_context_mgr():
                 loss, acc= self.loss_and_grad(data, target, d_type)
             full_loss += loss.item()
             full_acc += acc.item()
-        if (np.mod(epoch,10)==9 or epoch==0):
+        if (True): #np.mod(epoch,10)==9 or epoch<=10):
             fout.write('\n ====> Ep {}: {} Full loss: {:.4F}, Full acc: {:.4F} \n'.format(d_type,epoch,
                     full_loss /(num_tr/jump), full_acc/(num_tr)))
 
         return trainMU, trainLOGVAR, trPI
+
+    def get_embedding(self, train):
+
+        trin = train[0]
+        jump = self.bsz
+        num_tr = train[0].shape[0]
+        self.eval()
+        OUT=[]
+        for j in np.arange(0, num_tr, jump, dtype=np.int32):
+            data = (torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
+
+            with torch.no_grad():
+                OUT+=[self.forward(data)[0]]
+
+        OUTA=torch.cat(OUT,dim=0)
+
+        return OUTA
 
     def get_scheduler(self,args):
         scheduler = None

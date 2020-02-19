@@ -179,6 +179,14 @@ else:
             #args.type = 'net'
     else:
         train_model(net_models[0],args,EX_FILES[0],DATA,fout)
+        if args.embedd:
+            tr=net_models[0].get_embedding(DATA[0]).detach().numpy()
+            trh=[tr,DATA[0][1]]
+            te=net_models[0].get_embedding(DATA[2]).detach().numpy()
+            teh=[te,DATA[2][1]]
+            args.embedd=False
+            train_new(args,trh,teh,device)
+
 
 # trainMU=None;trainLOGVAR=None;trainPI=None
 # if args.classify:
@@ -189,4 +197,6 @@ fout.write('DONE\n')
 fout.flush()
 if (not args.CONS):
         fout.close()
+
+
 

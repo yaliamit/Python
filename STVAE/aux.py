@@ -47,7 +47,7 @@ def process_args(parser):
     parser.add_argument('--scale', type=float, default=None, help='range of bias term for decoder templates')
     parser.add_argument('--lim', type=int, default=0, help='penalty on conv matrix')
     parser.add_argument('--num_mu_iter', type=int, default=10, help='Learning rate (default: .05)')
-    parser.add_argument('--wd', action='store_true', help='Use weight decay')
+    parser.add_argument('--wd', type=float, default=0, help='Use weight decay')
     parser.add_argument('--cl', type=int, default=None, help='class (default: None)')
     parser.add_argument('--run_existing', action='store_true', help='Use existing model')
     parser.add_argument('--nti', type=int, default=500, help='num test iterations (default: 100)')
@@ -69,6 +69,7 @@ def process_args(parser):
     parser.add_argument('--rerun', action='store_true', help='cont data')
     parser.add_argument('--del_last', action='store_true', help='dont update classifier weights')
     parser.add_argument('--sep', action='store_true', help='Output to consol')
+    parser.add_argument('--embedd', action='store_true', help='embedding training')
     parser.add_argument('--reinit', action='store_true', help='reinitialize part of trained model')
     parser.add_argument('--only_pi', action='store_true', help='only optimize over pi')
 
