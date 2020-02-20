@@ -165,10 +165,12 @@ if (run_existing and not reinit):
             assign_cluster_labels(args,HVARS[0],HVARS[2],fout)
             train_new(args, HVARS[0], HVARS[2], device)
         elif embedd:
-            tr = net_models[0].get_embedding(DATA[0]).detach().cpu().numpy()
+            net_model=net_models[0]
+            net_model.load_state_dict(SMS[0]['model.state.dict'])
+            tr = net_model.get_embedding(DATA[0]).detach().cpu().numpy()
             tr = tr.reshape(tr.shape[0], -1)
             trh = [tr, DATA[0][1]]
-            te = net_models[0].get_embedding(DATA[2]).detach().cpu().numpy()
+            te = net_model.get_embedding(DATA[2]).detach().cpu().numpy()
             te = te.reshape(te.shape[0], -1)
             teh = [te, DATA[2][1]]
             args.embedd = False
@@ -178,9 +180,9 @@ if (run_existing and not reinit):
             train_new(args, trh, teh, device)
         else:
             dat=DATA
-        if args.layers is not None and not args.rerun:
-            args.type='net'
-            train_model(net_models[0], args, EX_FILES[0], dat, fout)
+            if args.layers is not None and not args.rerun:
+                args.type='net'
+                train_model(net_models[0], args, EX_FILES[0], dat, fout)
     else:
         test_models(ARGS,SMS,DATA[2],fout)
 else:
