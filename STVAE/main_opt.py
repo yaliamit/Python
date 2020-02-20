@@ -125,6 +125,7 @@ classify=args.classify
 reinit=args.reinit
 run_existing=args.run_existing
 conf=args.conf
+embedd=args.embedd
 num_test=args.num_test
 network=args.network
 ARGS[0].nti=args.nti
@@ -161,6 +162,16 @@ if (run_existing and not reinit):
             dat, HVARS = aux.prepare_recons(model, DATA, args)
             assign_cluster_labels(args,HVARS[0],HVARS[2],fout)
             train_new(args, HVARS[0], HVARS[2], device)
+        elif embedd:
+            tr = net_models[0].get_embedding(DATA[0]).detach().cpu().numpy()
+            tr = tr.reshape(tr.shape[0], -1)
+            trh = [tr, DATA[0][1]]
+            te = net_models[0].get_embedding(DATA[2]).detach().cpu().numpy()
+            te = te.reshape(te.shape[0], -1)
+            teh = [te, DATA[2][1]]
+            args.embedd = False
+            args.type='net'
+            train_new(args, trh, teh, device)
         else:
             dat=DATA
         if args.layers is not None and not args.rerun:
