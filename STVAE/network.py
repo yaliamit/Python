@@ -363,7 +363,7 @@ class network(nn.Module):
             data = (torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
 
             with torch.no_grad():
-                OUT+=[self.forward(data)[0]]
+                OUT+=[self.forward(data)[1]]
 
         OUTA=torch.cat(OUT,dim=0)
 

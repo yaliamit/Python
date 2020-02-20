@@ -13,7 +13,7 @@ def train_new(args,train,test,device):
     print('In train new:')
     print(str(args))
     val = None
-
+    args.lr=args.hid_lr
     net=network.network(device,args,args.hid_layers, args.hid_lnti).to(device)
     temp=torch.zeros(1,train[0].shape[1]).to(device)
     bb=net.forward(temp)
