@@ -242,9 +242,9 @@ class network(nn.Module):
         SDS=torch.mm(sd0,sd1)
         COV=COV/SDS
         v = torch.diag(COV)
-        #lecov=torch.logsumexp(COV-torch.diag(v),dim=1)-v
+        lecov=torch.logsumexp(COV-torch.diag(v),dim=1)-v
 
-        lecov=F.relu(1.-v)+torch.sum(F.relu(1+(COV-torch.diag(v))),dim=1)
+        #lecov=F.relu(1.-v)+torch.sum(F.relu(1+(COV-torch.diag(v))),dim=1)
         loss=torch.sum(lecov)
         ID=2.*torch.eye(out0.shape[0]).to(self.dv)-1.
         icov=ID*COV
