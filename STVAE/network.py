@@ -87,6 +87,7 @@ class network(nn.Module):
         self.criterion=nn.CrossEntropyLoss()
         self.criterion_shift=nn.CrossEntropyLoss()
 
+        self.perturb=args.lamda
         self.u_dim = 6
         self.idty = torch.cat((torch.eye(2), torch.zeros(2).unsqueeze(1)), dim=1)
         self.id = self.idty.expand((self.bsz,) + self.idty.size()).to(self.dv)
@@ -301,7 +302,7 @@ class network(nn.Module):
         h=x_in.shape[2]
         w=x_in.shape[3]
         nn=x_in.shape[0]
-        u=(torch.rand(nn,6)*.2).to(self.dv)
+        u=(torch.rand(nn,6)*self.perturb).to(self.dv)
         self.theta = u.view(-1, 2, 3) + self.id
         grid = F.affine_grid(self.theta, x_in[:,0,:,:].view(-1, h, w).unsqueeze(1).size())
 
