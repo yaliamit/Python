@@ -309,7 +309,6 @@ class network(nn.Module):
         targ = train[2][ii]
         self.n_class = np.max(targ) + 1
         # if (self.embedd):
-        #     t1 = time.time()
         #     np.random.shuffle(ii)
         #     trin_def=self.deform_data(trin[0:self.bsz])
         #     #trin_def=rotate_dataset_rand(trin.transpose(0,2,3,1),20,0.5).transpose(0,3,1,2)
@@ -318,7 +317,6 @@ class network(nn.Module):
         #     targ=np.zeros(num_tr)
 
 
-        #print('{0:5.3f}s'.format(time.time() - t1))
         full_loss=0; full_acc=0;
         # Loop over batches.
 
@@ -326,11 +324,11 @@ class network(nn.Module):
 
         for j in np.arange(0, num_tr, jump,dtype=np.int32):
             if self.embedd:
-                t1 = time.time()
+
                 data_in=(torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
                 data_out=self.deform_data(data_in)
-                print('{0:5.3f}s'.format(time.time() - t1))
                 data=[data_in,data_out]
+
                 #data=[(torch.from_numpy(train_new_a[j:j+jump]).float()).to(self.dv),(torch.from_numpy(train_new_b[j:j+jump]).float()).to(self.dv)]
             else:
                 data = (torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
