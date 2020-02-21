@@ -325,9 +325,10 @@ class network(nn.Module):
         for j in np.arange(0, num_tr, jump,dtype=np.int32):
             if self.embedd:
 
-                data_in=(torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
-                data_out=self.deform_data(data_in)
-                data=[data_in,data_out]
+                with torch.no_grad():
+                    data_in=(torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
+                    data_out=self.deform_data(data_in)
+                    data=[data_in,data_out]
 
                 #data=[(torch.from_numpy(train_new_a[j:j+jump]).float()).to(self.dv),(torch.from_numpy(train_new_b[j:j+jump]).float()).to(self.dv)]
             else:
