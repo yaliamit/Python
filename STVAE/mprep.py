@@ -125,7 +125,7 @@ def process_network_line(line, global_drop):
 
 def get_network(device, sh,ARGS):
     models=[]
-    if hasattr(ARGS,'layers'):
+    if ARGS.layers is not None:
         LP=[]
         for line in ARGS.layers:
             lp = process_network_line(line, None)
@@ -142,7 +142,7 @@ def get_network(device, sh,ARGS):
         temp=torch.zeros(1,sh[1],sh[2],sh[3]).to(device)
         bb=model.forward(temp)
         models+=[model]
-    if  hasattr(ARGS,'hid_layers'):
+    if  ARGS.hid_layers is not None:
         LP = []
         for line in ARGS.hid_layers:
             lp=process_network_line(line, None)
