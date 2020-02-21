@@ -129,6 +129,7 @@ embedd=args.embedd
 num_test=args.num_test
 num_train=args.num_train
 nepoch=args.nepoch
+lr=args.lr
 network=args.network
 ARGS[0].nti=args.nti
 ARGS[0].num_test=num_test
@@ -177,6 +178,7 @@ if (run_existing and not reinit):
             args.type='net'
             args.nepoch=nepoch
             args.num_train=num_train
+            args.lr=lr
             train_new(args, trh, teh, device)
         else:
             dat=DATA

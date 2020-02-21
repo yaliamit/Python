@@ -254,21 +254,6 @@ class network(nn.Module):
         return loss,acc
 
 
-    def get_embedd_loss_a(self,out0,out1,targ):
-
-        out0-=torch.mean(out0,dim=1).reshape(-1,1)
-        out1-=torch.mean(out1,dim=1).reshape(-1,1)
-        sd0=torch.sqrt(torch.sum(out0*out0,dim=1)).reshape(-1,1)
-        sd1=torch.sqrt(torch.sum(out1*out1,dim=1)).reshape(-1,1)
-        cors=targ.type(torch.float32)*torch.sum(out0 * out1 / (sd0 * sd1), dim=1)
-        tcors = targ.type(torch.float32) * cors
-        ll=torch.log(1.+torch.exp(tcors))
-        loss=torch.sum(-tcors+ll)
-
-        #loss=torch.sum(F.relu(1-tcors))
-        #loss=torch.sum(torch.log(1+torch.exp(-2*cors)))
-        acc=torch.sum((cors>0) & (targ>0))+torch.sum((cors<0) & (targ<=0))
-        return loss, acc
 
     # GRADIENT STEP
     def loss_and_grad(self, input, target, d_type='train'):
@@ -305,11 +290,7 @@ class network(nn.Module):
         u=(torch.rand(nn,6)*self.perturb).to(self.dv)
         self.theta = u.view(-1, 2, 3) + self.id
         grid = F.affine_grid(self.theta, x_in[:,0,:,:].view(-1, h, w).unsqueeze(1).size())
-
-        X=[]
-        for j in range(x_in.shape[1]):
-            X += [F.grid_sample(x_in[:,j,:,:].view(-1, h, w).unsqueeze(1), grid, padding_mode='border')]
-        x_out=torch.cat(X,dim=1)
+        x_out=F.grid_sample(x_in,grid,padding_mode='border')
         return x_out
 
     # Epoch of network training
