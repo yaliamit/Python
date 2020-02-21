@@ -301,7 +301,7 @@ class network(nn.Module):
         h=x_in.shape[2]
         w=x_in.shape[3]
         nn=x_in.shape[0]
-        u=torch.rand(nn,6)*.2
+        u=(torch.rand(nn,6)*.2).to(self.dv)
         self.theta = u.view(-1, 2, 3) + self.id
         grid = F.affine_grid(self.theta, x_in[:,0,:,:].view(-1, h, w).unsqueeze(1).size())
 
