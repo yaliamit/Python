@@ -5,6 +5,7 @@ from torch import nn, optim
 from Conv_data import rotate_dataset_rand
 import contextlib
 from aux import create_img
+import time
 @contextlib.contextmanager
 def dummy_context_mgr():
     yield None
@@ -85,6 +86,10 @@ class network(nn.Module):
         # The loss function
         self.criterion=nn.CrossEntropyLoss()
         self.criterion_shift=nn.CrossEntropyLoss()
+
+        self.u_dim = 6
+        self.idty = torch.cat((torch.eye(2), torch.zeros(2).unsqueeze(1)), dim=1)
+        self.id = self.idty.expand((self.bsz,) + self.idty.size()).to(self.dv)
 
     def do_nonlinearity(self,ll,out):
 
@@ -235,7 +240,10 @@ class network(nn.Module):
         sd1 = torch.sqrt(torch.sum(out1 * out1, dim=1)).reshape(1, -1)
         SDS=torch.mm(sd0,sd1)
         COV=COV/SDS
-        lecov=torch.logsumexp(COV,dim=1)-torch.diag(COV).reshape(1,-1)
+        v = torch.diag(COV)
+        #lecov=torch.logsumexp(COV-torch.diag(v),dim=1)-v
+
+        lecov=F.relu(1.-v)+torch.sum(F.relu(1+(COV-torch.diag(v))),dim=1)
         loss=torch.sum(lecov)
         ID=2.*torch.eye(out0.shape[0]).to(self.dv)-1.
         icov=ID*COV
@@ -255,6 +263,7 @@ class network(nn.Module):
         tcors = targ.type(torch.float32) * cors
         ll=torch.log(1.+torch.exp(tcors))
         loss=torch.sum(-tcors+ll)
+
         #loss=torch.sum(F.relu(1-tcors))
         #loss=torch.sum(torch.log(1+torch.exp(-2*cors)))
         acc=torch.sum((cors>0) & (targ>0))+torch.sum((cors<0) & (targ<=0))
@@ -288,6 +297,20 @@ class network(nn.Module):
 
         return loss, acc
 
+    def deform_data(self,x_in):
+        h=x_in.shape[2]
+        w=x_in.shape[3]
+        nn=x_in.shape[0]
+        u=torch.rand(nn,6)*.2
+        self.theta = u.view(-1, 2, 3) + self.id
+        grid = F.affine_grid(self.theta, x_in[:,0,:,:].view(-1, h, w).unsqueeze(1).size())
+
+        X=[]
+        for j in range(x_in.shape[1]):
+            X += [F.grid_sample(x_in[:,j,:,:].view(-1, h, w).unsqueeze(1), grid, padding_mode='border')]
+        x_out=torch.cat(X,dim=1)
+        return x_out
+
     # Epoch of network training
     def run_epoch(self, train, epoch, num_mu_iter=None, trainMU=None, trainLOGVAR=None, trPI=None, d_type='train', fout='OUT'):
 
@@ -303,32 +326,17 @@ class network(nn.Module):
         trin = train[0][ii]
         targ = train[2][ii]
         self.n_class = np.max(targ) + 1
-        if (self.embedd):
-            np.random.shuffle(ii)
-            jumpd=np.int32(num_tr/2)
-            trin_def=rotate_dataset_rand(trin.transpose(0,2,3,1),20,0.5).transpose(0,3,1,2)
-            train_new_a=trin
-            train_new_b=trin_def
-            # train_new_a=np.zeros_like(trin)
-            # train_new_b=np.zeros_like(trin)
-            # train_new_a[0:jumpd]=trin[ii[0:jumpd]]
-            # train_new_b[0:jumpd]=trin_def[ii[0:jumpd]]
-            # jj=ii[jumpd:].copy()
-            # np.random.shuffle(jj)
-            # train_new_a[jumpd:]=trin[ii[jumpd:]]
-            # train_new_b[jumpd:]=trin_def[jj]
-            # #imga = create_img(train_new_a, 1, 28, 28, 10, 10)
-            # #imgb = create_img(train_new_b, 1, 28, 28, 10, 10)
-            targ=np.zeros(num_tr)
-            # targ[0:jumpd]=np.ones(jumpd)
-            # kk = np.arange(0, num_tr, 1)
-            # np.random.shuffle(kk)
-            # train_new_a=train_new_a[kk]
-            # train_new_b=train_new_b[kk]
-            # targ=targ[kk]
-            #imga=create_img(train_new_a,1,28,28,10,10)
-            #imgb=create_img(train_new_b,1,28,28,10,10)
+        # if (self.embedd):
+        #     t1 = time.time()
+        #     np.random.shuffle(ii)
+        #     trin_def=self.deform_data(trin[0:self.bsz])
+        #     #trin_def=rotate_dataset_rand(trin.transpose(0,2,3,1),20,0.5).transpose(0,3,1,2)
+        #     train_new_a=trin
+        #     train_new_b=trin_def
+        #     targ=np.zeros(num_tr)
 
+
+        #print('{0:5.3f}s'.format(time.time() - t1))
         full_loss=0; full_acc=0;
         # Loop over batches.
 
@@ -336,7 +344,10 @@ class network(nn.Module):
 
         for j in np.arange(0, num_tr, jump,dtype=np.int32):
             if self.embedd:
-                data=[(torch.from_numpy(train_new_a[j:j+jump]).float()).to(self.dv),(torch.from_numpy(train_new_b[j:j+jump]).float()).to(self.dv)]
+                data_in=(torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
+                data_out=self.deform_data(data_in)
+                data=[data_in,data_out]
+                #data=[(torch.from_numpy(train_new_a[j:j+jump]).float()).to(self.dv),(torch.from_numpy(train_new_b[j:j+jump]).float()).to(self.dv)]
             else:
                 data = (torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
 
