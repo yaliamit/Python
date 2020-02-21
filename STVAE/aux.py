@@ -49,6 +49,7 @@ def process_args(parser):
     parser.add_argument('--lim', type=int, default=0, help='penalty on conv matrix')
     parser.add_argument('--num_mu_iter', type=int, default=10, help='Learning rate (default: .05)')
     parser.add_argument('--wd', type=float, default=0, help='Use weight decay')
+    parser.add_argument('--sched', type=float, default=0, help='time step change')
     parser.add_argument('--cl', type=int, default=None, help='class (default: None)')
     parser.add_argument('--run_existing', action='store_true', help='Use existing model')
     parser.add_argument('--nti', type=int, default=500, help='num test iterations (default: 100)')

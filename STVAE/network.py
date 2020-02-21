@@ -231,16 +231,24 @@ class network(nn.Module):
             acc = torch.sum(mx.eq(targ))
             return loss, acc
 
+    def standardize(self,out):
+
+        outa=out.reshape(out.shape[0],-1)#-=torch.mean(out,dim=1).reshape(-1,1)
+        sd = torch.sqrt(torch.sum(outa * outa, dim=1)).reshape(-1, 1)
+        out_a = outa/sd
+
+        return out_a
+
     def get_embedd_loss(self,out0,out1,targ):
 
-        out0#-=torch.mean(out0,dim=1).reshape(-1,1)
-        out1#-=torch.mean(out1,dim=1).reshape(-1,1)
-        COV=torch.mm(out0,out1.transpose(0,1))
+        out0a=self.standardize(out0)#-=torch.mean(out0,dim=1).reshape(-1,1)
+        out1a=self.standardize(out1)#-=torch.mean(out1,dim=1).reshape(-1,1)
+        COV=torch.mm(out0a,out1a.transpose(0,1))
 
-        sd0 = torch.sqrt(torch.sum(out0 * out0, dim=1)).reshape(-1, 1)
-        sd1 = torch.sqrt(torch.sum(out1 * out1, dim=1)).reshape(1, -1)
-        SDS=torch.mm(sd0,sd1)
-        COV=COV/SDS
+        # sd0 = torch.sqrt(torch.sum(out0 * out0, dim=1)).reshape(-1, 1)
+        # sd1 = torch.sqrt(torch.sum(out1 * out1, dim=1)).reshape(1, -1)
+        # SDS=torch.mm(sd0,sd1)
+        # COV=COV/SDS
         v = torch.diag(COV)
         lecov=torch.logsumexp(COV-torch.diag(v),dim=1)-v
 
@@ -357,6 +365,7 @@ class network(nn.Module):
             data = (torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
 
             with torch.no_grad():
+
                 OUT+=[self.forward(data)[1]]
 
         OUTA=torch.cat(OUT,dim=0)
@@ -365,8 +374,8 @@ class network(nn.Module):
 
     def get_scheduler(self,args):
         scheduler = None
-        if args.wd:
-            l2 = lambda epoch: pow((1. - 1. * epoch / args.nepoch), 0.9)
+        if args.sched>0.:
+            l2 = lambda epoch: pow((1. - 1. * epoch / args.nepoch), args.sched)
             scheduler = torch.optim.lr_scheduler.LambdaLR(self.optimizer, lr_lambda=l2)
 
         return scheduler
