@@ -216,8 +216,10 @@ class network(nn.Module):
             else:
                 print('Optimizer SGD',self.lr)
                 self.optimizer = optim.SGD(self.parameters(), lr=self.lr,weight_decay=self.wd)
-
-        return(out,OUTS[-2])
+        out1=[]
+        if (len(OUTS)>3):
+            out1=OUTS[-3]
+        return(out,out1)
 
 
 
