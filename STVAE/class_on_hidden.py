@@ -13,13 +13,13 @@ def train_new(args,train,test,device):
     print('In train new:')
     print(str(args))
     val = None
-
+    args.lr = args.hid_lr
     args.hid_lnti, args.hid_layers_dict = mprep.get_network(args.hid_layers)
     net=network.network(device,args,args.hid_layers_dict, args.hid_lnti).to(device)
     temp = torch.zeros(1, train[0].shape[1]).to(device)
     bb = net.forward(temp)
 
-    args.lr=args.hid_lr
+
 
     # tot_pars = 0
     # for keys, vals in net.state_dict().items():
