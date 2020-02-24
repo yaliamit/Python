@@ -300,7 +300,7 @@ class network(nn.Module):
         u=(torch.rand(nn,6)*self.perturb).to(self.dv)
         self.theta = u.view(-1, 2, 3) + self.id
         grid = F.affine_grid(self.theta, x_in[:,0,:,:].view(-1, h, w).unsqueeze(1).size())
-        x_out=F.grid_sample(x_in,grid,padding_mode='border')
+        x_out=F.grid_sample(x_in,grid,padding_mode='reflection')
         return x_out
 
     # Epoch of network training
