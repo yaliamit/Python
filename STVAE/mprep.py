@@ -121,39 +121,28 @@ def process_network_line(line, global_drop):
             lp[s0] = a
     return (lp)
 
+def get_network(layers,sh=None):
 
-
-def get_network(device, sh,ARGS):
-    models=[]
-    if ARGS.layers is not None:
-        LP=[]
-        for line in ARGS.layers:
-            lp = process_network_line(line, None)
-            if lp is not None:
-                LP += [lp]
-        ARGS.layers_dict=LP
+    LP=[]
+    for line in layers:
+        lp = process_network_line(line, None)
+        if lp is not None:
+            LP += [lp]
+    layers_dict=LP
+    if (sh is not None):
         LP[0]['num_filters']=sh[1]
-        layer_names_to_indices={}
-        for i,ll in enumerate(LP):
-            layer_names_to_indices[ll['name']]=i
-        ARGS.lnti=layer_names_to_indices
+    layer_names_to_indices={}
+    for i,ll in enumerate(LP):
+        layer_names_to_indices[ll['name']]=i
+    lnti=layer_names_to_indices
 
-        model=network.network(device,ARGS,ARGS.layers_dict,ARGS.lnti).to(device)
-        temp=torch.zeros(1,sh[1],sh[2],sh[3]).to(device)
-        bb=model.forward(temp)
-        models+=[model]
-    if  ARGS.hid_layers is not None:
-        LP = []
-        for line in ARGS.hid_layers:
-            lp=process_network_line(line, None)
-            if lp is not None:
-                LP += [lp]
-        ARGS.hid_layers_dict=LP
-        layer_names_to_indices = {}
-        for i, ll in enumerate(LP):
-            layer_names_to_indices[ll['name']] = i
-        ARGS.hid_lnti=layer_names_to_indices
-    return models
+    return lnti, layers_dict
+
+
+
+
+
+
 
 def get_models(device, fout, sh,STRINGS,ARGS, locs):
 

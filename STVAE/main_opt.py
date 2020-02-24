@@ -117,7 +117,14 @@ fout, device, DATA= mprep.setups(args, EX_FILES)
 if 'vae' in args.type:
     models=mprep.get_models(device, fout, DATA[0][0].shape,STRINGS,ARGS,locals())
 if args.network:
-    net_models=mprep.get_network(device, DATA[0][0].shape,args)
+    sh=DATA[0][0].shape
+    # parse the existing network coded in ARGS[0]
+    arg=ARGS[0]
+    arg.lnti, arg.layers_dict = mprep.get_network(arg.layers,sh=sh)
+    model = network.network(device, arg, arg.layers_dict, arg.lnti).to(device)
+    temp = torch.zeros(1, sh[1], sh[2], sh[3]).to(device)
+    bb = model.forward(temp)
+    net_models = [model]
     if 'vae' not in args.type:
         models=net_models
 sample=args.sample
