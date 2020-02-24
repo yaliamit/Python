@@ -6,7 +6,7 @@
 --nepoch=200
 --transformation=aff
 --mb_size=500
---lr=.005
+--lr=.001
 --nval=0
 --nti=500
 --CONS
