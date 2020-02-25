@@ -28,12 +28,13 @@ def test_models(ARGS, SMS, test, fout):
     ls = len(SMS)
     CF = [conf] + list(np.zeros(ls - 1))
     # Combine output from a number of existing models. Only hard ones move to next model?
+    tes=[test[0],test[0],test[1]]
     if (ARGS[0].n_class):
         for sm, model, args, cf in zip(SMS, models, ARGS, CF):
             model.load_state_dict(sm['model.state.dict'])
-            testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
+            testMU, testLOGVAR, testPI = model.initialize_mus(tes[0], args.OPT)
             print(cf)
-            iid, RY, cl_rate, acc = model.run_epoch_classify(test, 'test', fout=fout, num_mu_iter=args.nti, conf_thresh=cf)
+            iid, RY, cl_rate, acc = model.run_epoch_classify(tes, 'test', fout=fout, num_mu_iter=args.nti, conf_thresh=cf)
             CL_RATE += [cl_rate]
             len_conf = len_test - np.sum(iid)
             print("current number", len_conf)
@@ -43,8 +44,8 @@ def test_models(ARGS, SMS, test, fout):
     else:
         for sm, model, args, cf in zip(SMS, models, ARGS, CF):
             model.load_state_dict(sm['model.state.dict'])
-            testMU, testLOGVAR, testPI = model.initialize_mus(test[0], args.OPT)
-            model.run_epoch(test, 0, args.nti, testMU, testLOGVAR, testPI, d_type='test', fout=fout)
+            testMU, testLOGVAR, testPI = model.initialize_mus(tes[0], args.OPT)
+            model.run_epoch(tes, 0, args.nti, testMU, testLOGVAR, testPI, d_type='test', fout=fout)
 
 def train_model(model, args, ex_file, DATA, fout):
 

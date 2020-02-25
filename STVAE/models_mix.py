@@ -55,6 +55,7 @@ class STVAE_mix(models.STVAE):
     def __init__(self, x_h, x_w, device, args):
         super(STVAE_mix, self).__init__(x_h, x_w, device, args)
 
+        self.binary_thresh=args.binary_thresh
         self.lim=args.lim
         self.opt = args.OPT
         self.mu_lr = args.mu_lr
@@ -160,7 +161,7 @@ class STVAE_mix(models.STVAE):
                     xt=xt+[self.apply_trans(xx,uu).squeeze()]
 
             x=torch.stack(xt,dim=0).reshape(n_mix,x.shape[1],-1)
-        xx = torch.clamp(x, 1e-6, 1 - 1e-6)
+        xx = torch.clamp(x, self.binary_thresh, 1 - self.binary_thresh)
         return xx
 
 
