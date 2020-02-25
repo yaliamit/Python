@@ -114,7 +114,7 @@ if args.rerun:
     args.run_existing=True
 # Get data device and output file
 fout, device, DATA= mprep.setups(args, EX_FILES)
-
+ARGS[0].binary_thresh=args.binary_thresh
 if 'vae' in args.type:
     models=mprep.get_models(device, fout, DATA[0][0].shape,STRINGS,ARGS,locals())
 if args.network:
