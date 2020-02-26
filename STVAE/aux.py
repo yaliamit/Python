@@ -39,6 +39,7 @@ def process_args(parser):
     parser.add_argument('--model', default=None, nargs="*", help='model (default: base)')
     parser.add_argument('--optimizer', default='Adam', help='Type of optimiser')
     parser.add_argument('--lr', type=float, default=.001, help='Learning rate (default: .001)')
+    parser.add_argument('--perturb', type=float, default=0, help='Learning rate (default: .001)')
     parser.add_argument('--hid_lr', type=float, default=.001, help='Learning rate (default: .001)')
     parser.add_argument('--binary_thresh', type=float, default=1e-6, help='threshold for bernoulli probs')
     parser.add_argument('--conf', type=float, default=0, help='confidence level')
