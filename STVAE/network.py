@@ -246,14 +246,11 @@ class network(nn.Module):
         out0a=self.standardize(out0)#-=torch.mean(out0,dim=1).reshape(-1,1)
         out1a=self.standardize(out1)#-=torch.mean(out1,dim=1).reshape(-1,1)
         COV=torch.mm(out0a,out1a.transpose(0,1))
-
-        # sd0 = torch.sqrt(torch.sum(out0 * out0, dim=1)).reshape(-1, 1)
-        # sd1 = torch.sqrt(torch.sum(out1 * out1, dim=1)).reshape(1, -1)
-        # SDS=torch.mm(sd0,sd1)
-        # COV=COV/SDS
         v = torch.diag(COV)
         lecov=torch.logsumexp(COV-torch.diag(v),dim=1)-v
-
+        COV = torch.mm(out1a, out1a.transpose(0, 1))
+        v = torch.diag(COV)
+        lecov += torch.logsumexp(COV - torch.diag(v), dim=1)
         #lecov=F.relu(1.-v)+torch.sum(F.relu(1+(COV-torch.diag(v))),dim=1)
         loss=torch.sum(lecov)
         ID=2.*torch.eye(out0.shape[0]).to(self.dv)-1.
