@@ -334,8 +334,9 @@ class network(nn.Module):
 
                 with torch.no_grad():
                     data_in=(torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
-                    data_out=self.deform_data(data_in)
-                    data=[data_in,data_out]
+                    data_out1=self.deform_data(data_in)
+                    data_out2=self.deform_data(data_in)
+                    data=[data_out1,data_out2]
 
                 #data=[(torch.from_numpy(train_new_a[j:j+jump]).float()).to(self.dv),(torch.from_numpy(train_new_b[j:j+jump]).float()).to(self.dv)]
             else:
