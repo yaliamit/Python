@@ -235,7 +235,7 @@ class network(nn.Module):
 
     def standardize(self,out):
 
-        outa=out.reshape(out.shape[0],-1)-torch.mean(out,dim=1).reshape(-1,1)
+        outa=out.reshape(out.shape[0],-1)#-torch.mean(out,dim=1).reshape(-1,1)
         sd = torch.sqrt(torch.sum(outa * outa, dim=1)).reshape(-1, 1)
         out_a = outa/(sd+.01)
 
