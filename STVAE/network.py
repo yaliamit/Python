@@ -251,9 +251,9 @@ class network(nn.Module):
         COV=torch.mm(out0a,out1a.transpose(0,1))
         v = torch.diag(COV)
         lecov=torch.logsumexp(COV-torch.diag(v),dim=1)-v
-        COV = torch.mm(out1a, out1a.transpose(0, 1))
-        v = torch.diag(COV)
-        lecov += torch.logsumexp(COV - torch.diag(v), dim=1)
+        #COV = torch.mm(out1a, out1a.transpose(0, 1))
+        #v = torch.diag(COV)
+        #lecov += torch.logsumexp(COV - torch.diag(v), dim=1)
         #lecov=F.relu(1.-v)+torch.sum(F.relu(1+(COV-torch.diag(v))),dim=1)
         loss=torch.sum(lecov)
         ID=2.*torch.eye(out0.shape[0]).to(self.dv)-1.
@@ -350,9 +350,9 @@ class network(nn.Module):
                 with torch.no_grad():
                     data_in=(torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
                     data_out1=self.deform_data(data_in)
-                    data_out2=self.deform_data(data_in)
+                    #data_out2=self.deform_data(data_in)
                     #print('DIFF',torch.max(torch.abs(data_out1-data_out2)))
-                    data=[data_out1,data_out2]
+                    data=[data_in,data_out1]
 
                 #data=[(torch.from_numpy(train_new_a[j:j+jump]).float()).to(self.dv),(torch.from_numpy(train_new_b[j:j+jump]).float()).to(self.dv)]
             else:
