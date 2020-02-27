@@ -101,7 +101,7 @@ class network(nn.Module):
         elif ('relu' in ll['non_linearity']):
             return(F.relu(out))
 
-    def forward(self,input):
+    def forward(self,input,everything=False):
         out = input
         in_dims=[]
         if (self.first):
@@ -217,8 +217,11 @@ class network(nn.Module):
                 print('Optimizer SGD',self.lr)
                 self.optimizer = optim.SGD(self.parameters(), lr=self.lr,weight_decay=self.wd)
         out1=[]
-        if (len(OUTS)>3):
-            out1=OUTS[-3]
+
+        if(everything):
+            out1=OUTS
+        elif (len(OUTS) > 3):
+            out1 = OUTS[-3]
         return(out,out1)
 
 
@@ -298,7 +301,19 @@ class network(nn.Module):
         self.theta = u.view(-1, 2, 3) + self.id
         grid = F.affine_grid(self.theta, x_in[:,0,:,:].view(-1, h, w).unsqueeze(1).size())
         x_out=F.grid_sample(x_in,grid,padding_mode='reflection')
+        oo=x_out.reshape(self.bsz,-1)
+        print('MIN',torch.min(torch.sqrt(torch.sum(oo*oo,dim=1)/oo.shape[1])))
         return x_out
+
+
+    def get_binary_signature(self,train):
+        data = (torch.from_numpy(train[0]).float()).to("cpu")
+        out,ot0=self.forward(data,everything=True)
+        with torch.no_grad():
+            qq=2*(ot0[1].reshape(self.bsz,-1)>0).type(torch.float32)-1.
+            cc=torch.mm(qq,qq.transpose(0,1))/qq.shape[1]
+            cc-=torch.diag(torch.diag(cc))
+            print('CC',torch.sum(cc==1))
 
     # Epoch of network training
     def run_epoch(self, train, epoch, num_mu_iter=None, trainMU=None, trainLOGVAR=None, trPI=None, d_type='train', fout='OUT'):

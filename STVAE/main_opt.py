@@ -79,12 +79,14 @@ def train_model(model, args, ex_file, DATA, fout):
         fout.write('{0:5.3f}s'.format(time.time() - t1))
         fout.flush()
 
-    fout.write('writing to ' + ex_file + '\n')
+
 
     if 'net' in args.type:
+        model.get_binary_signature(train)
         torch.save({'args': args,
                     'model.state.dict': model.state_dict()}, '_output/network.pt')
     if 'vae' in args.type:
+        fout.write('writing to ' + ex_file + '\n')
         torch.save({'args': args,
                     'model.state.dict': model.state_dict()}, '_output/' + ex_file + '.pt')
         aux.make_images(train, model, ex_file, args)
