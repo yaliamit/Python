@@ -235,7 +235,7 @@ class network(nn.Module):
 
     def standardize(self,out):
 
-        outa=out.reshape(out.shape[0],-1)#-=torch.mean(out,dim=1).reshape(-1,1)
+        outa=out.reshape(out.shape[0],-1)-torch.mean(out,dim=1).reshape(-1,1)
         sd = torch.sqrt(torch.sum(outa * outa, dim=1)).reshape(-1, 1)
         out_a = outa/(sd+.01)
 
@@ -243,8 +243,8 @@ class network(nn.Module):
 
     def get_embedd_loss(self,out0,out1,targ):
 
-        out0a=self.standardize(out0)#-=torch.mean(out0,dim=1).reshape(-1,1)
-        out1a=self.standardize(out1)#-=torch.mean(out1,dim=1).reshape(-1,1)
+        out0a=self.standardize(out0)
+        out1a=self.standardize(out1)
         COV=torch.mm(out0a,out1a.transpose(0,1))
         v = torch.diag(COV)
         lecov=torch.logsumexp(COV-torch.diag(v),dim=1)-v
