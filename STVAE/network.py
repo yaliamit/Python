@@ -86,8 +86,8 @@ class network(nn.Module):
         # The loss function
         self.criterion=nn.CrossEntropyLoss()
         self.criterion_shift=nn.CrossEntropyLoss()
-
-        self.perturb=args.perturb
+        if (hasattr(args,'perturb')):
+            self.perturb=args.perturb
         self.u_dim = 6
         self.idty = torch.cat((torch.eye(2), torch.zeros(2).unsqueeze(1)), dim=1)
         self.id = self.idty.expand((self.bsz,) + self.idty.size()).to(self.dv)
