@@ -82,7 +82,7 @@ def train_model(model, args, ex_file, DATA, fout):
 
 
     if 'net' in args.type:
-        model.get_binary_signature(train)
+        #model.get_binary_signature(train)
         torch.save({'args': args,
                     'model.state.dict': model.state_dict()}, '_output/network.pt')
     if 'vae' in args.type:
