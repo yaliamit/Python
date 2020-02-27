@@ -301,8 +301,8 @@ class network(nn.Module):
         self.theta = u.view(-1, 2, 3) + self.id
         grid = F.affine_grid(self.theta, x_in[:,0,:,:].view(-1, h, w).unsqueeze(1).size())
         x_out=F.grid_sample(x_in,grid,padding_mode='reflection')
-        oo=x_out.reshape(self.bsz,-1)
-        print('MIN',torch.min(torch.sqrt(torch.sum(oo*oo,dim=1)/oo.shape[1])))
+        #oo=x_out.reshape(self.bsz,-1)
+        #print('MIN',torch.min(torch.sqrt(torch.sum(oo*oo,dim=1)/oo.shape[1])))
         return x_out
 
 
@@ -351,7 +351,7 @@ class network(nn.Module):
                     data_in=(torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
                     data_out1=self.deform_data(data_in)
                     data_out2=self.deform_data(data_in)
-                    print('DIFF',torch.max(torch.abs(data_out1-data_out2)))
+                    #print('DIFF',torch.max(torch.abs(data_out1-data_out2)))
                     data=[data_out1,data_out2]
 
                 #data=[(torch.from_numpy(train_new_a[j:j+jump]).float()).to(self.dv),(torch.from_numpy(train_new_b[j:j+jump]).float()).to(self.dv)]
