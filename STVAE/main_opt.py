@@ -21,9 +21,11 @@ from classify import classify
 
 
 def test_models(ARGS, SMS, test, fout):
-    iid = None;
+
     len_test = len(test[0]);
-    ACC = [];
+    testMU = None;
+    testLOGVAR = None;
+    testPI = None
     CL_RATE = [];
     ls = len(SMS)
     CF = [conf] + list(np.zeros(ls - 1))
@@ -32,7 +34,8 @@ def test_models(ARGS, SMS, test, fout):
     if (ARGS[0].n_class):
         for sm, model, args, cf in zip(SMS, models, ARGS, CF):
             model.load_state_dict(sm['model.state.dict'])
-            testMU, testLOGVAR, testPI = model.initialize_mus(tes[0], args.OPT)
+            if 'vae' in args.type:
+                testMU, testLOGVAR, testPI = model.initialize_mus(tes[0], args.OPT)
             print(cf)
             iid, RY, cl_rate, acc = model.run_epoch_classify(tes, 'test', fout=fout, num_mu_iter=args.nti, conf_thresh=cf)
             CL_RATE += [cl_rate]
@@ -44,7 +47,8 @@ def test_models(ARGS, SMS, test, fout):
     else:
         for sm, model, args, cf in zip(SMS, models, ARGS, CF):
             model.load_state_dict(sm['model.state.dict'])
-            testMU, testLOGVAR, testPI = model.initialize_mus(tes[0], args.OPT)
+            if 'vae' in args.type:
+                testMU, testLOGVAR, testPI = model.initialize_mus(tes[0], args.OPT)
             model.run_epoch(tes, 0, args.nti, testMU, testLOGVAR, testPI, d_type='test', fout=fout)
 
 def train_model(model, args, ex_file, DATA, fout):
@@ -178,6 +182,7 @@ if (run_existing and not reinit):
         elif embedd:
             net_model=net_models[0]
             net_model.load_state_dict(SMS[0]['model.state.dict'])
+            cc=net_model.get_binary_signature(DATA[0])
             tr = net_model.get_embedding(DATA[0]).detach().cpu().numpy()
             tr = tr.reshape(tr.shape[0], -1)
             trh = [tr, DATA[0][1]]
@@ -191,12 +196,12 @@ if (run_existing and not reinit):
             args.lr=lr
             train_new(args, trh, teh, device)
         else:
-            dat=DATA
             if args.layers is not None and not args.rerun:
                 args.type='net'
-                train_model(net_models[0], args, EX_FILES[0], dat, fout)
+                test_models(ARGS,SMS,DATA[2],fout)
     else:
-        test_models(ARGS,SMS,DATA[2],fout)
+        test_models(ARGS, SMS, DATA[2], fout)
+
 else:
     #if ('vae' in args.type):
     if 'vae' in args.type:

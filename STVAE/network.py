@@ -306,14 +306,35 @@ class network(nn.Module):
         return x_out
 
 
-    def get_binary_signature(self,train):
-        data = (torch.from_numpy(train[0]).float()).to("cpu")
-        out,ot0=self.forward(data,everything=True)
+    def get_binary_signature(self,inp1, inp2=None, level=1):
+
+        num_tr1=inp1[0].shape[0]
+        OT1=[];
         with torch.no_grad():
-            qq=2*(ot0[1].reshape(self.bsz,-1)>0).type(torch.float32)-1.
-            cc=torch.mm(qq,qq.transpose(0,1))/qq.shape[1]
-            cc-=torch.diag(torch.diag(cc))
-            print('CC',torch.sum(cc==1))
+            for j in np.arange(0, num_tr1, self.bsz, dtype=np.int32):
+                data=(torch.from_numpy(inp1[0][j:j + self.bsz]).float()).to(self.dv)
+                out,ot1=self.forward(data,everything=True)
+                OT1+=[ot1[level]]
+            OT1 = torch.cat(OT1)
+            qq1=2*(OT1.reshape(num_tr1,-1)>0).type(torch.float32)-1.
+
+            if inp2 is not None:
+                OT2 = []
+                num_tr2=inp2[0].shape[0]
+                for j in np.arange(0, num_tr2, self.bsz, dtype=np.int32):
+                    data = (torch.from_numpy(inp2[0][j:j + self.bsz]).float()).to(self.dv)
+                    out, ot2 = self.forward(data, everything=True)
+                    OT2 += [ot2[level]]
+                OT2=torch.cat(OT2)
+                qq2=2*(OT2.reshape(num_tr2,-1)>0).type(torch.float32)-1.
+            else:
+                qq2=qq1
+
+            cc=torch.mm(qq1,qq2.transpose(0,1))/qq1.shape[1]
+            if inp2 is None:
+                cc-=torch.diag(torch.diag(cc))
+            ##print('CC',torch.sum(cc==1.).type(torch.float32)/num_tr1)
+            return cc
 
     # Epoch of network training
     def run_epoch(self, train, epoch, num_mu_iter=None, trainMU=None, trainLOGVAR=None, trPI=None, d_type='train', fout='OUT'):
