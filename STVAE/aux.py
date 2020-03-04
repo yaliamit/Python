@@ -76,6 +76,7 @@ def process_args(parser):
     parser.add_argument('--embedd', action='store_true', help='embedding training')
     parser.add_argument('--reinit', action='store_true', help='reinitialize part of trained model')
     parser.add_argument('--only_pi', action='store_true', help='only optimize over pi')
+    parser.add_argument('--edges', action='store_true', help='compute edges')
 
     parser.add_argument('--output_prefix', default='', help='path to model')
 

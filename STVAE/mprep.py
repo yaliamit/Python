@@ -7,7 +7,7 @@ import numpy as np
 import sys
 from Conv_data import get_data
 import network
-
+from edges import pre_edges
 
 def process_strings(args):
     strings={'opt_pre':'', 'mm_pre':'', 'opt_post':'', 'opt_mix':'', 'opt_class':'', 'cll':''}
@@ -141,10 +141,6 @@ def get_network(layers,sh=None):
 
 
 
-
-
-
-
 def get_models(device, fout, sh,STRINGS,ARGS, locs):
 
     h = sh[2]
@@ -191,10 +187,16 @@ def setups(args, EX_FILES):
         PARS['one_class'] = args.cl
 
     train, val, test, image_dim = get_data(PARS)
-    train = [train[0].transpose(0, 3, 1, 2), np.argmax(train[1], axis=1)]
-    test = [test[0].transpose(0, 3, 1, 2), np.argmax(test[1], axis=1)]
-    if val[0] is not None:
-        val = [val[0].transpose(0, 3, 1, 2), np.argmax(val[1], axis=1)]
+    if (args.edges):
+        train=[pre_edges(train[0]).transpose(0,3,1,2),np.argmax(train[1], axis=1)]
+        test=[pre_edges(test[0]).transpose(0,3,1,2),np.argmax(test[1], axis=1)]
+        if val[0] is not None:
+            val = [pre_edges(val[0]).transpose(0, 3, 1, 2), np.argmax(val[1], axis=1)]
+    else:
+        train = [train[0].transpose(0, 3, 1, 2), np.argmax(train[1], axis=1)]
+        test = [test[0].transpose(0, 3, 1, 2), np.argmax(test[1], axis=1)]
+        if val[0] is not None:
+            val = [val[0].transpose(0, 3, 1, 2), np.argmax(val[1], axis=1)]
     if (args.num_test>0):
         ntest=test[0].shape[0]
         ii=np.arange(0, ntest, 1)
