@@ -188,10 +188,10 @@ def setups(args, EX_FILES):
 
     train, val, test, image_dim = get_data(PARS)
     if (args.edges):
-        train=[pre_edges(train[0]).transpose(0,3,1,2),np.argmax(train[1], axis=1)]
-        test=[pre_edges(test[0]).transpose(0,3,1,2),np.argmax(test[1], axis=1)]
+        train=[pre_edges(train[0],dtr=args.edge_dtr).transpose(0,3,1,2),np.argmax(train[1], axis=1)]
+        test=[pre_edges(test[0],dtr=args.edge_dtr).transpose(0,3,1,2),np.argmax(test[1], axis=1)]
         if val[0] is not None:
-            val = [pre_edges(val[0]).transpose(0, 3, 1, 2), np.argmax(val[1], axis=1)]
+            val = [pre_edges(val[0],dtr=args.edge_dtr).transpose(0, 3, 1, 2), np.argmax(val[1], axis=1)]
     else:
         train = [train[0].transpose(0, 3, 1, 2), np.argmax(train[1], axis=1)]
         test = [test[0].transpose(0, 3, 1, 2), np.argmax(test[1], axis=1)]

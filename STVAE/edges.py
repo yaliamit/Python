@@ -1,17 +1,17 @@
 import numpy as np
 from Conv_data import get_data
 
-def pre_edges(im):
+def pre_edges(im,ntr=4,dtr=0):
 
     EDGES=[]
     for k in range(im.shape[3]):
-        EDGES+=[get_edges(im[:,:,:,k])]
+        EDGES+=[get_edges(im[:,:,:,k],ntr,dtr)]
 
     ED=np.concatenate(EDGES,axis=3)
 
     return ED
 
-def get_edges(im):
+def get_edges(im,ntr=4,dtr=0):
 
     sh=im.shape
     delta=3
@@ -29,8 +29,9 @@ def get_edges(im):
     diff_n11 = np.roll(im_b,(-1,1),axis=(1,2))-im_b
     diff_1n1 = np.roll(im_b,(1,-1),axis=(1,2))-im_b
 
-    thresh=4
+    thresh=ntr
     ad_10=np.abs(diff_10)
+    ad_10=ad_10*(ad_10>dtr)
     e10a=np.uint8(np.greater(ad_10,np.abs(diff_01)))\
          + np.uint8(np.greater(ad_10,np.abs(diff_n01))) + np.uint8(np.greater(ad_10,np.abs(diff_n10)))
     e10b=np.uint8(np.greater(ad_10,np.abs(np.roll(diff_01,(1,0),axis=(1,2)))))+\
@@ -40,6 +41,7 @@ def get_edges(im):
     e10n =np.logical_and(e10a+e10b > thresh,  diff_10<0)
 
     ad_01 = np.abs(diff_01)
+    ad_01 = ad_01*(ad_01>dtr)
     e01a = np.uint8(np.greater(ad_01, np.abs(diff_10))) \
            + np.uint8(np.greater(ad_01, np.abs(diff_n10))) + np.uint8(np.greater(ad_01, np.abs(diff_n01)))
     e01b = np.uint8(np.greater(ad_01, np.abs(np.roll(diff_10, (0, 1), axis=(1, 2))))) + \
@@ -49,6 +51,7 @@ def get_edges(im):
     e01n = np.logical_and(e01a + e01b > thresh, diff_01 < 0)
 
     ad_11 = np.abs(diff_11)
+    ad_11 = ad_11*(ad_11>dtr)
     e11a = np.uint8(np.greater(ad_11, np.abs(diff_n11))) \
            + np.uint8(np.greater(ad_11, np.abs(diff_1n1))) + np.uint8(np.greater(ad_11, np.abs(diff_nn11)))
     e11b = np.uint8(np.greater(ad_11, np.abs(np.roll(diff_n11, (1, 1), axis=(1, 2))))) + \
@@ -58,6 +61,7 @@ def get_edges(im):
     e11n = np.logical_and(e11a + e11b > thresh, diff_11 < 0)
 
     ad_n11 = np.abs(diff_n11)
+    ad_n11 = ad_n11*(ad_n11>dtr)
     en11a = np.uint8(np.greater(ad_n11, np.abs(diff_11))) \
            + np.uint8(np.greater(ad_n11, np.abs(diff_1n1))) + np.uint8(np.greater(ad_n11, np.abs(diff_nn11)))
     en11b = np.uint8(np.greater(ad_n11, np.abs(np.roll(diff_11, (-1, 1), axis=(1, 2))))) + \
@@ -65,7 +69,6 @@ def get_edges(im):
            np.uint8(np.greater(ad_n11, np.abs(np.roll(diff_n11, (-1, 1), axis=(1, 2)))))
     en11 = np.logical_and(np.greater(en11a + en11b, thresh), diff_n11 > 0)
     en11n = np.logical_and(en11a + en11b > thresh, diff_n11 < 0)
-    print("hello")
 
     edges=np.zeros((im.shape[0],im.shape[1],im.shape[2],8))
     edges[:,2:sh[1],0:sh[2],0]=e10[:,delta+2:delta+sh[1],delta:delta+sh[2]]
