@@ -127,13 +127,14 @@ if args.network:
     sh=DATA[0][0].shape
     # parse the existing network coded in ARGS[0]
     arg=ARGS[0]
-    arg.lnti, arg.layers_dict = mprep.get_network(arg.layers,sh=sh)
-    model = network.network(device, arg, arg.layers_dict, arg.lnti).to(device)
-    temp = torch.zeros(1, sh[1], sh[2], sh[3]).to(device)
-    bb = model.forward(temp)
-    net_models = [model]
-    if 'vae' not in args.type:
-        models=net_models
+    if args.layers is not None:
+        arg.lnti, arg.layers_dict = mprep.get_network(arg.layers,sh=sh)
+        model = network.network(device, arg, arg.layers_dict, arg.lnti).to(device)
+        temp = torch.zeros(1, sh[1], sh[2], sh[3]).to(device)
+        bb = model.forward(temp)
+        net_models = [model]
+        if 'vae' not in args.type:
+            models=net_models
 sample=args.sample
 classify=args.classify
 reinit=args.reinit

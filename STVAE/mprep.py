@@ -123,6 +123,7 @@ def process_network_line(line, global_drop):
 
 def get_network(layers,sh=None):
 
+
     LP=[]
     for line in layers:
         print(line)
