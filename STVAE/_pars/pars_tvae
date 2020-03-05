@@ -11,3 +11,7 @@
 --nti=500
 --CONS
 --n_class=0
+--network
+--layers
+name:input;num_filters:1
+name:dense_final;num_units:10
