@@ -222,7 +222,7 @@ class network(nn.Module):
             out1=OUTS
         elif (len(OUTS) > 3):
             out1 = OUTS[-3]
-        return(out,out1)
+        return(out)
 
 
 

@@ -81,3 +81,4 @@ def get_edges(im,ntr=4,dtr=0):
     edges[:, 2:sh[1], 0:sh[2]-2, 7] = en11n[:, delta+2:delta + sh[1], delta:delta + sh[2]-2]
 
     return(edges)
+
