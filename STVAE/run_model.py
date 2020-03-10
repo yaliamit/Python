@@ -79,7 +79,7 @@ def run_data(args):
         1.0,
     ]
 
-    attack=fa.BoundaryAttack() #(LinfPGD()
+    attack=fa.BoundaryAttack(iterations=2) #(LinfPGD()
 
     advs, _, success = attack(fmodel, images, labels, epsilons=epsilons)
     assert success.shape == (len(epsilons), len(images))
