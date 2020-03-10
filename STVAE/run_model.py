@@ -99,9 +99,8 @@ def run_data(args):
         1.0,
     ]
 
-    st=5000
-    if (args.steps is not None):
-        st=args.nti
+    
+    st=args.nti
     attack=fa.BoundaryAttack(steps=st) #(LinfPGD()
 
     advs, _, success = attack(fmodel, images, labels, epsilons=epsilons)
