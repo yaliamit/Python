@@ -7,7 +7,7 @@ import argparse
 import aux
 import eagerpy as ep
 import foolbox
-from foolbox import accuracy, samples
+from foolbox.utils import accuracy, samples
 import foolbox.attacks as fa
 from Conv_data import get_data
 from torch_edges import Edge
@@ -36,9 +36,18 @@ def run_data(args):
 
     f_model=fb_network(args,device).to(device)
     f_model.eval()
-    fmodel = foolbox.models.PyTorchModel(f_model, bounds=(0, 1))
+    fmodel = foolbox.models.PyTorchModel(f_model, num_classes=10, bounds=(0, 1))
 
-    images, labels = ep.astensors(*samples(fmodel, dataset="cifar10",  batchsize=16))
+    PARS = {}
+    PARS['data_set'] = args.dataset
+    PARS['num_train'] = 100
+    PARS['nval'] = args.nval
+
+    train, val, test, image_dim = get_data(PARS)
+
+    images=train[0].transpose(0,3,1,2)
+    labels=np.argmax(train[1], axis=1)
+    #images, labels = samples(fmodel, dataset="cifar10", batchsize=16)
 
 
    #ed=Edge(device,dtr=.03)
