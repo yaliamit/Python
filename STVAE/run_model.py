@@ -79,7 +79,7 @@ def run_data(args):
         1.0,
     ]
 
-    attack=fa.BoundaryAttack(iterations=2) #(LinfPGD()
+    attack=fa.BoundaryAttack(steps=2) #(LinfPGD()
 
     advs, _, success = attack(fmodel, images, labels, epsilons=epsilons)
     assert success.shape == (len(epsilons), len(images))
@@ -88,16 +88,20 @@ def run_data(args):
 
     ad=advs[0]
     print(success_)
-    orig_class=torch.max(f_model(images),dim=1)
-    adv_class=torch.max(f_model(ad),dim=1)
+    orig_class=(torch.argmax(f_model(images),dim=1)).numpy()
+    adv_class=(torch.argmax(f_model(ad),dim=1)).numpy()
     adn=ad.numpy()
-    both=np.concatenate((train[0].transpose(0,3,1,2)),adn,axis=0)
-    bb=aux.create_img(both,3,32,32,len(adn),2)
+    cc=np.zeros((len(adn)*2,3,32,32))
+    cc[0:(2*len(adn)):2]=train[0].transpose(0,3,1,2)
+    cc[1:(2*len(adn)):2]=adn
+    #both=np.concatenate((train[0].transpose(0,3,1,2),adn),axis=0)
+    bb=aux.create_img(cc,3,32,32,len(adn),2)
     py.imshow(bb)
+    py.axis('off')
     ss = ' '.join([str(elem) for elem in orig_class])
     py.text(-3, -3, ss)
     ss = ' '.join([str(elem) for elem in adv_class])
-    py.text(32, -3, ss)
+    py.text(-3, 73, ss)
     py.savefig('adv')
 
 
