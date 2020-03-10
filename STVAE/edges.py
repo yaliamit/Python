@@ -8,7 +8,7 @@ def pre_edges(im,ntr=4,dtr=0):
         EDGES+=[get_edges(im[:,:,:,k],ntr,dtr)]
 
     ED=np.concatenate(EDGES,axis=3)
-
+    ED=ED.to(self.dv)
     return ED
 
 def get_edges(im,ntr=4,dtr=0):

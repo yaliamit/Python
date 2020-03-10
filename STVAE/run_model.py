@@ -38,7 +38,7 @@ def run_data(args):
     f_model.eval()
     fmodel = foolbox.models.PyTorchModel(f_model, bounds=(0, 1))
 
-    images, labels = ep.astensors(*samples(fmodel, dataset="cifar10",  batchsize=16).to(device))
+    images, labels = ep.astensors(*samples(fmodel, dataset="cifar10",  batchsize=16))
 
 
    #ed=Edge(device,dtr=.03)
