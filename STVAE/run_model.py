@@ -25,7 +25,7 @@ class fb_network(nn.Module):
         temp = torch.zeros(1, sh[1], sh[2], sh[3]).to(self.dv)
         bb = self.model.forward(temp)
         self.model.load_state_dict(sm['model.state.dict'])
-        self.ed=Edge(self.dv,dtr=.03)
+        self.ed=Edge(self.dv,dtr=.03).to(self.dv)
 
     def forward(self,input):
         edges = self.ed(input)
