@@ -7,7 +7,7 @@ import argparse
 import aux
 import eagerpy as ep
 import foolbox
-from foolbox.utils import accuracy, samples
+from foolbox import accuracy, samples
 import foolbox.attacks as fa
 from Conv_data import get_data
 from torch_edges import Edge
@@ -36,17 +36,18 @@ def run_data(args):
 
     f_model=fb_network(args,device).to(device)
     f_model.eval()
-    fmodel = foolbox.models.PyTorchModel(f_model,num_classes=10, bounds=(0, 1))
+    fmodel = foolbox.models.PyTorchModel(f_model, bounds=(0, 1))
 
     PARS = {}
     PARS['data_set'] = args.dataset
-    PARS['num_train'] = 100
+    PARS['num_train'] = 2
     PARS['nval'] = args.nval
 
     train, val, test, image_dim = get_data(PARS)
 
-    images=train[0].transpose(0,3,1,2)
-    labels=np.argmax(train[1], axis=1)
+    images=torch.from_numpy(train[0].transpose(0,3,1,2))
+    labels=torch.from_numpy(np.argmax(train[1], axis=1))
+    #images, labels = ep.astensors(*samples(fmodel, dataset="cifar10", batchsize=1))
     #images, labels = samples(fmodel, dataset="cifar10", batchsize=16)
 
 
@@ -56,23 +57,26 @@ def run_data(args):
 
     print(accuracy(fmodel,images,labels))
 
+    # epsilons = [
+    #     0.0,
+    #     0.0005,
+    #     0.001,
+    #     0.0015,
+    #     0.002,
+    #     0.003,
+    #     0.005,
+    #     0.01,
+    #     0.02,
+    #     0.03,
+    #     0.1,
+    #     0.3,
+    #     0.5,
+    #     1.0,
+    # ]
+
     epsilons = [
-        0.0,
-        0.0005,
-        0.001,
-        0.0015,
-        0.002,
-        0.003,
-        0.005,
-        0.01,
-        0.02,
-        0.03,
-        0.1,
-        0.3,
-        0.5,
         1.0,
     ]
-
 
     attack=fa.BoundaryAttack() #(LinfPGD()
 
