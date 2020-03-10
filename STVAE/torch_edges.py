@@ -10,7 +10,7 @@ class Edge(torch.nn.Module):
         self.dv = device
 
     def forward(self, x):
-        x = self.pre_edges(x)
+        x = self.pre_edges(x).to(self.dv)
         return x
 
 
