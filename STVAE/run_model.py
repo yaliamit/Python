@@ -1,6 +1,7 @@
 import torch
 import network
 import numpy as np
+import pylab as py
 import mprep
 import os
 import argparse
@@ -40,7 +41,7 @@ def run_data(args):
 
     PARS = {}
     PARS['data_set'] = args.dataset
-    PARS['num_train'] = 2
+    PARS['num_train'] = 10
     PARS['nval'] = args.nval
 
     train, val, test, image_dim = get_data(PARS)
@@ -82,8 +83,24 @@ def run_data(args):
 
     advs, _, success = attack(fmodel, images, labels, epsilons=epsilons)
     assert success.shape == (len(epsilons), len(images))
-    success_ = success.numpy()
+    success_ = success.detach().numpy()
     assert success_.dtype == np.bool
+
+    ad=advs[0]
+    print(success_)
+    orig_class=torch.max(f_model(images),dim=1)
+    adv_class=torch.max(f_model(ad),dim=1)
+    adn=ad.numpy()
+    both=np.concatenate(train[0].transpose(0,3,1,2),adn,axis=0)
+    bb=aux.create_img(both,3,32,32,len(adn),2)
+    py.imshow(bb)
+    ss = ' '.join([str(elem) for elem in orig_class])
+    py.text(-3, -3, ss)
+    ss = ' '.join([str(elem) for elem in adv_class])
+    py.text(32, -3, ss)
+    py.savefig('adv')
+
+
 
     # print(attack)
     # print("  ", 1.0 - success_.mean(axis=-1).round(2))
@@ -103,7 +120,7 @@ args=aux.process_args(parser)
 
 use_gpu = args.gpu and torch.cuda.is_available()
 device = torch.device("cuda:" + str(args.gpu - 1) if use_gpu else "cpu")
-
+print(device)
 
 
 PARS = {}
