@@ -36,7 +36,7 @@ class fb_network(nn.Module):
 
 categs=['airp','auto','bird','cat','deer','dog','frog','horse','ship','truck']
 
-def save_image(bb,orig_class,adv_class):
+def save_image(bb,orig_class,adv_class,h,m):
     xdim=bb.shape[0]
     ydim=bb.shape[1]
     img = Image.new('RGB',(ydim+40,xdim+40), color=(255,255,255) )
@@ -45,10 +45,17 @@ def save_image(bb,orig_class,adv_class):
     draw = ImageDraw.Draw(img)
     font = ImageFont.truetype("Arial.ttf", 10)
     t=20
-    for o,a in zip(orig_class,adv_class):
+    for o in orig_class:
         draw.text((t,2), categs[o], 0, font=font)
-        draw.text((t,20+xdim),categs[a],0,font=font)
-        t+=32
+        t+=h
+    xd=20
+    for aa in adv_class:
+        t=20
+        for a in aa:
+            draw.text((t,xd+h),categs[a],0,font=font)
+            t+=h
+        xd+=(h+m)
+
     img.save("adv.tif", compression="tiff_deflate", save_all=True)
 
     print("Saved the sampled images")
@@ -96,11 +103,14 @@ def run_data(args):
     # ]
 
     epsilons = [
-        1.0,
+        1.,
+        .1,
+        .01,
     ]
 
-    
+
     st=args.nti
+    print('steps',st)
     attack=fa.BoundaryAttack(steps=st) #(LinfPGD()
 
     advs, _, success = attack(fmodel, images, labels, epsilons=epsilons)
@@ -108,17 +118,21 @@ def run_data(args):
     success_ = success.detach().numpy()
     assert success_.dtype == np.bool
 
-    ad=advs[0]
+
     print(success_)
     orig_class=(torch.argmax(f_model(images),dim=1)).numpy()
-    adv_class=(torch.argmax(f_model(ad),dim=1)).numpy()
-    adn=ad.numpy()
-    cc=np.zeros((len(adn)*2,3,32,32))
-    cc[0:(2*len(adn)):2]=train[0].transpose(0,3,1,2)
-    cc[1:(2*len(adn)):2]=adn
+    adv_class=[]
+    for a in advs:
+        adv_class+=[(torch.argmax(f_model(a),dim=1)).numpy()]
+    ll=len(epsilons)
+    la=len(advs[0])
+    cc=np.zeros((la*(1+ll),3,32,32))
+    cc[0:((1+ll)*la):(1+ll)]=train[0].transpose(0,3,1,2)
+    for t in range(1,ll+1):
+        cc[t:((1+ll)*la):(1+ll)]=advs[t-1].numpy()
     #both=np.concatenate((train[0].transpose(0,3,1,2),adn),axis=0)
-    bb=aux.create_img(cc,3,32,32,len(adn),2)
-    save_image(bb,orig_class,adv_class)
+    bb=aux.create_img(cc,3,32,32,la,ll+1,15)
+    save_image(bb,orig_class,adv_class,32,15)
     # py.imshow(bb)
     # py.axis('off')
     # ss = ' '.join([str(elem) for elem in orig_class])

@@ -114,7 +114,7 @@ def make_images(test,model,ex_file,args):
         model.bsz=old_bsz
         model.setup_id(old_bsz)
 
-def create_img(XX,c,h,w,ri=10,rj=10):
+def create_img(XX,c,h,w,ri=10,rj=10,sep=0):
     mat = []
     t = 0
     for i in range(ri):
@@ -124,6 +124,7 @@ def create_img(XX,c,h,w,ri=10,rj=10):
                 line += [XX[t].reshape((c, h, w)).transpose(1, 2, 0)]
             else:
                 line += [np.zeros((c,h,w)).transpose(1, 2, 0)]
+            line+=[np.ones((c,sep,w)).transpose(1,2,0)]
             t += 1
         mat += [np.concatenate(line, axis=0)]
     manifold = np.concatenate(mat, axis=1)
