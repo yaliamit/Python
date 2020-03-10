@@ -91,7 +91,7 @@ def run_data(args):
     orig_class=torch.max(f_model(images),dim=1)
     adv_class=torch.max(f_model(ad),dim=1)
     adn=ad.numpy()
-    both=np.concatenate(train[0].transpose(0,3,1,2),adn,axis=0)
+    both=np.concatenate((train[0].transpose(0,3,1,2)),adn,axis=0)
     bb=aux.create_img(both,3,32,32,len(adn),2)
     py.imshow(bb)
     ss = ' '.join([str(elem) for elem in orig_class])
