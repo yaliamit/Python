@@ -13,6 +13,7 @@ import foolbox.attacks as fa
 from Conv_data import get_data
 from torch_edges import Edge
 from torch import nn
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 class fb_network(nn.Module):
     def __init__(self,args,device):
@@ -33,6 +34,25 @@ class fb_network(nn.Module):
         out = self.model(edges)
         return out
 
+categs=['airp','auto','bird','cat','deer','dog','frog','horse','ship','truck']
+
+def save_image(bb,orig_class,adv_class):
+    xdim=bb.shape[0]
+    ydim=bb.shape[1]
+    img = Image.new('RGB',(ydim+40,xdim+40), color=(255,255,255) )
+    imga=Image.fromarray(np.uint8(255.*bb))
+    img.paste(imga,(20,20))
+    draw = ImageDraw.Draw(img)
+    font = ImageFont.truetype("Arial.ttf", 10)
+    t=20
+    for o,a in zip(orig_class,adv_class):
+        draw.text((t,2), categs[o], 0, font=font)
+        draw.text((t,20+xdim),categs[a],0,font=font)
+        t+=32
+    img.save("adv.tif", compression="tiff_deflate", save_all=True)
+
+    print("Saved the sampled images")
+
 def run_data(args):
 
     f_model=fb_network(args,device).to(device)
@@ -41,7 +61,7 @@ def run_data(args):
 
     PARS = {}
     PARS['data_set'] = args.dataset
-    PARS['num_train'] = 10
+    PARS['num_train'] = args.num_train
     PARS['nval'] = args.nval
 
     train, val, test, image_dim = get_data(PARS)
@@ -79,7 +99,10 @@ def run_data(args):
         1.0,
     ]
 
-    attack=fa.BoundaryAttack(steps=2) #(LinfPGD()
+    st=5000
+    if (args.steps is not None):
+        st=args.nti
+    attack=fa.BoundaryAttack(steps=st) #(LinfPGD()
 
     advs, _, success = attack(fmodel, images, labels, epsilons=epsilons)
     assert success.shape == (len(epsilons), len(images))
@@ -96,13 +119,14 @@ def run_data(args):
     cc[1:(2*len(adn)):2]=adn
     #both=np.concatenate((train[0].transpose(0,3,1,2),adn),axis=0)
     bb=aux.create_img(cc,3,32,32,len(adn),2)
-    py.imshow(bb)
-    py.axis('off')
-    ss = ' '.join([str(elem) for elem in orig_class])
-    py.text(-3, -3, ss)
-    ss = ' '.join([str(elem) for elem in adv_class])
-    py.text(-3, 73, ss)
-    py.savefig('adv')
+    save_image(bb,orig_class,adv_class)
+    # py.imshow(bb)
+    # py.axis('off')
+    # ss = ' '.join([str(elem) for elem in orig_class])
+    # py.text(-3, -3, ss)
+    # ss = ' '.join([str(elem) for elem in adv_class])
+    # py.text(-3, 73, ss)
+    # py.savefig('adv')
 
 
 
