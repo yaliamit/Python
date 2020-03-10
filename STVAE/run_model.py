@@ -36,7 +36,7 @@ def run_data(args):
 
     f_model=fb_network(args,device).to(device)
     f_model.eval()
-    fmodel = foolbox.models.PyTorchModel(f_model, bounds=(0, 1))
+    fmodel = foolbox.models.PyTorchModel(f_model,num_classes=10, bounds=(0, 1))
 
     PARS = {}
     PARS['data_set'] = args.dataset
