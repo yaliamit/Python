@@ -20,6 +20,7 @@ class fb_network(nn.Module):
         super(fb_network, self).__init__()
         self.args=args
         self.dv=device
+        self.edges=args.edges
         #sh = [0,24,32,32]
         nc=sh[2]
         if (args.edges):
@@ -34,8 +35,9 @@ class fb_network(nn.Module):
         self.ed=Edge(self.dv,dtr=.03).to(self.dv)
 
     def forward(self,input):
-        edges = self.ed(input)
-        out = self.model(edges)
+        if (self.edges):
+            input = self.ed(input)
+        out = self.model(input)
         return out
 
 categs=['airp','auto','bird','cat','deer','dog','frog','horse','ship','truck']
