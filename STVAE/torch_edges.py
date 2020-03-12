@@ -16,11 +16,12 @@ class Edge(torch.nn.Module):
 
     def pre_edges(self, im):
 
-        EDGES=[]
-        for k in range(im.shape[1]):
-            EDGES+=[self.get_edges(im[:,k,:,:])]
+        with torch.no_grad():
+            EDGES=[]
+            for k in range(im.shape[1]):
+                EDGES+=[self.get_edges(im[:,k,:,:])]
 
-        ED=torch.cat(EDGES,dim=1)
+            ED=torch.cat(EDGES,dim=1)
 
         return ED
 
