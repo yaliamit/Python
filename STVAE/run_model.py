@@ -136,7 +136,7 @@ def run_data(args):
     ll=len(epsilons)
     la=len(advs[0])
     cc=np.zeros((la*(1+ll),3,32,32))
-    cc[0:((1+ll)*la):(1+ll)]=test[0][0:num_train].transpose(0,3,1,2)
+    cc[0:((1+ll)*la):(1+ll)]=test[0][0:args.num_train].transpose(0,3,1,2)
     for t in range(1,ll+1):
         cc[t:((1+ll)*la):(1+ll)]=advs[t-1].cpu().numpy()
     #both=np.concatenate((train[0].transpose(0,3,1,2),adn),axis=0)
