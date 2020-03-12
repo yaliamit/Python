@@ -115,7 +115,7 @@ def run_data(args):
 
     advs, _, success = attack(fmodel, images, labels, epsilons=epsilons)
     assert success.shape == (len(epsilons), len(images))
-    success_ = success.detach().numpy()
+    success_ = success.detach().cpu().numpy()
     assert success_.dtype == np.bool
 
 
