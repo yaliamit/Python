@@ -73,7 +73,7 @@ def run_data(args):
     PARS['num_train'] = args.num_train
     PARS['nval'] = args.nval
     train, val, test, image_dim = get_data(PARS)
-    np.random.shuffle(test)
+    np.random.shuffle(test[0])
 
     f_model=fb_network(args,test[0][0].shape,device).to(device)
     f_model.eval()
