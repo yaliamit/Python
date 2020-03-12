@@ -29,7 +29,7 @@ class Edge(torch.nn.Module):
         sh=im.shape
         delta=3
         im_b=torch.ones((sh[0],sh[1]+2*delta,sh[2]+2*delta)).to(self.dv)
-
+        print(im_b.is_cuda)
         im_b[:,delta:delta+sh[1],delta:delta+sh[2]]=im
 
         diff_11 = torch.roll(im_b,(1,1),dims=(1,2))-im_b
@@ -93,6 +93,6 @@ class Edge(torch.nn.Module):
         edges[:,5,0:sh[1] - 2, 0:sh[2]-2] = e11n[:, delta:delta + sh[1] - 2, delta:delta + sh[2]-2]
         edges[:,6,0:sh[1]-2, 2:sh[2]] = en11[:, delta:delta + sh[1]-2, delta+2:delta + sh[2]]
         edges[:,7,2:sh[1], 0:sh[2]-2] = en11n[:, delta+2:delta + sh[1], delta:delta + sh[2]-2]
-
+        print(edge.is_cuda)
         return(edges)
 
