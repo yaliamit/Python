@@ -129,7 +129,7 @@ def run_data(args):
     cc=np.zeros((la*(1+ll),3,32,32))
     cc[0:((1+ll)*la):(1+ll)]=train[0].transpose(0,3,1,2)
     for t in range(1,ll+1):
-        cc[t:((1+ll)*la):(1+ll)]=advs[t-1].numpy()
+        cc[t:((1+ll)*la):(1+ll)]=advs[t-1].cpu().numpy()
     #both=np.concatenate((train[0].transpose(0,3,1,2),adn),axis=0)
     bb=aux.create_img(cc,3,32,32,la,ll+1,15)
     save_image(bb,orig_class,adv_class,32,15)
