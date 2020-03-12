@@ -26,7 +26,7 @@ class fb_network(nn.Module):
         if (args.edges):
             nc*=8
         sh=[0,nc,sh[0],sh[1]]
-        self.lnti, self.layers_dict = mprep.get_network(args.layers, sh=sh)
+        self.lnti, self.layers_dict = mprep.get_network(args.layers, nf=nc)
         self.model=network.network(self.dv, self.args, self.layers_dict, self.lnti).to(self.dv)
         sm = torch.load('_output/'+args.model[0], map_location='cpu')
         temp = torch.zeros(1, sh[1], sh[2], sh[3]).to(self.dv)
