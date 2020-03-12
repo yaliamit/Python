@@ -73,7 +73,7 @@ def run_data(args):
     PARS['num_train'] = args.num_train
     PARS['nval'] = args.nval
     train, val, test, image_dim = get_data(PARS)
-    ii=np.range(test[0].shape[0])
+    ii=np.array(range(test[0].shape[0]))
     np.random.shuffle(ii)
     test=[test[0][ii][0:args.num_train],test[1][ii][0:args.num_train]]
 
