@@ -202,19 +202,20 @@ def setups(args, EX_FILES):
     if args.edges:
         ed = Edge(device, dtr=.03).to(device)
         edges=[]
-        for j in np.arange(0,train[0].shape[0],1000):
-            tr=torch.from_numpy(train[0][j:j+1000]).to(device)
+        jump=10000
+        for j in np.arange(0,train[0].shape[0],jump):
+            tr=torch.from_numpy(train[0][j:j+jump]).to(device)
             edges+=[ed(tr).cpu().numpy()]
         train=[np.concatenate(edges,axis=0),train[1]]
         edges_te=[]
-        for j in np.arange(0,test[0].shape[0],1000):
-            tr=torch.from_numpy(test[0][j:j+1000]).to(device)
+        for j in np.arange(0,test[0].shape[0],jump):
+            tr=torch.from_numpy(test[0][j:j+jump]).to(device)
             edges_te+=[ed(tr).cpu().numpy()]
         test=[np.concatenate(edges_te,axis=0),test[1]]
         if val[0] is not None:
             edges_va = []
-            for j in np.arange(0, test[0].shape[0], 1000):
-                tr = torch.from_numpy(val[0][j:j + 1000]).to(device)
+            for j in np.arange(0, test[0].shape[0], jump):
+                tr = torch.from_numpy(val[0][j:j + jump]).to(device)
                 edges_va += [ed(tr).cpu().numpy()]
             val = [np.concatenate(edges_va,axis=0), val[1]]
     if (args.num_test>0):
