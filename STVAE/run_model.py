@@ -75,14 +75,14 @@ def run_data(args):
     train, val, test, image_dim = get_data(PARS)
 
 
-    f_model=fb_network(args,train[0][0].shape,device).to(device)
+    f_model=fb_network(args,test[0][0].shape,device).to(device)
     f_model.eval()
     fmodel = foolbox.models.PyTorchModel(f_model, bounds=(0, 1))
 
 
 
 
-    images=torch.from_numpy(train[0].transpose(0,3,1,2)).to(device)
+    images=torch.from_numpy(test[0][0:args.num_train].transpose(0,3,1,2)).to(device)
     labels=torch.from_numpy(np.argmax(train[1], axis=1)).to(device)
     #images, labels = ep.astensors(*samples(fmodel, dataset="cifar10", batchsize=1))
     #images, labels = samples(fmodel, dataset="cifar10", batchsize=16)
