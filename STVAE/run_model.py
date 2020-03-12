@@ -83,7 +83,7 @@ def run_data(args):
 
 
     images=torch.from_numpy(test[0][0:args.num_train].transpose(0,3,1,2)).to(device)
-    labels=torch.from_numpy(np.argmax(train[1], axis=1)).to(device)
+    labels=torch.from_numpy(np.argmax(test[1][0:args.num_train], axis=1)).to(device)
     #images, labels = ep.astensors(*samples(fmodel, dataset="cifar10", batchsize=1))
     #images, labels = samples(fmodel, dataset="cifar10", batchsize=16)
 
