@@ -121,7 +121,7 @@ def process_network_line(line, global_drop):
             lp[s0] = a
     return (lp)
 
-def get_network(layers,sh=None):
+def get_network(layers,nf=None):
 
 
     LP=[]
@@ -131,8 +131,8 @@ def get_network(layers,sh=None):
         if lp is not None:
             LP += [lp]
     layers_dict=LP
-    if (sh is not None):
-        LP[0]['num_filters']=sh[1]
+    if (nf is not None):
+        LP[0]['num_filters']=nf
     layer_names_to_indices={}
     for i,ll in enumerate(LP):
         layer_names_to_indices[ll['name']]=i
@@ -188,7 +188,7 @@ def setups(args, EX_FILES):
         PARS['one_class'] = args.cl
 
     train, val, test, image_dim = get_data(PARS)
-    if (args.edges):
+    if (False): #args.edges):
         train=[pre_edges(train[0],dtr=args.edge_dtr).transpose(0,3,1,2),np.argmax(train[1], axis=1)]
         test=[pre_edges(test[0],dtr=args.edge_dtr).transpose(0,3,1,2),np.argmax(test[1], axis=1)]
         if val[0] is not None:

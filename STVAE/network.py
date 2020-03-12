@@ -4,6 +4,7 @@ import torch.nn.functional as F
 from torch import nn, optim
 from Conv_data import rotate_dataset_rand
 import contextlib
+from torch_edges import Edge
 from aux import create_img
 import time
 @contextlib.contextmanager
@@ -75,6 +76,7 @@ class network(nn.Module):
         self.bsz=args.mb_size # Batch size - gets multiplied by number of shifts so needs to be quite small.
         #self.full_dim=args.full_dim
         self.dv=device
+        self.edges=args.edges
         self.n_class=args.n_class
         #self.pools = args.pools # List of pooling at each level of network
         #self.drops=args.drops # Drop fraction at each level of network
@@ -82,7 +84,7 @@ class network(nn.Module):
         self.lr=args.lr
         self.layer_text=layers
         self.lnti=lnti
-
+        self.ed = Edge(self.dv, dtr=.03).to(self.dv)
         # The loss function
         self.criterion=nn.CrossEntropyLoss()
         self.criterion_shift=nn.CrossEntropyLoss()
@@ -102,6 +104,8 @@ class network(nn.Module):
             return(F.relu(out))
 
     def forward(self,input,everything=False):
+        if (self.edges):
+            input = self.ed(input)
         out = input
         in_dims=[]
         if (self.first):
