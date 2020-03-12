@@ -8,6 +8,7 @@ import sys
 from Conv_data import get_data
 import network
 from edges import pre_edges
+from torch_edges import Edge
 
 def process_strings(args):
     strings={'opt_pre':'', 'mm_pre':'', 'opt_post':'', 'opt_mix':'', 'opt_class':'', 'cll':''}
@@ -198,6 +199,24 @@ def setups(args, EX_FILES):
         test = [test[0].transpose(0, 3, 1, 2), np.argmax(test[1], axis=1)]
         if val[0] is not None:
             val = [val[0].transpose(0, 3, 1, 2), np.argmax(val[1], axis=1)]
+    if args.edges:
+        ed = Edge(device, dtr=.03).to(device)
+        edges=[]
+        for j in np.arange(0,train[0].shape[0],1000):
+            tr=torch.from_numpy(train[0][j:j+1000]).to(device)
+            edges+=[ed(tr).cpu().numpy()]
+        train=[np.concatenate(edges,axis=0),train[1]]
+        edges_te=[]
+        for j in np.arange(0,test[0].shape[0],1000):
+            tr=torch.from_numpy(test[0][j:j+1000]).to(device)
+            edges_te+=[ed(tr).cpu().numpy()]
+        test=[np.concatenate(edges_te,axis=0),test[1]]
+        if val[0] is not None:
+            edges_va = []
+            for j in np.arange(0, test[0].shape[0], 1000):
+                tr = torch.from_numpy(val[0][j:j + 1000]).to(device)
+                edges_va += [ed(tr).cpu().numpy()]
+            val = [np.concatenate(edges_va,axis=0), val[1]]
     if (args.num_test>0):
         ntest=test[0].shape[0]
         ii=np.arange(0, ntest, 1)

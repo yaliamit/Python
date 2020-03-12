@@ -129,8 +129,6 @@ if args.network:
     arg=ARGS[0]
     if args.layers is not None:
         nf=sh[1]
-        if (args.edges):
-            nf*=8
         arg.lnti, arg.layers_dict = mprep.get_network(arg.layers,nf=nf)
         model = network.network(device, arg, arg.layers_dict, arg.lnti).to(device)
         temp = torch.zeros(1, sh[1], sh[2], sh[3]).to(device)

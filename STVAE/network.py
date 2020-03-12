@@ -104,8 +104,7 @@ class network(nn.Module):
             return(F.relu(out))
 
     def forward(self,input,everything=False):
-        if (self.edges):
-            input = self.ed(input)
+
         out = input
         in_dims=[]
         if (self.first):
