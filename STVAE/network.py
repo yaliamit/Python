@@ -142,7 +142,10 @@ class network(nn.Module):
                 if ('pool' in ll['name']):
                     if self.first:
                         pp = np.mod(out.shape, ll['pool_size'])
-                        self.layers.add_module(ll['name'],nn.MaxPool2d(ll['pool_size'], padding=tuple(pp[2:4])).to(self.dv))
+                        stride = ll['pool_size']
+                        if ('stride' in ll):
+                            stride = ll['stride']
+                        self.layers.add_module(ll['name'],nn.MaxPool2d(ll['pool_size'], stride=stride, padding=tuple(pp[2:4])).to(self.dv))
                     out = getattr(self.layers, ll['name'])(OUTS[inp_ind])
                     OUTS += [out]
 
