@@ -282,7 +282,7 @@ class network(nn.Module):
             #     WW+=torch.sum(p*p)
             # print(loss,WW)
         else:
-            out,_=self.forward(input)
+            out=self.forward(input)
             # Compute loss and accuracy
             loss, acc=self.get_acc_and_loss(out,target)
 

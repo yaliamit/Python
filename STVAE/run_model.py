@@ -16,14 +16,18 @@ from torch import nn
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 class fb_network(nn.Module):
-    def __init__(self,args,device):
+    def __init__(self,args,sh,device):
         super(fb_network, self).__init__()
         self.args=args
         self.dv=device
-        sh = [0,24,32,32]
+        #sh = [0,24,32,32]
+        nc=sh[2]
+        if (args.edges):
+            nc*=8
+        sh=[0,nc,sh[0],sh[1]]
         self.lnti, self.layers_dict = mprep.get_network(args.layers, sh=sh)
         self.model=network.network(self.dv, self.args, self.layers_dict, self.lnti).to(self.dv)
-        sm = torch.load('_output/network.pt', map_location='cpu')
+        sm = torch.load('_output/'+args.model[0], map_location='cpu')
         temp = torch.zeros(1, sh[1], sh[2], sh[3]).to(self.dv)
         bb = self.model.forward(temp)
         self.model.load_state_dict(sm['model.state.dict'])
@@ -62,16 +66,19 @@ def save_image(bb,orig_class,adv_class,h,m):
 
 def run_data(args):
 
-    f_model=fb_network(args,device).to(device)
-    f_model.eval()
-    fmodel = foolbox.models.PyTorchModel(f_model, bounds=(0, 1))
-
     PARS = {}
     PARS['data_set'] = args.dataset
     PARS['num_train'] = args.num_train
     PARS['nval'] = args.nval
-
     train, val, test, image_dim = get_data(PARS)
+
+
+    f_model=fb_network(args,train[0][0].shape,device).to(device)
+    f_model.eval()
+    fmodel = foolbox.models.PyTorchModel(f_model, bounds=(0, 1))
+
+
+
 
     images=torch.from_numpy(train[0].transpose(0,3,1,2)).to(device)
     labels=torch.from_numpy(np.argmax(train[1], axis=1)).to(device)
@@ -112,8 +119,8 @@ def run_data(args):
     st=args.nti
     print('steps',st)
     attack=fa.BoundaryAttack(steps=st) #(LinfPGD()
-
-    advs, _, success = attack(fmodel, images, labels, epsilons=epsilons)
+    #attack=fa.LinfPGD(steps=st)
+    advs, wh, success = attack(fmodel, images, labels, epsilons=epsilons)
     assert success.shape == (len(epsilons), len(images))
     success_ = success.detach().cpu().numpy()
     assert success_.dtype == np.bool
