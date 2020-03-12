@@ -120,10 +120,10 @@ def run_data(args):
 
 
     print(success_)
-    orig_class=(torch.argmax(f_model(images),dim=1)).numpy()
+    orig_class=(torch.argmax(f_model(images),dim=1)).cpu().numpy()
     adv_class=[]
     for a in advs:
-        adv_class+=[(torch.argmax(f_model(a),dim=1)).numpy()]
+        adv_class+=[(torch.argmax(f_model(a),dim=1)).cpu().numpy()]
     ll=len(epsilons)
     la=len(advs[0])
     cc=np.zeros((la*(1+ll),3,32,32))
