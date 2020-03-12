@@ -73,7 +73,9 @@ def run_data(args):
     PARS['num_train'] = args.num_train
     PARS['nval'] = args.nval
     train, val, test, image_dim = get_data(PARS)
-    np.random.shuffle(test[0])
+    ii=np.range(test[0].shape[0])
+    np.random.shuffle(ii)
+    test=[test[0][ii][0:args.num_train],test[1][ii][0:args.num_train]]
 
     f_model=fb_network(args,test[0][0].shape,device).to(device)
     f_model.eval()
@@ -82,8 +84,8 @@ def run_data(args):
 
 
 
-    images=torch.from_numpy(test[0][0:args.num_train].transpose(0,3,1,2)).to(device)
-    labels=torch.from_numpy(np.argmax(test[1][0:args.num_train], axis=1)).to(device)
+    images=torch.from_numpy(test[0].transpose(0,3,1,2)).to(device)
+    labels=torch.from_numpy(np.argmax(test[1], axis=1)).to(device)
     #images, labels = ep.astensors(*samples(fmodel, dataset="cifar10", batchsize=1))
     #images, labels = samples(fmodel, dataset="cifar10", batchsize=16)
 
@@ -136,7 +138,7 @@ def run_data(args):
     ll=len(epsilons)
     la=len(advs[0])
     cc=np.zeros((la*(1+ll),3,32,32))
-    cc[0:((1+ll)*la):(1+ll)]=test[0][0:args.num_train].transpose(0,3,1,2)
+    cc[0:((1+ll)*la):(1+ll)]=test[0].transpose(0,3,1,2)
     for t in range(1,ll+1):
         cc[t:((1+ll)*la):(1+ll)]=advs[t-1].cpu().numpy()
     #both=np.concatenate((train[0].transpose(0,3,1,2),adn),axis=0)
