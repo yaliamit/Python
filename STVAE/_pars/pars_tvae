@@ -14,4 +14,6 @@
 --dataset=cifar10
 --output_cont
 --enc_layers
-name:conv;num_filters:32;filter_size:3;pool_size:2;pool_stride:2;non_linearity:relu
+name:conv1;num_filters:32;filter_size:3;pool_size:2;pool_stride:2;non_linearity:relu
+name:conv2;num_filters:128;filter_size:3;pool_size:2;pool_stride:2;non_linearity:relu
+name:conv3;num_filters:512;filter_size:3;pool_size:2;pool_stride:2;non_linearity:relu
