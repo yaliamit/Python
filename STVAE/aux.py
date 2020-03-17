@@ -20,6 +20,7 @@ def process_args(parser):
     parser.add_argument('--input_channels', type=int, default=1, help='Number of input channels')
     parser.add_argument('--type', default='vae', help='type of transformation: aff or tps')
     parser.add_argument('--dataset', default='mnist', help='which data set')
+    parser.add_argument('--enc_layers',  nargs="*", default=None, help='encoder layer')
     parser.add_argument('--layers',  nargs="*", default=None, help='layer')
     parser.add_argument('--hid_layers',  nargs="*", default=None, help='layer')
     parser.add_argument('--tps_num', type=int, default=3, help='dimension of s')
@@ -208,7 +209,7 @@ def prepare_recons(model, DATA, args):
                 HVARS += [h_vars.detach().cpu().numpy()]
             RR = np.concatenate(RR)
             HVARS = np.concatenate(HVARS)
-            tr = RR.reshape(-1, 1, 28, 28)
+            tr = RR.reshape(-1, model.input_channels,model.h,model.w)
             dat += [[tr, DATA[k][1][0:INP.shape[0]]]]
             HV+=[[HVARS,DATA[k][1][0:INP.shape[0]]]]
         else:

@@ -5,11 +5,14 @@ from torch import nn, optim
 from Conv_data import rotate_dataset_rand
 import contextlib
 from torch_edges import Edge
+from models_mix import conv2
 from aux import create_img
 import time
 @contextlib.contextmanager
 def dummy_context_mgr():
     yield None
+
+
 
 class residual_block(nn.Module):
     def __init__(self, in_channels, out_channels, dv, stride=1,pd=0):
@@ -130,6 +133,7 @@ class network(nn.Module):
                             loc_in_dims+=[in_dims[inp_ind[-1]]]
                 if ('input' in ll['name']):
                     OUTS+=[input]
+                    enc_hw=input.shape[2:4]
 
                 if ('conv' in ll['name']):
                     if self.first:

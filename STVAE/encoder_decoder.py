@@ -96,16 +96,16 @@ class encoder_mix(nn.Module):
         self.h2svar = nn.Linear(model.h_dim, model.s_dim * model.n_mix, bias=False)
         if not self.only_pi:
             self.h2pi = nn.Linear(model.h_dim, model.n_mix)
-        if (model.feats and self.feats_back):
-            self.conv=model.conv
-
-
+        #if (model.feats and self.feats_back):
+        #    self.conv=model.conv
+        if hasattr(model,'enc_conv'):
+            self.enc_conv=model.enc_conv
 
 
     def forward(self,inputs):
         pi=None
-        if (self.feats and self.feats_back):
-            inputs=self.conv.fwd(inputs)
+        if hasattr(self,'enc_conv'):
+            inputs=self.enc_conv.forw(inputs)
         inputs=inputs.reshape(-1, self.x_dim)
         h = F.relu(self.x2h(inputs))
         if not self.only_pi:
@@ -160,8 +160,11 @@ class decoder_mix(nn.Module):
                 self.h2hd = nn.ModuleList([nn.Linear(h_dim_a,h_dim_a) for i in range(num_hs)])
         self.h2x = nn.ModuleList([nn.Linear(h_dim_a, self.x_dim) for i in range(num_hs)])
 
-        if (self.feats and self.feats_back):
-            self.conv=model.conv
+        if hasattr(model,'enc_conv'):
+            self.enc_conv=model.enc_conv
+
+        #if (self.feats and self.feats_back):
+            #self.conv=model.conv
             # self.x_hf = model.x_hf
             # self.x_h=model.x_h
 
@@ -192,9 +195,9 @@ class decoder_mix(nn.Module):
         for h_, r in zip(h, rng):
             r_ind = 0 if self.hdim_dec is None else r
             xx = self.h2x[r_ind](h_)
-            if (self.feats and self.feats_back):
-                    xx=self.conv.bkwd(xx)
-                    xx = xx.reshape(-1, self.conv.x_h * self.conv.x_h)
+            if hasattr(self,'enc_conv'):
+                    xx=self.enc_conv.bkwd(xx)
+                    xx = xx.reshape(xx.shape[0],-1)
                     # xx= self.deconv(xx.reshape(-1, self.feats, self.x_hf, self.x_hf))
                     #
             x += [xx]

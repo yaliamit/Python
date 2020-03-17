@@ -5,11 +5,94 @@ import numpy as np
 import models
 from Sep import encoder_mix_sep
 from encoder_decoder import encoder_mix, decoder_mix
-
+from get_net_text import get_network
 import contextlib
 @contextlib.contextmanager
 def dummy_context_mgr():
     yield None
+
+class enc_dec_conv2(nn.Module):
+    def __init__(self,device,inp_f,out_f,filt_s,pool_w,pool_s,x_hw,non_lin=None):
+
+        super(enc_dec_conv2,self).__init__()
+        x_h=x_hw[0]
+        x_w=x_hw[1]
+        pp = np.int32(np.floor(filt_s / 2))
+        self.feats=out_f
+        self.x_dim = np.int32((x_h / pool_s) * (x_w / pool_s) * out_f)
+        self.x_h=x_h
+        self.x_hf = np.int32(x_h / pool_s)
+        self.x_wf = np.int32(x_w / pool_s)
+        self.x_hwf=[self.x_hf,self.x_wf]
+        self.dv=device
+        self.conv = torch.nn.Conv2d(inp_f, out_f, filt_s, stride=1, bias=False,
+                                    padding=pp).to(self.dv)
+        self.deconv = torch.nn.ConvTranspose2d(out_f, inp_f, filt_s, stride=pool_s,
+                                               padding=pp, output_padding=1, bias=False).to(self.dv)
+        self.deconv.weight.data = self.conv.weight.data
+        # self.orthogo()
+        if (np.mod(pool_w, 2) == 1):
+            pad = np.int32(pool_w / 2)
+        else:
+            pad = np.int32((pool_w - 1) / 2)
+        self.pool = nn.MaxPool2d(pool_w, stride=pool_s, padding=(pad, pad))
+        if non_lin is None:
+            self.nonl = nn.identity().to(self.dv)
+        elif non_lin == 'relu':
+            self.nonl = nn.ReLU().to(self.dv)
+
+
+    def fwd(self,xx):
+            xx=self.nonl(self.pool(self.conv(xx)))
+            return xx
+
+
+    def bkwd(self,xx):
+            xx = self.nonl(self.deconv(xx.reshape(-1, self.feats, self.x_hf, self.x_wf)))
+            return xx
+
+
+class ENC_DEC(nn.Module):
+    def __init__(self, sh, device, args):
+        super(ENC_DEC, self).__init__()
+
+
+        _,layers = get_network(args.enc_layers)
+        self.layers_text = layers
+        self.dv=device
+        self.x_hw = sh
+        self.setup(sh)
+    def setup(self,sh):
+
+        enc_hw=sh[1:3]
+        enc_inp_f=sh[0]
+        self.layers=nn.ModuleList()
+        for i,ll in enumerate(self.layers_text):
+            if 'conv' in ll['name']:
+                non_l=None
+                if 'non_linearity' in ll:
+                    non_l=ll['non_linearity']
+                self.layers.append(enc_dec_conv2(self.dv,enc_inp_f,ll['num_filters'],ll['filter_size'],
+                                       ll['pool_size'],ll['pool_stride'],enc_hw,non_l))
+                enc_hw=self.layers[-1].x_hwf
+                enc_inp_f=ll['num_filters']
+        self.x_dim=enc_hw*ll['num_filters']
+
+
+    def forw(self,input):
+
+        out=input
+        for l in self.layers:
+            out=l.fwd(out)
+
+        return(out)
+
+    def bkwd(self,input):
+        out=input
+        for l in reversed(self.layers):
+            out=l.bkwd(out)
+
+        return(out)
 
 
 class conv2(nn.Module):
@@ -52,8 +135,8 @@ class STVAE_mix(models.STVAE):
         q,r=torch.qr(aa.transpose(0,1))
         self.conv.weight.data=q.transpose(0,1).reshape(self.feats, self.input_channels, self.filts, self.filts)
 
-    def __init__(self, x_h, x_w, device, args):
-        super(STVAE_mix, self).__init__(x_h, x_w, device, args)
+    def __init__(self, sh, device, args):
+        super(STVAE_mix, self).__init__(sh, device, args)
 
         self.binary_thresh=args.binary_thresh
         self.lim=args.lim
@@ -68,7 +151,6 @@ class STVAE_mix(models.STVAE):
         self.feats=args.feats
         self.feats_back=args.feats_back
         self.filts=args.filts
-        self.x_h=x_h
         self.lamda=args.lamda
         self.loglamda=.5*np.log(self.lamda)
         self.diag=args.Diag
@@ -82,12 +164,13 @@ class STVAE_mix(models.STVAE):
             self.u_dim=self.n_parts*2
             self.s_dim=self.u_dim
         self.num_hlayers=args.num_hlayers
+        if hasattr(args,'enc_layers'):
+            self.enc_conv=ENC_DEC(sh,self.dv,args)
+        self.x_dim=self.enc_conv.layers[-1].x_dim
 
-
-
-        if (self.feats>0):
-            self.conv=conv2(x_h, x_w, args)
-            self.x_dim=self.conv.x_dim
+        # if (self.feats>0):
+        #     self.conv=conv2(x_h, x_w, args)
+        #     self.x_dim=self.conv.x_dim
 
         if (not args.OPT):
             if args.sep:
@@ -103,22 +186,22 @@ class STVAE_mix(models.STVAE):
 
 
         if (args.optimizer=='Adam'):
-                ppd = []
-                # ppd=self.decoder_mix.state_dict()
-                for keys, vals in self.decoder_mix.named_parameters():  # state_dict().items():
-                    if ('conv' not in keys):
-                        ppd += [vals]
-                PP = [{'params': ppd, 'lr': args.lr}]
-                if (not self.opt):
-                    ppe = []
-                    for keys, vals in self.encoder_mix.named_parameters():
-                        if ('conv' not in keys):
-                            ppe += [vals]
-                    PP += [{'params': ppe, 'lr': args.lr}]
-
-                if (self.feats):  # and not self.feats_back):
-                    PP += [{'params': self.conv.parameters(), 'lr': args.ortho_lr}]
-                self.optimizer = optim.Adam(PP)
+                # ppd = []
+                # # ppd=self.decoder_mix.state_dict()
+                # for keys, vals in self.decoder_mix.named_parameters():  # state_dict().items():
+                #     if ('conv' not in keys):
+                #         ppd += [vals]
+                # PP = [{'params': ppd, 'lr': args.lr}]
+                # if (not self.opt):
+                #     ppe = []
+                #     for keys, vals in self.encoder_mix.named_parameters():
+                #         if ('conv' not in keys):
+                #             ppe += [vals]
+                #     PP += [{'params': ppe, 'lr': args.lr}]
+                #
+                # if (self.feats):  # and not self.feats_back):
+                #     PP += [{'params': self.conv.parameters(), 'lr': args.ortho_lr}]
+                self.optimizer = optim.Adam(self.parameters())
             #self.optimizer=optim.Adam(self.parameters(),lr=args.lr)
         elif (args.optimizer=='Adadelta'):
             self.optimizer = optim.Adadelta(self.parameters())
@@ -199,7 +282,7 @@ class STVAE_mix(models.STVAE):
                 b = b + [a]
         else:
             for xx in x:
-                data=data.view(-1,self.x_dim)
+                data=data.view(data.shape[0],-1)
                 a=(data-xx)*(data-xx)
                 a = torch.sum(a, dim=1)
                 b = b + [a]
@@ -213,7 +296,7 @@ class STVAE_mix(models.STVAE):
 
         b=self.mixed_loss_pre(x,data)
         recloss=torch.sum(pi*b)
-        recloss=self.lamda*recloss-self.x_dim*data.shape[0]*self.loglamda
+        recloss=self.lamda*recloss-data.nelement()*self.loglamda
         return recloss
 
 
@@ -477,10 +560,11 @@ class STVAE_mix(models.STVAE):
                 s[:,i,0:self.u_dim]=theta
         s = s.transpose(0,1)
         x=self.decoder_and_trans(s)
-        if (self.feats and not self.feats_back):
+        if hasattr(self,'enc_conv'):
+        #if (self.feats and not self.feats_back):
             rec_b = []
             for rc in x:
-                rec_b += [self.conv.bkwd(rc.reshape(-1, self.feats, self.conv.x_hf, self.conv.x_hf))]
+                rec_b += [rc.reshape(-1, self.enc_conv.x_hw[0], self.enc_conv.x_hw[1], self.enc_conv.x_hw[2])]
             x = torch.stack(rec_b, dim=0)
 
         x=x.transpose(0,1)
