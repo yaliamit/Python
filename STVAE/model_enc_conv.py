@@ -23,9 +23,11 @@ class enc_dec_conv2(nn.Module):
         self.dv=device
         self.conv = torch.nn.Conv2d(inp_f, out_f, filt_s, stride=1, bias=False,
                                     padding=pp).to(self.dv)
+        self.bn=torch.nn.BatchNorm2d(out_f)
         self.deconv = torch.nn.ConvTranspose2d(out_f, inp_f, filt_s, stride=pool_s,
                                                padding=pp, output_padding=1, bias=False).to(self.dv)
         self.deconv.weight.data = self.conv.weight.data
+        self.dbn=torch.nn.BatchNorm2d(inp_f)
         # self.orthogo()
         if (np.mod(pool_w, 2) == 1):
             pad = np.int32(pool_w / 2)

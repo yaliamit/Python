@@ -208,6 +208,8 @@ class decoder_mix(nn.Module):
         xx = torch.stack(x, dim=0)
         if not self.output_cont:
             xx = torch.sigmoid(xx)
+        else:
+            xx = torch.tanh(xx)
 
         return xx, v
 
