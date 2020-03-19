@@ -2,7 +2,7 @@
 --n_mix=1
 --sdim=100
 --num_train=10000
---num_hlayers=1
+--num_hlayers=0
 --nepoch=200
 --transformation=aff
 --mb_size=500
