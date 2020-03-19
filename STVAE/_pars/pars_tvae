@@ -1,6 +1,6 @@
 --type=vae
 --n_mix=1
---sdim=6
+--sdim=100
 --num_train=10000
 --num_hlayers=1
 --nepoch=200
@@ -10,10 +10,11 @@
 --nval=0
 --nti=500
 --CONS
+--hdim=2048
 --n_class=0
 --dataset=cifar10
 --output_cont
 --enc_layers
 name:conv1;num_filters:32;filter_size:3;pool_size:2;pool_stride:2;non_linearity:relu
-name:conv2;num_filters:128;filter_size:3;pool_size:2;pool_stride:2;non_linearity:relu
-name:conv3;num_filters:512;filter_size:3;pool_size:2;pool_stride:2;non_linearity:relu
+name:conv2;num_filters:64;filter_size:3;pool_size:2;pool_stride:2;non_linearity:relu
+name:conv3;num_filters:128;filter_size:3;pool_size:2;pool_stride:2;non_linearity:relu

@@ -105,11 +105,12 @@ class encoder_mix(nn.Module):
     def forward(self,inputs):
         pi=None
         if hasattr(self,'enc_conv'):
-            inputs=self.enc_conv.forw(inputs)
-        inputs=inputs.reshape(-1, self.x_dim)
-        h = F.relu(self.x2h(inputs))
+            out=self.enc_conv.forw(inputs)
+            h=out.reshape(-1, self.x_dim)
+        else:
+            h = F.relu(self.x2h(inputs))
         if not self.only_pi:
-            hpi = F.relu(self.x2hpi(inputs))
+            hpi = F.relu(self.x2hpi(h))
         if (self.num_layers == 1):
             h = F.relu(self.h2he(h))
         s_mu = self.h2smu(h)
@@ -132,6 +133,7 @@ class decoder_mix(nn.Module):
         self.n_mix=model.n_mix
         self.z_dim=model.z_dim
         self.h_dim=model.h_dim
+        self.h_dim16=np.int32(model.h_dim/16)
         self.u_dim=model.u_dim
         self.x_dim=model.x_dim
         self.feats=model.feats
@@ -176,7 +178,8 @@ class decoder_mix(nn.Module):
         z = s.narrow(len(s.shape) - 1, self.u_dim, self.z_dim)
         h=[]; v=[]
         for i,zz,vv in zip(rng,z,u):
-            h = h + [self.z2h[i](self.z2z[i](zz))]
+            zzt=self.z2z[i](zz)
+            h+=[self.z2h[i](zzt)]
             if (self.type=='tvae'):
                 v=v+[self.u2u[i](vv)]
 
@@ -194,12 +197,12 @@ class decoder_mix(nn.Module):
         x = []
         for h_, r in zip(h, rng):
             r_ind = 0 if self.hdim_dec is None else r
-            xx = self.h2x[r_ind](h_)
             if hasattr(self,'enc_conv'):
+                    xx=h_.reshape(h_.shape[0],self.h_dim16,4,4)
                     xx=self.enc_conv.bkwd(xx)
                     xx = xx.reshape(xx.shape[0],-1)
-                    # xx= self.deconv(xx.reshape(-1, self.feats, self.x_hf, self.x_hf))
-                    #
+            else:
+                xx = self.h2x[r_ind](h_)
             x += [xx]
 
         xx = torch.stack(x, dim=0)

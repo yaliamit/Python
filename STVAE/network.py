@@ -5,7 +5,6 @@ from torch import nn, optim
 from Conv_data import rotate_dataset_rand
 import contextlib
 from torch_edges import Edge
-from models_mix import conv2
 from aux import create_img
 import time
 @contextlib.contextmanager
