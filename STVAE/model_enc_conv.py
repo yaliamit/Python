@@ -41,13 +41,16 @@ class enc_dec_conv2(nn.Module):
 
 
     def fwd(self,xx):
-            xx=self.nonl(self.pool(self.conv(xx)))
+            xx=self.conv(xx)
+            xx=self.bn(xx)
+            xx=self.nonl(self.pool(xx))
             return xx
 
 
     def bkwd(self,xx):
         xx=self.deconv(xx.reshape(-1, self.feats, self.x_hf, self.x_wf))
         if (self.inp_f>3):
+            xx = self.dbn(xx)
             xx = self.nonl(xx)
 
         return xx

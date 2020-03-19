@@ -90,6 +90,8 @@ class encoder_mix(nn.Module):
         if (self.num_layers==1):
             self.h2he = nn.Linear(model.h_dim, model.h_dim)
         self.x2h = nn.Linear(model.x_dim, model.h_dim)
+
+
         if not self.only_pi:
             self.x2hpi = nn.Linear(model.x_dim, model.h_dim)
         self.h2smu = nn.Linear(model.h_dim, model.s_dim * model.n_mix)
@@ -155,7 +157,7 @@ class decoder_mix(nn.Module):
                 ll.weight.data.fill_(0.)
 
         self.z2h = nn.ModuleList([Linear(self.z_dim, h_dim_a,scale=args.scale) for i in range(self.n_mix)])
-
+        self.bnh = nn.BatchNorm1d(h_dim_a)
 
         num_hs=1 if args.hdim_dec is None else self.n_mix
         if (self.num_hlayers == 1):
@@ -179,7 +181,7 @@ class decoder_mix(nn.Module):
         h=[]; v=[]
         for i,zz,vv in zip(rng,z,u):
             zzt=self.z2z[i](zz)
-            h+=[self.z2h[i](zzt)]
+            h+=[self.bnh(self.z2h[i](zzt))]
             if (self.type=='tvae'):
                 v=v+[self.u2u[i](vv)]
 
