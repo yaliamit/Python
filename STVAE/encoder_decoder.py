@@ -89,7 +89,6 @@ class encoder_mix(nn.Module):
 
         if (self.num_layers==1):
             self.h2he = nn.Linear(model.h_dim, model.h_dim)
-        self.x2h = nn.Linear(model.x_dim, model.h_dim)
 
 
         if not self.only_pi:
@@ -102,7 +101,8 @@ class encoder_mix(nn.Module):
         #    self.conv=model.conv
         if hasattr(model,'enc_conv'):
             self.enc_conv=model.enc_conv
-
+        else:
+            self.x2h = nn.Linear(model.x_dim, model.h_dim)
 
     def forward(self,inputs):
         pi=None
@@ -148,7 +148,8 @@ class decoder_mix(nn.Module):
 
         # Full or diagonal normal dist of next level after sample.
 
-        self.z2z = nn.ModuleList([Linear(self.z_dim, self.z_dim, args.Diag) for i in range(self.n_mix)])
+        #self.z2z = nn.ModuleList([Linear(self.z_dim, self.z_dim, args.Diag) for i in range(self.n_mix)])
+        self.z2z = nn.ModuleList([nn.Identity() for i in range(self.n_mix)])
 
 
         if (self.type == 'tvae'):
@@ -160,12 +161,13 @@ class decoder_mix(nn.Module):
         self.bnh = nn.BatchNorm1d(h_dim_a)
 
         num_hs=1 if args.hdim_dec is None else self.n_mix
-        if (self.num_hlayers == 1):
-                self.h2hd = nn.ModuleList([nn.Linear(h_dim_a,h_dim_a) for i in range(num_hs)])
-        self.h2x = nn.ModuleList([nn.Linear(h_dim_a, self.x_dim) for i in range(num_hs)])
 
         if hasattr(model,'enc_conv'):
             self.enc_conv=model.enc_conv
+        else:
+            self.h2x = nn.ModuleList([nn.Linear(h_dim_a, self.x_dim) for i in range(num_hs)])
+            if (self.num_hlayers == 1):
+                self.h2hd = nn.ModuleList([nn.Linear(h_dim_a, h_dim_a) for i in range(num_hs)])
 
         #if (self.feats and self.feats_back):
             #self.conv=model.conv
