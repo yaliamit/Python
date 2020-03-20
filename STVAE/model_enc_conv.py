@@ -12,7 +12,9 @@ class enc_dec_conv2(nn.Module):
         super(enc_dec_conv2,self).__init__()
         x_h=x_hw[0]
         x_w=x_hw[1]
-        pp = np.int32(np.floor(filt_s / 2))
+        #pp = np.int32(np.floor(filt_s / 2))
+        pp = np.int32(np.floor(filt_s / 2)/pool_s)
+
         self.feats=out_f
         self.inp_f=inp_f
         self.x_dim = np.int32((x_h / pool_s) * (x_w / pool_s) * out_f)
@@ -21,21 +23,26 @@ class enc_dec_conv2(nn.Module):
         self.x_wf = np.int32(x_w / pool_s)
         self.x_hwf=[self.x_hf,self.x_wf]
         self.dv=device
-        self.conv = torch.nn.Conv2d(inp_f, out_f, filt_s, stride=1, bias=False,
+        #self.conv = torch.nn.Conv2d(inp_f, out_f, filt_s, stride=1, bias=False,
+        #                            padding=pp).to(self.dv)
+        self.conv = torch.nn.Conv2d(inp_f, out_f, filt_s, stride=pool_s, bias=False,
                                     padding=pp).to(self.dv)
         self.bn=torch.nn.BatchNorm2d(out_f)
+        #self.deconv = torch.nn.ConvTranspose2d(out_f, inp_f, filt_s, stride=pool_s,
+        #                                       padding=pp, output_padding=1, bias=False).to(self.dv)
         self.deconv = torch.nn.ConvTranspose2d(out_f, inp_f, filt_s, stride=pool_s,
-                                               padding=pp, output_padding=1, bias=False).to(self.dv)
+                                               padding=pp, output_padding=0, bias=False).to(self.dv)
         self.deconv.weight.data = self.conv.weight.data
         self.dbn=torch.nn.BatchNorm2d(inp_f)
         # self.orthogo()
-        if (np.mod(pool_w, 2) == 1):
-            pad = np.int32(pool_w / 2)
-        else:
-            pad = np.int32((pool_w - 1) / 2)
-        self.pool = nn.MaxPool2d(pool_w, stride=pool_s, padding=(pad, pad))
+        # if (np.mod(pool_w, 2) == 1):
+        #     pad = np.int32(pool_w / 2)
+        # else:
+        #     pad = np.int32((pool_w - 1) / 2)
+        # self.pool = nn.MaxPool2d(pool_w, stride=pool_s, padding=(pad, pad))
+        self.pool=nn.Identity().to(self.dv)
         if non_lin is None:
-            self.nonl = nn.identity().to(self.dv)
+            self.nonl = nn.Identity().to(self.dv)
         elif non_lin == 'relu':
             self.nonl = nn.ReLU().to(self.dv)
 
