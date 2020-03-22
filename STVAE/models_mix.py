@@ -55,9 +55,7 @@ class STVAE_mix(models.STVAE):
             self.enc_conv=ENC_DEC(sh,self.dv,args)
         self.x_dim=self.enc_conv.layers[-1].x_dim
 
-        # if (self.feats>0):
-        #     self.conv=conv2(x_h, x_w, args)
-        #     self.x_dim=self.conv.x_dim
+
 
         if (not args.OPT):
             if args.sep:

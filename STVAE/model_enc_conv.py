@@ -7,7 +7,7 @@ from get_net_text import get_network
 
 
 class enc_dec_conv2(nn.Module):
-    def __init__(self,device,inp_f,out_f,filt_s,pool_w,pool_s,x_hw,non_lin=None):
+    def __init__(self,device,inp_f,out_f,filt_s,pool_w,pool_s,opt,x_hw,non_lin=None):
 
         super(enc_dec_conv2,self).__init__()
         x_h=x_hw[0]
@@ -25,16 +25,17 @@ class enc_dec_conv2(nn.Module):
         self.dv=device
         #self.conv = torch.nn.Conv2d(inp_f, out_f, filt_s, stride=1, bias=False,
         #                            padding=pp).to(self.dv)
-        self.conv = torch.nn.Conv2d(inp_f, out_f, filt_s, stride=pool_s, bias=False,
+        if not opt:
+            self.conv = torch.nn.Conv2d(inp_f, out_f, filt_s, stride=pool_s, bias=False,
                                     padding=pp).to(self.dv)
-        self.bn=torch.nn.BatchNorm2d(out_f)
+            self.bn=torch.nn.BatchNorm2d(out_f)
         #self.deconv = torch.nn.ConvTranspose2d(out_f, inp_f, filt_s, stride=pool_s,
         #                                       padding=pp, output_padding=1, bias=False).to(self.dv)
         self.deconv = torch.nn.ConvTranspose2d(out_f, inp_f, filt_s, stride=pool_s,
                                                padding=pp, output_padding=0, bias=False).to(self.dv)
-        self.deconv.weight.data = self.conv.weight.data
+        #self.deconv.weight.data = self.conv.weight.data
         self.dbn=torch.nn.BatchNorm2d(inp_f)
-        # self.orthogo()
+
         # if (np.mod(pool_w, 2) == 1):
         #     pad = np.int32(pool_w / 2)
         # else:
@@ -72,7 +73,10 @@ class ENC_DEC(nn.Module):
         self.layers_text = layers
         self.dv=device
         self.x_hw = sh
+        self.OPT = args.OPT
         self.setup(sh)
+
+
     def setup(self,sh):
 
         enc_hw=sh[1:3]
@@ -84,7 +88,7 @@ class ENC_DEC(nn.Module):
                 if 'non_linearity' in ll:
                     non_l=ll['non_linearity']
                 self.layers.append(enc_dec_conv2(self.dv,enc_inp_f,ll['num_filters'],ll['filter_size'],
-                                       ll['pool_size'],ll['pool_stride'],enc_hw,non_l))
+                                       ll['pool_size'],ll['pool_stride'],self.OPT,enc_hw,non_l))
 
                 enc_hw=self.layers[-1].x_hwf
                 print(i,enc_hw)

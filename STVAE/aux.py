@@ -34,7 +34,7 @@ def process_args(parser):
     parser.add_argument('--num_train', type=int, default=60000, help='num train (default: 60000)')
     parser.add_argument('--network_num_train', type=int, default=60000, help='num train (default: 60000)')
     parser.add_argument('--num_test', type=int, default=0, help='num test (default: 10000)')
-    parser.add_argument('--nval', type=int, default=1000, help='num train (default: 1000)')
+    parser.add_argument('--nval', type=int, default=0, help='num train (default: 1000)')
     parser.add_argument('--mb_size', type=int, default=100, help='mb_size (default: 500)')
     parser.add_argument('--n_class', type=int, default=0, help='number of classes')
     parser.add_argument('--model', default=None, nargs="*", help='model (default: base)')

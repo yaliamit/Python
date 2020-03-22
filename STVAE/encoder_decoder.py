@@ -169,11 +169,6 @@ class decoder_mix(nn.Module):
             if (self.num_hlayers == 1):
                 self.h2hd = nn.ModuleList([nn.Linear(h_dim_a, h_dim_a) for i in range(num_hs)])
 
-        #if (self.feats and self.feats_back):
-            #self.conv=model.conv
-            # self.x_hf = model.x_hf
-            # self.x_h=model.x_h
-
     def forward(self, s, rng=None):
 
         if (rng is None):
