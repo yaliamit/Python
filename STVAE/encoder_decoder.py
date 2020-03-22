@@ -158,7 +158,7 @@ class decoder_mix(nn.Module):
                 ll.weight.data.fill_(0.)
 
         self.z2h = nn.ModuleList([Linear(self.z_dim, h_dim_a,scale=args.scale) for i in range(self.n_mix)])
-        self.bnh = nn.BatchNorm1d(h_dim_a)
+        self.bnh = nn.Identity() #BatchNorm1d(h_dim_a)
 
         num_hs=1 if args.hdim_dec is None else self.n_mix
 
