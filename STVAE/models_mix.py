@@ -28,6 +28,7 @@ class STVAE_mix(models.STVAE):
         self.binary_thresh=args.binary_thresh
         self.lim=args.lim
         self.opt = args.OPT
+        self.opt_jump=args.opt_jump
         self.mu_lr = args.mu_lr
         self.n_mix = args.n_mix
         self.flag=True
@@ -303,7 +304,7 @@ class STVAE_mix(models.STVAE):
                     pi[ind,c,:]=EE[ii]
             pi=pi.reshape(-1,self.n_mix)
         else:
-            x = self.decoder_and_trans(s_mu, rng)
+            #x = self.decoder_and_trans(s_mu, rng)
             b = self.mixed_loss_pre(x, data)
             KD = self.dens_apply(s_mu, s_var, pi, pi)[2]
             b=b+KD
@@ -340,15 +341,13 @@ class STVAE_mix(models.STVAE):
                 target = torch.from_numpy(y[j:j + self.bsz]).float().to(self.dv)
             if self.opt:
                 self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], pi[j:j + self.bsz], self.mu_lr[0])
-                for it in range(num_mu_iter):
+                if np.mod(epoch, self.opt_jump) == 0:
+                  for it in range(num_mu_iter):
                     self.compute_loss_and_grad(data_d,data_in, target, d_type, self.optimizer_s, opt='mu')
             elif self.only_pi:
                 with torch.no_grad():
                     s_mu, s_var, _ = self.encoder_mix(data_d)
                     self.pi=self.get_pi_from_max(s_mu, s_var, data,target)
-                #self.update_s(mu[j:j + self.bsz, :], logvar[j:j + self.bsz, :], pi[j:j + self.bsz], self.mu_lr[0])
-                #for it in range(num_mu_iter):
-                #        self.compute_loss_and_grad_mu(data_d, s_mu, s_var, target, d_type, self.optimizer_s, opt='mu')
             with torch.no_grad() if (d_type != 'train') else dummy_context_mgr():
                 recon_loss, loss=self.compute_loss_and_grad(data, data_in, target,d_type,self.optimizer)
 
@@ -375,7 +374,6 @@ class STVAE_mix(models.STVAE):
             mu, logvar, ppi = self.initialize_mus(input, True)
 
         num_inp=input.shape[0]
-        #print(num_inp)
         self.setup_id(num_inp)
         input = input.to(self.dv)
         inp = self.preprocess(input)

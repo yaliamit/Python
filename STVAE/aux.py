@@ -64,6 +64,7 @@ def process_args(parser):
     parser.add_argument('--part_dim', type=int, default=None, help='dimension of part')
     parser.add_argument('--MM', action='store_true', help='Use max max')
     parser.add_argument('--OPT', action='store_true', help='Optimization instead of encoding')
+    parser.add_argument('--opt_jump', type=int, default=1, help='dimension of part')
     parser.add_argument('--network', action='store_true', help='classification network')
     parser.add_argument('--CONS', action='store_true', help='Output to consol')
     parser.add_argument('--sample', action='store_true', help='sample from distribution')
