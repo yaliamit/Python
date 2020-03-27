@@ -20,3 +20,6 @@
 name:conv1;num_filters:32;filter_size:4;pool_size:2;pool_stride:2;non_linearity:relu
 name:conv2;num_filters:64;filter_size:4;pool_size:2;pool_stride:2;non_linearity:relu
 name:conv3;num_filters:128;filter_size:4;pool_size:2;pool_stride:2;non_linearity:relu
+--hid_layers
+name:input
+name:dense_final;num_units:10
