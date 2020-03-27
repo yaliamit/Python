@@ -3,7 +3,7 @@
 --sdim=100
 --num_train=10000
 --num_hlayers=0
---nepoch=200
+--nepoch=500
 --transformation=aff
 --mb_size=500
 --lr=.001
@@ -12,6 +12,8 @@
 --CONS
 --hdim=2048
 --n_class=0
+--opt_jump=10
+--num_mu_iter=40
 --dataset=cifar10
 --output_cont
 --enc_layers

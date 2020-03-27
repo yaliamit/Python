@@ -155,11 +155,11 @@ class STVAE(nn.Module):
             # Apply linear only to dedicated transformation part of sampled vector.
             if self.tf == 'aff':
                 self.theta = u.view(-1, 2, 3) + self.id
-                grid = F.affine_grid(self.theta, x.view(-1,self.h,self.w).unsqueeze(1).size())
+                grid = F.affine_grid(self.theta, x.view(-1,self.input_channels,self.h,self.w).size())
             elif self.tf=='tps':
                 self.theta = u + self.id
                 grid = self.gridGen(self.theta)
-            x = F.grid_sample(x.view(-1,self.h,self.w).unsqueeze(1), grid, padding_mode='border')
+            x = F.grid_sample(x.view(-1,self.input_channels,self.h,self.w), grid, padding_mode='border')
 
         return x
 
