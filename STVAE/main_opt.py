@@ -98,9 +98,10 @@ def train_model(model, args, ex_file, DATA, fout):
             model.run_epoch_classify(tran, 'train', fout=fout, num_mu_iter=args.nti)
             model.run_epoch_classify(tes, 'test', fout=fout, num_mu_iter=args.nti)
         elif args.cl is None:
-            model.run_epoch(tes, 0, args.nti, testMU, testLOGVAR, testPI, d_type='test', fout=fout)
+            if args.hid_layers is None:
+                model.run_epoch(tes, 0, args.nti, testMU, testLOGVAR, testPI, d_type='test', fout=fout)
     else:
-        model.run_epoch(tes, 0, args.nti, None, None, None, d_type='test', fout=fout)
+            model.run_epoch(tes, 0, args.nti, None, None, None, d_type='test', fout=fout)
 
 
 
@@ -209,7 +210,7 @@ else:
     #if ('vae' in args.type):
     if 'vae' in args.type:
         train_model(models[0], ARGS[0], EX_FILES[0], DATA, fout)
-        dat,HVARS=aux.prepare_recons(models[0],DATA,args)
+        dat,HVARS=aux.prepare_recons(models[0],DATA,args,fout)
         #assign_cluster_labels(args,HVARS[0],HVARS[2],fout)
         if args.hid_layers is not None:
                 train_new(args, HVARS[0], HVARS[2], device)

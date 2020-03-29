@@ -393,11 +393,12 @@ class STVAE_mix(models.STVAE):
         else:
             s_mu, s_var, pi = self.encoder_mix(inp)
 
-
+        #s = self.sample(s_mu, s_var, self.s_dim * self.n_mix)
             # for it in range(num_mu_iter):
             #     self.compute_loss_and_grad_mu(inp_d, s_mu, s_var, None, 'test', self.optimizer_s,
             #                                   opt='mu')
 
+        #ss_mu = s.reshape(-1, self.n_mix, self.s_dim).transpose(0,1)
 
         ss_mu = s_mu.reshape(-1, self.n_mix, self.s_dim).transpose(0,1)
         #ss_mu = ss_mu+.5*torch.randn(ss_mu.shape).to(self.dv)
@@ -405,21 +406,23 @@ class STVAE_mix(models.STVAE):
         jj = torch.arange(0,num_inp,dtype=torch.int64).to(self.dv)
         kk = ii+jj*self.n_mix
         lpi = torch.log(pi)
-        recon_batch = self.decoder_and_trans(ss_mu)
-        recloss = self.mixed_loss(recon_batch, inp, pi)
+        with torch.no_grad():
+            recon_batch = self.decoder_and_trans(ss_mu)
+            recloss = self.mixed_loss(recon_batch, inp, pi)
+            totloss = self.dens_apply(s_mu, s_var, lpi, pi)[0]
+
         if (self.feats and not self.feats_back):
             rec_b=[]
             for rc in recon_batch:
                 rec_b+=[self.conv.bkwd(rc.reshape(-1, self.feats, self.conv.x_hf, self.conv.x_hf))]
             recon_batch=torch.stack(rec_b,dim=0)
-        tot = self.dens_apply(s_mu, s_var, lpi, pi)[0]
 
         #print('LOSS', (tot + recloss)/num_inp)
         recon_batch = recon_batch.transpose(0, 1)
         recon=recon_batch.reshape(self.n_mix*num_inp,-1)
         rr=recon[kk]
 
-        return rr, torch.cat([s_mu, s_var, pi],dim=1)
+        return rr, torch.cat([s_mu, s_var, pi],dim=1),[recloss,totloss]
 
 
 

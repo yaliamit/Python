@@ -164,7 +164,7 @@ def show_reconstructed_images(test,model,ex_file,num_iter=None, cl=None, erd=Fal
     if (cl is not None):
         X=model.recon(inp,num_iter,cl)
     else:
-        X,_ = model.recon(inp, num_iter)
+        X,_,_ = model.recon(inp, num_iter)
     X = X.cpu().detach().numpy().reshape(inp.shape)
     XX=np.concatenate([inp[0:50],X[0:50]])
     if (cl is not None):
@@ -193,10 +193,13 @@ def add_clutter(recon_data):
 
     return recon_data
 
-def prepare_recons(model, DATA, args):
+def prepare_recons(model, DATA, args,fout):
     dat = []
     HV=[]
+    tips=['train','val','test']
     for k in range(3):
+        totloss = 0
+        recloss = 0
         if (DATA[k][0] is not None):
             INP = torch.from_numpy(DATA[k][0])
             if k==0:
@@ -205,7 +208,9 @@ def prepare_recons(model, DATA, args):
             HVARS=[]
             for j in np.arange(0, INP.shape[0], 500):
                 inp = INP[j:j + 500]
-                rr, h_vars = model.recon(inp, args.nti)
+                rr, h_vars, losses= model.recon(inp, args.nti)
+                recloss+=losses[0]
+                totloss+=losses[1]
                 RR += [rr.detach().cpu().numpy()]
                 HVARS += [h_vars.detach().cpu().numpy()]
             RR = np.concatenate(RR)
@@ -213,6 +218,11 @@ def prepare_recons(model, DATA, args):
             tr = RR.reshape(-1, model.input_channels,model.h,model.w)
             dat += [[tr, DATA[k][1][0:INP.shape[0]]]]
             HV+=[[HVARS,DATA[k][1][0:INP.shape[0]]]]
+            if (k==2):
+                fout.write('\n====> Epoch {}: {} Reconstruction loss: {:.4f}, Full loss: {:.4F}\n'.format(tips[k],
+                                                            0,recloss / INP.shape[0], (recloss+totloss)/INP.shape[0]))
+
+            print(k,recloss/INP.shape[0],(totloss+recloss)/INP.shape[0])
         else:
             dat += [DATA[k]]
             HV += [DATA[k]]
