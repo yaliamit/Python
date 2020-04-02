@@ -152,8 +152,8 @@ class decoder_mix(nn.Module):
 
         # Full or diagonal normal dist of next level after sample.
 
-        self.z2z = nn.ModuleList([Linear(self.z_dim, self.z_dim, args.Diag) for i in range(self.n_mix)])
-        #self.z2z = nn.ModuleList([nn.Identity() for i in range(self.n_mix)])
+        #self.z2z = nn.ModuleList([Linear(self.z_dim, self.z_dim, args.Diag) for i in range(self.n_mix)])
+        self.z2z = nn.ModuleList([nn.Identity() for i in range(self.n_mix)])
 
 
         if (self.type == 'tvae'):
