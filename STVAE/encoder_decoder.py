@@ -109,10 +109,14 @@ class encoder_mix(nn.Module):
         if hasattr(self,'enc_conv'):
             out=self.enc_conv.forw(inputs)
             h=out.reshape(-1, self.x_dim)
+            if not self.only_pi:
+                hpi = F.relu(self.x2hpi(h))
         else:
+            inputs=inputs.reshape(-1,self.x_dim)
             h = F.relu(self.x2h(inputs))
-        if not self.only_pi:
-            hpi = F.relu(self.x2hpi(h))
+            if not self.only_pi:
+                hpi = F.relu(self.x2hpi(inputs))
+
         if (self.num_layers == 1):
             h = F.relu(self.h2he(h))
         s_mu = self.h2smu(h)
@@ -148,8 +152,8 @@ class decoder_mix(nn.Module):
 
         # Full or diagonal normal dist of next level after sample.
 
-        #self.z2z = nn.ModuleList([Linear(self.z_dim, self.z_dim, args.Diag) for i in range(self.n_mix)])
-        self.z2z = nn.ModuleList([nn.Identity() for i in range(self.n_mix)])
+        self.z2z = nn.ModuleList([Linear(self.z_dim, self.z_dim, args.Diag) for i in range(self.n_mix)])
+        #self.z2z = nn.ModuleList([nn.Identity() for i in range(self.n_mix)])
 
 
         if (self.type == 'tvae'):

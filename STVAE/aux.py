@@ -197,7 +197,10 @@ def prepare_recons(model, DATA, args,fout):
     dat = []
     HV=[]
     tips=['train','val','test']
-    for k in range(3):
+    rr=range(3)
+    if args.rerun:
+        rr=range(2,3)
+    for k in rr:
         totloss = 0
         recloss = 0
         if (DATA[k][0] is not None):

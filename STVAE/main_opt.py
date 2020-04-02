@@ -122,6 +122,9 @@ if args.rerun:
 # Get data device and output file
 fout, device, DATA= mprep.setups(args, EX_FILES)
 
+if not hasattr(ARGS[0],'opt_jump'):
+    ARGS[0].opt_jump=1
+    ARGS[0].enc_conv=False
 ARGS[0].binary_thresh=args.binary_thresh
 if 'vae' in args.type:
     models=mprep.get_models(device, fout, DATA[0][0].shape,STRINGS,ARGS,locals())
@@ -153,14 +156,14 @@ ARGS[0].nti=args.nti
 ARGS[0].num_test=num_test
 
 if reinit:
-    models[0].load_state_dict(SMS[0]['model.state.dict'])
-    model_new=mprep.make_model(device, fout, STRINGS[0],args,locals(), DATA[0][0].shape[1],DATA[0][0].shape[2], device, fout)
-    model_new.conv.conv.weight.data=models[0].conv.conv.weight.data
-    models=[model_new]
+    #model=mprep.make_model(device, fout, STRINGS[0],args,locals(), DATA[0][0].shape[1],DATA[0][0].shape[2], device, fout)
+    model.load_state_dict(SMS[0]['model.state.dict'])
     ARGS=[args]
     strings, ex_file = mprep.process_strings(args)
     EX_FILES=[ex_file]
-
+    tes = [DATA[2][0], DATA[2][0], DATA[2][1]]
+    model.run_epoch(tes, 0, args.nti, None, None, None, d_type='test', fout=fout)
+    exit()
 fout.write(str(ARGS[0]) + '\n')
 fout.flush()
 # if (args.classify):
@@ -180,7 +183,7 @@ if (run_existing and not reinit):
             model = models[0]
             model.load_state_dict(SMS[0]['model.state.dict'])
             args=ARGS[0]
-            dat, HVARS = aux.prepare_recons(model, DATA, args)
+            dat, HVARS = aux.prepare_recons(model, DATA, args,fout)
             assign_cluster_labels(args,HVARS[0],HVARS[2],fout)
             train_new(args, HVARS[0], HVARS[2], device)
         elif embedd:
@@ -204,7 +207,11 @@ if (run_existing and not reinit):
                 args.type='net'
                 test_models(ARGS,SMS,DATA[2],fout)
     else:
-        test_models(ARGS, SMS, DATA[2], fout)
+        model=models[0]
+        model.load_state_dict(SMS[0]['model.state.dict'])
+        dat, HVARS = aux.prepare_recons(model, DATA, args, fout)
+        #if args.hid_layers is not None:
+        #        train_new(args, HVARS[0], HVARS[2], device)
 
 else:
     #if ('vae' in args.type):

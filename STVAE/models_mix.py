@@ -54,8 +54,9 @@ class STVAE_mix(models.STVAE):
         self.num_hlayers=args.num_hlayers
         if hasattr(args,'enc_layers'):
             self.enc_conv=ENC_DEC(sh,self.dv,args)
-        self.x_dim=self.enc_conv.layers[-1].x_dim
-
+            self.x_dim=self.enc_conv.layers[-1].x_dim
+        else:
+            self.x_dim=np.prod(sh)
 
 
         if (not args.OPT):
@@ -393,14 +394,14 @@ class STVAE_mix(models.STVAE):
         else:
             s_mu, s_var, pi = self.encoder_mix(inp)
 
-        #s = self.sample(s_mu, s_var, self.s_dim * self.n_mix)
+        s = self.sample(s_mu, s_var, self.s_dim * self.n_mix)
             # for it in range(num_mu_iter):
             #     self.compute_loss_and_grad_mu(inp_d, s_mu, s_var, None, 'test', self.optimizer_s,
             #                                   opt='mu')
 
-        #ss_mu = s.reshape(-1, self.n_mix, self.s_dim).transpose(0,1)
+        ss_mu = s.reshape(-1, self.n_mix, self.s_dim).transpose(0,1)
 
-        ss_mu = s_mu.reshape(-1, self.n_mix, self.s_dim).transpose(0,1)
+        #ss_mu = s_mu.reshape(-1, self.n_mix, self.s_dim).transpose(0,1)
         #ss_mu = ss_mu+.5*torch.randn(ss_mu.shape).to(self.dv)
         ii = torch.argmax(pi, dim=1)
         jj = torch.arange(0,num_inp,dtype=torch.int64).to(self.dv)
