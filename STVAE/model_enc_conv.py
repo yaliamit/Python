@@ -28,13 +28,13 @@ class enc_dec_conv2(nn.Module):
         if not opt:
             self.conv = torch.nn.Conv2d(inp_f, out_f, filt_s, stride=pool_s, bias=False,
                                     padding=pp).to(self.dv)
-            self.drop_enc=torch.nn.drop(.5)
+            self.drop_enc=torch.nn.Dropout(.5)
             self.bn=torch.nn.Identity() #BatchNorm2d(out_f)
         #self.deconv = torch.nn.ConvTranspose2d(out_f, inp_f, filt_s, stride=pool_s,
         #                                       padding=pp, output_padding=1, bias=False).to(self.dv)
         self.deconv = torch.nn.ConvTranspose2d(out_f, inp_f, filt_s, stride=pool_s,
                                                padding=pp, output_padding=0, bias=False).to(self.dv)
-        self.drop_dec=torch.nn.drop(.5)
+        self.drop_dec=torch.nn.Dropout(.5)
         #self.deconv.weight.data = self.conv.weight.data
         self.dbn=torch.nn.Identity() #BatchNorm2d(inp_f)
 
