@@ -63,7 +63,7 @@ class enc_dec_conv2(nn.Module):
         if (self.inp_f>3):
             xx = self.dbn(xx)
             xx = self.nonl(xx)
-            xx = self.droc_dec(xx)
+            xx = self.drop_dec(xx)
         return xx
 
 
