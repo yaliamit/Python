@@ -102,12 +102,12 @@ class STVAE_mix(models.STVAE):
         if (not self.only_pi):
             self.mu=torch.autograd.Variable(mu.to(self.dv), requires_grad=True)
             self.logvar = torch.autograd.Variable(logvar.to(self.dv), requires_grad=True)
-        #self.pi = torch.autograd.Variable(pi.to(self.dv), requires_grad=True)
-        self.pi = torch.autograd.Variable(pi.to(self.dv), requires_grad=False)
+        self.pi = torch.autograd.Variable(pi.to(self.dv), requires_grad=True)
+        #self.pi = torch.autograd.Variable(pi.to(self.dv), requires_grad=False)
 
         if (not self.only_pi):
-            #self.optimizer_s = optim.Adam([self.mu, self.logvar,self.pi], lr=mu_lr,weight_decay=wd)
-            self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=mu_lr,weight_decay=wd)
+            self.optimizer_s = optim.Adam([self.mu, self.logvar,self.pi], lr=mu_lr,weight_decay=wd)
+            #self.optimizer_s = optim.Adam([self.mu, self.logvar], lr=mu_lr,weight_decay=wd)
         #else:
         #    self.optimizer_s = optim.Adam([self.pi], lr=mu_lr,weight_decay=wd)
 
@@ -348,8 +348,8 @@ class STVAE_mix(models.STVAE):
                 if np.mod(epoch, self.opt_jump) == 0:
                   for it in range(num_mu_iter):
                     self.compute_loss_and_grad(data_d,data_in, target, d_type, self.optimizer_s, opt='mu')
-                  with torch.no_grad():
-                    self.pi = self.get_pi_from_max(self.mu, self.logvar, data, target)
+                  #with torch.no_grad():
+                  #  self.pi = self.get_pi_from_max(self.mu, self.logvar, data, target)
             elif self.only_pi:
                 with torch.no_grad():
                     s_mu, s_var, _ = self.encoder_mix(data_d)
