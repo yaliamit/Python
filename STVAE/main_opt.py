@@ -219,8 +219,8 @@ else:
         train_model(models[0], ARGS[0], EX_FILES[0], DATA, fout)
         dat,HVARS=aux.prepare_recons(models[0],DATA,args,fout)
         #assign_cluster_labels(args,HVARS[0],HVARS[2],fout)
-        #if args.hid_layers is not None:
-         #       train_new(args, HVARS[0], HVARS[2], device)
+        if args.hid_layers is not None:
+                train_new(args, HVARS[0], HVARS[2], device)
             #args.type = 'net'
     else:
         train_model(net_models[0],args,EX_FILES[0],DATA,fout)
