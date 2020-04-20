@@ -491,7 +491,7 @@ class network(nn.Module):
 
             with torch.no_grad():
 
-                OUT+=[self.forward(data,everything=True)[lay]]
+                OUT+=[self.forward(data,everything=True)[1][lay]]
 
         OUTA=torch.cat(OUT,dim=0)
 
