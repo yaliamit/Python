@@ -3,7 +3,7 @@ import torch.nn.functional as F
 from torch import nn, optim
 import numpy as np
 import models
-from Sep import encoder_mix_sep
+
 from encoder_decoder import encoder_mix, decoder_mix
 from model_enc_conv import enc_dec_conv2, ENC_DEC
 import contextlib

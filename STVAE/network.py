@@ -5,6 +5,7 @@ from torch import nn, optim
 from Conv_data import rotate_dataset_rand
 import contextlib
 from torch_edges import Edge
+import hsv
 from aux import create_img
 import time
 @contextlib.contextmanager
@@ -111,27 +112,29 @@ class network(nn.Module):
         in_dims=[]
         if (self.first):
             self.layers = nn.ModuleList()
-        OUTS=[]
-
+        OUTS={}
+        old_name=''
         for i,ll in enumerate(self.layer_text):
-                inp_ind = i - 1
+                inp_ind = old_name
+
                 if ('parent' in ll):
                     pp=ll['parent']
                     # over ride default inp_feats
                     if len(pp)==1:
-                        inp_ind=self.lnti[pp[0]]
-                        inp_feats=self.layer_text[inp_ind]['num_filters']
-                        in_dim=in_dims[inp_ind]
+                        inp_ind=pp[0] #self.lnti[pp[0]]
+                        inp_feats=self.layer_text[self.lnti[pp[0]]]['num_filters']
+                        in_dim=in_dims[self.lnti[pp[0]]]
                     else:
                         inp_feats=[]
                         loc_in_dims=[]
                         inp_ind=[]
                         for p in pp:
-                            inp_ind += [self.lnti[p]]
-                            inp_feats+=[self.layer_text[inp_ind[-1]]['num_filters']]
-                            loc_in_dims+=[in_dims[inp_ind[-1]]]
+                            inp_ind += p #[self.lnti[p]]
+                            inp_feats+=[self.layer_text[self.lnti[p]]['num_filters']]
+                            loc_in_dims+=[in_dims[self.lnti[p]]]
                 if ('input' in ll['name']):
-                    OUTS+=[input]
+                    #OUTS+=[input]
+                    OUTS[ll['name']]=input
                     enc_hw=input.shape[2:4]
 
                 if ('conv' in ll['name']):
@@ -140,8 +143,8 @@ class network(nn.Module):
                         self.layers.add_module(ll['name'],torch.nn.Conv2d(inp_feats,ll['num_filters'],ll['filter_size'],stride=1,padding=pd).to(self.dv))
                         #self.layers+=[torch.nn.Conv2d(inp_feats,ll['num_filters'],ll['filter_size'],stride=1,padding=pd).to(self.dv)]
                     out=getattr(self.layers, ll['name'])(OUTS[inp_ind])
-                    OUTS += [self.do_nonlinearity(ll,out)]
-
+                    #OUTS += [self.do_nonlinearity(ll,out)]
+                    OUTS[ll['name']]=self.do_nonlinearity(ll,out)
                 if ('pool' in ll['name']):
                     if self.first:
                         pp = np.mod(out.shape, ll['pool_size'])
@@ -150,14 +153,17 @@ class network(nn.Module):
                             stride = ll['stride']
                         self.layers.add_module(ll['name'],nn.MaxPool2d(ll['pool_size'], stride=stride, padding=tuple(pp[2:4])).to(self.dv))
                     out = getattr(self.layers, ll['name'])(OUTS[inp_ind])
-                    OUTS += [out]
+                    #OUTS += [out]
+                    OUTS[ll['name']]=out
+
 
                 if ('drop' in ll['name']):
                     if self.first:
                         self.layers.add_module(ll['name'],torch.nn.Dropout(p=ll['drop'], inplace=False).to(self.dv))
                     out = getattr(self.layers, ll['name'])(OUTS[inp_ind])
-                    OUTS += [out]
+                    #OUTS += [out]
                     #OUTS += [self.layers[i-1](OUTS[inp_ind])]
+                    OUTS[ll['name']]=out
 
                 if ('dense' in ll['name']):
                     if self.first:
@@ -169,7 +175,9 @@ class network(nn.Module):
                     out=OUTS[inp_ind]
                     out = out.reshape(out.shape[0], -1)
                     out = getattr(self.layers, ll['name'])(out)
-                    OUTS += [self.do_nonlinearity(ll, out)]
+                    #OUTS += [self.do_nonlinearity(ll, out)]
+                    OUTS[ll['name']]=self.do_nonlinearity(ll,out)
+
                 if ('norm') in ll['name']:
                     if self.first:
                         if len(OUTS[-1].shape)==4:
@@ -177,28 +185,37 @@ class network(nn.Module):
                         else:
                             self.layers.add_module(ll['name'],torch.nn.BatchNorm1d(OUTS[-1].shape[1]).to(self.dv))
                     out = getattr(self.layers, ll['name'])(OUTS[inp_ind])
-                    OUTS += [out]
+                    #OUTS += [out]
+                    OUTS[ll['name']] = out
                 if ('res' in ll['name']):
                     if self.first:
                         pd=tuple(np.int32(np.floor(np.array(ll['filter_size'])/2)))
                         self.layers.add_module(ll['name'],residual_block(inp_feats,ll['num_filters'],self.dv,stride=1,pd=pd))
                     out = getattr(self.layers, ll['name'])(OUTS[inp_ind])
-                    OUTS += [self.do_nonlinearity(ll, out)]
+                    #OUTS += [self.do_nonlinearity(ll, out)]
+                    OUTS[ll['name']]=self.do_nonlinearity(ll,out)
+
                 if ('opr' in ll['name']):
                     if 'add' in ll['name']:
                         #self.layers.add_module += [torch.nn.Identity()]
                         out = OUTS[inp_ind[0]]+OUTS[inp_ind[1]]
                         #out = self.layers[i-1](out)
-                        OUTS+=[out]
+                        #OUTS+=[out]
+                        OUTS[ll['name']] = out
+
                         inp_feats=out.shape[1]
                 if ('num_filters' in ll):
                     inp_feats = ll['num_filters']
                 if self.first:
-                    print(ll['name'],OUTS[-1].shape)
-                in_dim = np.prod(OUTS[-1].shape[1:])
+                    #print(ll['name'],OUTS[-1].shape)
+                    print(ll['name'],OUTS[ll['name']].shape)
+                #in_dim = np.prod(OUTS[-1].shape[1:])
+                in_dim=np.prod(OUTS[ll['name']].shape[1:])
                 in_dims+=[in_dim]
+                old_name=ll['name']
 
-        out = OUTS[-1]
+        #out = OUTS[-1]
+        out=OUTS[ll['name']]
         if self.first:
             tot_pars = 0
             KEYS=[]
@@ -229,9 +246,9 @@ class network(nn.Module):
 
         if(everything):
             out1=OUTS
-        elif (len(OUTS) > 3):
-            out1 = OUTS[-3]
-        return(out)
+        #elif (len(OUTS) > 3):
+         #   out1 = OUTS[-3]
+        return(out,out1)
 
 
 
@@ -291,7 +308,7 @@ class network(nn.Module):
             #     WW+=torch.sum(p*p)
             # print(loss,WW)
         else:
-            out=self.forward(input)
+            out,_=self.forward(input)
             # Compute loss and accuracy
             loss, acc=self.get_acc_and_loss(out,target)
 
@@ -310,12 +327,19 @@ class network(nn.Module):
         self.theta = u.view(-1, 2, 3) + self.id
         grid = F.affine_grid(self.theta, x_in[:,0,:,:].view(-1, h, w).unsqueeze(1).size())
         x_out=F.grid_sample(x_in,grid,padding_mode='reflection')
-        #oo=x_out.reshape(self.bsz,-1)
-        #print('MIN',torch.min(torch.sqrt(torch.sum(oo*oo,dim=1)/oo.shape[1])))
+
+        v=torch.rand(nn,2)
+        vv=torch.pow(2,(v[:,0]*4-2)).reshape(nn,1,1)
+        uu=((v[:,1]-.5)*.2).reshape(nn,1,1)
+        x_out_hsv=hsv.rgb_to_hsv(x_out)
+        x_out_hsv[:,1,:,:]=torch.clamp(x_out_hsv[:,1,:,:]*vv,0.,1.)
+        x_out_hsv[:,0,:,:]=torch.remainder(x_out_hsv[:,0,:,:]+uu,1.)
+        x_out=hsv.hsv_to_rgb(x_out_hsv)
         return x_out
 
 
-    def get_binary_signature(self,inp1, inp2=None, level=1):
+
+    def get_binary_signature(self,inp1, inp2=None, lays=[]):
 
         num_tr1=inp1[0].shape[0]
         OT1=[];
@@ -323,7 +347,11 @@ class network(nn.Module):
             for j in np.arange(0, num_tr1, self.bsz, dtype=np.int32):
                 data=(torch.from_numpy(inp1[0][j:j + self.bsz]).float()).to(self.dv)
                 out,ot1=self.forward(data,everything=True)
-                OT1+=[ot1[level]]
+                OTt=[]
+                for l in lays:
+                    OTt+=[ot1[l].reshape(self.bsz,-1)]
+                OT1+=[torch.cat(OTt,dim=1)]
+
             OT1 = torch.cat(OT1)
             qq1=2*(OT1.reshape(num_tr1,-1)>0).type(torch.float32)-1.
 
@@ -333,7 +361,10 @@ class network(nn.Module):
                 for j in np.arange(0, num_tr2, self.bsz, dtype=np.int32):
                     data = (torch.from_numpy(inp2[0][j:j + self.bsz]).float()).to(self.dv)
                     out, ot2 = self.forward(data, everything=True)
-                    OT2 += [ot2[level]]
+                    OTt = []
+                    for l in lays:
+                        OTt += [ot2[l].reshape(self.bsz, -1)]
+                    OT2 += [torch.cat(OTt,dim=1)]
                 OT2=torch.cat(OT2)
                 qq2=2*(OT2.reshape(num_tr2,-1)>0).type(torch.float32)-1.
             else:
@@ -360,14 +391,6 @@ class network(nn.Module):
         trin = train[0][ii]
         targ = train[2][ii]
         self.n_class = np.max(targ) + 1
-        # if (self.embedd):
-        #     np.random.shuffle(ii)
-        #     trin_def=self.deform_data(trin[0:self.bsz])
-        #     #trin_def=rotate_dataset_rand(trin.transpose(0,2,3,1),20,0.5).transpose(0,3,1,2)
-        #     train_new_a=trin
-        #     train_new_b=trin_def
-        #     targ=np.zeros(num_tr)
-
 
         full_loss=0; full_acc=0;
         # Loop over batches.
@@ -383,8 +406,6 @@ class network(nn.Module):
                     #data_out2=self.deform_data(data_in)
                     #print('DIFF',torch.max(torch.abs(data_out1-data_out2)))
                     data=[data_in,data_out1]
-
-                #data=[(torch.from_numpy(train_new_a[j:j+jump]).float()).to(self.dv),(torch.from_numpy(train_new_b[j:j+jump]).float()).to(self.dv)]
             else:
                 data = (torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
 
@@ -402,6 +423,7 @@ class network(nn.Module):
 
     def get_embedding(self, train):
 
+        lay='pool3'
         trin = train[0]
         jump = self.bsz
         num_tr = train[0].shape[0]
@@ -412,7 +434,7 @@ class network(nn.Module):
 
             with torch.no_grad():
 
-                OUT+=[self.forward(data)[1]]
+                OUT+=[self.forward(data)[lay]]
 
         OUTA=torch.cat(OUT,dim=0)
 
