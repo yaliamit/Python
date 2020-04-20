@@ -2,7 +2,7 @@
 --network
 --nval=0
 --dataset=cifar10
---num_train=10000
+--num_train=50000
 --network_num_train=1000
 --nepoch=100
 --mb_size=500
