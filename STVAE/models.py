@@ -162,7 +162,7 @@ class STVAE(nn.Module):
             elif self.tf=='tps':
                 self.theta = u + self.id
                 grid = self.gridGen(self.theta)
-            x = F.grid_sample(x.view(-1,self.input_channels,self.h,self.w), grid, padding_mode='border')
+            x = F.grid_sample(x.view(-1,self.input_channels,self.h,self.w), grid, padding_mode='border',align_corners=True)
 
         return x
 
