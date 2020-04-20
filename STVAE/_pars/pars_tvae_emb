@@ -11,7 +11,6 @@
 --CONS
 --n_class=0
 --perturb=.2
---embedd
 --optimizer=SGD
 --layers
 name:input;num_filters:1
