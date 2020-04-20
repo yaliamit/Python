@@ -1,7 +1,7 @@
 --type=vae
 --n_mix=1
 --sdim=100
---num_train=10000
+--num_train=1000
 --num_hlayers=0
 --nepoch=500
 --transformation=aff

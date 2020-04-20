@@ -197,7 +197,7 @@ def prepare_recons(model, DATA, args,fout):
     dat = []
     HV=[]
     tips=['train','val','test']
-    rr=range(2,3)
+    rr=range(0,3)
     if args.rerun:
         rr=range(2,3)
     for k in rr:
