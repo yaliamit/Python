@@ -16,9 +16,9 @@
 name:input;
 name:conv1;num_filters:32;filter_size:(3,3);non_linearity:relu
 name:pool1;pool_size:2
-name:conv2;num_filters:32;filter_size:(3,3);non_linearity:relu
+name:conv2;num_filters:64;filter_size:(3,3);non_linearity:relu
 name:pool2;pool_size:2
-name:conv3;num_filters:64;filter_size:(3,3);non_linearity:relu
+name:conv3;num_filters:128;filter_size:(3,3);non_linearity:relu
 name:pool3;pool_size:2
 name:dense_final;num_units:64;nb:nb
 --hid_layers
