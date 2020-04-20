@@ -383,7 +383,7 @@ class network(nn.Module):
         u=(torch.rand(nn,6)*self.perturb).to(self.dv)
         self.theta = u.view(-1, 2, 3) + self.id
         grid = F.affine_grid(self.theta, x_in[:,0,:,:].view(-1, h, w).unsqueeze(1).size())
-        x_out=F.grid_sample(x_in,grid,padding_mode='reflection')
+        x_out=F.grid_sample(x_in,grid,padding_mode='reflection',align_corners=True)
 
         v=torch.rand(nn,2).to(self.dv)
         vv=torch.pow(2,(v[:,0]*4-2)).reshape(nn,1,1)
@@ -491,7 +491,7 @@ class network(nn.Module):
 
             with torch.no_grad():
 
-                OUT+=[self.forward(data)[lay]]
+                OUT+=[self.forward(data,everything=True)[lay]]
 
         OUTA=torch.cat(OUT,dim=0)
 
