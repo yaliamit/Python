@@ -60,9 +60,6 @@ class STVAE_mix(models.STVAE):
 
 
         if (not args.OPT):
-            if args.sep:
-                self.encoder_mix = encoder_mix_sep(self)
-            else:
                 self.encoder_mix = encoder_mix(self)
 
         self.decoder_mix=decoder_mix(self,args)
