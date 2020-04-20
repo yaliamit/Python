@@ -328,7 +328,7 @@ class network(nn.Module):
         grid = F.affine_grid(self.theta, x_in[:,0,:,:].view(-1, h, w).unsqueeze(1).size())
         x_out=F.grid_sample(x_in,grid,padding_mode='reflection')
 
-        v=torch.rand(nn,2)
+        v=torch.rand(nn,2).to(self.dv)
         vv=torch.pow(2,(v[:,0]*4-2)).reshape(nn,1,1)
         uu=((v[:,1]-.5)*.2).reshape(nn,1,1)
         x_out_hsv=hsv.rgb_to_hsv(x_out)
