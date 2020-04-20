@@ -54,7 +54,7 @@ class enc_dec_conv2(nn.Module):
             xx=self.conv(xx)
             xx=self.bn(xx)
             xx=self.nonl(self.pool(xx))
-            xx=self.drop_enc(xx)
+            #xx=self.drop_enc(xx)
             return xx
 
 
@@ -63,7 +63,7 @@ class enc_dec_conv2(nn.Module):
         if (self.inp_f>3):
             xx = self.dbn(xx)
             xx = self.nonl(xx)
-            xx = self.drop_dec(xx)
+            #xx = self.drop_dec(xx)
         return xx
 
 
