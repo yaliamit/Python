@@ -9,7 +9,7 @@ def rgb_to_hsv(input):
     mx, inmx = torch.max(input, dim=1)
     mn, inmc = torch.min(input, dim=1)
     df = mx - mn
-    h = torch.zeros(input.shape[0],1)
+    h = torch.zeros(input.shape[0],1).to(self.dv)
     ii = [0, 1, 2]
     iid = [[1,2],[2,0],[0,1]]
     shift = [360, 120, 240]
@@ -19,7 +19,7 @@ def rgb_to_hsv(input):
         h[logi,0] = \
             torch.remainder((60 * (input[logi,id[0]]-input[logi,id[1]])/df[logi] + s),360)
 
-    s = torch.zeros(input.shape[0],1)
+    s = torch.zeros(input.shape[0],1).to(self.)
     s[mx!=0,0]=(df[mx!=0] / mx[mx!=0]) * 100
 
     v = mx.reshape(input.shape[0],1) * 100
