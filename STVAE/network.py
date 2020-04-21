@@ -180,10 +180,10 @@ class network(nn.Module):
 
                 if ('norm') in ll['name']:
                     if self.first:
-                        if len(OUTS[-1].shape)==4:
-                            self.layers.add_module(ll['name'],torch.nn.BatchNorm2d(OUTS[-1].shape[1]).to(self.dv))
+                        if len(OUTS[old_name].shape)==4:
+                            self.layers.add_module(ll['name'],torch.nn.BatchNorm2d(OUTS[old_name].shape[1]).to(self.dv))
                         else:
-                            self.layers.add_module(ll['name'],torch.nn.BatchNorm1d(OUTS[-1].shape[1]).to(self.dv))
+                            self.layers.add_module(ll['name'],torch.nn.BatchNorm1d(OUTS[old_name].shape[1]).to(self.dv))
                     out = getattr(self.layers, ll['name'])(OUTS[inp_ind])
                     #OUTS += [out]
                     OUTS[ll['name']] = out
