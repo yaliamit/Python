@@ -9,9 +9,8 @@
 --lr=.001
 --nval=0
 --CONS
---n_class=0
 --perturb=.2
---optimizer=SGD
+--optimizer=Adam
 --layers
 name:input;num_filters:1
 name:conv1;num_filters:32;filter_size:(3,3);non_linearity:relu
