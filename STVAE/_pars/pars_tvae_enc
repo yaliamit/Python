@@ -1,4 +1,5 @@
---type=vae
+--type=net
+--network
 --nval=0
 --dataset=cifar10
 --num_train=50000
