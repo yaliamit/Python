@@ -74,6 +74,7 @@ class network(nn.Module):
 
         self.wd=args.wd
         self.embedd=args.embedd
+        self.embedd_layer=args.embedd_layer
         self.del_last=args.del_last
         self.first=True
         self.bsz=args.mb_size # Batch size - gets multiplied by number of shifts so needs to be quite small.
@@ -482,7 +483,7 @@ class network(nn.Module):
 
     def get_embedding(self, train):
 
-        lay='pool3'
+        lay=self.embedd_layer
         trin = train[0]
         jump = self.bsz
         num_tr = train[0].shape[0]
