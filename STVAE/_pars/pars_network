@@ -1,9 +1,0 @@
---type=network
---n_class=10
---dataset=mnist
---num_train=10000
---nepoch=20
---mb_size=500
---lr=.001
---nval=0
---CONS
