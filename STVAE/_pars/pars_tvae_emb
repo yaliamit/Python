@@ -22,6 +22,7 @@ name:pool2;pool_size:2
 name:conv3;num_filters:128;filter_size:(3,3);non_linearity:relu
 name:pool3;pool_size:2
 name:conv4;num_filters:256;filter_size:(3,3);non_linearity:relu
+name:drop4;drop:0.5
 name:dense_final;num_units:256;nb:nb
 --hid_layers
 name:input
