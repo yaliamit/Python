@@ -230,8 +230,7 @@ class network(nn.Module):
             # TEMPORARY
             pp=[]
             for k,p in zip(KEYS,self.parameters()):
-                 if ('final' in k): # or not self.del_last):
-                 #if ('conv2' in k or 'dense1' in k):
+                 if ('final' in k or not self.del_last):
                      print('TO optimizer',k,p.shape)
                      pp+=[p]
                  else:
@@ -280,15 +279,15 @@ class network(nn.Module):
         #lecov=torch.logsumexp(COV-torch.diag(v),dim=1)-v
 
         lecov=torch.sum(torch.log(1+torch.exp(COV)), dim=1) - v
-        COV = torch.mm(out1a, out1a.transpose(0, 1))
-        v = torch.diag(COV)
-        lecov += torch.sum(torch.log(1+torch.exp(COV)), dim=1) - v
+        #COV = torch.mm(out1a, out1a.transpose(0, 1))
+        #v = torch.diag(COV)
+        #lecov += torch.sum(torch.log(1+torch.exp(COV)), dim=1) - v
         loss=torch.sum(lecov)
         ID=2.*torch.eye(out0.shape[0]).to(self.dv)-1.
         icov=ID*COV
         # ll=torch.log(1.+torch.exp(icov))
         # loss=torch.sum(-icov+ll)
-        acc=torch.sum(icov>0)
+        acc=torch.mean(icov>0)
         return loss,acc
 
 
@@ -476,7 +475,7 @@ class network(nn.Module):
             full_acc += acc.item()
         if (True): #np.mod(epoch,10)==9 or epoch<=10):
             fout.write('\n ====> Ep {}: {} Full loss: {:.4F}, Full acc: {:.4F} \n'.format(d_type,epoch,
-                    full_loss /(num_tr/jump), full_acc/(num_tr)))
+                    full_loss /(num_tr/jump), full_acc/(num_tr/jump)))
 
         return trainMU, trainLOGVAR, trPI
 
