@@ -23,5 +23,5 @@ name:pool2;pool_size:2
 name:conv3;num_filters:128;filter_size:(3,3);non_linearity:relu
 name:pool3;pool_size:2
 name:conv4;num_filters:256;filter_size:(3,3);non_linearity:relu
-name:dense1;num_units:64;non_linearity:relu
+name:dense1;num_units:256;non_linearity:relu
 name:dense_final;num_units:10
