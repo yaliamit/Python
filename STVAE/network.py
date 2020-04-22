@@ -287,7 +287,7 @@ class network(nn.Module):
         icov=ID*COV
         # ll=torch.log(1.+torch.exp(icov))
         # loss=torch.sum(-icov+ll)
-        acc=torch.mean((icov>0).type(torch.float))
+        acc=torch.mean((icov>0).type(torch.float))*out0[0].shape
         return loss,acc
 
 
@@ -475,7 +475,7 @@ class network(nn.Module):
             full_acc += acc.item()
         if (True): #np.mod(epoch,10)==9 or epoch<=10):
             fout.write('\n ====> Ep {}: {} Full loss: {:.4F}, Full acc: {:.4F} \n'.format(d_type,epoch,
-                    full_loss /(num_tr/jump), full_acc/(num_tr/jump)))
+                    full_loss /(num_tr/jump), full_acc/(num_tr)))
 
         return trainMU, trainLOGVAR, trPI
 
