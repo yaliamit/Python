@@ -287,7 +287,7 @@ class network(nn.Module):
         icov=ID*COV
         # ll=torch.log(1.+torch.exp(icov))
         # loss=torch.sum(-icov+ll)
-        acc=torch.mean(icov>0)
+        acc=torch.mean((icov>0).type(torch.float))
         return loss,acc
 
 
