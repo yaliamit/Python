@@ -189,7 +189,7 @@ if (run_existing and not reinit):
         elif embedd:
             net_model=net_models[0]
             net_model.load_state_dict(SMS[0]['model.state.dict'])
-            cc=net_model.get_binary_signature(DATA[0])
+            #cc=net_model.get_binary_signature(DATA[0])
             tr = net_model.get_embedding(DATA[0]).detach().cpu().numpy()
             tr = tr.reshape(tr.shape[0], -1)
             trh = [tr, DATA[0][1]]
