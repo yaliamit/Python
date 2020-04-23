@@ -82,6 +82,8 @@ class network(nn.Module):
         self.dv=device
         self.edges=args.edges
         self.n_class=args.n_class
+        self.s_factor=args.s_factor
+        self.h_factor=args.h_factor
         #self.pools = args.pools # List of pooling at each level of network
         #self.drops=args.drops # Drop fraction at each level of network
         self.optimizer_type=args.optimizer
@@ -285,11 +287,8 @@ class network(nn.Module):
         loss=torch.sum(lecov)
         ID=2.*torch.eye(out0.shape[0]).to(self.dv)-1.
         icov=ID*COV
-        # ll=torch.log(1.+torch.exp(icov))
-        # loss=torch.sum(-icov+ll)
         acc=torch.mean((icov>0).type(torch.float))*out0.shape[0]
         return loss,acc
-
 
 
     # GRADIENT STEP
@@ -302,12 +301,7 @@ class network(nn.Module):
         if type(input) is list:
             out0,ot0=self.forward(input[0])
             out1,ot1=self.forward(input[1])
-
             loss, acc = self.get_embedd_loss(out0,out1,target)
-            # WW=0
-            # for p in self.optimizer.param_groups[0]['params']:
-            #     WW+=torch.sum(p*p)
-            # print(loss,WW)
         else:
             out,_=self.forward(input)
             # Compute loss and accuracy
@@ -387,8 +381,8 @@ class network(nn.Module):
         x_out=F.grid_sample(x_in,grid,padding_mode='reflection',align_corners=True)
 
         v=torch.rand(nn,2).to(self.dv)
-        vv=torch.pow(2,(v[:,0]*4-2)).reshape(nn,1,1)
-        uu=((v[:,1]-.5)*.2).reshape(nn,1,1)
+        vv=torch.pow(2,(v[:,0]*self.s_factor-self.s_factor/2)).reshape(nn,1,1)
+        uu=((v[:,1]-.5)*self.h_factor).reshape(nn,1,1)
         x_out_hsv=self.rgb_to_hsv(x_out)
         x_out_hsv[:,1,:,:]=torch.clamp(x_out_hsv[:,1,:,:]*vv,0.,1.)
         x_out_hsv[:,0,:,:]=torch.remainder(x_out_hsv[:,0,:,:]+uu,1.)
