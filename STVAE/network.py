@@ -68,12 +68,27 @@ class residual_block_small(nn.Module):
 class final_emb(nn.Module):
     def __init__(self,dv,num_units,bsz):
         super(final_emb,self).__init__()
-        self.dens=nn.Linear(num_units,1).to(dv)
+        self.dens1=nn.Linear(num_units,10).to(dv)
+        self.dens2=nn.Linear(10,1).to(dv)
+        self.dens3=nn.Linear(2,1)
+        self.bsz=bsz
         self.thrl=torch.nn.Parameter(torch.tensor(-0.2),requires_grad=True).to(dv)
         self.thru=torch.nn.Parameter(torch.tensor(0.02),requires_grad=True).to(dv)
         self.ey=2.*(torch.eye(bsz).to(dv))-1.
 
 
+    def forward(self,out0,out1):
+        out0a = self.dens2(F.relu(self.dens1(out0)))
+        out1a = self.dens2(F.relu(self.dens1(out1)))
+        out0b=out0a.repeat([self.bsz,1])
+        out1b=out1a.repeat_interleave(self.bsz,dim=0)
+        out0=torch.cat((out0b,out1b),dim=1)
+        out_final=self.dens3(out0).reshape(self.bsz,self.bsz)
+
+        return out_final
+        # OUT=torch.clamp(self.final_emb.thrl-outa,0.,1.)+\
+        # OUT=torch.sigmoid(outa-self.final_emb.thru)
+        #OUT = outa - self.final_emb.thru
 
 # Network module
 class network(nn.Module):
@@ -283,25 +298,24 @@ class network(nn.Module):
 
     def get_embedd_loss_new(self,out0,out1,targ):
 
-        out0a=torch.tanh(self.final_emb.dens(out0))
-        out1a=torch.tanh(self.final_emb.dens(out1))
-        outa=out0a+out1a.transpose(0,1)
-
-        #OUT=torch.clamp(self.final_emb.thrl-outa,0.,1.)+\
-        #OUT=torch.sigmoid(outa-self.final_emb.thru)
-        OUT=outa-self.final_emb.thru
+        OUT=self.final_emb(out0,out1)
         D=torch.diag(OUT)
         #loss1=torch.sum(F.relu(1-D))
-        loss=torch.sum(torch.sum(torch.log(1+torch.exp(OUT)),dim=1)-D)
+        loss1=torch.sum(torch.log(1+torch.exp(D))-D)
+        loss2=torch.sum(torch.log(1+torch.exp(OUT-torch.diag(D))))
+
+        #loss2=torch.sum(F.relu(1-OUT))-loss1
+
+        #loss=torch.sum(torch.sum(torch.log(1+torch.exp(OUT)),dim=1)-D)
         #loss2=torch.sum(F.relu(1-OUT))-loss1
         #loss1=torch.log(1+torch.exp(OUT-torch.diag(D)))
 
-        #loss=loss1+.1*loss2
+        loss=loss1+0.002*loss2
 
         #OUT=(2.*OUT-1.)*self.final_emb.ey
         acc1=torch.sum((D>0).type(torch.float))
         acc2=torch.sum((OUT-torch.diag(D)<0).type(torch.float))
-        #print(acc1,acc2)
+        print(acc1,acc2)
         acc=(acc1+acc2)/self.bsz
         return loss,acc
 
