@@ -332,7 +332,7 @@ class network(nn.Module):
         icov=ID*COV
         acc1 = torch.sum((torch.diag(icov)>0).type(torch.float))
         acc2 = torch.sum((icov>0).type(torch.float)) - acc1
-        print(acc1, acc2)
+        #print(acc1, acc2)
         #acc0 = (acc1 + acc2) / self.bsz
 
         acc=torch.mean((icov>0).type(torch.float))*out0.shape[0]
