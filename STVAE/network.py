@@ -65,6 +65,14 @@ class residual_block_small(nn.Module):
         return out
 
 
+class final_emb(nn.Module):
+    def __init__(self,dv,num_units,bsz):
+        super(final_emb,self).__init__()
+        self.dens=nn.Linear(num_units,1).to(dv)
+        self.thrl=torch.nn.Parameter(torch.tensor(-0.2),requires_grad=True).to(dv)
+        self.thru=torch.nn.Parameter(torch.tensor(0.02),requires_grad=True).to(dv)
+        self.ey=2.*(torch.eye(bsz).to(dv))-1.
+
 
 
 # Network module
@@ -94,6 +102,7 @@ class network(nn.Module):
         # The loss function
         self.criterion=nn.CrossEntropyLoss()
         self.criterion_shift=nn.CrossEntropyLoss()
+        self.final_emb=final_emb(device,self.layer_text[-1]['num_units'],self.bsz).to(self.dv)
         if (hasattr(args,'perturb')):
             self.perturb=args.perturb
         self.u_dim = 6
@@ -272,6 +281,32 @@ class network(nn.Module):
 
         return out_a
 
+    def get_embedd_loss_new(self,out0,out1,targ):
+
+        out0a=torch.tanh(self.final_emb.dens(out0))
+        out1a=torch.tanh(self.final_emb.dens(out1))
+        outa=out0a+out1a.transpose(0,1)
+
+        #OUT=torch.clamp(self.final_emb.thrl-outa,0.,1.)+\
+        #OUT=torch.sigmoid(outa-self.final_emb.thru)
+        OUT=outa-self.final_emb.thru
+        D=torch.diag(OUT)
+        #loss1=torch.sum(F.relu(1-D))
+        loss=torch.sum(torch.sum(torch.log(1+torch.exp(OUT)),dim=1)-D)
+        #loss2=torch.sum(F.relu(1-OUT))-loss1
+        #loss1=torch.log(1+torch.exp(OUT-torch.diag(D)))
+
+        #loss=loss1+.1*loss2
+
+        #OUT=(2.*OUT-1.)*self.final_emb.ey
+        acc1=torch.sum((D>0).type(torch.float))
+        acc2=torch.sum((OUT-torch.diag(D)<0).type(torch.float))
+        print(acc1,acc2)
+        acc=(acc1+acc2)/self.bsz
+        return loss,acc
+
+
+
     def get_embedd_loss(self,out0,out1,targ):
 
         out0a=self.standardize(out0)
@@ -287,6 +322,11 @@ class network(nn.Module):
         loss=torch.sum(lecov)
         ID=2.*torch.eye(out0.shape[0]).to(self.dv)-1.
         icov=ID*COV
+        acc1 = torch.sum((torch.diag(icov)>0).type(torch.float))
+        acc2 = torch.sum((icov>0).type(torch.float)) - acc1
+        print(acc1, acc2)
+        acc0 = (acc1 + acc2) / self.bsz
+
         acc=torch.mean((icov>0).type(torch.float))*out0.shape[0]
         return loss,acc
 
@@ -301,7 +341,7 @@ class network(nn.Module):
         if type(input) is list:
             out0,ot0=self.forward(input[0])
             out1,ot1=self.forward(input[1])
-            loss, acc = self.get_embedd_loss(out0,out1,target)
+            loss, acc = self.get_embedd_loss_new(out0,out1,target)
         else:
             out,_=self.forward(input)
             # Compute loss and accuracy
