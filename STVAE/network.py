@@ -292,10 +292,10 @@ class network(nn.Module):
             return loss, acc
 
     def standardize(self,out):
-
-        outa=out.reshape(out.shape[0],-1)#-torch.mean(out,dim=1).reshape(-1,1)
-        sd = torch.sqrt(torch.sum(outa * outa, dim=1)).reshape(-1, 1)
-        out_a = outa/(sd+.01)
+        out_a = torch.sign(out)/out.shape[1]
+        #outa=out.reshape(out.shape[0],-1)#-torch.mean(out,dim=1).reshape(-1,1)
+        #sd = torch.sqrt(torch.sum(outa * outa, dim=1)).reshape(-1, 1)
+        #out_a = outa/(sd+.01)
 
         return out_a
 
@@ -349,7 +349,7 @@ class network(nn.Module):
         if type(input) is list:
             out0,ot0=self.forward(input[0])
             out1,ot1=self.forward(input[1])
-            loss, acc = self.get_embedd_loss_new(out0,out1,target)
+            loss, acc = self.get_embedd_loss(out0,out1,target)
         else:
             out,_=self.forward(input)
             # Compute loss and accuracy
