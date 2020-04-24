@@ -299,8 +299,8 @@ class network(nn.Module):
         #loss=loss1+.1*loss2
 
         #OUT=(2.*OUT-1.)*self.final_emb.ey
-        #acc1=torch.sum((D>0).type(torch.float))
-        #acc2=torch.sum((OUT-torch.diag(D)<0).type(torch.float))
+        acc1=torch.sum((D>0).type(torch.float))
+        acc2=torch.sum((OUT-torch.diag(D)<0).type(torch.float))
         #print(acc1,acc2)
         acc=(acc1+acc2)/self.bsz
         return loss,acc
