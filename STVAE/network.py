@@ -68,9 +68,9 @@ class residual_block_small(nn.Module):
 class final_emb(nn.Module):
     def __init__(self,dv,num_units,bsz):
         super(final_emb,self).__init__()
-        self.dens1=nn.Linear(num_units,10).to(dv)
-        self.dens2=nn.Linear(10,1).to(dv)
-        self.dens3=nn.Linear(2,1)
+        self.dens1=nn.Linear(num_units,1).to(dv)
+        self.dens2=nn.Linear(3,1).to(dv)
+        self.dens3=nn.Linear(6,1).to(dv)
         self.bsz=bsz
         self.thrl=torch.nn.Parameter(torch.tensor(-0.2),requires_grad=True).to(dv)
         self.thru=torch.nn.Parameter(torch.tensor(0.02),requires_grad=True).to(dv)
@@ -78,12 +78,14 @@ class final_emb(nn.Module):
 
 
     def forward(self,out0,out1):
-        out0a = self.dens2(F.relu(self.dens1(out0)))
-        out1a = self.dens2(F.relu(self.dens1(out1)))
+        #out_final = torch.mm(out0, out1.transpose(0, 1))
+        out0a = self.dens1(out0)
+        out1a = self.dens1(out1)
         out0b=out0a.repeat([self.bsz,1])
         out1b=out1a.repeat_interleave(self.bsz,dim=0)
-        out0=torch.cat((out0b,out1b),dim=1)
-        out_final=self.dens3(out0).reshape(self.bsz,self.bsz)
+        # #out0=torch.cat((out0b,out1b),dim=1)
+        out0=out0b*out1b
+        out_final=out0.reshape(self.bsz,self.bsz).transpose(0,1) #self.dens3(out0).reshape(self.bsz,self.bsz)
 
         return out_final
         # OUT=torch.clamp(self.final_emb.thrl-outa,0.,1.)+\
@@ -298,11 +300,11 @@ class network(nn.Module):
 
     def get_embedd_loss_new(self,out0,out1,targ):
 
-        OUT=self.final_emb(out0,out1)
+        OUT=self.final_emb(self.standardize(out0),self.standardize(out1))
         D=torch.diag(OUT)
         #loss1=torch.sum(F.relu(1-D))
-        loss1=torch.sum(torch.log(1+torch.exp(D))-D)
-        loss2=torch.sum(torch.log(1+torch.exp(OUT-torch.diag(D))))
+        loss=torch.sum(torch.log(1+torch.exp(OUT)))-torch.sum(D)
+        #loss=torch.sum(torch.log(1+torch.exp(OUT-torch.diag(D))))
 
         #loss2=torch.sum(F.relu(1-OUT))-loss1
 
@@ -310,11 +312,11 @@ class network(nn.Module):
         #loss2=torch.sum(F.relu(1-OUT))-loss1
         #loss1=torch.log(1+torch.exp(OUT-torch.diag(D)))
 
-        loss=loss1+0.002*loss2
+        #loss=loss1+loss2
 
         #OUT=(2.*OUT-1.)*self.final_emb.ey
         acc1=torch.sum((D>0).type(torch.float))
-        acc2=torch.sum((OUT-torch.diag(D)<0).type(torch.float))
+        acc2=torch.sum(((OUT-torch.diag(D))<0).type(torch.float))
         print(acc1,acc2)
         acc=(acc1+acc2)/self.bsz
         return loss,acc
@@ -339,7 +341,7 @@ class network(nn.Module):
         acc1 = torch.sum((torch.diag(icov)>0).type(torch.float))
         acc2 = torch.sum((icov>0).type(torch.float)) - acc1
         print(acc1, acc2)
-        acc0 = (acc1 + acc2) / self.bsz
+        #acc0 = (acc1 + acc2) / self.bsz
 
         acc=torch.mean((icov>0).type(torch.float))*out0.shape[0]
         return loss,acc
