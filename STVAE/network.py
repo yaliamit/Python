@@ -86,7 +86,7 @@ class final_emb(nn.Module):
         # # #out0=torch.cat((out0b,out1b),dim=1)
         # out0=out0b*out1b
         # out_final=out0.reshape(self.bsz,self.bsz).transpose(0,1) #self.dens3(out0).reshape(self.bsz,self.bsz)
-        out_final=out0a*out1a.tranpose(0,1)
+        out_final=out0a*out1a.transpose(0,1)
         return out_final
         # OUT=torch.clamp(self.final_emb.thrl-outa,0.,1.)+\
         # OUT=torch.sigmoid(outa-self.final_emb.thru)
