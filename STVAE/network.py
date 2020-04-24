@@ -78,14 +78,14 @@ class final_emb(nn.Module):
 
 
     def forward(self,out0,out1):
-        out_final = torch.mm(out0, out1.transpose(0, 1))
-        # out0a = self.dens1(out0)
-        # out1a = self.dens1(out1)
-        # out0b=out0a.repeat([self.bsz,1])
-        # out1b=out1a.repeat_interleave(self.bsz,dim=0)
-        # # #out0=torch.cat((out0b,out1b),dim=1)
-        # out0=out0b*out1b
-        # out_final=out0.reshape(self.bsz,self.bsz).transpose(0,1) #self.dens3(out0).reshape(self.bsz,self.bsz)
+        #out_final = torch.mm(out0, out1.transpose(0, 1))
+        out0a = self.dens1(out0)
+        out1a = self.dens1(out1)
+        out0b=out0a.repeat([self.bsz,1])
+        out1b=out1a.repeat_interleave(self.bsz,dim=0)
+        # #out0=torch.cat((out0b,out1b),dim=1)
+        out0=out0b*out1b
+        out_final=out0.reshape(self.bsz,self.bsz).transpose(0,1) #self.dens3(out0).reshape(self.bsz,self.bsz)
         #out_final=out0a*out1a.transpose(0,1)
         return out_final
         # OUT=torch.clamp(self.final_emb.thrl-outa,0.,1.)+\
@@ -305,9 +305,11 @@ class network(nn.Module):
         loss=torch.sum(torch.log(1+torch.exp(OUT)))-torch.sum(D)
 
         acc1=torch.sum((D>0).type(torch.float))
-        acc2=torch.sum(((OUT-torch.diag(D))<0).type(torch.float))
-        print(acc1,acc2)
-        acc=(acc1+acc2)/self.bsz
+        acc2=torch.sum((torch.triu(OUT,1)<0).type(torch.float))
+        acc3=torch.sum((torch.tril(OUT,-1)<0).type(torch.float))
+
+        print(acc1,acc2,acc3)
+        acc=(acc1+acc2+acc3)/self.bsz
         return loss,acc
 
 
