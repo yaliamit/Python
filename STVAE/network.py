@@ -84,7 +84,9 @@ class final_emb(nn.Module):
         out0b=out0.repeat([self.bsz,1])
         out1b=out1.repeat_interleave(self.bsz,dim=0)
         #out0=torch.cat((out0b,out1b),dim=1)
-        outd=torch.sum((out0b-out1b)*(out0b-out1b),dim=1)
+        outd=torch.sum(torch.abs(out0b-out1b),dim=1)
+
+        #outd=torch.sum((out0b-out1b)*(out0b-out1b),dim=1)
         #outd=torch.sum((out0b*out1b),dim=1)
 
         #out0=self.dens3(out0)
