@@ -317,8 +317,8 @@ class network(nn.Module):
 
         D = torch.diag(OUT)
         acc1=torch.sum((D>0).type(torch.float))
-        acc2=torch.sum((torch.triu(OUT,1)<0).type(torch.float))
-        acc3=torch.sum((torch.tril(OUT,-1)<0).type(torch.float))
+        acc2=torch.sum((torch.triu(OUT,1)>0).type(torch.float))
+        acc3=torch.sum((torch.tril(OUT,-1)>0).type(torch.float))
 
         print(acc1.item(),acc2.item(),acc3.item())
         acc=(acc1+acc2+acc3)/self.bsz
