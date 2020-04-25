@@ -310,7 +310,7 @@ class network(nn.Module):
         OUT=self.final_emb(self.standardize(out0),self.standardize(out1))
         D=torch.diag(OUT)
         loss=torch.sum(torch.log(1+torch.exp(OUT)))-torch.sum(D)
-        thr=-1.
+        thr=-2.
         acc1=torch.sum((D>thr).type(torch.float))
         acc2=torch.sum((torch.triu(OUT,1)<thr).type(torch.float))
         acc3=torch.sum((torch.tril(OUT,-1)<thr).type(torch.float))
