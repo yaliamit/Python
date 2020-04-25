@@ -84,14 +84,14 @@ class final_emb(nn.Module):
         out0b=out0.repeat([self.bsz,1])
         out1b=out1.repeat_interleave(self.bsz,dim=0)
         #out0=torch.cat((out0b,out1b),dim=1)
-        #outd=torch.sum((out0b-out1b)*(out0b-out1b),dim=1)
-        outd=torch.sum((out0b*out1b),dim=1)
+        outd=torch.sum((out0b-out1b)*(out0b-out1b),dim=1)
+        #outd=torch.sum((out0b*out1b),dim=1)
 
         #out0=self.dens3(out0)
         #out0=out0b*out1b
         out_final=outd.reshape(self.bsz,self.bsz).transpose(0,1) #self.dens3(out0).reshape(self.bsz,self.bsz)
         #out_final=out0a*out1a.transpose(0,1)
-        return out_final
+        return -out_final
         # OUT=torch.clamp(self.final_emb.thrl-outa,0.,1.)+\
         # OUT=torch.sigmoid(outa-self.final_emb.thru)
         #OUT = outa - self.final_emb.thru
@@ -308,7 +308,7 @@ class network(nn.Module):
         OUT=self.final_emb(self.standardize(out0),self.standardize(out1))
         D=torch.diag(OUT)
         loss=torch.sum(torch.log(1+torch.exp(OUT)))-torch.sum(D)
-        thr=0.
+        thr=-1.
         acc1=torch.sum((D>thr).type(torch.float))
         acc2=torch.sum((torch.triu(OUT,1)<thr).type(torch.float))
         acc3=torch.sum((torch.tril(OUT,-1)<thr).type(torch.float))
