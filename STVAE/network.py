@@ -89,7 +89,7 @@ class final_emb(nn.Module):
 
         #out0=self.dens3(out0)
         #out0=out0b*out1b
-        out_finald=outd.reshape(self.bsz,self.bsz).transpose(0,1) #self.dens3(out0).reshape(self.bsz,self.bsz)
+        #out_finald=outd.reshape(self.bsz,self.bsz).transpose(0,1) #self.dens3(out0).reshape(self.bsz,self.bsz)
         #out_final=out0a*out1a.transpose(0,1)
         return out_final
         # OUT=torch.clamp(self.final_emb.thrl-outa,0.,1.)+\
