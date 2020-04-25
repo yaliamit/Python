@@ -307,16 +307,20 @@ class network(nn.Module):
         return out_a
 
     def get_embedd_loss_new(self,out0,out1,targ):
-
+        thr = -2.
         OUT=self.final_emb(self.standardize(out0),self.standardize(out1))
-        D=torch.diag(OUT)
-        loss=torch.sum(torch.log(1+torch.exp(OUT)))-torch.sum(D)
-        thr=-2.
-        acc1=torch.sum((D>thr).type(torch.float))
-        acc2=torch.sum((torch.triu(OUT,1)<thr).type(torch.float))
-        acc3=torch.sum((torch.tril(OUT,-1)<thr).type(torch.float))
+        #loss=torch.sum(torch.log(1+torch.exp(OUT)))-torch.sum(D)
 
-        #print(acc1.item(),acc2.item(),acc3.item())
+        OUT=(OUT-thr)*self.final_emb.ey
+
+        loss=torch.sum(torch.relu(1-OUT))
+
+        D = torch.diag(OUT)
+        acc1=torch.sum((D>0).type(torch.float))
+        acc2=torch.sum((torch.triu(OUT,1)<0).type(torch.float))
+        acc3=torch.sum((torch.tril(OUT,-1)<0).type(torch.float))
+
+        print(acc1.item(),acc2.item(),acc3.item())
         acc=(acc1+acc2+acc3)/self.bsz
         return loss,acc
 
