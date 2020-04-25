@@ -78,18 +78,18 @@ class final_emb(nn.Module):
 
 
     def forward(self,out0,out1):
-        #out_final = torch.mm(out0, out1.transpose(0, 1))
+        out_final = torch.mm(out0, out1.transpose(0, 1))
         #out0a = torch.relu(self.dens2(torch.relu(self.dens1(out0))))
         #out1a = torch.relu(self.dens2(torch.relu(self.dens1(out1))))
-        out0b=out0.repeat([self.bsz,1])
+        #out0b=out0.repeat([self.bsz,1])
         out1b=out1.repeat_interleave(self.bsz,dim=0)
         #out0=torch.cat((out0b,out1b),dim=1)
-        outd=torch.sum((out0b-out1b)*(out0b-out1b),dim=1)
+        #outd=torch.sum((out0b-out1b)*(out0b-out1b),dim=1)
         outd=torch.sum((out0b*out1b),dim=1)
 
         #out0=self.dens3(out0)
         #out0=out0b*out1b
-        out_final=outd.reshape(self.bsz,self.bsz).transpose(0,1) #self.dens3(out0).reshape(self.bsz,self.bsz)
+        out_finald=outd.reshape(self.bsz,self.bsz).transpose(0,1) #self.dens3(out0).reshape(self.bsz,self.bsz)
         #out_final=out0a*out1a.transpose(0,1)
         return out_final
         # OUT=torch.clamp(self.final_emb.thrl-outa,0.,1.)+\
