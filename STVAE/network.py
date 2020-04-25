@@ -68,8 +68,8 @@ class residual_block_small(nn.Module):
 class final_emb(nn.Module):
     def __init__(self,dv,num_units,bsz):
         super(final_emb,self).__init__()
-        self.dens1=nn.Linear(num_units,3).to(dv)
-        self.dens2=nn.Linear(3,1).to(dv)
+        self.dens1=nn.Linear(num_units,num_units).to(dv)
+        self.dens2=nn.Linear(num_units,3).to(dv)
         self.dens3=nn.Linear(6,1).to(dv)
         self.bsz=bsz
         self.thrl=torch.nn.Parameter(torch.tensor(-0.2),requires_grad=True).to(dv)
@@ -79,8 +79,8 @@ class final_emb(nn.Module):
 
     def forward(self,out0,out1):
         #out_final = torch.mm(out0, out1.transpose(0, 1))
-        out0a = torch.relu(self.dens1(out0))
-        out1a = torch.relu(self.dens1(out1))
+        out0a = torch.relu(self.dens2(torch.relu(self.dens1(out0))))
+        out1a = torch.relu(self.dens2(torch.relu(self.dens1(out1))))
         out0b=out0a.repeat([self.bsz,1])
         out1b=out1a.repeat_interleave(self.bsz,dim=0)
         out0=torch.cat((out0b,out1b),dim=1)
@@ -292,10 +292,11 @@ class network(nn.Module):
             return loss, acc
 
     def standardize(self,out):
-        out_a = torch.sign(out)/out.shape[1]
-        #outa=out.reshape(out.shape[0],-1)#-torch.mean(out,dim=1).reshape(-1,1)
-        #sd = torch.sqrt(torch.sum(outa * outa, dim=1)).reshape(-1, 1)
-        #out_a = outa/(sd+.01)
+
+        outa=out.reshape(out.shape[0],-1)#-torch.mean(out,dim=1).reshape(-1,1)
+        #out_a = torch.sign(outa) / out.shape[1]
+        sd = torch.sqrt(torch.sum(outa * outa, dim=1)).reshape(-1, 1)
+        out_a = outa/(sd+.01)
 
         return out_a
 
@@ -349,7 +350,7 @@ class network(nn.Module):
         if type(input) is list:
             out0,ot0=self.forward(input[0])
             out1,ot1=self.forward(input[1])
-            loss, acc = self.get_embedd_loss(out0,out1,target)
+            loss, acc = self.get_embedd_loss_new(out0,out1,target)
         else:
             out,_=self.forward(input)
             # Compute loss and accuracy
