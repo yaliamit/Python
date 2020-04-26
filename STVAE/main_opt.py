@@ -86,9 +86,12 @@ def train_model(model, args, ex_file, DATA, fout):
 
 
     if 'net' in args.type:
-        #model.get_binary_signature(train)
+        if args.model is not None:
+            ss=args.model
+        else:
+            ss='network.pt'
         torch.save({'args': args,
-                    'model.state.dict': model.state_dict()}, '_output/network.pt')
+                    'model.state.dict': model.state_dict()}, '_output/'+ss)
     if 'vae' in args.type:
         fout.write('writing to ' + ex_file + '\n')
         torch.save({'args': args,
