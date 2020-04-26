@@ -68,36 +68,18 @@ class residual_block_small(nn.Module):
 class final_emb(nn.Module):
     def __init__(self,dv,num_units,bsz):
         super(final_emb,self).__init__()
-        self.dens1=nn.Linear(num_units,num_units).to(dv)
-        self.dens2=nn.Linear(num_units,3).to(dv)
-        self.dens3=nn.Linear(6,1).to(dv)
         self.bsz=bsz
-        self.thrl=torch.nn.Parameter(torch.tensor(-0.2),requires_grad=True).to(dv)
-        self.thru=torch.nn.Parameter(torch.tensor(0.02),requires_grad=True).to(dv)
         self.ey=2.*(torch.eye(bsz).to(dv))-1.
 
 
     def forward(self,out0,out1):
         #out_final = torch.mm(out0, out1.transpose(0, 1))
-        #out0a = torch.relu(self.dens2(torch.relu(self.dens1(out0))))
-        #out1a = torch.relu(self.dens2(torch.relu(self.dens1(out1))))
         out0b=out0.repeat([self.bsz,1])
         out1b=out1.repeat_interleave(self.bsz,dim=0)
-        #out0=torch.cat((out0b,out1b),dim=1)
         outd=out0b-out1b
         outd=torch.sum(torch.relu(outd)+torch.relu(-outd),dim=1)
-
-        #outd=torch.sum((out0b-out1b)*(out0b-out1b),dim=1)
-        #outd=torch.sum((out0b*out1b),dim=1)
-
-        #out0=self.dens3(out0)
-        #out0=out0b*out1b
-        out_final=outd.reshape(self.bsz,self.bsz).transpose(0,1) #self.dens3(out0).reshape(self.bsz,self.bsz)
-        #out_final=out0a*out1a.transpose(0,1)
+        out_final=outd.reshape(self.bsz,self.bsz).transpose(0,1)
         return -out_final
-        # OUT=torch.clamp(self.final_emb.thrl-outa,0.,1.)+\
-        # OUT=torch.sigmoid(outa-self.final_emb.thru)
-        #OUT = outa - self.final_emb.thru
 
 # Network module
 class network(nn.Module):
@@ -158,7 +140,7 @@ class network(nn.Module):
                     # over ride default inp_feats
                     if len(pp)==1:
                         inp_ind=pp[0] #self.lnti[pp[0]]
-                        inp_feats=self.layer_text[self.lnti[pp[0]]]['num_filters']
+                        inp_feats=OUTS[pp[0]].shape[1] #self.layer_text[self.lnti[pp[0]]]['num_filters']
                         in_dim=in_dims[self.lnti[pp[0]]]
                     else:
                         inp_feats=[]
