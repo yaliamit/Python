@@ -95,6 +95,7 @@ class network(nn.Module):
         #self.full_dim=args.full_dim
         self.dv=device
         self.edges=args.edges
+        self.update_layers=args.update_layers
         self.n_class=args.n_class
         self.s_factor=args.s_factor
         self.h_factor=args.h_factor
@@ -247,18 +248,30 @@ class network(nn.Module):
             # TEMPORARY
             pp=[]
             for k,p in zip(KEYS,self.parameters()):
-                 if ('final' in k or not self.del_last):
-                     print('TO optimizer',k,p.shape)
-                     pp+=[p]
-                 else:
-                     p.requires_grad=False
+                # if ('final' in k or not self.del_last):
+                #     print('TO optimizer', k, p.shape)
+                #     pp += [p]
+                # else:
+                #     p.requires_grad = False
+                if (self.update_layers is None):
+                    print('TO optimizer', k, p.shape)
+                    pp+=[p]
+                else:
+                    found = False
+                    for u in self.update_layers:
+                        if u in k:
+                            found=True
+                            print('TO optimizer', k, p.shape)
+                            pp+=[p]
+                    if not found:
+                        p.requires_grad=False
 
             if (self.optimizer_type == 'Adam'):
                 print('Optimizer Adam',self.lr)
                 self.optimizer = optim.Adam(pp, lr=self.lr,weight_decay=self.wd)
             else:
                 print('Optimizer SGD',self.lr)
-                self.optimizer = optim.SGD(self.parameters(), lr=self.lr,weight_decay=self.wd)
+                self.optimizer = optim.SGD(pp, lr=self.lr,weight_decay=self.wd)
         out1=[]
 
         if(everything):

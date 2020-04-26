@@ -156,7 +156,6 @@ ARGS[0].nti=args.nti
 ARGS[0].num_test=num_test
 
 if reinit:
-    #model=mprep.make_model(device, fout, STRINGS[0],args,locals(), DATA[0][0].shape[1],DATA[0][0].shape[2], device, fout)
     model.load_state_dict(SMS[0]['model.state.dict'])
     ARGS=[args]
     strings, ex_file = mprep.process_strings(args)
