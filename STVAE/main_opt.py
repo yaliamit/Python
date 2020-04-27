@@ -160,6 +160,8 @@ lr=args.lr
 network=args.network
 ARGS[0].nti=args.nti
 ARGS[0].num_test=num_test
+fout.write(str(ARGS[0]) + '\n')
+fout.flush()
 
 if reinit:
     model.load_state_dict(SMS[0]['model.state.dict'])
@@ -177,8 +179,7 @@ if reinit:
         args.embedd = False
         train_new(args, trh, teh, device)
     exit()
-fout.write(str(ARGS[0]) + '\n')
-fout.flush()
+
 # if (args.classify):
 #     t1 = time.time()
 #     classify(train,test,image_dim,opt_pre,opt_post,opt_mix,opt_class,device,args,fout,locals())
