@@ -27,5 +27,5 @@ name:dense_final;num_units:64;nb:nb;parent:[pool2]
 name:input
 name:dense_final;num_units:10
 --update_layers
-conv4
+conv2
 dense_final
