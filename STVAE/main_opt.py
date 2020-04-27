@@ -132,6 +132,7 @@ if not hasattr(ARGS[0],'opt_jump'):
     ARGS[0].enc_conv=False
 ARGS[0].binary_thresh=args.binary_thresh
 ARGS[0].update_layers=args.update_layers
+ARGS[0].embedd_layer=args.embedd_layer
 if 'vae' in args.type:
     models=mprep.get_models(device, fout, DATA[0][0].shape,STRINGS,ARGS,locals())
 if args.network:
