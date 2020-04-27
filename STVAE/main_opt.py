@@ -167,6 +167,15 @@ if reinit:
     # strings, ex_file = mprep.process_strings(args)
     # EX_FILES=[ex_file]
     train_model(net_models[0], args, EX_FILES[0], DATA, fout)
+    if (args.embedd):
+        tr = net_models[0].get_embedding(DATA[0]).detach().cpu().numpy()
+        tr = tr.reshape(tr.shape[0], -1)
+        trh = [tr, DATA[0][1]]
+        te = net_models[0].get_embedding(DATA[2]).detach().cpu().numpy()
+        te = te.reshape(te.shape[0], -1)
+        teh = [te, DATA[2][1]]
+        args.embedd = False
+        train_new(args, trh, teh, device)
     exit()
 fout.write(str(ARGS[0]) + '\n')
 fout.flush()
