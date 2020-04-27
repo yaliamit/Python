@@ -87,7 +87,7 @@ def train_model(model, args, ex_file, DATA, fout):
 
     if 'net' in args.type:
         if args.model_out is not None:
-            ss=args.model_out
+            ss=args.model_out+'.pt'
         else:
             ss='network.pt'
         torch.save({'args': args,
