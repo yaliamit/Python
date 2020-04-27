@@ -178,6 +178,7 @@ if reinit:
         te = te.reshape(te.shape[0], -1)
         teh = [te, DATA[2][1]]
         args.embedd = False
+        args.update_layers=None
         train_new(args, trh, teh, device)
     exit()
 
