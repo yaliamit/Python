@@ -119,9 +119,11 @@ parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
 
 
 args=aux.process_args(parser)
-ARGS, STRINGS, EX_FILES, SMS = mprep.get_names(args)
-if args.rerun:
+if args.rerun or args.reinit:
     args.run_existing=True
+
+ARGS, STRINGS, EX_FILES, SMS = mprep.get_names(args)
+
 # Get data device and output file
 fout, device, DATA= mprep.setups(args, EX_FILES)
 
@@ -129,6 +131,7 @@ if not hasattr(ARGS[0],'opt_jump'):
     ARGS[0].opt_jump=1
     ARGS[0].enc_conv=False
 ARGS[0].binary_thresh=args.binary_thresh
+ARGS[0].update_layers=args.update_layers
 if 'vae' in args.type:
     models=mprep.get_models(device, fout, DATA[0][0].shape,STRINGS,ARGS,locals())
 if args.network:
@@ -161,10 +164,9 @@ ARGS[0].num_test=num_test
 if reinit:
     model.load_state_dict(SMS[0]['model.state.dict'])
     ARGS=[args]
-    strings, ex_file = mprep.process_strings(args)
-    EX_FILES=[ex_file]
-    tes = [DATA[2][0], DATA[2][0], DATA[2][1]]
-    model.run_epoch(tes, 0, args.nti, None, None, None, d_type='test', fout=fout)
+    # strings, ex_file = mprep.process_strings(args)
+    # EX_FILES=[ex_file]
+    train_model(net_models[0], args, EX_FILES[0], DATA, fout)
     exit()
 fout.write(str(ARGS[0]) + '\n')
 fout.flush()
