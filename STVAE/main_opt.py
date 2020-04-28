@@ -139,6 +139,8 @@ if args.network:
     sh=DATA[0][0].shape
     # parse the existing network coded in ARGS[0]
     arg=ARGS[0]
+    if args.reinit:
+        arg=args
     if args.layers is not None:
         nf=sh[1]
         arg.lnti, arg.layers_dict = mprep.get_network(arg.layers,nf=nf)
@@ -165,7 +167,15 @@ fout.write(str(ARGS[0]) + '\n')
 fout.flush()
 
 if reinit:
-    model.load_state_dict(SMS[0]['model.state.dict'])
+
+    pretrained_dict = {}
+    model_dict=model.state_dict()
+    for k,kn in zip(SMS[0]['model.state.dict'].items(),model_dict.items()):
+        if k[1].shape==kn[1].shape:
+            pretrained_dict[k[0]]=k[1]
+    model_dict.update(pretrained_dict)
+    #model.load_state_dict(SMS[0]['model.state.dict'])
+    model.load_state_dict(model_dict)
     ARGS=[args]
     # strings, ex_file = mprep.process_strings(args)
     # EX_FILES=[ex_file]
