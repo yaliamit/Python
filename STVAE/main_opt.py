@@ -203,7 +203,7 @@ if reinit:
 #     fout.write('Classified in {1:5.3f} seconds\n'.format(time.time()-t1))
 #     exit()
 
-if (run_existing and not reinit):
+if (run_existing):
 
     if sample:
         model=models[0]
@@ -229,6 +229,7 @@ if (run_existing and not reinit):
             te = te.reshape(te.shape[0], -1)
             teh = [te, DATA[2][1]]
             args.embedd = False
+            args.update_layers=None
             args.type='net'
             args.nepoch=nepoch
             args.num_train=num_train
@@ -257,6 +258,7 @@ else: # Totally new network
             te=te.reshape(te.shape[0],-1)
             teh=[te,DATA[2][1]]
             args.embedd=False
+            args.update_layers=None
             train_new(args,trh,teh,device)
 
 

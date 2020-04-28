@@ -166,11 +166,11 @@ class network(nn.Module):
                     OUTS[ll['name']]=self.do_nonlinearity(ll,out)
                 if ('pool' in ll['name']):
                     if self.first:
-                        pp = np.mod(out.shape, ll['pool_size'])
                         stride = ll['pool_size']
                         if ('stride' in ll):
                             stride = ll['stride']
-                        self.layers.add_module(ll['name'],nn.MaxPool2d(ll['pool_size'], stride=stride, padding=tuple(pp[2:4])).to(self.dv))
+                        pp=[np.int32(np.mod(ll['pool_size'],2))]
+                        self.layers.add_module(ll['name'],nn.MaxPool2d(ll['pool_size'], stride=stride, padding=pp).to(self.dv))
                     out = getattr(self.layers, ll['name'])(OUTS[inp_ind])
                     #OUTS += [out]
                     OUTS[ll['name']]=out
