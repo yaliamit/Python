@@ -171,7 +171,7 @@ if reinit:
     pretrained_dict = {}
     model_dict=model.state_dict()
     for k,kn in zip(SMS[0]['model.state.dict'].items(),model_dict.items()):
-        if k[1].shape==kn[1].shape:
+        if k[0].split('.')[1] not in args.update_layers:
             pretrained_dict[k[0]]=k[1]
     model_dict.update(pretrained_dict)
     #model.load_state_dict(SMS[0]['model.state.dict'])
