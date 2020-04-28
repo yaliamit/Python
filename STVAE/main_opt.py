@@ -127,21 +127,21 @@ ARGS, STRINGS, EX_FILES, SMS = mprep.get_names(args)
 # Get data device and output file
 fout, device, DATA= mprep.setups(args, EX_FILES)
 
-if not hasattr(ARGS[0],'opt_jump'):
-    ARGS[0].opt_jump=1
-    ARGS[0].enc_conv=False
-ARGS[0].binary_thresh=args.binary_thresh
-ARGS[0].update_layers=args.update_layers
-ARGS[0].embedd_layer=args.embedd_layer
+if not hasattr(args,'opt_jump'):
+    args.opt_jump=1
+    args.enc_conv=False
+#ARGS[0].binary_thresh=args.binary_thresh
+#ARGS[0].update_layers=args.update_layers
+#ARGS[0].embedd_layer=args.embedd_layer
 if 'vae' in args.type:
     models=mprep.get_models(device, fout, DATA[0][0].shape,STRINGS,ARGS,locals())
 if args.network:
     sh=DATA[0][0].shape
     # parse the existing network coded in ARGS[0]
     arg=ARGS[0]
-    if args.reinit:
+    if args.reinit: # Parse the new network
         arg=args
-    if args.layers is not None:
+    if arg.layers is not None:
         nf=sh[1]
         arg.lnti, arg.layers_dict = mprep.get_network(arg.layers,nf=nf)
         model = network.network(device, arg, arg.layers_dict, arg.lnti).to(device)
@@ -151,7 +151,7 @@ if args.network:
         if 'vae' not in args.type:
             models=net_models
 sample=args.sample
-classify=args.classify
+#classify=args.classify
 reinit=args.reinit
 run_existing=args.run_existing
 conf=args.conf
@@ -161,9 +161,17 @@ num_train=args.num_train
 nepoch=args.nepoch
 lr=args.lr
 network=args.network
-ARGS[0].nti=args.nti
-ARGS[0].num_test=num_test
-fout.write(str(ARGS[0]) + '\n')
+#ARGS[0].nti=args.nti
+#ARGS[0].num_test=num_test
+if (ARGS[0]==args):
+    fout.write('Printing Args from input args\n')
+    fout.write(str(ARGS[0]) + '\n')
+else:
+    fout.write('Printing Args from read-in model\n')
+    fout.write(str(ARGS[0]) + '\n')
+    fout.write('Printing Args from input args\n')
+    fout.write(str(args) + '\n')
+
 fout.flush()
 
 if reinit:
@@ -176,9 +184,6 @@ if reinit:
     model_dict.update(pretrained_dict)
     #model.load_state_dict(SMS[0]['model.state.dict'])
     model.load_state_dict(model_dict)
-    ARGS=[args]
-    # strings, ex_file = mprep.process_strings(args)
-    # EX_FILES=[ex_file]
     train_model(net_models[0], args, EX_FILES[0], DATA, fout)
     if (args.embedd):
         tr = net_models[0].get_embedding(DATA[0]).detach().cpu().numpy()
@@ -208,10 +213,11 @@ if (run_existing and not reinit):
         if 'vae' in args.type:
             model = models[0]
             model.load_state_dict(SMS[0]['model.state.dict'])
-            args=ARGS[0]
             dat, HVARS = aux.prepare_recons(model, DATA, args,fout)
-            assign_cluster_labels(args,HVARS[0],HVARS[2],fout)
-            train_new(args, HVARS[0], HVARS[2], device)
+            if args.hid_layers is not None:
+                train_new(args, HVARS[0], HVARS[2], device)
+            # assign_cluster_labels(args,HVARS[0],HVARS[2],fout)
+            # train_new(args, HVARS[0], HVARS[2], device)
         elif embedd:
             net_model=net_models[0]
             net_model.load_state_dict(SMS[0]['model.state.dict'])
@@ -228,21 +234,14 @@ if (run_existing and not reinit):
             args.num_train=num_train
             args.lr=lr
             train_new(args, trh, teh, device)
-        else:
+        else: # Test a sequence of models
             if args.layers is not None and not args.rerun:
                 args.type='net'
                 test_models(ARGS,SMS,DATA[2],fout)
-    else:
-        model=models[0]
-        model.load_state_dict(SMS[0]['model.state.dict'])
-        dat, HVARS = aux.prepare_recons(model, DATA, args, fout)
-        #if args.hid_layers is not None:
-        #        train_new(args, HVARS[0], HVARS[2], device)
 
-else:
-    #if ('vae' in args.type):
+else: # Totally new network
     if 'vae' in args.type:
-        train_model(models[0], ARGS[0], EX_FILES[0], DATA, fout)
+        train_model(models[0], args, EX_FILES[0], DATA, fout)
         dat,HVARS=aux.prepare_recons(models[0],DATA,args,fout)
         #assign_cluster_labels(args,HVARS[0],HVARS[2],fout)
         if args.hid_layers is not None:
@@ -260,11 +259,6 @@ else:
             args.embedd=False
             train_new(args,trh,teh,device)
 
-
-# trainMU=None;trainLOGVAR=None;trainPI=None
-# if args.classify:
-#     args.nepoch=1000; args.lr=.01
-#     train_new(models[0],args,train,test,device)
 
 fout.write('DONE\n')
 fout.flush()
