@@ -259,7 +259,7 @@ class network(nn.Module):
                 else:
                     found = False
                     for u in self.update_layers:
-                        if u in k:
+                        if u == k.split('.')[1]:
                             found=True
                             print('TO optimizer', k, p.shape)
                             pp+=[p]
