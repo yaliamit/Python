@@ -20,6 +20,7 @@ def process_args(parser):
     parser.add_argument('--input_channels', type=int, default=1, help='Number of input channels')
     parser.add_argument('--type', default='vae', help='type of transformation: aff or tps')
     parser.add_argument('--dataset', default='mnist', help='which data set')
+    parser.add_argument('--hid_dataset', default=None, help='which data set')
     parser.add_argument('--enc_layers',  nargs="*", default=None, help='encoder layer')
     parser.add_argument('--layers',  nargs="*", default=None, help='main networ layers')
     parser.add_argument('--update_layers',nargs="*",default=None, help='layers to update')

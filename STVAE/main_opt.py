@@ -125,14 +125,12 @@ if args.rerun or args.reinit:
 ARGS, STRINGS, EX_FILES, SMS = mprep.get_names(args)
 
 # Get data device and output file
-fout, device, DATA= mprep.setups(args, EX_FILES)
-
+fout, device= mprep.setups(args, EX_FILES)
+DATA=mprep.get_data_pre(args,args.dataset)
 if not hasattr(args,'opt_jump'):
     args.opt_jump=1
     args.enc_conv=False
-#ARGS[0].binary_thresh=args.binary_thresh
-#ARGS[0].update_layers=args.update_layers
-#ARGS[0].embedd_layer=args.embedd_layer
+
 if 'vae' in args.type:
     models=mprep.get_models(device, fout, DATA[0][0].shape,STRINGS,ARGS,locals())
 if args.network:
@@ -187,6 +185,9 @@ if reinit:
     model.load_state_dict(model_dict)
     train_model(model, args, EX_FILES[0], DATA, fout)
     if (args.embedd):
+        if args.hid_dataset is not None:
+            print('getting:'+args.hid_dataset)
+            DATA = mprep.get_data_pre(args, args.hid_dataset)
         tr = model.get_embedding(DATA[0]).detach().cpu().numpy()
         tr = tr.reshape(tr.shape[0], -1)
         trh = [tr, DATA[0][1]]
@@ -195,6 +196,7 @@ if reinit:
         teh = [te, DATA[2][1]]
         args.embedd = False
         args.update_layers=None
+        args.lr=args.hid_lr
         train_new(args, trh, teh, device)
     exit()
 
@@ -220,6 +222,7 @@ if (run_existing):
             # assign_cluster_labels(args,HVARS[0],HVARS[2],fout)
             # train_new(args, HVARS[0], HVARS[2], device)
         elif embedd:
+
             net_model=net_models[0]
             net_model.load_state_dict(SMS[0]['model.state.dict'])
             #cc=net_model.get_binary_signature(DATA[0])
@@ -248,10 +251,13 @@ else: # Totally new network
         #assign_cluster_labels(args,HVARS[0],HVARS[2],fout)
         if args.hid_layers is not None:
                 train_new(args, HVARS[0], HVARS[2], device)
-            #args.type = 'net'
+        #args.type = 'net'
     else:
         train_model(net_models[0],args,EX_FILES[0],DATA,fout)
         if args.embedd:
+            if args.hid_dataset is not None:
+                print('getting:' + args.hid_dataset)
+                DATA = mprep.get_data_pre(args, args.hid_dataset)
             tr=net_models[0].get_embedding(DATA[0]).detach().cpu().numpy()
             tr=tr.reshape(tr.shape[0],-1)
             trh=[tr,DATA[0][1]]

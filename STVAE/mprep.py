@@ -103,15 +103,17 @@ def setups(args, EX_FILES):
     else:
         args.CONS = True
         fout = sys.stdout
-
-
     device = torch.device("cuda:" + str(args.gpu - 1) if use_gpu else "cpu")
     fout.write('Device,' + str(device) + '\n')
     fout.write('USE_GPU,' + str(use_gpu) + '\n')
 
-    args = args
+    return fout, device
+
+def get_data_pre(args,dataset):
+
+
     PARS = {}
-    PARS['data_set'] = args.dataset
+    PARS['data_set'] = dataset
     PARS['num_train'] = args.num_train // args.mb_size * args.mb_size
     PARS['nval'] = args.nval
     if args.cl is not None:
@@ -155,5 +157,5 @@ def setups(args, EX_FILES):
     print('num_train', train[0].shape[0])
 
 
-    return fout, device, [train, val, test]
+    return [train, val, test]
 
