@@ -180,16 +180,17 @@ if reinit:
     model_dict=model.state_dict()
     for k,kn in zip(SMS[0]['model.state.dict'].items(),model_dict.items()):
         if k[0].split('.')[1] not in args.update_layers:
+            print('copying:'+k[0].split('.')[1])
             pretrained_dict[k[0]]=k[1]
     model_dict.update(pretrained_dict)
     #model.load_state_dict(SMS[0]['model.state.dict'])
     model.load_state_dict(model_dict)
-    train_model(net_models[0], args, EX_FILES[0], DATA, fout)
+    train_model(model, args, EX_FILES[0], DATA, fout)
     if (args.embedd):
-        tr = net_models[0].get_embedding(DATA[0]).detach().cpu().numpy()
+        tr = model.get_embedding(DATA[0]).detach().cpu().numpy()
         tr = tr.reshape(tr.shape[0], -1)
         trh = [tr, DATA[0][1]]
-        te = net_models[0].get_embedding(DATA[2]).detach().cpu().numpy()
+        te = model.get_embedding(DATA[2]).detach().cpu().numpy()
         te = te.reshape(te.shape[0], -1)
         teh = [te, DATA[2][1]]
         args.embedd = False

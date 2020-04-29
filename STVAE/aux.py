@@ -80,7 +80,7 @@ def process_args(parser):
     parser.add_argument('--del_last', action='store_true', help='dont update classifier weights')
     parser.add_argument('--sep', action='store_true', help='Output to consol')
     parser.add_argument('--embedd', action='store_true', help='embedding training')
-    parser.add_argument('--embedd_layer', default='dense1', help='embedding layer')
+    parser.add_argument('--embedd_layer', default=None, help='embedding layer')
     parser.add_argument('--reinit', action='store_true', help='reinitialize part of trained model')
     parser.add_argument('--only_pi', action='store_true', help='only optimize over pi')
     parser.add_argument('--edges', action='store_true', help='compute edges')
