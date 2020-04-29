@@ -38,6 +38,7 @@ def process_args(parser):
     parser.add_argument('--nval', type=int, default=0, help='num train (default: 1000)')
     parser.add_argument('--mb_size', type=int, default=100, help='mb_size (default: 500)')
     parser.add_argument('--n_class', type=int, default=0, help='number of classes')
+    parser.add_argument('--par_file', default=None, help='model (default: base)')
     parser.add_argument('--model', default=None, nargs="*", help='model (default: base)')
     parser.add_argument('--model_out', default=None, help='model (default: base)')
     parser.add_argument('--optimizer', default='Adam', help='Type of optimiser')

@@ -29,7 +29,7 @@ args=aux.process_args(parser)
 
 lnti, layers_dict = mprep.get_network(args.layers)
 
-fin= open('_pars/pars_cl_simp','r')
+fin= open('_pars/'+args.par_file,'r')
 lines = [line.rstrip('\n') for line in fin]
 fin.close()
 
