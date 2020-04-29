@@ -46,7 +46,10 @@ for i,d in enumerate(layers_dict):
     else:
         fout = open('_pars/t_par', 'w')
         for l in lines:
-            if 'dense_final' in l:
+            doo=True
+            if 'hid' in l:
+                doo=False
+            if 'dense_final' in l and doo:
                 fout.write(l+';parent:['+nn+']\n')
             else:
                 fout.write(l+'\n')
