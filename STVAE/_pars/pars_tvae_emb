@@ -5,7 +5,8 @@
 --hid_dataset=cifar10
 --num_train=1000
 --network_num_train=1000
---nepoch=2
+--nepoch=0
+--hid_nepoch=10
 --mb_size=500
 --lr=.0001
 --nval=0
@@ -13,6 +14,7 @@
 --perturb=.2
 --optimizer=Adam
 --embedd
+--embedd_layer=conv3
 --layers
 name:input;num_filters:1
 name:conv1;num_filters:32;filter_size:(3,3);non_linearity:relu
