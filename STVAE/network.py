@@ -66,7 +66,7 @@ class residual_block_small(nn.Module):
 
 
 class final_emb(nn.Module):
-    def __init__(self,dv,num_units,bsz):
+    def __init__(self,dv,bsz):
         super(final_emb,self).__init__()
         self.bsz=bsz
         self.ey=2.*(torch.eye(bsz).to(dv))-1.
@@ -109,7 +109,7 @@ class network(nn.Module):
         # The loss function
         self.criterion=nn.CrossEntropyLoss()
         self.criterion_shift=nn.CrossEntropyLoss()
-        self.final_emb=final_emb(device,self.layer_text[-1]['num_units'],self.bsz).to(self.dv)
+        self.final_emb=final_emb(device,self.bsz).to(self.dv)
         if (hasattr(args,'perturb')):
             self.perturb=args.perturb
         self.u_dim = 6

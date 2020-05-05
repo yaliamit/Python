@@ -28,7 +28,7 @@ def train_new(args,train,test,device):
     #fout.write('tot_pars for fc,' + str(tot_pars) + '\n')
     scheduler=None
     tran=[train[0],train[0],train[1]]
-    for epoch in range(args.nepoch):
+    for epoch in range(args.hid_nepoch):
         if (scheduler is not None):
             scheduler.step()
         t1=time.time()

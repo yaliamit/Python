@@ -46,10 +46,12 @@ for i,d in enumerate(layers_dict):
        print('skip '+nn)
     else:
         fout = open('_pars/t_par', 'w')
+        done=False
         for l in lines:
-            if 'dense_final' in l and not 'hid' in l:
-                fout.write(l+';parent:['+nn+']\n')
-            else:
+            if nn in l:
+                fout.write(l+';nb:nb\n')
+                done=True
+            if not done:
                 fout.write(l+'\n')
         if (args.embedd):
             fout.write('--embedd_layer=' + nn+'\n')
