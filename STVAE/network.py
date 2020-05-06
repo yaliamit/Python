@@ -5,7 +5,7 @@ from torch import nn, optim
 from Conv_data import rotate_dataset_rand
 import contextlib
 from torch_edges import Edge
-
+from imageio import imsave
 from aux import create_img
 import time
 @contextlib.contextmanager
@@ -124,6 +124,43 @@ class network(nn.Module):
             return(F.tanh(out))
         elif ('relu' in ll['non_linearity']):
             return(F.relu(out))
+
+    def get_binary_signature(self,inp1, inp2=None, lays=[]):
+
+        num_tr1=inp1[0].shape[0]
+        OT1=[];
+        with torch.no_grad():
+            for j in np.arange(0, num_tr1, self.bsz, dtype=np.int32):
+                data=(torch.from_numpy(inp1[0][j:j + self.bsz]).float()).to(self.dv)
+                out,ot1=self.forward(data,everything=True)
+                OTt=[]
+                for l in lays:
+                    OTt+=[ot1[l].reshape(self.bsz,-1)]
+                OT1+=[torch.cat(OTt,dim=1)]
+
+            OT1 = torch.cat(OT1)
+            qq1=2*(OT1.reshape(num_tr1,-1)>0).type(torch.float32)-1.
+
+            if inp2 is not None:
+                OT2 = []
+                num_tr2=inp2[0].shape[0]
+                for j in np.arange(0, num_tr2, self.bsz, dtype=np.int32):
+                    data = (torch.from_numpy(inp2[0][j:j + self.bsz]).float()).to(self.dv)
+                    out, ot2 = self.forward(data, everything=True)
+                    OTt = []
+                    for l in lays:
+                        OTt += [ot2[l].reshape(self.bsz, -1)]
+                    OT2 += [torch.cat(OTt,dim=1)]
+                OT2=torch.cat(OT2)
+                qq2=2*(OT2.reshape(num_tr2,-1)>0).type(torch.float32)-1.
+            else:
+                qq2=qq1
+
+            cc=torch.mm(qq1,qq2.transpose(0,1))/qq1.shape[1]
+            if inp2 is None:
+                cc-=torch.diag(torch.diag(cc))
+            ##print('CC',torch.sum(cc==1.).type(torch.float32)/num_tr1)
+            return cc
 
     def forward(self,input,everything=False):
 
@@ -301,7 +338,7 @@ class network(nn.Module):
 
         return out_a
 
-    def get_embedd_loss_new(self,out0,out1,targ):
+    def get_embedd_loss_new(self,out0,out1):
         thr = -2.
         OUT=self.final_emb(self.standardize(out0),self.standardize(out1))
         #loss=torch.sum(torch.log(1+torch.exp(OUT)))-torch.sum(D)
@@ -355,7 +392,7 @@ class network(nn.Module):
         if type(input) is list:
             out0,ot0=self.forward(input[0])
             out1,ot1=self.forward(input[1])
-            loss, acc = self.get_embedd_loss_new(out0,out1,target)
+            loss, acc = self.get_embedd_loss_new(out0,out1)
         else:
             out,_=self.forward(input)
             # Compute loss and accuracy
@@ -429,7 +466,7 @@ class network(nn.Module):
         h=x_in.shape[2]
         w=x_in.shape[3]
         nn=x_in.shape[0]
-        u=(torch.rand(nn,6)*self.perturb).to(self.dv)
+        u=((torch.rand(nn,6)-.5)*self.perturb).to(self.dv)
         self.theta = u.view(-1, 2, 3) + self.id
         grid = F.affine_grid(self.theta, x_in[:,0,:,:].view(-1, h, w).unsqueeze(1).size(),align_corners=True)
         x_out=F.grid_sample(x_in,grid,padding_mode='reflection',align_corners=True)
@@ -445,42 +482,7 @@ class network(nn.Module):
 
 
 
-    def get_binary_signature(self,inp1, inp2=None, lays=[]):
 
-        num_tr1=inp1[0].shape[0]
-        OT1=[];
-        with torch.no_grad():
-            for j in np.arange(0, num_tr1, self.bsz, dtype=np.int32):
-                data=(torch.from_numpy(inp1[0][j:j + self.bsz]).float()).to(self.dv)
-                out,ot1=self.forward(data,everything=True)
-                OTt=[]
-                for l in lays:
-                    OTt+=[ot1[l].reshape(self.bsz,-1)]
-                OT1+=[torch.cat(OTt,dim=1)]
-
-            OT1 = torch.cat(OT1)
-            qq1=2*(OT1.reshape(num_tr1,-1)>0).type(torch.float32)-1.
-
-            if inp2 is not None:
-                OT2 = []
-                num_tr2=inp2[0].shape[0]
-                for j in np.arange(0, num_tr2, self.bsz, dtype=np.int32):
-                    data = (torch.from_numpy(inp2[0][j:j + self.bsz]).float()).to(self.dv)
-                    out, ot2 = self.forward(data, everything=True)
-                    OTt = []
-                    for l in lays:
-                        OTt += [ot2[l].reshape(self.bsz, -1)]
-                    OT2 += [torch.cat(OTt,dim=1)]
-                OT2=torch.cat(OT2)
-                qq2=2*(OT2.reshape(num_tr2,-1)>0).type(torch.float32)-1.
-            else:
-                qq2=qq1
-
-            cc=torch.mm(qq1,qq2.transpose(0,1))/qq1.shape[1]
-            if inp2 is None:
-                cc-=torch.diag(torch.diag(cc))
-            ##print('CC',torch.sum(cc==1.).type(torch.float32)/num_tr1)
-            return cc
 
     # Epoch of network training
     def run_epoch(self, train, epoch, num_mu_iter=None, trainMU=None, trainLOGVAR=None, trPI=None, d_type='train', fout='OUT'):
@@ -491,8 +493,8 @@ class network(nn.Module):
             self.eval()
         num_tr=train[0].shape[0]
         ii = np.arange(0, num_tr, 1)
-        if (type=='train'):
-           np.random.shuffle(ii)
+        #if (type=='train'):
+        #  np.random.shuffle(ii)
         jump = self.bsz
         trin = train[0][ii]
         targ = train[2][ii]
@@ -509,6 +511,10 @@ class network(nn.Module):
                 with torch.no_grad():
                     data_in=(torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
                     data_out1=self.deform_data(data_in)
+                    IN=create_img(data_in[0:100].numpy(),3,32,32)
+                    imsave('_Images/IN' + str(epoch) + '.png', np.uint8(IN * 255))
+                    OUT = create_img(data_out1[0:100].numpy(), 3, 32, 32)
+                    imsave('_Images/OUT' + str(epoch) + '.png', np.uint8(OUT * 255))
                     #data_out2=self.deform_data(data_in)
                     #print('DIFF',torch.max(torch.abs(data_out1-data_out2)))
                     data=[data_in,data_out1]

@@ -3,7 +3,7 @@
 --network
 --dataset=cifar100
 --hid_dataset=cifar10
---num_train=1000
+--num_train=500
 --network_num_train=1000
 --nepoch=0
 --hid_nepoch=10
