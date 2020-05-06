@@ -511,10 +511,10 @@ class network(nn.Module):
                 with torch.no_grad():
                     data_in=(torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
                     data_out1=self.deform_data(data_in)
-                    IN=create_img(data_in[0:100].numpy(),3,32,32)
-                    imsave('_Images/IN' + str(epoch) + '.png', np.uint8(IN * 255))
-                    OUT = create_img(data_out1[0:100].numpy(), 3, 32, 32)
-                    imsave('_Images/OUT' + str(epoch) + '.png', np.uint8(OUT * 255))
+                    #IN=create_img(data_in[0:100].numpy(),3,32,32)
+                    #imsave('_Images/IN' + str(epoch) + '.png', np.uint8(IN * 255))
+                    #OUT = create_img(data_out1[0:100].numpy(), 3, 32, 32)
+                    #imsave('_Images/OUT' + str(epoch) + '.png', np.uint8(OUT * 255))
                     #data_out2=self.deform_data(data_in)
                     #print('DIFF',torch.max(torch.abs(data_out1-data_out2)))
                     data=[data_in,data_out1]
