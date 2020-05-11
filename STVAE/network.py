@@ -186,7 +186,7 @@ class network(nn.Module):
                         inp_ind=[]
                         for p in pp:
                             inp_ind += p #[self.lnti[p]]
-                            inp_feats+=[self.layer_text[self.lnti[p]]['num_filters']]
+                            inp_feats+=[OUTS[p].shape[1]]
                             loc_in_dims+=[in_dims[self.lnti[p]]]
                 if ('input' in ll['name']):
                     #OUTS+=[input]
@@ -201,6 +201,26 @@ class network(nn.Module):
                     out=getattr(self.layers, ll['name'])(OUTS[inp_ind])
                     #OUTS += [self.do_nonlinearity(ll,out)]
                     OUTS[ll['name']]=self.do_nonlinearity(ll,out)
+                if ('merge' in ll['name']):
+                    if self.first:
+                        out_dim=ll['num_units']
+                        bis=True
+                        if ('nb' in ll):
+                            bis=False
+                        self.layers.add_module(ll['name']+'a',nn.Linear(loc_in_dims[0],out_dim,bias=bis).to(self.dv))
+                        self.layers.add_module(ll['name']+'b',nn.Linear(loc_in_dims[1],out_dim,bias=bis).to(self.dv))
+                        #getattr(self.layers, ll['name'] + 'b').weight.requires_grad=False
+                        #getattr(self.layers, ll['name'] + 'b').bias.requires_grad=False
+
+                    outa = OUTS[inp_ind[0]]
+                    outa=outa.reshape(outa.shape[0],-1)
+                    outb = OUTS[inp_ind[1]]
+                    outb = outa.reshape(outb.shape[0], -1)
+                    out = out.reshape(out.shape[0], -1)
+                    outa = getattr(self.layers, ll['name']+'a')(outa)
+                    outb = getattr(self.layers, ll['name']+'b')(outb)
+                    OUTS[ll['name']]=outa+outb
+                    #OUTS[ll['name']]=
                 if ('pool' in ll['name']):
                     if self.first:
                         stride = ll['pool_size']
