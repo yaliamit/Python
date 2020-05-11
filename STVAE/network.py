@@ -492,13 +492,14 @@ class network(nn.Module):
         grid = F.affine_grid(self.theta, x_in[:,0,:,:].view(-1, h, w).unsqueeze(1).size(),align_corners=True)
         x_out=F.grid_sample(x_in,grid,padding_mode='reflection',align_corners=True)
 
-        v=torch.rand(nn,2).to(self.dv)
-        vv=torch.pow(2,(v[:,0]*self.s_factor-self.s_factor/2)).reshape(nn,1,1)
-        uu=((v[:,1]-.5)*self.h_factor).reshape(nn,1,1)
-        x_out_hsv=self.rgb_to_hsv(x_out)
-        x_out_hsv[:,1,:,:]=torch.clamp(x_out_hsv[:,1,:,:]*vv,0.,1.)
-        x_out_hsv[:,0,:,:]=torch.remainder(x_out_hsv[:,0,:,:]+uu,1.)
-        x_out=self.hsv_to_rgb(x_out_hsv)
+        if x_in.shape[1]==3:
+            v=torch.rand(nn,2).to(self.dv)
+            vv=torch.pow(2,(v[:,0]*self.s_factor-self.s_factor/2)).reshape(nn,1,1)
+            uu=((v[:,1]-.5)*self.h_factor).reshape(nn,1,1)
+            x_out_hsv=self.rgb_to_hsv(x_out)
+            x_out_hsv[:,1,:,:]=torch.clamp(x_out_hsv[:,1,:,:]*vv,0.,1.)
+            x_out_hsv[:,0,:,:]=torch.remainder(x_out_hsv[:,0,:,:]+uu,1.)
+            x_out=self.hsv_to_rgb(x_out_hsv)
         return x_out
 
 
