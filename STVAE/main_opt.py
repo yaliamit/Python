@@ -119,6 +119,7 @@ parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
 
 
 args=aux.process_args(parser)
+# reinit means you are taking part of an existing network as fixed and updating some other parts.
 if args.rerun or args.reinit:
     args.run_existing=True
 
