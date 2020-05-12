@@ -8,8 +8,6 @@ import sys
 import aux
 from Conv_data import get_data
 import network
-from edges import pre_edges
-from torch_edges import Edge
 from get_net_text import get_network
 import argparse
 import os

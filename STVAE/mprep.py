@@ -8,7 +8,7 @@ import sys
 from Conv_data import get_data
 import network
 from edges import pre_edges
-from torch_edges import Edge
+from models_transforms import Edge
 from get_net_text import get_network
 
 def process_strings(args):

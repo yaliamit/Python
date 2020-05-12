@@ -11,7 +11,7 @@ import foolbox
 from foolbox import accuracy, samples
 import foolbox.attacks as fa
 from Conv_data import get_data
-from torch_edges import Edge
+from models_transforms import Edge
 from torch import nn
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
