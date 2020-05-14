@@ -46,8 +46,11 @@ for i,d in enumerate(layers_dict):
         fout = open('_pars/t_par', 'w')
         for l in lines:
             if 'dense_final' in l and not 'hid' in l:
-                fout.write('name:drop_f;drop:.5;parent:['+nn+']\n')
-                fout.write(l+'\n')
+                if args.embedd:
+                    fout.write(l +';parent:['+nn+']\n')
+                else:
+                    fout.write('name:drop_f;drop:.5;parent:['+nn+']\n')
+                    fout.write(l+'\n')
             else:
                 fout.write(l+'\n')
         if (args.embedd):
