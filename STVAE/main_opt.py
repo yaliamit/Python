@@ -189,10 +189,10 @@ if reinit:
         if args.hid_dataset is not None:
             print('getting:'+args.hid_dataset)
             DATA = mprep.get_data_pre(args, args.hid_dataset)
-        tr = model.get_embedding(DATA[0]).detach().cpu().numpy()
+        tr = model.get_embedding(DATA[0]) #.detach().cpu().numpy()
         tr = tr.reshape(tr.shape[0], -1)
         trh = [tr, DATA[0][1]]
-        te = model.get_embedding(DATA[2]).detach().cpu().numpy()
+        te = model.get_embedding(DATA[2]) #.detach().cpu().numpy()
         te = te.reshape(te.shape[0], -1)
         teh = [te, DATA[2][1]]
         args.embedd = False
@@ -227,10 +227,10 @@ if (run_existing):
             net_model=net_models[0]
             net_model.load_state_dict(SMS[0]['model.state.dict'])
             #cc=net_model.get_binary_signature(DATA[0])
-            tr = net_model.get_embedding(DATA[0]).detach().cpu().numpy()
+            tr = net_model.get_embedding(DATA[0]) #.detach().cpu().numpy()
             tr = tr.reshape(tr.shape[0], -1)
             trh = [tr, DATA[0][1]]
-            te = net_model.get_embedding(DATA[2]).detach().cpu().numpy()
+            te = net_model.get_embedding(DATA[2]) #.detach().cpu().numpy()
             te = te.reshape(te.shape[0], -1)
             teh = [te, DATA[2][1]]
             args.embedd = False
@@ -259,10 +259,10 @@ else: # Totally new network
             if args.hid_dataset is not None:
                 print('getting:' + args.hid_dataset)
                 DATA = mprep.get_data_pre(args, args.hid_dataset)
-            tr=net_models[0].get_embedding(DATA[0]).detach().cpu().numpy()
+            tr=net_models[0].get_embedding(DATA[0]) #.detach().cpu().numpy()
             tr=tr.reshape(tr.shape[0],-1)
             trh=[tr,DATA[0][1]]
-            te=net_models[0].get_embedding(DATA[2]).detach().cpu().numpy()
+            te=net_models[0].get_embedding(DATA[2]) #.detach().cpu().numpy()
             te=te.reshape(te.shape[0],-1)
             teh=[te,DATA[2][1]]
             args.embedd=False

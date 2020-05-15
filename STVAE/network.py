@@ -514,9 +514,9 @@ class network(nn.Module):
 
             with torch.no_grad():
 
-                OUT+=[self.forward(data,everything=True)[1][lay]]
+                OUT+=[self.forward(data,everything=True)[1][lay].detach().cpu().numpy()]
 
-        OUTA=torch.cat(OUT,dim=0)
+        OUTA=np.concatenate(OUT,axis=0)
 
         return OUTA
 
