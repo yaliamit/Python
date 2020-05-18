@@ -189,9 +189,11 @@ if reinit:
         if args.hid_dataset is not None:
             print('getting:'+args.hid_dataset)
             DATA = mprep.get_data_pre(args, args.hid_dataset)
+        model.embedd_layer=args.embedd_layer
         tr = model.get_embedding(DATA[0]) #.detach().cpu().numpy()
         tr = tr.reshape(tr.shape[0], -1)
         trh = [tr, DATA[0][1]]
+
         te = model.get_embedding(DATA[2]) #.detach().cpu().numpy()
         te = te.reshape(te.shape[0], -1)
         teh = [te, DATA[2][1]]
@@ -227,6 +229,8 @@ if (run_existing):
             net_model=net_models[0]
             net_model.load_state_dict(SMS[0]['model.state.dict'])
             #cc=net_model.get_binary_signature(DATA[0])
+            model.embedd_layer = args.embedd_layer
+
             tr = net_model.get_embedding(DATA[0]) #.detach().cpu().numpy()
             tr = tr.reshape(tr.shape[0], -1)
             trh = [tr, DATA[0][1]]

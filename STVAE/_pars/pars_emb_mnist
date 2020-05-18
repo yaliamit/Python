@@ -6,7 +6,7 @@
 --num_train=50000
 --network_num_train=50000
 --nepoch=2
---hid_nepoch=200
+--hid_nepoch=2
 --mb_size=500
 --lr=.0001
 --hid_lr=.001
@@ -20,9 +20,10 @@
 name:input;num_filters:1
 name:conv1;num_filters:32;filter_size:(5,5);non_linearity:relu
 name:pool1;pool_size:2
-#name:drop1;drop:.5
+name:drop1;drop:.5
 name:conv2;num_filters:64;filter_size:(5,5);non_linearity:relu
 name:pool2;pool_size:2
+#name:dense1;num_units:3136;parent:[input]
 name:dense_final;num_units:64;nb:nb
 --hid_layers
 name:input

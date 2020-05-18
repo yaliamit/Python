@@ -513,8 +513,8 @@ class network(nn.Module):
             data = (torch.from_numpy(trin[j:j + jump]).float()).to(self.dv)
 
             with torch.no_grad():
-
-                OUT+=[self.forward(data,everything=True)[1][lay].detach().cpu().numpy()]
+                out=self.forward(data, everything=True)[1][lay].detach().cpu().numpy()
+                OUT+=[out]
 
         OUTA=np.concatenate(OUT,axis=0)
 
