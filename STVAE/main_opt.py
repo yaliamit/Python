@@ -189,7 +189,6 @@ if reinit:
         if args.hid_dataset is not None:
             print('getting:'+args.hid_dataset)
             DATA = mprep.get_data_pre(args, args.hid_dataset)
-        model.embedd_layer=args.embedd_layer
         tr = model.get_embedding(DATA[0]) #.detach().cpu().numpy()
         tr = tr.reshape(tr.shape[0], -1)
         trh = [tr, DATA[0][1]]

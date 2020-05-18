@@ -3,8 +3,8 @@
 --network
 --dataset=letters
 --hid_dataset=mnist
---num_train=50000
---network_num_train=50000
+--num_train=1000
+--network_num_train=1000
 --nepoch=2
 --hid_nepoch=2
 --mb_size=500
