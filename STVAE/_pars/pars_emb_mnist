@@ -1,7 +1,7 @@
 --nval=0
 --type=net
 --network
---dataset=mnist
+--dataset=letters
 --hid_dataset=mnist
 --num_train=1000
 --network_num_train=1000
