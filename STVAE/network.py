@@ -434,12 +434,15 @@ class network(nn.Module):
         u=((torch.rand(nn,6)-.5)*self.perturb).to(self.dv)
     # Ammplify the shift part of the
         u[:,[2,5]]*=2
+        # Just shift and sclae
+        u[:,0]=u[:,4]
+        u[:,[1,3]]=0
         rr = torch.zeros(nn, 6).to(self.dv)
         rr[:, 0] = 1
         rr[:, 4] = 1
-        self.theta = (u+rr).view(-1, 2, 3) #+ self.id
-        grid = F.affine_grid(self.theta, [nn,1,h,w],align_corners=True)
-        x_out=F.grid_sample(x_in,grid,padding_mode='reflection',align_corners=True)
+        theta = (u+rr).view(-1, 2, 3) #+ self.id
+        grid = F.affine_grid(theta, [nn,1,h,w],align_corners=True)
+        x_out=F.grid_sample(x_in,grid,padding_mode='zeros',align_corners=True)
 
         if x_in.shape[1]==3:
             v=torch.rand(nn,2).to(self.dv)

@@ -159,7 +159,7 @@ num_test=args.num_test
 num_train=args.num_train
 nepoch=args.nepoch
 lr=args.lr
-network=args.network
+network_flag=args.network
 #ARGS[0].nti=args.nti
 #ARGS[0].num_test=num_test
 if (ARGS[0]==args):
@@ -174,16 +174,35 @@ else:
 fout.flush()
 
 if reinit:
+    # lnti, layers_dict = mprep.get_network(SMS[0]['args'].layers, nf=nf)
+    # model_old = network.network(device, SMS[0]['args'], layers_dict, lnti).to(device)
+    # temp = torch.zeros(1, sh[1], sh[2], sh[3]).to(device)
+    # bb = model_old.forward(temp)
+    # model_old.load_state_dict(SMS[0]['model.state.dict'])
+    #
+    # params = model_old.named_parameters()
+    # params2 = model.named_parameters()
+    # dict_params2 = dict(params2)
+    # # Loop over parameters of N1
+    # for name, param in params:
+    #     if name in dict_params2:
+    #         dict_params2[name].data.copy_(param.data)
+    # model.load_state_dict(dict_params2)
+
+
+
 
     pretrained_dict = {}
     model_dict=model.state_dict()
+
+
     for k,kn in zip(SMS[0]['model.state.dict'].items(),model_dict.items()):
         if k[0].split('.')[1] not in args.update_layers:
             print('copying:'+k[0].split('.')[1])
             pretrained_dict[k[0]]=k[1]
     model_dict.update(pretrained_dict)
-    #model.load_state_dict(SMS[0]['model.state.dict'])
     model.load_state_dict(model_dict)
+
     train_model(model, args, EX_FILES[0], DATA, fout)
     if (args.embedd):
         if args.hid_dataset is not None:
@@ -200,7 +219,7 @@ if reinit:
         args.update_layers=None
         args.lr=args.hid_lr
         train_new(args, trh, teh, device)
-    exit()
+    quit()
 
 # if (args.classify):
 #     t1 = time.time()
@@ -214,7 +233,7 @@ if (run_existing):
         model=models[0]
         model.load_state_dict(SMS[0]['model.state.dict'])
         aux.make_images(DATA[2],model,EX_FILES[0],args)
-    elif network:
+    elif network_flag:
         if 'vae' in args.type:
             model = models[0]
             model.load_state_dict(SMS[0]['model.state.dict'])
