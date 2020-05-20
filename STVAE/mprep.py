@@ -126,10 +126,20 @@ def get_data_pre(args,dataset):
         if val[0] is not None:
             val = [pre_edges(val[0],dtr=args.edge_dtr).transpose(0, 3, 1, 2), np.argmax(val[1], axis=1)]
     else:
-        train = [train[0].transpose(0, 3, 1, 2), np.argmax(train[1], axis=1)]
-        test = [test[0].transpose(0, 3, 1, 2), np.argmax(test[1], axis=1)]
+        if train[1].ndim>1:
+            trl=np.argmax(train[1], axis=1)
+            tel=np.argmax(test[1],axis=1)
+            if val[0] is not None:
+              vall=np.argmax(val[1],axis=1)
+        else:
+            trl=train[1]
+            tel=test[1]
+            if val[0] is not None:
+                vall=val[1]
+        train = [train[0].transpose(0, 3, 1, 2),trl]
+        test = [test[0].transpose(0, 3, 1, 2), tel]
         if val[0] is not None:
-            val = [val[0].transpose(0, 3, 1, 2), np.argmax(val[1], axis=1)]
+            val = [val[0].transpose(0, 3, 1, 2), vall]
     if args.edges:
         ed = Edge(device, dtr=.03).to(device)
         edges=[]
