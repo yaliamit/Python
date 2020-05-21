@@ -164,6 +164,8 @@ def get_data_pre(args,dataset):
         ii=np.arange(0, ntest, 1)
         np.random.shuffle(ii)
         test=[test[0][ii[0:args.num_test]], test[1][ii[0:args.num_test]]]
+    elif (args.num_test<0):
+        test=[train[0][0:10000],train[1][0:10000]]
     print('num_train', train[0].shape[0])
 
 

@@ -393,12 +393,12 @@ class network(nn.Module):
         loss=torch.sum(lecov)
         ID=2.*torch.eye(out0.shape[0]).to(self.dv)-1.
         icov=ID*COV
-        acc1 = torch.sum((torch.diag(icov)>0).type(torch.float))
-        acc2 = torch.sum((icov>0).type(torch.float)) - acc1
+        #acc1 = torch.sum((torch.diag(icov)>0).type(torch.float))
+        #acc2 = torch.sum((icov>0).type(torch.float)) - acc1
         #print(acc1, acc2)
         #acc0 = (acc1 + acc2) / self.bsz
 
-        acc=torch.mean((icov>0).type(torch.float))*out0.shape[0]
+        acc=torch.sum((icov>0).type(torch.float))/self.bsz
         return loss,acc
 
 
@@ -412,7 +412,7 @@ class network(nn.Module):
         if type(input) is list:
             out0,ot0=self.forward(input[0])
             out1,ot1=self.forward(input[1])
-            loss, acc = self.get_embedd_loss_new(out0,out1)
+            loss, acc = self.get_embedd_loss(out0,out1)
         else:
             out,_=self.forward(input)
             # Compute loss and accuracy
