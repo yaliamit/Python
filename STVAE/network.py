@@ -378,7 +378,7 @@ class network(nn.Module):
 
 
 
-    def get_embedd_loss(self,out0,out1,targ):
+    def get_embedd_loss(self,out0,out1):
 
         out0a=self.standardize(out0)
         out1a=self.standardize(out1)
