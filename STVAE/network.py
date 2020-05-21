@@ -384,7 +384,7 @@ class network(nn.Module):
         out1a=self.standardize(out1)
         COV=torch.mm(out0a,out1a.transpose(0,1))
         COV1 = torch.mm(out1a, out1a.transpose(0, 1))
-        COV0 = torch.mm(out0a,out0a)
+        COV0 = torch.mm(out0a,out0a.transpose(0,1))
         v0=torch.diag(COV0)
         v1=torch.diag(COV1)
         v = torch.diag(COV)
