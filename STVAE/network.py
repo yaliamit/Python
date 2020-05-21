@@ -435,8 +435,8 @@ class network(nn.Module):
     # Ammplify the shift part of the
         u[:,[2,5]]*=2
         # Just shift and sclae
-        u[:,0]=u[:,4]
-        u[:,[1,3]]=0
+        #u[:,0]=u[:,4]
+        #u[:,[1,3]]=0
         rr = torch.zeros(nn, 6).to(self.dv)
         rr[:, 0] = 1
         rr[:, 4] = 1
