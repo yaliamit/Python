@@ -384,7 +384,7 @@ class network(nn.Module):
         out1a=self.standardize(out1)
         COV=torch.mm(out0a,out1a.transpose(0,1))
         v = torch.diag(COV)
-        lecov=torch.logsumexp(COV-torch.diag(v),dim=1)-v
+        lecov=torch.logsumexp(COV,dim=1)-v
 
         #lecov=torch.sum(torch.log(1+torch.exp(COV)), dim=1) - v
         #COVA = torch.mm(out1a, out1a.transpose(0, 1))
