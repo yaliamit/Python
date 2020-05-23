@@ -105,6 +105,7 @@ class network(nn.Module):
         self.lr=args.lr
         self.layer_text=layers
         self.lnti=lnti
+        self.embedd_mult=args.embedd_mult
         self.ed = Edge(self.dv, dtr=.03).to(self.dv)
         # The loss function
         self.criterion=nn.CrossEntropyLoss()
@@ -416,7 +417,10 @@ class network(nn.Module):
         if type(input) is list:
             out0,ot0=self.forward(input[0])
             out1,ot1=self.forward(input[1])
-            loss, acc = self.get_embedd_loss(out0,out1)
+            if self.embedd_mult:
+                loss, acc = self.get_embedd_loss(out0,out1)
+            else:
+                loss, acc = self.get_embedd_loss_new(out0,out1)
         else:
             out,_=self.forward(input)
             # Compute loss and accuracy
