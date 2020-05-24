@@ -60,7 +60,7 @@ for i,d in enumerate(layers_dict):
             fout.write(layers_dict[i-1]['name']+'\n')
         else:
             fout.write(nn+'\n')
-        fout.write('dense_final')
+        #fout.write('dense_final')
 
         fout.close()
         emb='cl'
