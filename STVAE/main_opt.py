@@ -196,10 +196,10 @@ if reinit:
 
     pretrained_dict = {}
     model_dict=model.state_dict()
-
+    dict_params_new = dict(model.named_parameters())
 
     for k,kn in zip(SMS[0]['model.state.dict'].items(),model_dict.items()):
-        if k[0].split('.')[1] not in args.update_layers:
+        if k[0].split('.')[1] not in args.update_layers and  k[0] in dict_params_new:
             print('copying:'+k[0].split('.')[1])
             pretrained_dict[k[0]]=k[1]
     model_dict.update(pretrained_dict)

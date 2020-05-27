@@ -14,7 +14,6 @@
 --CONS
 --perturb=.6
 --optimizer=Adam
---embedd
 --embedd_layer=pool2
 --layers
 name:input;num_filters:1
@@ -24,7 +23,11 @@ name:drop1;drop:.5
 name:conv2;num_filters:64;filter_size:(5,5);non_linearity:relu
 name:pool2;pool_size:2
 #name:dense1;num_units:3136;parent:[input]
-name:dense_final;num_units:64;nb:nb
+#name:dense_final;num_units:64;nb:nb
+name:dropf;drop:.5
+name:dense_final_c;num_units:10
 --hid_layers
 name:input
 name:dense_final_hid;num_units:10
+--update_layers
+dense_final_c
