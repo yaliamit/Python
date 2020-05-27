@@ -5,8 +5,20 @@ import time
 import network
 import torch
 import mprep
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC, LinearSVC
+from sklearn.linear_model import LinearRegression, Ridge
 
 def train_new(args,train,test,device):
+
+    lg=LogisticRegression(fit_intercept=True, intercept_scaling=1, C=.1,penalty='l2')
+    lg.fit(train[0], train[1])
+    yh = lg.predict(train[0])
+    print("train classification", np.mean(yh==train[1]))
+    yh = lg.predict(test[0])
+    print("test classification", np.mean(yh==test[1]))
+
+def train_new_old(args,train,test,device):
 
     fout=sys.stdout
     print("In from hidden number of training",train[0].shape[0])
