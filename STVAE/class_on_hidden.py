@@ -11,12 +11,15 @@ from sklearn.linear_model import LinearRegression, Ridge
 
 def train_new(args,train,test,device):
 
-    lg=LogisticRegression(fit_intercept=True, solver='lbfgs',multi_class='multinomial',max_iter=1000, intercept_scaling=1, C=.1,penalty='l2')
-    lg.fit(train[0], train[1])
-    yh = lg.predict(train[0])
-    print("train classification", np.mean(yh==train[1]))
-    yh = lg.predict(test[0])
-    print("test classification", np.mean(yh==test[1]))
+    if args.optimizer=='LG':
+        lg=LogisticRegression(fit_intercept=True, solver='lbfgs',multi_class='multinomial',max_iter=1000, intercept_scaling=1, C=.1,penalty='l2')
+        lg.fit(train[0], train[1])
+        yh = lg.predict(train[0])
+        print("train classification", np.mean(yh==train[1]))
+        yh = lg.predict(test[0])
+        print("test classification", np.mean(yh==test[1]))
+    else:
+        train_new_old(args, train, test, device)
 
 def train_new_old(args,train,test,device):
 
