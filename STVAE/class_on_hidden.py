@@ -11,7 +11,7 @@ from sklearn.linear_model import LinearRegression, Ridge
 
 def train_new(args,train,test,device):
 
-    lg=LogisticRegression(fit_intercept=True, solver='lbfgs',multi_class='multinomial', intercept_scaling=1, C=.1,penalty='l2')
+    lg=LogisticRegression(fit_intercept=True, solver='lbfgs',multi_class='multinomial',max_iter=1000, intercept_scaling=1, C=.1,penalty='l2')
     lg.fit(train[0], train[1])
     yh = lg.predict(train[0])
     print("train classification", np.mean(yh==train[1]))
