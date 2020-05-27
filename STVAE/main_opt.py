@@ -138,6 +138,8 @@ if args.network:
     sh=DATA[0][0].shape
     # parse the existing network coded in ARGS[0]
     arg=ARGS[0]
+    if not hasattr(arg,'embedd_mult'):
+        arg.embedd_mult=False
     if args.reinit: # Parse the new network
         arg=args
     if arg.layers is not None:
