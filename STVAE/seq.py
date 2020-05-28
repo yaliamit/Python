@@ -68,6 +68,7 @@ for i,d in enumerate(layers_dict):
             emb='emb'
         outn='network_' + nn + '_' + emb
         com=pyt+' main_opt.py @_pars/t_par --gpu='+str(args.gpu)+' --model_out='+outn
+        print(com)
         if oldn is not None:
             com=com+' --reinit --model='+oldn
         os.system(com)
