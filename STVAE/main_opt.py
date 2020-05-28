@@ -176,35 +176,37 @@ else:
 fout.flush()
 
 if reinit:
-    # lnti, layers_dict = mprep.get_network(SMS[0]['args'].layers, nf=nf)
-    # model_old = network.network(device, SMS[0]['args'], layers_dict, lnti).to(device)
-    # temp = torch.zeros(1, sh[1], sh[2], sh[3]).to(device)
-    # bb = model_old.forward(temp)
-    # model_old.load_state_dict(SMS[0]['model.state.dict'])
+    lnti, layers_dict = mprep.get_network(SMS[0]['args'].layers, nf=nf)
+    model_old = network.network(device, SMS[0]['args'], layers_dict, lnti).to(device)
+    temp = torch.zeros(1, sh[1], sh[2], sh[3]).to(device)
+    bb = model_old.forward(temp)
+    model_old.load_state_dict(SMS[0]['model.state.dict'])
+
+    params = model_old.named_parameters()
+    params2 = model.named_parameters()
+    dict_params2 = dict(params2)
+    # Loop over parameters of N1
+    for name, param in params:
+        if name in dict_params2:
+            dict_params2[name].data.copy_(param.data)
+    model.load_state_dict(dict_params2)
+
+
+
+
+    # pretrained_dict = {}
+    # model_dict=model.state_dict()
+    # dict_params_new = dict(model.named_parameters())
     #
-    # params = model_old.named_parameters()
-    # params2 = model.named_parameters()
-    # dict_params2 = dict(params2)
-    # # Loop over parameters of N1
-    # for name, param in params:
-    #     if name in dict_params2:
-    #         dict_params2[name].data.copy_(param.data)
-    # model.load_state_dict(dict_params2)
-
-
-
-
-    pretrained_dict = {}
-    model_dict=model.state_dict()
-    dict_params_new = dict(model.named_parameters())
-
-    for k,kn in zip(SMS[0]['model.state.dict'].items(),model_dict.items()):
-        if k[0].split('.')[1] not in args.update_layers and  k[0] in dict_params_new:
-            print('copying:'+k[0].split('.')[1])
-            pretrained_dict[k[0]]=k[1]
-    model_dict.update(pretrained_dict)
-    model.load_state_dict(model_dict)
-
+    # for k,kn in zip(SMS[0]['model.state.dict'].items(),model_dict.items()):
+    #     if k[0].split('.')[1] not in args.update_layers and  k[0] in dict_params_new:
+    #         print('copying:'+k[0].split('.')[1])
+    #         dict_params_new[k[0]].data.copy_(k[1].data)
+    #         #pretrained_dict[k[0]]=k[1]
+    # #model_dict.update(pretrained_dict)
+    # #model.load_state_dict(model_dict)
+    # model.load_state_dict(dict_params_new)
+    temp_data=model.get_embedding(DATA[0])
     train_model(model, args, EX_FILES[0], DATA, fout)
     if (args.embedd):
         if args.hid_dataset is not None:
