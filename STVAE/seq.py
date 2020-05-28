@@ -54,6 +54,7 @@ for i,d in enumerate(layers_dict):
             else:
                 fout.write(l+'\n')
         if (args.embedd):
+            fout.write('--embedd\n')
             fout.write('--embedd_layer=' + nn+'\n')
         fout.write('--update_layers\n')
         if ('pool' in nn):
